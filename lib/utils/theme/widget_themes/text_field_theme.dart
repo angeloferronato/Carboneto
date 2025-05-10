@@ -13,7 +13,7 @@ class CbTextFormFieldTheme {
     labelStyle: const TextStyle().copyWith(fontSize: CbSizes.fontSizeMd, color: CbColors.black),
     hintStyle: const TextStyle().copyWith(fontSize: CbSizes.fontSizeSm, color: CbColors.black),
     errorStyle: const TextStyle().copyWith(fontStyle: FontStyle.normal),
-    floatingLabelStyle: const TextStyle().copyWith(color: CbColors.black.withOpacity(0.8)),
+    floatingLabelStyle: const TextStyle().copyWith(color: CbColors.black.withValues(alpha: 0.8)),
     border: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(CbSizes.inputFieldRadius),
       borderSide: const BorderSide(width: 1, color: CbColors.grey),
@@ -22,10 +22,14 @@ class CbTextFormFieldTheme {
       borderRadius: BorderRadius.circular(CbSizes.inputFieldRadius),
       borderSide: const BorderSide(width: 1, color: CbColors.grey),
     ),
-    focusedBorder:const OutlineInputBorder().copyWith(
+    focusedBorder: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(CbSizes.inputFieldRadius),
-      borderSide: const BorderSide(width: 1, color: CbColors.dark),
+      borderSide: const BorderSide(
+        width: 1,
+        color: CbColors.primary,
+      ),
     ),
+
     errorBorder: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(CbSizes.inputFieldRadius),
       borderSide: const BorderSide(width: 1, color: CbColors.warning),
@@ -43,7 +47,7 @@ class CbTextFormFieldTheme {
     // constraints: const BoxConstraints.expand(height: CbSizes.inputFieldHeight),
     labelStyle: const TextStyle().copyWith(fontSize: CbSizes.fontSizeMd, color: CbColors.white),
     hintStyle: const TextStyle().copyWith(fontSize: CbSizes.fontSizeSm, color: CbColors.white),
-    floatingLabelStyle: const TextStyle().copyWith(color: CbColors.white.withOpacity(0.8)),
+    floatingLabelStyle: const TextStyle().copyWith(color: CbColors.white.withValues(alpha: 0.8)),
     border: const OutlineInputBorder().copyWith(
       borderRadius: BorderRadius.circular(CbSizes.inputFieldRadius),
       borderSide: const BorderSide(width: 1, color: CbColors.darkGrey),

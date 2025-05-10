@@ -8,7 +8,7 @@ class CbTextTheme {
   /// Customizable Light Text Theme
   static TextTheme lightTextTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(fontSize: 32.0, fontWeight: FontWeight.bold, color: CbColors.dark),
-    headlineMedium: const TextStyle().copyWith(fontSize: 24.0, fontWeight: FontWeight.w600, color: CbColors.dark),
+    headlineMedium: const TextStyle().copyWith(fontSize: 26.0, fontWeight: FontWeight.w600, color: CbColors.dark),
     headlineSmall: const TextStyle().copyWith(fontSize: 18.0, fontWeight: FontWeight.w600, color: CbColors.dark),
 
     titleLarge: const TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.w600, color: CbColors.dark),
@@ -26,7 +26,7 @@ class CbTextTheme {
   /// Customizable Dark Text Theme
   static TextTheme darkTextTheme = TextTheme(
     headlineLarge: const TextStyle().copyWith(fontSize: 32.0, fontWeight: FontWeight.bold, color: CbColors.light),
-    headlineMedium: const TextStyle().copyWith(fontSize: 24.0, fontWeight: FontWeight.w600, color: CbColors.light),
+    headlineMedium: const TextStyle().copyWith(fontSize: 26.0, fontWeight: FontWeight.w600, color: CbColors.light),
     headlineSmall: const TextStyle().copyWith(fontSize: 18.0, fontWeight: FontWeight.w600, color: CbColors.light),
 
     titleLarge: const TextStyle().copyWith(fontSize: 16.0, fontWeight: FontWeight.w600, color: CbColors.light),

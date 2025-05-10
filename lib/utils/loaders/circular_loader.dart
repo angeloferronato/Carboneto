@@ -4,13 +4,13 @@ import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/sizes.dart';
 
 /// A circular loader widget with customizable foreground and background colors.
-class TCircularLoader extends StatelessWidget {
-  /// Default constructor for the TCircularLoader.
+class CbCircularLoader extends StatelessWidget {
+  /// Default constructor for the CbCircularLoader.
   ///
   /// Parameters:
   ///   - foregroundColor: The color of the circular loader.
   ///   - backgroundColor: The background color of the circular loader.
-  const TCircularLoader({
+  const CbCircularLoader({
     super.key,
     this.foregroundColor = CbColors.white,
     this.backgroundColor = CbColors.primary,
