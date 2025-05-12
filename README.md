@@ -1,6 +1,6 @@
 # carboneto
 
-Carboneto: A basketball training softawarer
+Carboneto: A basketball training software
 
 ## Getting Started
 
