@@ -11,17 +11,28 @@ class CbTexts {
 
   // Login Texts
   static const String login = "Login";
-  static const String welcomeAgain = "Bem vindo de volta!";
+  static const String loginSubTitle = "Bem vindo de volta!";
   static const String emailExample = "seuemail@domínio.com";
   static const String password = "Senha";
   static const String keepMeConnected = "Me manter conectado";
   static const String entry = "Entrar";
-  static const String forgetPassword = "Esquceu a senha?";
+  static const String forgetPassword = "Esqueceu a senha?";
   static const String loginWithGoogle = "Login com Google";
   static const String loginWithFacebook = "Login com Facebook";
   static const String loginWithApple = "Login com Apple";
   static const String dontYouHaveAccount = "Não tem uma conta ainda?";
   static const String signUp = "Cadastre-se";
   static const String email = "Email";
+
+  // SignUp Texts
+  static const String createAccountTitle = "Criar Conta";
+  static const String createAccountSubTitle = "Alcance o próximo nível dos seus treinos!";
+  static const String name = 'Nome';
+  static const String username = 'Nome de Usuário';
+  static const String agreeWith = 'Concordo com os';
+  static const String serviceTerms = 'Termos de Serviço';
+  static const String privacyPolicy = 'Política de Privacidade';
+  static const String alreadyHaveAccount = 'Já tem uma conta?';
+
 }
 

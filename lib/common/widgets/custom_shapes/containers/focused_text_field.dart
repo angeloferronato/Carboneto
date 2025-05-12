@@ -1,4 +1,6 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/custom_focused_border.dart';
+import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class FocusedTextField extends StatelessWidget {
@@ -7,7 +9,7 @@ class FocusedTextField extends StatelessWidget {
   });
 
   final String hintText;
-  final IconData? prefixIcon, suffixIcon;
+  final Icon? prefixIcon, suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +17,13 @@ class FocusedTextField extends StatelessWidget {
       builder: (focusNode) => TextFormField(
         focusNode: focusNode,
         decoration: InputDecoration(
-          prefixIcon: Icon(prefixIcon),
-          suffixIcon: Icon(suffixIcon),
+          contentPadding: EdgeInsets.symmetric(horizontal: CbSizes.lg, vertical: CbSizes.md),
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
           hintText: hintText,
-          hintStyle: Theme.of(context).textTheme.labelMedium,
+          hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(
+            color: CbColors.darkGrey,
+          ),
         ),
       ),
     );

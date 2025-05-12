@@ -15,15 +15,15 @@ class LoginForm extends StatelessWidget {
       children: [
         FocusedTextField(
           hintText: CbTexts.email,
-          prefixIcon: Iconsax.sms,
+          prefixIcon: Icon(Iconsax.sms),
         ),
       
         SizedBox(height: CbSizes.spaceBtwInputFields,),
       
         FocusedTextField(
           hintText: CbTexts.password,
-          prefixIcon: Iconsax.password_check,
-          suffixIcon: Iconsax.eye,
+          prefixIcon: Icon(Iconsax.password_check),
+          suffixIcon: Icon(Iconsax.eye),
         ),
       
         SizedBox(height: CbSizes.spaceBtwItems / 2,),
