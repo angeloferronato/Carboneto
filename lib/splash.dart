@@ -11,7 +11,7 @@ class CbSplashScreen extends StatelessWidget {
         splash: 'assets/logos/CLogo.png',
         nextScreen: LoginScreen(),
         backgroundColor: Color(0xff0f4299),
-        duration: 3000,
+        duration: 1000,
         splashIconSize: 250,
         // splashTransition: SplashTransition.rotationTransition,
         // pageTransitionType: PageTransitionType.scale,

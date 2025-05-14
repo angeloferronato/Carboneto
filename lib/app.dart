@@ -1,3 +1,4 @@
+import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/splash.dart';
 import 'package:carboneto/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       darkTheme: CbAppTheme.darkTheme,
       theme: CbAppTheme.lightTheme,
-      home: CbSplashScreen(),
+      home: LoginScreen(),
     ); 
   }
 }
