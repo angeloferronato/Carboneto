@@ -1,6 +1,6 @@
 # carboneto
 
-A new Flutter project.
+Carboneto: A basketball training software
 
 ## Getting Started
 
