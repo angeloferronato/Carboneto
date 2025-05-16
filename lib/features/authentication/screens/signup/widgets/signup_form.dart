@@ -45,7 +45,7 @@ class SignUpForm extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {}, 
+            onPressed: () => Get.to(LoginScreen()), 
             child: Text(CbTexts.createAccountTitle)
           ),
         ),

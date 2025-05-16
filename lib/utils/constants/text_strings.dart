@@ -34,5 +34,10 @@ class CbTexts {
   static const String privacyPolicy = 'Política de Privacidade';
   static const String alreadyHaveAccount = 'Já tem uma conta?';
 
+  // Welcome Texts
+  static const String welcomeIntroduction = 'Ficamos felizes em vê-lo de volta. Esperamos que você tenha um ótimo treino!';
+  static const String startNow = 'Começar Agora';
+
+
 }
 

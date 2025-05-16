@@ -1,7 +1,9 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
+import 'package:carboneto/features/authentication/screens/welcome/welcome.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class LoginForm extends StatelessWidget {
@@ -44,7 +46,7 @@ class LoginForm extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => Get.offAll(WelcomeScreen()),
             child: Text(
               CbTexts.entry,
             ),

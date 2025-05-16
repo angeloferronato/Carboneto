@@ -11,6 +11,7 @@ class CbImages {
   // SignUp Images
   static const String playerImage = "assets/images/signup/player.png";
   static const String coachImage = "assets/images/signup/coach.png";
+  static const String userExample = "assets/images/signup/user_example.png";
 
 
 }

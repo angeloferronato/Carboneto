@@ -14,12 +14,14 @@ class LoginHeader extends StatelessWidget {
       children: [
         Text(
           title,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         SizedBox(height: CbSizes.spaceBtwItems / 2,),
     
         Text(
           subtitle,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall,
         ),
     
