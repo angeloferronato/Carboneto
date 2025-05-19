@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "379434948139",
+    "project_id": "carboneto-fe55b",
+    "storage_bucket": "carboneto-fe55b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379434948139:android:c791f8db50b97db91afc6e",
+        "android_client_info": {
+          "package_name": "com.example.carboneto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXBfF4HiUyoiJ7aI21lzWMvwWeqLkDf7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
