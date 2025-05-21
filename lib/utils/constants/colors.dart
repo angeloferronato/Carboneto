@@ -14,6 +14,7 @@ class CbColors {
   // Background colors
   static const Color light = Color(0xFFF6F6F6);
   static const Color dark = Color(0xFF272727);
+  
   static const Color primaryBackground = Color(0xFFF3F5FF);
 
   // Background Container colors
@@ -31,7 +32,7 @@ class CbColors {
 
   // Error and validation colors
   static const Color error = Color(0xFFD32F2F);
-  static const Color success = Color(0xFF388E3C);
+  static const Color success = Color(0xFF31AA7A);
   static const Color warning = Color(0xFFF57C00);
   static const Color info = Color(0xFF1976D2);
 
