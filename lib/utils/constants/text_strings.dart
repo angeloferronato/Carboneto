@@ -1,6 +1,5 @@
 /// This class contains all the App Text in String formats.
 class CbTexts {
-
   // -- GLOBAL Texts
   static const String and = "e";
   static const String skip = "Pular";
@@ -26,7 +25,8 @@ class CbTexts {
 
   // SignUp Texts
   static const String createAccountTitle = "Criar Conta";
-  static const String createAccountSubTitle = "Alcance o próximo nível dos seus treinos!";
+  static const String createAccountSubTitle =
+      "Alcance o próximo nível dos seus treinos!";
   static const String name = 'Nome';
   static const String username = 'Nome de Usuário';
   static const String agreeWith = 'Concordo com os';
@@ -35,14 +35,18 @@ class CbTexts {
   static const String alreadyHaveAccount = 'Já tem uma conta?';
 
   // Welcome Texts
-  static const String welcomeIntroduction = 'Ficamos felizes em vê-lo de volta. Esperamos que você tenha um ótimo treino!';
+  static const String welcomeIntroduction =
+      'Ficamos felizes em vê-lo de volta. Esperamos que você tenha um ótimo treino!';
   static const String startNow = 'Começar Agora';
 
   // Forgot Password Texts
-  static const String forgotPasswordSubtitle = 'Não se preocupe! Acontece. Coloque abaixo o email associado com a sua conta';
+  static const String forgotPasswordSubtitle =
+      'Não se preocupe! Acontece. Coloque abaixo o email associado com a sua conta';
   static const String emailAddress = 'Endereço de Email';
 
   // New Password Texts
   static const String newPasswordTitle = 'Nova Senha';
+  static const String passwordRequirement1 = 'Mínimo de  8 caracteres';
+  static const String passwordRequirement2 = 'Mínimo de um número (0–9) ou símbolo';
+  static const String passwordRequirement3 = 'Minúscula (a-z) e maiúscula (A-Z)';
 }
-
