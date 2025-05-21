@@ -5,7 +5,7 @@ class CbTexts {
   static const String and = "e";
   static const String skip = "Pular";
   static const String done = "Pronto";
-  static const String submit = "Submit";
+  static const String submit = "Enviar";
   static const String appName = "Carboneto";
   static const String cbContinue = "Continuar";
 
@@ -38,6 +38,11 @@ class CbTexts {
   static const String welcomeIntroduction = 'Ficamos felizes em vê-lo de volta. Esperamos que você tenha um ótimo treino!';
   static const String startNow = 'Começar Agora';
 
+  // Forgot Password Texts
+  static const String forgotPasswordSubtitle = 'Não se preocupe! Acontece. Coloque abaixo o email associado com a sua conta';
+  static const String emailAddress = 'Endereço de Email';
 
+  // New Password Texts
+  static const String newPasswordTitle = 'Nova Senha';
 }
 

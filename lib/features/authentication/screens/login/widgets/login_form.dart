@@ -1,4 +1,5 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
+import 'package:carboneto/features/authentication/screens/forgot_password/forgot_password.dart';
 import 'package:carboneto/features/authentication/screens/welcome/welcome.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
@@ -56,7 +57,7 @@ class LoginForm extends StatelessWidget {
         SizedBox(height: CbSizes.spaceBtwItems / 1.5,),
       
         TextButton(
-          onPressed: () {},
+          onPressed: () => Get.to(ForgotPasswordScreen()),
           child: Text(CbTexts.forgetPassword),
         ),
 
