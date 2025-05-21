@@ -1,5 +1,7 @@
 import 'package:carboneto/features/authentication/screens/welcome/widgets/welcome_presentation.dart';
 import 'package:carboneto/features/authentication/screens/welcome/widgets/welcome_section.dart';
+import 'package:carboneto/utils/constants/enums.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -9,12 +11,16 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            WelcomeSection(),
-          
-            WelcomePresentation(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: CbSizes.md),
+          child: Column(
+            children: [
+              WelcomeSection(),
+            
+              WelcomePresentation(),
+              
+            ],
+          ),
         ),
       ),
     );

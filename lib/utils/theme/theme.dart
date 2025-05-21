@@ -40,7 +40,7 @@ class CbAppTheme {
     primaryColor: CbColors.primary,
     textTheme: CbTextTheme.darkTextTheme,
     chipTheme: CbChipTheme.darkChipTheme,
-    scaffoldBackgroundColor: CbColors.black,
+    scaffoldBackgroundColor: CbColors.dark,
     appBarTheme: CbAppBarTheme.darkAppBarTheme,
     checkboxTheme: CbCheckboxTheme.darkCheckboxTheme,
     bottomSheetTheme: CbBottomSheetTheme.darkBottomSheetTheme,

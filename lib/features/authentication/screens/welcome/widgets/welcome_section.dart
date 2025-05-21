@@ -11,33 +11,55 @@ class WelcomeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final left = -(460 - MediaQuery.of(context).size.width) / 2;
     return Container(
       height: 600,
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(vertical: CbSizes.appBarHeight),
+      padding: const EdgeInsets.symmetric(vertical: CbSizes.xl),
       child: Stack(
         alignment: Alignment.center,
         children: [
           Positioned(
-            left: -22.5,
-            child: WelcomeCircleUser(width: 460, height: 460, opacity: .25,),
+            left: left,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                WelcomeCircleUser(width: 460, height: 460, opacity: .25,),
+                
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    WelcomeCircleUser(width: 400, height: 400, opacity: .5,),
+                    WelcomeOrbitCircle(size: 12, top: 0, right: 150,),
+                  ],
+                ),
+                
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    WelcomeCircleUser(width: 340, height: 340, opacity: .7,),
+                    
+                    WelcomeOrbitCircle(size: 15, top: 115, left: 0,),
+    
+                    WelcomeOrbitCircle(size: 25, bottom: 45, left: 30,), 
+
+                    WelcomeOrbitCircle(size: 15, top: 90, right: 10,), 
+                  ],
+                ),
+          
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    WelcomeCircleUser(width: 280, height: 280, child: Image(
+                      image: AssetImage(CbImages.userExample),
+                    )),
+                    WelcomeOrbitCircle(size: 15, bottom: 20, right: 50,),
+                  ],
+                ),
+ 
+              ],
+            ),
           ),
-      
-          WelcomeCircleUser(width: 400, height: 400, opacity: .5,),
-         
-          WelcomeCircleUser(width: 340, height: 340, opacity: .7,),
-    
-          WelcomeCircleUser(width: 280, height: 280, child: Image(
-              image: AssetImage(CbImages.userExample),
-          )),
-    
-          WelcomeOrbitCircle(size: 15, top: 120, left: 38,),
-    
-          WelcomeOrbitCircle(size: 15, bottom: 250, right: 30,),
-    
-          WelcomeOrbitCircle(size: 25, bottom: 95, left: 50,),
-    
-          WelcomeOrbitCircle(size: 12, top: 45, right: 150,),
         ],
       ),
     );
