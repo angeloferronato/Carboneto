@@ -1,7 +1,9 @@
 import 'package:carboneto/common/widgets/login/login_header.dart';
+import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WelcomePresentation extends StatelessWidget {
   const WelcomePresentation({
@@ -21,7 +23,7 @@ class WelcomePresentation extends StatelessWidget {
             height: CbSizes.buttonHeight * 3.5,
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => Get.offAll(HomeMenu()),
               child: Text(
                 CbTexts.startNow
               )

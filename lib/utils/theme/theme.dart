@@ -3,6 +3,7 @@ import 'package:carboneto/utils/theme/widget_themes/bottom_sheet_theme.dart';
 import 'package:carboneto/utils/theme/widget_themes/checkbox_theme.dart';
 import 'package:carboneto/utils/theme/widget_themes/chip_theme.dart';
 import 'package:carboneto/utils/theme/widget_themes/elevated_button_theme.dart';
+import 'package:carboneto/utils/theme/widget_themes/navigation_bar_theme.dart';
 import 'package:carboneto/utils/theme/widget_themes/outlined_button_theme.dart';
 import 'package:carboneto/utils/theme/widget_themes/text_field_theme.dart';
 import 'package:carboneto/utils/theme/widget_themes/text_theme.dart';
@@ -28,6 +29,7 @@ class CbAppTheme {
     elevatedButtonTheme: CbElevatedButtonTheme.lightElevatedButtonTheme,
     outlinedButtonTheme: CbOutlinedButtonTheme.lightOutlinedButtonTheme,
     inputDecorationTheme: CbTextFormFieldTheme.lightInputDecorationTheme,
+    navigationBarTheme: CbNavigationBarTheme.lightNavigationBarTheme,
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -45,5 +47,6 @@ class CbAppTheme {
     elevatedButtonTheme: CbElevatedButtonTheme.darkElevatedButtonTheme,
     outlinedButtonTheme: CbOutlinedButtonTheme.darkOutlinedButtonTheme,
     inputDecorationTheme: CbTextFormFieldTheme.darkInputDecorationTheme,
+    navigationBarTheme: CbNavigationBarTheme.darkNavigationBarTheme,
   );
 }

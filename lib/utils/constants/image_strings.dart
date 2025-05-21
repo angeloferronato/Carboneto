@@ -13,6 +13,14 @@ class CbImages {
   static const String coachImage = "assets/images/signup/coach.png";
   static const String userExample = "assets/images/signup/user_example.png";
 
+  // Home Menu Logos
+  static const String homeIcon = "assets/images/home_menu/home_icon.png";
+  static const String libraryIcon = "assets/images/home_menu/library_icon.png";
+  static const String addIcon = "assets/images/home_menu/add_icon.png";
+  static const String searchIcon = "assets/images/home_menu/search_icon.png";
+  static const String userIcon = "assets/images/home_menu/user_icon.png";
+
+
 
 }
 

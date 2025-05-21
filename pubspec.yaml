@@ -87,6 +87,7 @@ flutter:
     - assets/logos/
     - assets/logos/social_logos/
     - assets/images/signup/
+    - assets/images/home_menu/
   fonts:
     - family: Plus Jakarta Sans
       fonts:
