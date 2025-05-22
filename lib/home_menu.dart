@@ -1,6 +1,7 @@
 import 'package:carboneto/common/custom_shapes/curved_edges/home/curved_edges_widget.dart';
 import 'package:carboneto/common/custom_shapes/curved_edges/home/custom_curved_edges.dart';
 import 'package:carboneto/common/widgets/navigation_bar/navigation_destination.dart';
+import 'package:carboneto/features/training/screens/home/home.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -26,37 +27,40 @@ class HomeMenu extends StatelessWidget {
           clipper: CbCustomCurvedEdges(),
           child: Container(
             color: Colors.transparent,
-            child: NavigationBar(
+              child: NavigationBar(  
+                onDestinationSelected: (value) => controller.selectedIndex.value = value,
+                selectedIndex: controller.selectedIndex.value,
+                indicatorColor: Colors.transparent,
+                destinations: [
+                  CbCustomNavigationDestination(image: CbImages.homeIcon, showIndicator: controller.selectedIndex.value == 0,),
+                  CbCustomNavigationDestination(image: CbImages.searchIcon, showIndicator: controller.selectedIndex.value == 1,),
               
-              onDestinationSelected: (value) => controller.selectedIndex.value = value,
-              selectedIndex: controller.selectedIndex.value,
-              indicatorColor: controller.selectedIndex.value == 2 ? Colors.transparent : isDarkTheme ? CbColors.grey.withValues(alpha: 0.1) : CbColors.grey,
-              destinations: [
-                CbCustomNavigationDestination(image: CbImages.homeIcon,),
-                CbCustomNavigationDestination(image: CbImages.searchIcon,),
-
-                NavigationDestination(
-                  icon: Container(
-                    width: 45,
-                    height: 45,
-                    decoration: BoxDecoration(
-                      color: CbColors.primary,
-                      borderRadius: BorderRadius.circular(100)
+                  NavigationDestination(
+                    icon: Container(
+                      width: 45,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: CbColors.primary,
+                        borderRadius: BorderRadius.circular(100)
+                      ),
+                      padding: EdgeInsets.all(CbSizes.sm),
+                      child: Image(
+                        fit: BoxFit.cover,
+                        image: AssetImage(CbImages.addIcon),
+                        color: CbColors.lightGrey,
+                      )
                     ),
-                    padding: EdgeInsets.all(CbSizes.sm),
-                    child: Image(
-                      fit: BoxFit.cover,
-                      image: AssetImage(CbImages.addIcon),
-                      color: CbColors.lightGrey,
-                    )
+                    label: ''
                   ),
-                  label: ''
-                ),
+              
+                  CbCustomNavigationDestination(image: CbImages.libraryIcon, showIndicator: controller.selectedIndex.value == 3,),
+                  CbCustomNavigationDestination(image: CbImages.userIcon, showIndicator: controller.selectedIndex.value == 4,),  
+                ],
+              ),
 
-                CbCustomNavigationDestination(image: CbImages.libraryIcon,),
-                CbCustomNavigationDestination(image: CbImages.userIcon,),  
-              ]
-            ),
+                
+              
+            
           ),
         ),
       ),
@@ -71,7 +75,7 @@ class HomeMenuController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
 
   final List<Widget> screens = [
-    Container(color: CbColors.dark,),
+    HomeScreen(),
     Container(color: Colors.pink,),
     Container(color: Colors.green,),
     Container(color: Colors.yellow,),
