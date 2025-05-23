@@ -1,3 +1,4 @@
+import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -29,14 +30,7 @@ class CbCustomNavigationDestination extends StatelessWidget {
 
         Positioned(
           top: 55,
-          child: Container(
-            height: 6,
-            width: 15,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: showIndicator ? CbColors.primary : Colors.transparent,
-            ),
-          ),
+          child: CbRoundedContainer(width: 15, height: 5, backgroundColor: showIndicator ? CbColors.primary : Colors.transparent,)
         ),
       ]
     );

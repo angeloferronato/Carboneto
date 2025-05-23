@@ -20,6 +20,9 @@ class CbImages {
   static const String searchIcon = "assets/images/home_menu/search_icon.png";
   static const String userIcon = "assets/images/home_menu/user_icon.png";
 
+  // Home Logos
+  static const String trainingExample = "assets/images/training/training_example.png";
+
 
 
 }

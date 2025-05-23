@@ -35,13 +35,11 @@ class CbTexts {
   static const String alreadyHaveAccount = 'Já tem uma conta?';
 
   // Welcome Texts
-  static const String welcomeIntroduction =
-      'Ficamos felizes em vê-lo de volta. Esperamos que você tenha um ótimo treino!';
+  static const String welcomeIntroduction = 'Ficamos felizes em vê-lo de volta. Esperamos que você tenha um ótimo treino!';
   static const String startNow = 'Começar Agora';
 
   // Forgot Password Texts
-  static const String forgotPasswordSubtitle =
-      'Não se preocupe! Acontece. Coloque abaixo o email associado com a sua conta';
+  static const String forgotPasswordSubtitle = 'Não se preocupe! Acontece. Coloque abaixo o email associado com a sua conta';
   static const String emailAddress = 'Endereço de Email';
 
   // New Password Texts
@@ -49,4 +47,9 @@ class CbTexts {
   static const String passwordRequirement1 = 'Mínimo de  8 caracteres';
   static const String passwordRequirement2 = 'Mínimo de um número (0–9) ou símbolo';
   static const String passwordRequirement3 = 'Minúscula (a-z) e maiúscula (A-Z)';
+
+  // Home Training Texts
+  static const String trainingHomeTitleExample = 'Alternância de Mãos';
+
+
 }
