@@ -1,5 +1,6 @@
 
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class CbSectionHeading extends StatelessWidget {
@@ -14,6 +15,7 @@ class CbSectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Column(
       children: [
         Row(
@@ -28,12 +30,13 @@ class CbSectionHeading extends StatelessWidget {
             
             if (showButton) TextButton(
               onPressed: onPressed, 
+              
               style: TextButton.styleFrom(
-                backgroundColor: CbColors.darkContainer
+                backgroundColor: isDarkMode ? CbColors.darkContainer : CbColors.lightGrey,
               ),
               child: Text(
                 buttonTitle,
-                style: Theme.of(context).textTheme.labelMedium!.apply(color: CbColors.grey.withValues(alpha: 0.8), fontWeightDelta: 2),
+                style: Theme.of(context).textTheme.labelMedium!.apply(color: isDarkMode ? CbColors.grey.withValues(alpha: 0.8) : CbColors.darkerGrey.withValues(alpha: 0.9), fontWeightDelta: 2),
               ),
             ),
             

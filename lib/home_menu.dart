@@ -17,12 +17,12 @@ class HomeMenu extends StatelessWidget {
     final controller = Get.put(HomeMenuController());
     final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
-      backgroundColor: isDarkTheme ? CbColors.dark : CbColors.light,
+      backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
       bottomNavigationBar: Obx(
         () => CurvedEdgesWidget(
           shadow: Shadow(
             blurRadius: 15,
-            color: isDarkTheme ? Colors.black.withValues(alpha: 0.3) : CbColors.dark.withValues(alpha: 0.3),
+            color: isDarkTheme ? Colors.white.withValues(alpha: 0.1) : CbColors.dark.withValues(alpha: 0.3),
           ),
           clipper: CbCustomCurvedEdges(),
           child: Container(
@@ -32,7 +32,7 @@ class HomeMenu extends StatelessWidget {
                 selectedIndex: controller.selectedIndex.value,
                 indicatorColor: Colors.transparent,
                 destinations: [
-                  CbCustomNavigationDestination(image: CbImages.homeIcon, showIndicator: controller.selectedIndex.value == 0,),
+                  CbCustomNavigationDestination(image: CbImages.homeIcon, showIndicator: controller.selectedIndex.value == 0, filledImage: CbImages.homeFilledIcon,),
                   CbCustomNavigationDestination(image: CbImages.searchIcon, showIndicator: controller.selectedIndex.value == 1,),
               
                   NavigationDestination(

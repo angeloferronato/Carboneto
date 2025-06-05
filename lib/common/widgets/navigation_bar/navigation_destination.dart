@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 
 class CbCustomNavigationDestination extends StatelessWidget {
   const CbCustomNavigationDestination({
-    super.key, this.width = 30, this.height, required this.image, this.label = '', this.showIndicator = false,
+    super.key, this.width = 30, this.height, required this.image, this.label = '', this.showIndicator = false, this.filledImage,
   });
 
   final double? width, height;
   final String image, label;
+  final String? filledImage;
   final bool showIndicator;
 
   @override
@@ -21,7 +22,7 @@ class CbCustomNavigationDestination extends StatelessWidget {
             width: width,
             height: height,
             child: Image(
-              image: AssetImage(image),
+              image: AssetImage(showIndicator ? filledImage ?? image : image),
               color: showIndicator ? CbColors.primary : CbColors.darkGrey,
             )
           ),

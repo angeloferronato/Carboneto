@@ -1,4 +1,5 @@
 import 'package:carboneto/features/authentication/screens/login/login.dart';
+import 'package:carboneto/features/authentication/screens/onboarding/onboarding.dart';
 import 'package:carboneto/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
