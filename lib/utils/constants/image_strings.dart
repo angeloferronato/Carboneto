@@ -25,7 +25,9 @@ class CbImages {
   static const String trainingExample = "assets/images/training/training_example.png";
   static const String trainingImageExample = "assets/images/training/training_video_example.png";
 
-
+  // Onboarding Images
+  static const String onboardingIlustration1 = "assets/images/onboarding/omb1.png";
+  static const String cbWhiteLogo = "assets/logos/lc.png";
 
 }
 
