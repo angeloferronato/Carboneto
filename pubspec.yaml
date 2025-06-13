@@ -90,6 +90,7 @@ flutter:
     - assets/images/signup/
     - assets/images/home_menu/
     - assets/images/training/
+    - assets/images/onboarding/
 
   fonts:
     - family: Plus Jakarta Sans

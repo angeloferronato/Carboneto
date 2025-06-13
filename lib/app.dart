@@ -13,8 +13,8 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       darkTheme: CbAppTheme.darkTheme,
       theme: CbAppTheme.lightTheme,
-      home: LoginScreen(),
       debugShowCheckedModeBanner: true,
+      home: OnBoardingScreen(),
     ); 
   }
 }
