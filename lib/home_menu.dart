@@ -1,6 +1,7 @@
 import 'package:carboneto/common/custom_shapes/curved_edges/home/curved_edges_widget.dart';
 import 'package:carboneto/common/custom_shapes/curved_edges/home/custom_curved_edges.dart';
 import 'package:carboneto/common/widgets/navigation_bar/navigation_destination.dart';
+import 'package:carboneto/features/personalization/screens/profile/profile.dart';
 import 'package:carboneto/features/training/screens/home/home.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -17,50 +18,48 @@ class HomeMenu extends StatelessWidget {
     final controller = Get.put(HomeMenuController());
     final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
+      extendBody: true,
       backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
       bottomNavigationBar: Obx(
         () => CurvedEdgesWidget(
-          shadow: Shadow(
+          shadow: BoxShadow(
             blurRadius: 15,
-            color: isDarkTheme ? Colors.white.withValues(alpha: 0.1) : CbColors.dark.withValues(alpha: 0.3),
+            spreadRadius: 30,
+            blurStyle: BlurStyle.outer,
+            color: isDarkTheme ? const Color.fromARGB(255, 34, 30, 30) : CbColors.dark.withValues(alpha: 0.3),
           ),
           clipper: CbCustomCurvedEdges(),
-          child: Container(
-            color: Colors.transparent,
-              child: NavigationBar(  
-                onDestinationSelected: (value) => controller.selectedIndex.value = value,
-                selectedIndex: controller.selectedIndex.value,
-                indicatorColor: Colors.transparent,
-                destinations: [
-                  CbCustomNavigationDestination(image: CbImages.homeIcon, showIndicator: controller.selectedIndex.value == 0, filledImage: CbImages.homeFilledIcon,),
-                  CbCustomNavigationDestination(image: CbImages.searchIcon, showIndicator: controller.selectedIndex.value == 1,),
-              
-                  NavigationDestination(
-                    icon: Container(
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        color: CbColors.primary,
-                        borderRadius: BorderRadius.circular(100)
-                      ),
-                      padding: EdgeInsets.all(CbSizes.sm),
-                      child: Image(
-                        fit: BoxFit.cover,
-                        image: AssetImage(CbImages.addIcon),
-                        color: CbColors.lightGrey,
-                      )
-                    ),
-                    label: ''
+          child: NavigationBar(  
+            indicatorShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+            onDestinationSelected: (value) => controller.selectedIndex.value = value,
+            selectedIndex: controller.selectedIndex.value,
+            indicatorColor: Colors.transparent,
+            destinations: [
+              CbCustomNavigationDestination(image: CbImages.homeIcon, showIndicator: controller.selectedIndex.value == 0, filledImage: CbImages.homeFilledIcon,),
+              CbCustomNavigationDestination(image: CbImages.searchIcon, showIndicator: controller.selectedIndex.value == 1,),
+          
+              NavigationDestination(
+                icon: Container(
+                  width: 45,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: CbColors.primary,
+                    borderRadius: BorderRadius.circular(100)
                   ),
-              
-                  CbCustomNavigationDestination(image: CbImages.libraryIcon, showIndicator: controller.selectedIndex.value == 3,),
-                  CbCustomNavigationDestination(image: CbImages.userIcon, showIndicator: controller.selectedIndex.value == 4,),  
-                ],
+                  padding: EdgeInsets.all(CbSizes.sm),
+                  child: Image(
+                    fit: BoxFit.cover,
+                    image: AssetImage(CbImages.addIcon),
+                    color: CbColors.lightGrey,
+                  )
+                ),
+                label: ''
               ),
-
-                
-              
-            
+          
+              CbCustomNavigationDestination(image: CbImages.libraryIcon, showIndicator: controller.selectedIndex.value == 3,),
+              CbCustomNavigationDestination(image: CbImages.userIcon, showIndicator: controller.selectedIndex.value == 4,),  
+            ],
           ),
         ),
       ),
@@ -79,6 +78,6 @@ class HomeMenuController extends GetxController {
     Container(color: Colors.pink,),
     Container(color: Colors.green,),
     Container(color: Colors.yellow,),
-    Container(color: Colors.purple,),
+    ProfileScreen(),
   ];
 }

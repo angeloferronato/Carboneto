@@ -24,6 +24,8 @@ class CbImages {
   // Home Images
   static const String trainingExample = "assets/images/training/training_example.png";
   static const String trainingImageExample = "assets/images/training/training_video_example.png";
+  static const String trainerExample = "assets/images/training/trainer_example.jpg";
+
 
 
 

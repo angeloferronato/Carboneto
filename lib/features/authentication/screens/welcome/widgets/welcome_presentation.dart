@@ -2,6 +2,7 @@ import 'package:carboneto/common/widgets/login/login_header.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,7 @@ class WelcomePresentation extends StatelessWidget {
       child: Column(
         children: [
           LoginHeader(title: 'Olá, Chico!', subtitle: CbTexts.welcomeIntroduction),
-          SizedBox(height: CbSizes.spaceBtwSections,),
+          SizedBox(height: CbHelperFunctions.screenHeight() * 0.001,),
     
           SizedBox(
             height: CbSizes.buttonHeight * 3.5,

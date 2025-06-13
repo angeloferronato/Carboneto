@@ -50,6 +50,7 @@ class CbTexts {
 
   // Home Training Texts
   static const String trainingHomeTitleExample = 'Alternância de Mãos';
+  static const String trainingListTitleExample = 'Stephen Curry Precision Shooting Workout';
 
 
 }

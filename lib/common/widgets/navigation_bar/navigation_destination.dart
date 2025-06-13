@@ -30,7 +30,7 @@ class CbCustomNavigationDestination extends StatelessWidget {
         ),
 
         Positioned(
-          top: 55,
+          top: 60,
           child: CbRoundedContainer(width: 15, height: 5, backgroundColor: showIndicator ? CbColors.primary : Colors.transparent,)
         ),
       ]

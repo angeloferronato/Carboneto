@@ -17,7 +17,7 @@ class TrainingLibItem extends StatelessWidget {
     final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return CbRoundedContainer(
       height: 55,
-      backgroundColor: isDarkTheme ? CbColors.darkerGrey : CbColors.grey,
+      backgroundColor: isDarkTheme ? CbColors.darkerGrey : CbColors.softGrey,
       borderRadius: 5,
       child: Row(
         children: [
