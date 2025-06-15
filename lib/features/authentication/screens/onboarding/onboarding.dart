@@ -26,24 +26,25 @@ class OnBoardingScreen extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Image(
-                      image: AssetImage(CbImages.cbWhiteLogo),
-                      width: 70,
-                    ),
-                  )),
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Image(
+                    image: AssetImage(CbImages.cbWhiteLogo),
+                    width: 70,
+                  ),
+                )
+              ),
               SizedBox(
                 height: CbHelperFunctions.screenHeight(),
                 child: PageView(
                   onPageChanged: controller.updatePageIndicator,
                   controller: controller.pageController,
                   children: [
-                    OnboardingPage(title: CbTexts.onboardingTitle1, subtitle: CbTexts.onboardingSubtitle1, image: CbImages.onboardingIlustration1,),
-                    OnboardingPage(title: CbTexts.onboardingTitle1, subtitle: CbTexts.onboardingSubtitle1, image: CbImages.onboardingIlustration1,),
-                    OnboardingPage(title: CbTexts.onboardingTitle1, subtitle: CbTexts.onboardingSubtitle1, image: CbImages.onboardingIlustration1,),
+                    OnboardingPage(title: CbTexts.onboardingTitle1, subtitle: CbTexts.onboardingSubtitle1, image: CbImages.onboardingIlustration1, clipper: OnboardingClipper1(), ),
+                    OnboardingPage(title: CbTexts.onboardingTitle1, subtitle: CbTexts.onboardingSubtitle1, image: CbImages.onboardingIlustration2, clipper: OnboardingClipper2(), ),
+                    OnboardingPage(title: CbTexts.onboardingTitle1, subtitle: CbTexts.onboardingSubtitle1, image: CbImages.onboardingIlustration3, clipper: OnboardingClipper3(),),
                   ],
                 ),
               ),
@@ -107,20 +108,21 @@ class OnboardingPage extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.image,
+    required this.image, 
+    required this.clipper,
   });
 
   final String title;
   final String subtitle;
   final String image;
+  final CustomClipper<Path> clipper;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         ClipPath(
-          clipper:
-              OnboardingClipper1(), //Usar o mesmo formato para as outras páginas do onBoarding, usando o clipper dessa mesma maneira
+          clipper: clipper, 
           child: Container(
             color: CbColors.primary,
             width: CbHelperFunctions.screenWidth(),
@@ -135,6 +137,7 @@ class OnboardingPage extends StatelessWidget {
             child: Image.asset(
               image, // imagem do personagem
               width: CbHelperFunctions.screenWidth(),
+              height: 450,
             ),
           ),
         ),
