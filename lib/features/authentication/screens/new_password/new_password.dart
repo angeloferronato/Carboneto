@@ -9,7 +9,7 @@ import 'package:carboneto/common/widgets/progress_bar/progress_bar.dart';
 import 'package:carboneto/common/widgets/requirement/requirement.dart';
 
 class NewPasswordScreen extends StatelessWidget {
-  const NewPasswordScreen ({super.key});
+  const NewPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,41 +20,39 @@ class NewPasswordScreen extends StatelessWidget {
           padding: CbSpacingStyle.paddingWithAppBarHeight,
           child: Column(
             children: [
-              
-              LoginHeader(title: CbTexts.newPasswordTitle, subtitle: '',),
-
+              LoginHeader(
+                title: CbTexts.newPasswordTitle,
+                subtitle: '',
+              ),
               FocusedTextField(
                 hintText: CbTexts.newPasswordTitle,
                 prefixIcon: Icon(Iconsax.password_check),
                 suffixIcon: Icon(Iconsax.eye),
               ),
-
-              SizedBox(height: CbSizes.spaceBtwSections,),
-
+              SizedBox(
+                height: CbSizes.spaceBtwSections,
+              ),
               ProgressBar(),
-
-              SizedBox(height: CbSizes.spaceBtwSections*1,),
-
-              Requirement(reqLabel: CbTexts.passwordRequirement1,),
-              
-              SizedBox(height: CbSizes.spaceBtwSections/2.5),
-
-              Requirement(isChecked: true, reqLabel: CbTexts.passwordRequirement2),
-
-              SizedBox(height: CbSizes.spaceBtwSections/2.5),
-
-              Requirement(isChecked: true, reqLabel: CbTexts.passwordRequirement3),
-
-              SizedBox(height: CbSizes.spaceBtwSections*2,),
-
+              SizedBox(
+                height: CbSizes.spaceBtwSections * 1,
+              ),
+              Requirement(
+                reqLabel: CbTexts.passwordRequirement1,
+              ),
+              SizedBox(height: CbSizes.spaceBtwSections / 2.5),
+              Requirement(
+                  isChecked: true, reqLabel: CbTexts.passwordRequirement2),
+              SizedBox(height: CbSizes.spaceBtwSections / 2.5),
+              Requirement(
+                  isChecked: true, reqLabel: CbTexts.passwordRequirement3),
+              SizedBox(
+                height: CbSizes.spaceBtwSections * 2,
+              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => (), 
-                  child: Text(CbTexts.submit)
-                ),
+                    onPressed: () => (), child: Text(CbTexts.submit)),
               ),
-
             ],
           ),
         ),

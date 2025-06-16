@@ -18,8 +18,8 @@ class CbGridLayout extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: CbSizes.gridViewSpacing,
-        crossAxisSpacing: CbSizes.gridViewSpacing,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
         mainAxisExtent: mainAxisExtent
       ),
       itemBuilder: itemBuilder,

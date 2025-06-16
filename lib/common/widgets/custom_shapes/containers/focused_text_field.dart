@@ -5,17 +5,25 @@ import 'package:flutter/material.dart';
 
 class FocusedTextField extends StatelessWidget {
   const FocusedTextField({
-    super.key, required this.hintText, this.prefixIcon, this.suffixIcon,
+    super.key,
+    required this.hintText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.controller,
+    this.obscureText = false,
   });
 
   final String hintText;
   final Icon? prefixIcon, suffixIcon;
+  final TextEditingController? controller;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
-    return CustomFocusedShape (
-      builder: (focusNode) => TextFormField(
-        focusNode: focusNode,
+    return Builder(
+      builder: (context) => TextFormField(
+        controller: controller,
+        obscureText: obscureText,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: CbSizes.lg, vertical: CbSizes.md),
           prefixIcon: prefixIcon,

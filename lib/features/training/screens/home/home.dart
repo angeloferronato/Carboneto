@@ -1,16 +1,14 @@
-import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
-import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/features/training/screens/home/widgets/training_lib_item.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen ({super.key});
@@ -19,121 +17,91 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(CbSizes.defaultSpace),
-              child: CbGridLayout(
-                itemCount: 6,
-                itemBuilder: (_, index) => TrainingLibItem(image: CbImages.trainingExample, text: CbTexts.trainingHomeTitleExample,),
-                mainAxisExtent: 55,
-              ),
-            ),
+      body: MediaQuery.removePadding(
+        context: context,
+        removeBottom: true,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: CbSizes.defaultSpace),
+            child: Column(
+              children: [
+                SafeArea(
+                  child: SizedBox(
+                    height: 40,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: CbSizes.defaultSpace),
+                      itemCount: 6,
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) => RawChip(
+                        selected: index % 3 == 0 ? true : false,
+                        showCheckmark: false,
+                        label: Text('For You'),
+                        labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(color: isDarkTheme ? CbColors.white : index % 3 == 0 ? CbColors.white : CbColors.black),
+                        
+                      ),
+                      separatorBuilder: (_, __) => SizedBox(width: 10,),
+                    ),
+                  ),
+                ),
+    
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  child: CbGridLayout(
+                    itemCount: 6,
+                    itemBuilder: (_, index) => TrainingLibItem(image: CbImages.trainingExample, text: CbTexts.trainingHomeTitleExample,),
+                    mainAxisExtent: 55,
+                  ),
+                ),
 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-              child: CbSectionHeading(title: 'Mais Populares', onPressed: () {})
+                const SizedBox(height: CbSizes.spaceBtwItems,),
+                    
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  child: CbSectionHeading(title: 'Mais Populares', onPressed: () {})
+                ),
+                    
+                const SizedBox(height: CbSizes.spaceBtwItems,),
+                    
+                SizedBox(
+                  height: 250,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 4,
+                    padding: EdgeInsets.only(left: CbSizes.md),
+                    itemBuilder: (_, index) => HomeTrainingWidget(imageThumbnail: CbImages.trainingImageExample, level: DifficultyLevels.elite, trainerImage: CbImages.trainerExample, trainer: 'Stephen Curry', description: 'Arremesso, Forma do Arremesso.  40 min ', title: 'Stephen Curry Precision Shooting Workout',),
+                    scrollDirection: Axis.horizontal,
+                  ),
+                ),
+                    
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  child: CbSectionHeading(title: "Arremesso de 3pts", onPressed: (){}),
+                ),
+                const SizedBox(height: CbSizes.spaceBtwItems,),
+                    
+                SizedBox(
+                  height: 250,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 4,
+                    padding: EdgeInsets.only(left: CbSizes.md),
+                    itemBuilder: (_, index) => HomeTrainingWidget(imageThumbnail: CbImages.trainingImageExample, level: DifficultyLevels.elite, trainerImage: CbImages.trainerExample, trainer: 'Stephen Curry', description: 'Arremesso, Forma do Arremesso.  40 min ', title: 'Stephen Curry Precision Shooting Workout',),
+                    scrollDirection: Axis.horizontal,
+                  ),
+                ),
+                    
+                SizedBox(height: 100,)
+            
+              ],
             ),
-
-            const SizedBox(height: CbSizes.spaceBtwItems,),
-
-            SizedBox(
-              height: 250,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: 4,
-                padding: EdgeInsets.only(left: CbSizes.md),
-                itemBuilder: (_, index) => HomeTrainingWidget(),
-                scrollDirection: Axis.horizontal,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class HomeTrainingWidget extends StatelessWidget {
-  const HomeTrainingWidget({
-    super.key,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: Column(
-        children: [
-          CbRoundedImage(
-            imageUrl: CbImages.trainingImageExample,
-            width: 245,
-            height: 135,
-            backgroundColor: Colors.transparent,
-          ),
-          const SizedBox(height: CbSizes.xs,),
-      
-          SizedBox(
-            width: 235,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Level
-                Row(
-                  children: [
-                    Text(
-                      'ELITE',
-                      style: TextStyle(
-                        letterSpacing: 1.5,
-                        fontSize: 7,
-                        color: Colors.amber
-                      ),
-                    ),
-            
-                    SizedBox(width: CbSizes.sm,),
-            
-                    Row(
-                      spacing: 2,
-                      children: [
-                        CbRoundedContainer(
-                          width: 8,
-                          height: 8,
-                          border: Border.all(color: Colors.amber),
-                          backgroundColor: CbColors.white,
-                        ),
-                        CbRoundedContainer(
-                          width: 8,
-                          height: 8,
-                          border: Border.all(color: Colors.amber),
-                          backgroundColor: CbColors.white,
-                        ),
-                        CbRoundedContainer(
-                          width: 8,
-                          height: 8,
-                          border: Border.all(color: Colors.amber),
-                          backgroundColor: CbColors.white,
-                        ),
-                      ]
-                    ),
-                  ],
-                ),
-            
-                Row(
-                  children: [
-                    Icon(CupertinoIcons.group, size: 17.5, color: CbColors.primary, weight: 600,),
-                    SizedBox(width: CbSizes.sm,),
-                    Text('1', style: TextStyle(),),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ], 
-      ),
-    ); 
-
-  }
-}
 
 

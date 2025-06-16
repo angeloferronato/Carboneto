@@ -5,12 +5,12 @@ class CbNavigationBarTheme {
   CbNavigationBarTheme._();
 
   static final lightNavigationBarTheme = NavigationBarThemeData(
-    height: 90,
+    height: 80,
     backgroundColor: CbColors.lightGrey,
   );
 
   static final darkNavigationBarTheme = NavigationBarThemeData(
-    height: 90,
+    height: 80,
     backgroundColor: CbColors.dark,
   );
   

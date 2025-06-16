@@ -9,11 +9,10 @@ class OnboardingDotNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = CbHelperFunctions.isDarkMode(context);
     final controller = OnboardingController.instance;
 
     return Positioned(
-        bottom: CbHelperFunctions.screenHeight() / 2.62,
+        bottom: CbHelperFunctions.screenHeight() / 2.85,
         left: CbHelperFunctions.screenWidth() * 0.39,
         child: SmoothPageIndicator(
           controller: controller.pageController,
