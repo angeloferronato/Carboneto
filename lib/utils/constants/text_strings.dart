@@ -7,6 +7,7 @@ class CbTexts {
   static const String submit = "Enviar";
   static const String appName = "Carboneto";
   static const String cbContinue = "Continuar";
+  static const String next = "Próximo";
 
   // Login Texts
   static const String login = "Login";
@@ -58,10 +59,14 @@ class CbTexts {
 
   // Onboarding Texts
   static const String onboardingTitle1 = 'Bem Vindo ao Carboneto';
-  static const String onboardingTitle2 = 'Bem Vindo ao Carboneto';
-  static const String onboardingTitle3 = 'Bem Vindo ao Carboneto';
+  static const String onboardingTitle2 = 'Veja sua melhora dia a dia';
+  static const String onboardingTitle3 =
+      'Crie sua conta e comece a evoluir de verdade';
 
-  static const String onboardingSubtitle1 = 'sadfdaonifadjipfpjoas';
-  static const String onboardingSubtitle2 = 'sadfdaonifadjipfpjoas';
-  static const String onboardingSubtitle3 = 'sadfdaonifadjipfpjoas';
+  static const String onboardingSubtitle1 =
+      'Com o Carboneto, cada sessão tem propósito. Planeje, registre e evolua como um atleta de verdade.';
+  static const String onboardingSubtitle2 =
+      'Acompanhe seu desempenho. Seus treinos viram progresso real — e você sente isso em quadra.';
+  static const String onboardingSubtitle3 =
+      'Treine com propósito, acompanhe seus dados e vá além do básico. É assim que se evolui de verdade.';
 }
