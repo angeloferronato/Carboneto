@@ -16,6 +16,8 @@ class SignUpForm extends StatelessWidget {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +25,13 @@ class SignUpForm extends StatelessWidget {
       children: [
         Column(
           children: [
-            FocusedTextField(hintText: CbTexts.name),
+            FocusedTextField(
+                hintText: CbTexts.name, controller: nameController),
             SizedBox(height: CbSizes.spaceBtwInputFields),
-            FocusedTextField(hintText: CbTexts.username),
+            FocusedTextField(
+              hintText: CbTexts.username,
+              controller: usernameController,
+            ),
             SizedBox(height: CbSizes.spaceBtwInputFields),
             FocusedTextField(
               hintText: CbTexts.email,
@@ -52,11 +58,14 @@ class SignUpForm extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () async {
-              final authService = Provider.of<AuthService>(context, listen: false);
+              final authService =
+                  Provider.of<AuthService>(context, listen: false);
               try {
                 await authService.registrar(
-                  emailController.text.trim(),
-                  passwordController.text.trim(),
+                  nameController.text.trim(), // Nome
+                  usernameController.text.trim(), // Nome de usuário
+                  emailController.text.trim(), // E-mail
+                  passwordController.text.trim(), // Senha
                 );
                 // Após cadastro, navegue para a tela desejada
                 Get.offAll(LoginScreen());
