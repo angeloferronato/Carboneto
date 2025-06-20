@@ -48,6 +48,7 @@ class CbRoundedImage extends StatelessWidget {
           child: Image(
             fit: fit,
             image: isNetworkImage ? NetworkImage(imageUrl) : AssetImage(imageUrl) as ImageProvider,
+            
           ),
         ),
       ),

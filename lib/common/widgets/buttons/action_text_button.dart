@@ -14,7 +14,7 @@ class CbActionTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 28,
+      height: height ?? 35,
       child: ElevatedButton(
         onPressed: (){},
         style: ElevatedButton.styleFrom(
@@ -26,7 +26,7 @@ class CbActionTextButton extends StatelessWidget {
       
         child: Text(
           text,
-          style: Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 11, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
     );

@@ -25,7 +25,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> registrar(
-      String nome, String username, String email, String senha) async {
+    String nome, String username, String email, String senha) async {
     try {
       // Cria o usuário no Firebase Auth
       UserCredential cred = await _auth.createUserWithEmailAndPassword(
