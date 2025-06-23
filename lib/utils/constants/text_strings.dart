@@ -23,6 +23,7 @@ class CbTexts {
   static const String dontYouHaveAccount = "Não tem uma conta ainda?";
   static const String signUp = "Cadastre-se";
   static const String email = "Email";
+  static const String emailOrUserName = "Email ou nome de usuário";
 
   // SignUp Texts
   static const String createAccountTitle = "Criar Conta";

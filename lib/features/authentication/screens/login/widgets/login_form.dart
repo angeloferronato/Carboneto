@@ -23,7 +23,7 @@ class LoginForm extends StatelessWidget {
     return Column(
       children: [
         FocusedTextField(
-          hintText: CbTexts.email,
+          hintText: CbTexts.emailOrUserName,
           prefixIcon: Icon(Iconsax.sms),
           controller: emailController,
         ),
