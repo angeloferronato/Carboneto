@@ -27,12 +27,12 @@ class ProfileScreen extends StatelessWidget {
                   CbRoundedImage(
                     imageUrl: CbImages.userExample, 
                     borderRadius: 200, 
-                    border: Border.all(color: CbColors.primary, width: 1.5),
-                    width: 80,
-                    height: 80,
+                    // border: Border.all(color: CbColors.primary, width: 1.5),
+                    width: 100,
+                    height: 100,
                   ),
 
-                  SizedBox(width: CbSizes.spaceBtwItems * 1.5,),
+                  SizedBox(width: CbSizes.spaceBtwItems * 1.2,),
 
                   Expanded(
                     child: Column(
@@ -42,12 +42,12 @@ class ProfileScreen extends StatelessWidget {
                           'Chico Buarque',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
-                          style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 21),
+                          style: Theme.of(context).textTheme.headlineMedium
                         ),
                     
                         Row(
                           children: [
-                            ProfileTextRow(counter: '13', text: 'seguidores', ),
+                            ProfileTextRow(counter: '13', text: 'seguidores',),
                             Text(' · '),
                             ProfileTextRow(counter: '17', text: 'seguindo'),
                           ],

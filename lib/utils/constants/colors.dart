@@ -24,6 +24,8 @@ class CbColors {
   static const Color buttonPrimary = Color(0xFF4b68ff);
   static const Color buttonSecondary = Color(0xFF6C757D);
   static const Color buttonDisabled = Color(0xFFC4C4C4);
+  static const Color buttonChipTraining = Color(0xFFDA0303);
+
 
   // Border colors
   static const Color borderPrimary = Color(0xFFD9D9D9);

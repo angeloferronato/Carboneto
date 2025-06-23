@@ -26,7 +26,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> registrar(
-      String nome, String username, String email, String senha) async {
+    String nome, String username, String email, String senha) async {
     try {
       // Verifica se esse username existe
       final usernameDoc = await FirebaseFirestore.instance

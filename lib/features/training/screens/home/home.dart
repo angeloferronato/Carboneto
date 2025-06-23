@@ -2,6 +2,7 @@ import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/features/training/screens/home/widgets/training_lib_item.dart';
+import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -9,6 +10,7 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen ({super.key});
@@ -34,6 +36,7 @@ class HomeScreen extends StatelessWidget {
                       itemCount: 6,
                       shrinkWrap: true,
                       itemBuilder: (_, index) => RawChip(
+                        backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
                         selected: index % 3 == 0 ? true : false,
                         showCheckmark: false,
                         label: Text('For You'),
@@ -69,9 +72,17 @@ class HomeScreen extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: 4,
                     padding: EdgeInsets.only(left: CbSizes.md),
-                    itemBuilder: (_, index) => HomeTrainingWidget(imageThumbnail: CbImages.trainingImageExample, level: DifficultyLevels.elite, trainerImage: CbImages.trainerExample, trainer: 'Stephen Curry', description: 'Arremesso, Forma do Arremesso.  40 min ', title: 'Stephen Curry Precision Shooting Workout',),
+                    itemBuilder: (_, index) => HomeTrainingWidget(
+                      imageThumbnail: CbImages.trainingImageExample, 
+                      level: DifficultyLevels.elite, 
+                      trainerImage: CbImages.trainerExample, 
+                      trainer: 'Stephen Curry', 
+                      description: 'Arremesso, Forma do Arremesso.  40 min ', 
+                      title: 'Stephen Curry Precision Shooting Workout',
+                      onTap: () => Get.to(() => TrainingDetailsScreen()),
+                    ),
                     scrollDirection: Axis.horizontal,
-                  ),
+                    ),
                 ),
                     
                 Padding(

@@ -1,5 +1,6 @@
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/onboarding.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,12 @@ class App extends StatelessWidget {
       darkTheme: CbAppTheme.darkTheme,
       theme: CbAppTheme.lightTheme,
       debugShowCheckedModeBanner: true,
-      home: OnBoardingScreen(),
+      home: const Scaffold(
+        backgroundColor: CbColors.primary,
+        body: Center(
+          child: CircularProgressIndicator(color: CbColors.white,),
+        ),
+      ),
     ); 
   }
 }
