@@ -1,6 +1,7 @@
 import 'package:carboneto/common/custom_shapes/curved_edges/home/curved_edges_widget.dart';
 import 'package:carboneto/common/custom_shapes/curved_edges/home/custom_curved_edges.dart';
 import 'package:carboneto/common/widgets/navigation_bar/navigation_destination.dart';
+import 'package:carboneto/features/explore/screens/search/search.dart';
 import 'package:carboneto/features/personalization/screens/profile/profile.dart';
 import 'package:carboneto/features/training/screens/home/home.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -75,7 +76,7 @@ class HomeMenuController extends GetxController {
 
   final List<Widget> screens = [
     HomeScreen(),
-    Container(color: Colors.pink,),
+    SearchScreen(),
     Container(color: Colors.green,),
     Container(color: Colors.yellow,),
     ProfileScreen(),
