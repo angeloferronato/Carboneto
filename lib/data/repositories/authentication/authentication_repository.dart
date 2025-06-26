@@ -97,16 +97,35 @@ class AuthenticationRepository extends GetxController {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) return null;
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    Get.to(() => HomeScreen());
+    final userCredential = await _auth.signInWithCredential(credential);
 
-    return await _auth.signInWithCredential(credential);
+    // Cria o documento do usuário no Firestore se não existir
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'Id': userCredential.user!.uid,
+        'Name': userCredential.user!.displayName ?? '',
+        'Username': '',
+        'Email': userCredential.user!.email ?? '',
+      });
+    }
+
+    return userCredential;
   }
 }
 

@@ -94,6 +94,7 @@ flutter:
     - assets/images/training/
     - assets/images/onboarding/
     - assets/animations/
+    - assets/images/explore/
 
   fonts:
     - family: Plus Jakarta Sans
