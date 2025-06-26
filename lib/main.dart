@@ -6,8 +6,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'firebase_options.dart';
-import 'package:provider/provider.dart';
-import 'services/auth_service.dart';
 
 void main() async {
   final WidgetsBinding widgetsBinding =  WidgetsFlutterBinding.ensureInitialized();
@@ -23,11 +21,6 @@ void main() async {
   // Initialize the local storage
   await GetStorage.init();
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => AuthService(),
-      child: const App(),
-    ),
-  );
+  runApp(App());
 }
 

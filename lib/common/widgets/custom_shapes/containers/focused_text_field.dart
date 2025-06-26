@@ -10,18 +10,21 @@ class FocusedTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.controller,
-    this.obscureText = false,
+    this.obscureText = false, 
+    this.validator,
   });
 
   final String hintText;
-  final Icon? prefixIcon, suffixIcon;
+  final Widget? prefixIcon, suffixIcon;
   final TextEditingController? controller;
+  final FormFieldValidator<String>? validator;
   final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) => TextFormField(
+        validator: validator,
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(

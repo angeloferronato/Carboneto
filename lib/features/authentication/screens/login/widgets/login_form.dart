@@ -1,4 +1,6 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
+import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
+import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/screens/forgot_password/forgot_password.dart';
 import 'package:carboneto/features/authentication/screens/welcome/welcome.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -7,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'package:carboneto/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginForm extends StatelessWidget {
@@ -17,15 +18,15 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController email = TextEditingController();
+    final TextEditingController password = TextEditingController();
 
     return Column(
       children: [
         FocusedTextField(
           hintText: CbTexts.emailOrUserName,
           prefixIcon: Icon(Iconsax.sms),
-          controller: emailController,
+          controller: email,
         ),
         SizedBox(
           height: CbSizes.spaceBtwInputFields,
@@ -34,7 +35,7 @@ class LoginForm extends StatelessWidget {
           hintText: CbTexts.password,
           prefixIcon: Icon(Iconsax.password_check),
           suffixIcon: Icon(Iconsax.eye),
-          controller: passwordController,
+          controller: password,
           obscureText: true,
         ),
         SizedBox(
@@ -57,42 +58,7 @@ class LoginForm extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () async {
-              final authService =
-                  Provider.of<AuthService>(context, listen: false);
-              try {
-                await authService.login(
-                  emailController.text.trim(),
-                  passwordController.text.trim(),
-                );
-                Get.offAll(WelcomeScreen());
-              } on FirebaseAuthException catch (e) {
-                String message;
-                switch (e.code) {
-                  case 'user-not-found':
-                    message = 'Usuário não encontrado.';
-                    break;
-                  case 'wrong-password':
-                    message = 'Senha incorreta.';
-                    break;
-                  case 'invalid-email':
-                    message = 'E-mail inválido.';
-                    break;
-                  case 'user-disabled':
-                    message = 'Usuário desabilitado.';
-                    break;
-                  default:
-                    message = 'Erro ao fazer login: ${e.message}';
-                }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(message)),
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Erro inesperado: ${e.toString()}')),
-                );
-              }
-            },
+            onPressed: () => AuthenticationRepository.instance.signIn(email.text.trim(), password.text.trim()),
             child: Text(
               CbTexts.entry,
             ),

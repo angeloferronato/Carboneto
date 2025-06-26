@@ -34,5 +34,8 @@ class CbImages {
   static const String onboardingIlustration3 = "assets/images/onboarding/omb3.png";
   static const String cbWhiteLogo = "assets/logos/lc.png";
 
+  // Animations
+  static const String loadingAnimation = "assets/animations/loading-animation.json";
+
 }
 

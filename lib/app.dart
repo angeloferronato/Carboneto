@@ -1,5 +1,4 @@
-import 'package:carboneto/features/authentication/screens/login/login.dart';
-import 'package:carboneto/features/authentication/screens/onboarding/onboarding.dart';
+import 'package:carboneto/bindings/general_bindings.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialBinding: GeneralBindings(),
       themeMode: ThemeMode.system,
       darkTheme: CbAppTheme.darkTheme,
       theme: CbAppTheme.lightTheme,
