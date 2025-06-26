@@ -12,7 +12,20 @@
           "package_name": "com.example.carboneto"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "379434948139-cirjhfa84ssf01ti4b6csgjevvk808d7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carboneto",
+            "certificate_hash": "054fb66b3e1e82db55a21c60d72dd76f5008dc44"
+          }
+        },
+        {
+          "client_id": "379434948139-2j1lhu4rtu0nmso3irve7n8tuns0r1gj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAXBfF4HiUyoiJ7aI21lzWMvwWeqLkDf7Q"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379434948139-2j1lhu4rtu0nmso3irve7n8tuns0r1gj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379434948139-jq4kcrti6ogenn9os6ffkaubnl5pr7qh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.carboneto"
+              }
+            }
+          ]
         }
       }
     }

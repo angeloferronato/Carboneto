@@ -26,7 +26,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> registrar(
-    String nome, String username, String email, String senha) async {
+      String nome, String username, String email, String senha) async {
     try {
       // Verifica se esse username existe
       final usernameDoc = await FirebaseFirestore.instance
@@ -128,6 +128,27 @@ class AuthService extends ChangeNotifier {
       idToken: googleAuth.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    // Cria o documento do usuário no Firestore se não existir
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .get();
+
+    if (!userDoc.exists) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'uid': userCredential.user!.uid,
+        'nome': userCredential.user!.displayName ?? '',
+        'username': '',
+        'email': userCredential.user!.email ?? '',
+      });
+    }
+
+    return userCredential;
   }
 }

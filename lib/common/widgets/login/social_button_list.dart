@@ -1,4 +1,5 @@
 import 'package:carboneto/common/widgets/login/social_button.dart';
+import 'package:carboneto/features/authentication/screens/welcome/welcome.dart';
 import 'package:carboneto/features/training/screens/home/home.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -24,10 +25,24 @@ class SocialButtonList extends StatelessWidget {
           socialIcon: AssetImage(CbImages.google),
           socialText: CbTexts.loginWithGoogle,
           onTap: () async {
-            await AuthService().signInWithGoogle();
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => HomeScreen()),
-            );
+            try {
+              final userCredential = await AuthService().signInWithGoogle();
+              if (userCredential != null) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => WelcomeScreen()),
+                  (route) => false,
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text('Login com Google cancelado ou falhou.')),
+                );
+              }
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Erro ao fazer login: $e')),
+              );
+            }
           },
         ),
         SizedBox(
