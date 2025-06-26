@@ -1,6 +1,7 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/screens/login/login.dart';
+import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
@@ -21,11 +22,11 @@ class SignupController extends GetxController {
   final TextEditingController name = TextEditingController();
   final TextEditingController username = TextEditingController();
   final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
-  final userRepository = Get.put(UserRepository());
+  
 
   void signup() async {
     try {
-      // CbFullScreenLoader.openLoadingDialog('Estamos processando suas informações', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog('Estamos processando suas informações', CbImages.loadingAnimation);
       
       // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -35,6 +36,7 @@ class SignupController extends GetxController {
 
       // Form Validation
       if (!signupFormKey.currentState!.validate()) {
+        CbFullScreenLoader.stopLoading();
         return;
       }
 
@@ -43,7 +45,9 @@ class SignupController extends GetxController {
         CbLoaders.warningSnackBar(
           title: 'Aceite a Política de Privacidade',
           message: 'Para criar uma conta, você deve ler e aceitar os Termos de Serviço e a Política de Privacidade.',  
+          
         );
+        CbFullScreenLoader.stopLoading();
         return;
       }
 
@@ -59,16 +63,18 @@ class SignupController extends GetxController {
         profilePicture: '',
       );
 
-      userRepository.saveUserRecord(newUser, userCredential);
+      final userRepository = Get.put(UserRepository());
+      await userRepository.saveUserRecord(newUser, userCredential);
 
-      Get.to(() => LoginScreen());
+      // Remove Loader
+      CbFullScreenLoader.stopLoading();
+
+      Get.to(() => VerifyEmailScreen(email: email.text.trim(),));
 
     } catch (e) {
-      // CbFullScreenLoader.stopLoading();
+      CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
-    } finally {
-      // CbFullScreenLoader.stopLoading();
-    }
+    } 
   }
 
   void changeSelectedAccountType(String type) {

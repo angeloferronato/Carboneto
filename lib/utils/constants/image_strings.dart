@@ -39,7 +39,10 @@ class CbImages {
   static const String cbWhiteLogo = "assets/logos/lc.png";
 
   // Animations
-  static const String loadingAnimation = "assets/animations/loading-animation.json";
+  static const String loadingAnimation = "assets/animations/loading/loading-animation.json";
+  static const String verifyEmailAnimation = "assets/animations/email_verification/email-verification.json";
+  static const String successAnimation = "assets/animations/email_verification/success.json";
+  
 
   // Explore Images
   static const String ballHandle = "assets/images/explore/controle_de_bola.png";

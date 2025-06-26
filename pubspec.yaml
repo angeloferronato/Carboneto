@@ -93,8 +93,10 @@ flutter:
     - assets/images/home_menu/
     - assets/images/training/
     - assets/images/onboarding/
-    - assets/animations/
+    - assets/animations/loading/
+    - assets/animations/email_verification/
     - assets/images/explore/
+
 
   fonts:
     - family: Plus Jakarta Sans

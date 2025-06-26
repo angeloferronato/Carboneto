@@ -1,7 +1,10 @@
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/onboarding.dart';
+import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
+import 'package:carboneto/features/authentication/screens/welcome/welcome.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/screens/home/home.dart';
+import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';
 import 'package:carboneto/utils/exceptions/format_exceptions.dart';
@@ -26,10 +29,23 @@ class AuthenticationRepository extends GetxController {
     screenRedirect();
   }
 
+  // Funtion to show Relevant Screen
   screenRedirect() async {
-    deviceStorage.writeIfNull('isFirstTime', true);
+    final user = _auth.currentUser;
+    
+    if(user != null) {
+      if(user.emailVerified) {
+        Get.offAll(() => HomeMenu());
+      } else {
+        Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email,));
+      }
+    } else {
+      deviceStorage.writeIfNull('isFirstTime', true);
 
-    deviceStorage.read('isFirstTime') != true ? Get.offAll(() => LoginScreen()) : Get.offAll(OnBoardingScreen());
+      deviceStorage.read('isFirstTime') != true 
+        ? Get.offAll(() => LoginScreen()) 
+        : Get.offAll(() => OnBoardingScreen());
+    }
   }
 
   /// [Email Authentication] - REGISTER
@@ -46,7 +62,7 @@ class AuthenticationRepository extends GetxController {
 
       // Cria o usuário no Firebase Auth
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-
+      await _auth.currentUser?.reload();
       return userCredential;
 
     } on FirebaseAuthException catch (e) {
@@ -62,6 +78,22 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
+  /// [Email Verification] - Email Verification
+  Future<void> sendEmailVerification() async {
+    try {
+      await _auth.currentUser?.sendEmailVerification();
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
+    }
+  }
 
   /// [User or Email Authentication] - LOGIN
   Future<void> signIn(String userOrEmail, String senha) async {
@@ -86,7 +118,7 @@ class AuthenticationRepository extends GetxController {
 
       await _auth.signInWithEmailAndPassword(email: email, password: senha);
 
-      Get.to(() => HomeScreen());
+      Get.to(() => HomeMenu());
     } catch (e) {
       rethrow;
     }
@@ -127,7 +159,27 @@ class AuthenticationRepository extends GetxController {
 
     return userCredential;
   }
+
+  /// [LogoutUser] - Valid for any authentication
+  Future<void> logout() async {
+    try {
+      await _auth.signOut();
+      Get.offAll(() => LoginScreen());
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
+    }
+  }
+
 }
+
 
 
 
