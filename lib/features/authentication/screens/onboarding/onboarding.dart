@@ -1,7 +1,7 @@
 import 'package:carboneto/common/custom_shapes/curved_edges/onboarding/onboarding_clipper1.dart';
 import 'package:carboneto/common/custom_shapes/curved_edges/onboarding/onboarding_clipper2.dart';
 import 'package:carboneto/common/custom_shapes/curved_edges/onboarding/onboarding_clipper3.dart';
-import 'package:carboneto/features/authentication/controllers/onboarding_controller.dart';
+import 'package:carboneto/features/authentication/controllers/onboarding/onboarding_controller.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/onboarding_dot_navigation.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/onboarding_bottom_buttons.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/onboarding_page.dart';

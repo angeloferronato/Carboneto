@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
-import 'package:carboneto/features/authentication/controllers/onboarding_controller.dart';
+import 'package:carboneto/features/authentication/controllers/onboarding/onboarding_controller.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 

@@ -14,7 +14,7 @@ class CbTexts {
   static const String loginSubTitle = "Bem vindo de volta!";
   static const String emailExample = "seuemail@domínio.com";
   static const String password = "Senha";
-  static const String keepMeConnected = "Me manter conectado";
+  static const String rememberMe = "Lembrar-me";
   static const String entry = "Entrar";
   static const String forgetPassword = "Esqueceu a senha?";
   static const String loginWithGoogle = "Login com Google";

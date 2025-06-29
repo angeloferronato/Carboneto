@@ -20,7 +20,7 @@ class HomeMenu extends StatelessWidget {
     final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       extendBody: true,
-      backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
+      backgroundColor: isDarkTheme ? CbColors.black : CbColors.white,
       bottomNavigationBar: Obx(
         () => CurvedEdgesWidget(
           shadow: BoxShadow(
@@ -31,6 +31,7 @@ class HomeMenu extends StatelessWidget {
           ),
           clipper: CbCustomCurvedEdges(),
           child: NavigationBar(  
+            backgroundColor: isDarkTheme ? const Color.fromARGB(255, 27, 36, 41) : CbColors.light,
             indicatorShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
             onDestinationSelected: (value) => controller.selectedIndex.value = value,

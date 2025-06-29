@@ -1,6 +1,6 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/login/login_no_account_text.dart';
-import 'package:carboneto/features/authentication/controllers/signup_controller.dart';
+import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/terms_text.dart';
 import 'package:carboneto/utils/constants/sizes.dart';

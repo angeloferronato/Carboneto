@@ -1,4 +1,4 @@
-import 'package:carboneto/features/authentication/controllers/signup_controller.dart';
+import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
@@ -65,9 +65,7 @@ class _UserModeSignUpState extends State<UserModeSignUp> {
         
                 Text(
                   widget.selectedModeText.capitalize!,
-                  style: Theme.of(context).textTheme.bodyMedium!.apply(
-                    color: isSelected ? CbColors.primary : isDarkMode ? CbColors.white : CbColors.black,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium
                 ),
               ],
             ),

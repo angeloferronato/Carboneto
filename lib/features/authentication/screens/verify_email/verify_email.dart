@@ -1,6 +1,6 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
-import 'package:carboneto/features/authentication/controllers/verify_email_controller.dart';
+import 'package:carboneto/features/authentication/controllers/verify_email/verify_email_controller.dart';
 import 'package:carboneto/features/authentication/screens/success_email/success_email_screen.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';

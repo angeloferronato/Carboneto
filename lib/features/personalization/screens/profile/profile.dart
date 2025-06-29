@@ -2,6 +2,7 @@ import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/common/widgets/buttons/action_text_button.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_text_row.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/training_lib_item_profile.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -91,8 +92,13 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height: CbSizes.spaceBtwSections,),
 
-              Center(child: CbActionTextButton(text: 'Ver todos os treinos criados', padding: const EdgeInsets.symmetric(horizontal: CbSizes.md), height: 32,))
+              Center(child: CbActionTextButton(text: 'Ver todos os treinos criados', padding: const EdgeInsets.symmetric(horizontal: CbSizes.md), height: 32,)),
+              const SizedBox(height: CbSizes.spaceBtwSections,),
               
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(onPressed: () => AuthenticationRepository.instance.logout(), child: Text('Logout'),),
+              ),
           
             ]
           )

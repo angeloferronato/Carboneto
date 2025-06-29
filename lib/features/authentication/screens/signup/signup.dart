@@ -1,7 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:carboneto/common/widgets/login/login_header.dart';
-import 'package:carboneto/features/authentication/controllers/signup_controller.dart';
+import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/signup_form.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/user_signup_options.dart';
 import 'package:carboneto/utils/constants/sizes.dart';

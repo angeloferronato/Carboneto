@@ -96,17 +96,17 @@ class AuthenticationRepository extends GetxController {
   }
 
   /// [User or Email Authentication] - LOGIN
-  Future<void> signIn(String userOrEmail, String senha) async {
+  Future<void> loginWithEmailAndPassword(String userOrEmail, String password) async {
     try {
       String email = userOrEmail;
 
       // Verifica se é um e-mail (contém '@'), senão procura o username
       if (!userOrEmail.contains('@')) {
         final query = await FirebaseFirestore.instance
-            .collection('users')
-            .where('Username', isEqualTo: userOrEmail)
-            .limit(1)
-            .get();
+          .collection('users')
+          .where('Username', isEqualTo: userOrEmail)
+          .limit(1)
+          .get();
 
         if (query.docs.isNotEmpty) {
           final data = query.docs.first.data();
@@ -116,11 +116,19 @@ class AuthenticationRepository extends GetxController {
         }
       }
 
-      await _auth.signInWithEmailAndPassword(email: email, password: senha);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
 
       Get.to(() => HomeMenu());
-    } catch (e) {
-      rethrow;
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
     }
   }
 
