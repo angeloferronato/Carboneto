@@ -42,6 +42,7 @@ class CbImages {
   static const String loadingAnimation = "assets/animations/loading/loading-animation.json";
   static const String verifyEmailAnimation = "assets/animations/email_verification/email-verification.json";
   static const String successAnimation = "assets/animations/email_verification/success.json";
+  static const String resetPasswordAnimation = "assets/animations/reset_password/reset_password_animation.json";
   
 
   // Explore Images

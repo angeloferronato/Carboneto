@@ -47,8 +47,10 @@ class LoginController extends GetxController {
       if(rememberMe.value) {
         localStorage.write('REMEMBER_ME_EMAIL_OR_USER', email.text.trim());
         localStorage.write('REMEMBER_ME_PASSWORD', password.text.trim());
+      } else {
+        localStorage.write('REMEMBER_ME_EMAIL_OR_USER', '');
+        localStorage.write('REMEMBER_ME_PASSWORD', '');
       }
-
       // Login com Email e Senha
       final userCredential = await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
 
