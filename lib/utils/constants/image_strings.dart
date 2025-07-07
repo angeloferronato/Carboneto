@@ -46,7 +46,19 @@ class CbImages {
   
 
   // Explore Images
-  static const String ballHandle = "assets/images/explore/controle_de_bola.png";
-  static const String freeThrow = "assets/images/explore/lance_livre.png";
+  static const String bandsim = "assets/images/explore/finalizacao/bandsim.png";
+  static const String dunk = "assets/images/explore/finalizacao/dunk.png";
+  static const String eustep = "assets/images/explore/finalizacao/eustep.png";
+  static const String fingerrol = "assets/images/explore/finalizacao/fingerrol.png";
+  static const String layv = "assets/images/explore/finalizacao/layupvelo.png";
+  static const String reverslay = "assets/images/explore/finalizacao/reverse.png";
+  static const String floater = "assets/images/explore/finalizacao/floaterr.png";
 
+  static const String ar3ptss = "assets/images/explore/arremesso/ar3ptss.png";
+  static const String arremm = "assets/images/explore/arremesso/arremm.png";
+  static const String arsobp = "assets/images/explore/arremesso/arsobp.png";
+  static const String fade = "assets/images/explore/arremesso/fade.png";
+  static const String lancel = "assets/images/explore/arremesso/lancel.png";
+  static const String midran = "assets/images/explore/arremesso/Midran.png";
+  static const String stepback = "assets/images/explore/arremesso/step-back.png";
 }
