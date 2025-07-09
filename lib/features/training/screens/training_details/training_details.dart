@@ -24,6 +24,7 @@ class TrainingDetailsScreen extends StatelessWidget {
         title: Text('Drill', style: Theme.of(context).textTheme.headlineSmall,),
         showBackArrow: true,
         centerTitle: true,
+        //teste
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
