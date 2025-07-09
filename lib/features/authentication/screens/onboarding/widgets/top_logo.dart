@@ -10,14 +10,14 @@ class TopLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = CbHelperFunctions.screenWidth();
     return Positioned(
-      top: screenWidth * 0.04,
+      top: 0,
       left: 0,
       right: 0,
       child: Center(
         child: Image(
           image: CbHelperFunctions.isDarkMode(context)
               ? AssetImage(CbImages.cbWhiteLogo)
-              : AssetImage(CbImages.homeIcon),
+              : AssetImage(CbImages.cbBlueLogo),
           width: screenWidth * width,
         ),
       ),

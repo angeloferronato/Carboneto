@@ -19,11 +19,11 @@ class OnboardingDotNavigation extends StatelessWidget {
           onDotClicked: controller.dotNavigationClick,
           count: 3,
           effect: const ExpandingDotsEffect(
-            dotHeight: 11,
-            dotWidth: 11,
+            dotHeight: 10,
+            dotWidth: 10,
             expansionFactor: 3.6,
-            spacing: 12,
-            strokeWidth: 15,
+            spacing: 11,
+            strokeWidth: 14,
             activeDotColor: CbColors.primary,
           ),
         ));
