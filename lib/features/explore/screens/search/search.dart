@@ -1,5 +1,6 @@
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
+import 'package:carboneto/features/explore/screens/search_result/search_result.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -13,7 +14,8 @@ import 'package:carboneto/features/authentication/controllers/login/login_contro
 
 class CbTrainingCategories {
   // Define a estrutura para uma categoria (título e lista de subcategorias)
-  static Map<String, dynamic> _createCategory(String title, List<Map<String, String>> subcategories) {
+  static Map<String, dynamic> _createCategory(
+      String title, List<Map<String, String>> subcategories) {
     return {
       'title': title,
       'subcategories': subcategories,
@@ -87,8 +89,12 @@ class SearchScreen extends StatelessWidget {
                       EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
                   child: FocusedTextField(
                     hintText: 'O que você quer treinar?',
-                    prefixIcon: Icon(Iconsax.search_normal_1),
-                    // controller:,
+                    prefixIcon: GestureDetector(
+                      onTap: () {
+                        Get.to(SearchResultScreen());
+                      },
+                      child: Icon(Iconsax.search_normal_1),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -162,10 +168,10 @@ class SearchScreen extends StatelessWidget {
                       Column(
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(12), // ou o valor que quiser
+                            borderRadius: BorderRadius.circular(
+                                12), // ou o valor que quiser
                             child: Image(
-                              image:
-                                  AssetImage(CbImages.trainingExample),
+                              image: AssetImage(CbImages.trainingExample),
                               width: 82,
                               height: 82,
                               fit: BoxFit.cover,
@@ -189,8 +195,7 @@ class SearchScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(
                                 12), // ou o valor que quiser
                             child: Image(
-                              image:
-                                  AssetImage(CbImages.trainingImageExample),
+                              image: AssetImage(CbImages.trainingImageExample),
                               width: 82,
                               height: 82,
                               fit: BoxFit.cover,
@@ -282,41 +287,47 @@ class SearchScreen extends StatelessWidget {
                   height: CbSizes.spaceBtwItems * 2,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: CbSizes.defaultSpace),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                        CbSectionHeading(
-                          title: 'Explorar tudo',
-                          showButton: false,
-                          onPressed: () {},
-                          fontSize: 1.3,
-                        ),
-                      const SizedBox(height: CbSizes.spaceBtwItems,),
+                      CbSectionHeading(
+                        title: 'Explorar tudo',
+                        showButton: false,
+                        onPressed: () {},
+                        fontSize: 1.3,
+                      ),
+                      const SizedBox(
+                        height: CbSizes.spaceBtwItems,
+                      ),
                       GridView.builder(
-                            itemCount: CbTrainingCategories.shooting.length,
-                            padding: EdgeInsets.all(0),
-                            shrinkWrap: true, // permite GridView dentro de SingleChildScrollView
-                            physics: const NeverScrollableScrollPhysics(), // desativa scroll interno
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 15,
-                              mainAxisSpacing: 20,
-                              childAspectRatio: 175 / 100,
-                            ),
-                            itemBuilder: (context, index) {
-                              final item = CbTrainingCategories.shooting[index];
-                              return Center(
-                                child: SubcategoryCard(
-                                  title: item['title']!,
-                                  imagePath: item['image']!,
-                                  onTap: () {
-                                    debugPrint('Clicou em ${item['title']}');
-                                  },
-                                ),
-                              );
-                            },
+                        itemCount: CbTrainingCategories.shooting.length,
+                        padding: EdgeInsets.all(0),
+                        shrinkWrap:
+                            true, // permite GridView dentro de SingleChildScrollView
+                        physics:
+                            const NeverScrollableScrollPhysics(), // desativa scroll interno
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 20,
+                          childAspectRatio: 175 / 100,
                         ),
+                        itemBuilder: (context, index) {
+                          final item = CbTrainingCategories.shooting[index];
+                          return Center(
+                            child: SubcategoryCard(
+                              title: item['title']!,
+                              imagePath: item['image']!,
+                              onTap: () {
+                                debugPrint('Clicou em ${item['title']}');
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -366,15 +377,18 @@ class SubCategoryList extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
             itemBuilder: (_, index) {
               final subcategory = data[index];
-              return Row( // Use um Row para conter o card e o SizedBox
+              return Row(
+                // Use um Row para conter o card e o SizedBox
                 children: [
-                  SubcategoryCard( // Seu item da lista
+                  SubcategoryCard(
+                    // Seu item da lista
                     title: subcategory['title']!,
                     imagePath: subcategory['image']!,
                   ),
                   // Adiciona um SizedBox apenas se não for o último item
                   if (index < data.length - 1)
-                    const SizedBox(width: 15), // O 'gap' desejado (por exemplo, 20 pixels)
+                    const SizedBox(
+                        width: 15), // O 'gap' desejado (por exemplo, 20 pixels)
                 ],
               );
             },

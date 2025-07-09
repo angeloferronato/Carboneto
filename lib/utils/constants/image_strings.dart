@@ -17,10 +17,13 @@ class CbImages {
   // Home Menu Logos
   static const String homeIcon = "assets/images/home_menu/home_icon.png";
   static const String homeFilledIcon = "assets/images/home_menu/home_filled_icon.png";
+  static const String libraruFilledIcon = "assets/images/home_menu/library_filled_icon.png";
   static const String libraryIcon = "assets/images/home_menu/library_icon.png";
   static const String addIcon = "assets/images/home_menu/add_icon.png";
   static const String searchIcon = "assets/images/home_menu/search_icon.png";
+  static const String searchFilledIcon = "assets/images/home_menu/search_filled_icon.png";
   static const String userIcon = "assets/images/home_menu/user_icon.png";
+  static const String userFilledIcon = "assets/images/home_menu/user_filled_icon.png";
 
   // Home Images
   static const String trainingExample = "assets/images/training/training_example.png";
