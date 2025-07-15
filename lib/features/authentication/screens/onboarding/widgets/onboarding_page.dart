@@ -38,12 +38,12 @@ class OnboardingPage extends StatelessWidget {
           child: Center(
             child: Image.asset(
               image,
-              width: screenWidth,
+              width: screenWidth*0.9,
             ),
           ),
         ),
         Positioned(
-          top: screenHeight * 0.64,
+          top: screenHeight * 0.63,
           left: 0,
           right: 0,
           child: Padding(
@@ -55,7 +55,7 @@ class OnboardingPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: CbHelperFunctions.isDarkMode(context)? CbColors.white: CbColors.textPrimary,
-                    fontSize: screenWidth * 0.064,  
+                    fontSize: screenWidth * 0.063,  
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -65,7 +65,7 @@ class OnboardingPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: CbHelperFunctions.isDarkMode(context)? CbColors.textSecondary: CbColors.darkerGrey,
-                    fontSize: screenWidth * 0.036,  
+                    fontSize: screenWidth * 0.035,  
                     fontWeight: FontWeight.w400,
                   ),
                 ),
