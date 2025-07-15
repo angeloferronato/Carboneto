@@ -14,7 +14,7 @@ class ForgotPasswordController extends GetxController {
   final email = TextEditingController();
   final GlobalKey<FormState> forgotPasswordFormKey = GlobalKey<FormState>();
 
-    sendPasswordResetEmail() async {
+  sendPasswordResetEmail() async {
     try {
       // Inicia o Loader
       CbFullScreenLoader.openLoadingDialog('Estamos processando sua solicitação...', CbImages.loadingAnimation);

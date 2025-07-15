@@ -23,7 +23,7 @@ class VerifyEmailController extends GetxController {
       await AuthenticationRepository.instance.sendEmailVerification();
       CbLoaders.successSnackBar(title: "Email enviado!", message: "Por favor verifique sua caixa de entrada e verifique seu email.");
     } catch (e) {
-      CbLoaders.errorSnackBar(title: "Ah Não!", message: 'Ocorreu um erro ao enviar o email');
+      CbLoaders.errorSnackBar(title: "Ah Não!", message: 'Ocorreu um erro ao enviar o email $e');
     }
   }
 

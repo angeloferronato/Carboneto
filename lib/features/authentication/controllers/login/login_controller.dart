@@ -1,4 +1,6 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
+import 'package:carboneto/data/repositories/user/user_repository.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
@@ -18,6 +20,8 @@ class LoginController extends GetxController {
   final password = TextEditingController();
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final GetStorage localStorage = GetStorage();
+  final UserController userController = Get.put(UserController());
+  final UserRepository userRepository = UserRepository.instance;
 
   @override
   void onInit() {
@@ -63,6 +67,39 @@ class LoginController extends GetxController {
     } catch(e) {
       CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Erro', message: 'Login e/ou senha incorretos.');
+    }
+  }
+
+  Future<void> googleSignIn() async {
+    try {
+      // Start Loading
+      CbFullScreenLoader.openLoadingDialog('Processando...', CbImages.loadingAnimation);
+
+      // Check the connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if(!isConnected) {
+        CbFullScreenLoader.stopLoading();
+        return;
+      }
+
+      // Google Autentication
+      final userCredentials = await AuthenticationRepository.instance.loginWithGoogle();
+
+      // Save User Record
+      if (!await userRepository.userExists(AuthenticationRepository.instance.authUser!.email)) {
+        await userController.saveUserRecord(userCredentials[0], userCredentials[1]);
+      }
+
+      // Remove the Loader
+      CbFullScreenLoader.stopLoading();
+
+      // Redirect the user
+      AuthenticationRepository.instance.screenRedirect();
+    } catch(e) {
+      // Remove the Loader
+      CbFullScreenLoader.stopLoading();
+
+      CbLoaders.errorSnackBar(title: 'Ah Não!', message: 'Algo deu errado. Por favor tente novamente.');
     }
   }
 

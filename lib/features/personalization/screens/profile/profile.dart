@@ -3,19 +3,21 @@ import 'package:carboneto/common/widgets/buttons/action_text_button.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_text_row.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/training_lib_item_profile.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen ({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(UserController());
     return Scaffold(
       body: Padding(
         padding: CbSpacingStyle.paddingWithAppBarHeight,
@@ -39,11 +41,14 @@ class ProfileScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Chico Buarque',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: Theme.of(context).textTheme.headlineMedium
+                        Obx(
+                          () => controller.profileLoading.value ? CbShimmerEffects(width: 80, height: 30) :
+                          Text(
+                            controller.user.value.name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: Theme.of(context).textTheme.headlineMedium
+                          ),
                         ),
                     
                         Row(

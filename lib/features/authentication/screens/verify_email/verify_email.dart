@@ -43,7 +43,7 @@ class VerifyEmailScreen extends StatelessWidget {
               const SizedBox(height: CbSizes.spaceBtwItems,),
 
               Text(
-                email ?? ''
+                email ?? '',
               ),
               const SizedBox(height: CbSizes.spaceBtwItems,),
 

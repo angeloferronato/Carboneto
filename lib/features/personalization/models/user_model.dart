@@ -17,6 +17,16 @@ class UserModel {
   });
 
   static List<String> nameParts(fullName) => fullName.split(" ");
+  
+  static String generateUsername(fullName) {
+    List<String> nameParts = fullName.split(" ");
+    String firstName = nameParts[0].toLowerCase();
+    String lastName = nameParts.length > 1 ? nameParts[1].toLowerCase() : "";
+
+    String camelCaseUsername = "$firstName$lastName"; // Combine first and last name
+    String usernameWithPrefix = "cb_$camelCaseUsername"; // Add "cwt_" prefix
+    return usernameWithPrefix;
+  }
 
   // Static function to create an empty user model.
   static UserModel empty() => UserModel(
