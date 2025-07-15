@@ -8,7 +8,6 @@ class TopLogo extends StatelessWidget {
   final double width;
   @override
   Widget build(BuildContext context) {
-    final screenWidth = CbHelperFunctions.screenWidth();
     return Positioned(
       top: 0,
       left: 0,
@@ -18,7 +17,8 @@ class TopLogo extends StatelessWidget {
           image: CbHelperFunctions.isDarkMode(context)
               ? AssetImage(CbImages.cbWhiteLogo)
               : AssetImage(CbImages.cbBlueLogo),
-          width: screenWidth * width,
+          width: width,
+          fit: BoxFit.cover,
         ),
       ),
     );
