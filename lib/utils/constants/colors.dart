@@ -5,6 +5,7 @@ class CbColors {
   static const Color primary = Color(0xFF1B5FF3);
   static const Color secondary = Color(0xFFFFE24B);
   static const Color accent = Color(0xFFb0c7ff);
+  static const Color inputBG = Color.fromARGB(255, 38, 38, 41);
 
   // Text colors
   static const Color textPrimary = Color(0xFF333333);

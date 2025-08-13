@@ -6,12 +6,13 @@ import 'package:iconsax/iconsax.dart';
 
 class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CbAppBar({
-    super.key, 
-    this.title, 
-    this.showBackArrow = false, 
-    this.leadingIcon, 
-    this.actions, 
-    this.leadingOnPressed
+    super.key,
+    this.title,
+    this.showBackArrow = false,
+    this.leadingIcon,
+    this.actions,
+    this.leadingOnPressed,
+    this.centerTitle = false, // <-- ADICIONE ESTA PROPRIEDADE
   });
 
   final Widget? title;
@@ -19,6 +20,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? leadingIcon;
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
+  final bool centerTitle; // <-- DECLARE A PROPRIEDADE AQUI
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +29,19 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         automaticallyImplyLeading: false,
         leading: showBackArrow ? IconButton(
-          onPressed: () => Get.back(), 
+          onPressed: () => Get.back(),
           icon: Icon(Iconsax.arrow_left),
         ) : leadingIcon != null ? IconButton(
-          onPressed: leadingOnPressed, 
+          onPressed: leadingOnPressed,
           icon: Icon(leadingIcon),
         ) : null,
         actions: actions,
         title: title,
+        centerTitle: centerTitle, // <-- PASSE A PROPRIEDADE PARA O AppBar INTERNO
       ),
     );
   }
-  
+
   @override
   Size get preferredSize => Size.fromHeight(CbDeviceUtils.getAppBarHeight());
 }

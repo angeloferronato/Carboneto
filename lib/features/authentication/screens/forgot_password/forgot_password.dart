@@ -1,9 +1,11 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/login/login_header.dart';
+import 'package:carboneto/features/authentication/controllers/forgot_password/forgot_password_controller.dart';
 import 'package:carboneto/features/authentication/screens/new_password/new_password.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
+import 'package:carboneto/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -13,6 +15,7 @@ class ForgotPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ForgotPasswordController());
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -21,20 +24,23 @@ class ForgotPasswordScreen extends StatelessWidget {
           child: Column(
             children: [
               LoginHeader(title: CbTexts.forgetPassword, subtitle: CbTexts.forgotPasswordSubtitle,),
-              FocusedTextField(
-                hintText: CbTexts.emailAddress,
-                prefixIcon: Icon(Iconsax.sms),
+              Form(
+                key: controller.forgotPasswordFormKey,
+                child: FocusedTextField(
+                  controller: controller.email,
+                  validator: (value) => CbValidator.validateEmail(value),
+                  hintText: CbTexts.emailAddress,
+                  prefixIcon: Icon(Iconsax.sms),
+                ),
               ),
-              SizedBox(height: CbSizes.spaceBtwSections *3,),
+              SizedBox(height: CbSizes.spaceBtwSections * 3,),
     
               SizedBox(
                 height: CbSizes.buttonHeight * 3.5,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(NewPasswordScreen()),
-                  child: Text(
-                    CbTexts.submit
-                  )
+                  onPressed: () => controller.sendPasswordResetEmail(),
+                  child: Text(CbTexts.submit)
                 ),
               )
             ],

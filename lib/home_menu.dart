@@ -39,7 +39,7 @@ class HomeMenu extends StatelessWidget {
             indicatorColor: Colors.transparent,
             destinations: [
               CbCustomNavigationDestination(image: CbImages.homeIcon, showIndicator: controller.selectedIndex.value == 0, filledImage: CbImages.homeFilledIcon,),
-              CbCustomNavigationDestination(image: CbImages.searchIcon, showIndicator: controller.selectedIndex.value == 1,),
+              CbCustomNavigationDestination(image: CbImages.searchIcon, showIndicator: controller.selectedIndex.value == 1, filledImage: CbImages.searchFilledIcon,),
           
               NavigationDestination(
                 icon: Container(
@@ -59,8 +59,8 @@ class HomeMenu extends StatelessWidget {
                 label: ''
               ),
           
-              CbCustomNavigationDestination(image: CbImages.libraryIcon, showIndicator: controller.selectedIndex.value == 3,),
-              CbCustomNavigationDestination(image: CbImages.userIcon, showIndicator: controller.selectedIndex.value == 4,),  
+              CbCustomNavigationDestination(image: CbImages.libraryIcon, showIndicator: controller.selectedIndex.value == 3, filledImage: CbImages.libraruFilledIcon,),
+              CbCustomNavigationDestination(image: CbImages.userIcon, showIndicator: controller.selectedIndex.value == 4, filledImage: CbImages.userFilledIcon),  
             ],
           ),
         ),
