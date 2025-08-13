@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen ({super.key});
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,59 +18,149 @@ class ProfileScreen extends StatelessWidget {
       body: Padding(
         padding: CbSpacingStyle.paddingWithAppBarHeight,
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Column(
             children: [
-              Column(
+              Image(image: AssetImage(CbImages.userExample)),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 10,
                 children: [
-                  Image(image: AssetImage('')),
-                  Row(
+                  Text('@chicobuarque', style: 
+                    TextStyle(
+                      fontWeight: FontWeight.w500
+                    )
+                  ,),
+                  Text('•', style: 
+                    TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16
+                    )
+                  ,),
+                  Image(
+                    image: AssetImage(CbImages.ar3ptss),
+                    width: 30,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text('Chico Buarque', style: 
+                TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold
+                )
+              ,),
+              SizedBox(
+                height: 5,
+              ),
+              Text('O maior bagre que ja jogou no IFSC', style: 
+                TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w300
+                )
+              ,),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 30,
+                children: [
+                  Column(
                     children: [
-                      Text('@chicobuarque'),
-                      Text('•'),
-                      Image(image: AssetImage(''))
-                    ],
-                  ),
-                  Text('Chico Buarque'),
-                  Text('O maior bagre que ja jogou no IFSC'),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text('122'),
-                          Text('seguidores')
-                        ],
+                      HighlightText(
+                        textValue: '122',
+                        textSize: 30,
                       ),
-                      Column(
-                        children: [
-                          Text('67'),
-                          Text('seguindo')
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text('PG'),
-                          Text('armador')
-                        ],
+                      PrimaryText(
+                        textValue: 'seguidores',
                       )
                     ],
                   ),
-                  ElevatedButton(
-                    onPressed: () => {}, 
-                    child: Text('Editar Perfil')
+                  Column(
+                    children: [
+                      HighlightText(
+                        textValue:  '67',
+                        textSize: 30,
+                      ),
+                      PrimaryText( textValue: 'seguindo')
+                    ],
                   ),
-                  
+                  Column(
+                    children: [
+                      HighlightText(textValue: 'PG', textSize: 30,), PrimaryText(textValue: 'armador')
+                    ],
+                  )
                 ],
-              )
-            ]
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                onPressed: () => {}, 
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25), 
+                  ),
+                ),
+                child: Text('Editar Perfil', style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800
+                ),)
+              ),
+            ],
           )
-        ),
+        ])),
       ),
     );
   }
 }
 
+class HighlightText extends StatelessWidget {
+  const HighlightText(
+      {super.key, required this.textValue, required this.textSize});
 
+  final String textValue;
+  final double textSize;
 
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      textValue,
+      style: TextStyle(
+        color: CbColors.primary,
+        fontSize: textSize,
+        fontWeight: FontWeight.w800,
+      ),
+    );
+  }
+}
 
+class PrimaryText extends StatelessWidget {
+  const PrimaryText(
+      {super.key, required this.textValue});
+
+  final String textValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      textValue,
+      style: TextStyle(
+        color: CbColors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+}
 
