@@ -6,6 +6,7 @@ import 'package:carboneto/data/repositories/authentication/authentication_reposi
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_text_row.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/training_lib_item_profile.dart';
+import 'package:carboneto/features/personalization/screens/settings/settings.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
@@ -45,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
                           () => controller.profileLoading.value ? CbShimmerEffects(width: 80, height: 30) :
                           Text(
                             controller.user.value.name,
-                            overflow: TextOverflow.ellipsis,
+                            overflow: TextOverflow.ellipsis,  
                             maxLines: 2,
                             style: Theme.of(context).textTheme.headlineMedium
                           ),
@@ -66,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height: CbSizes.spaceBtwItems,),
 
-              CbActionTextButton(text: 'Editar',),
+              CbActionTextButton(text: 'Editar', onTap: () => Get.to(SettingsScreen()),),
 
               const SizedBox(height: CbSizes.spaceBtwSections,),
 
@@ -97,13 +98,8 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height: CbSizes.spaceBtwSections,),
 
-              Center(child: CbActionTextButton(text: 'Ver todos os treinos criados', padding: const EdgeInsets.symmetric(horizontal: CbSizes.md), height: 32,)),
+              Center(child: CbActionTextButton(text: 'Ver todos os treinos criados', padding: const EdgeInsets.symmetric(horizontal: CbSizes.md), height: 32, onTap: () {},)),
               const SizedBox(height: CbSizes.spaceBtwSections,),
-              
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(onPressed: () => AuthenticationRepository.instance.logout(), child: Text('Logout'),),
-              ),
           
             ]
           )
