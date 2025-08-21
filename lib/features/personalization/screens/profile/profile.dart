@@ -1,20 +1,12 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
-import 'package:carboneto/common/widgets/buttons/action_text_button.dart';
-import 'package:carboneto/common/widgets/images/rounded_image.dart';
-import 'package:carboneto/common/widgets/texts/section_heading.dart';
-import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
-import 'package:carboneto/features/personalization/screens/profile/widgets/profile_text_row.dart';
-import 'package:carboneto/features/personalization/screens/profile/widgets/training_lib_item_profile.dart';
-import 'package:carboneto/features/personalization/screens/settings/settings.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
-import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen ({super.key});
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,93 +15,149 @@ class ProfileScreen extends StatelessWidget {
       body: Padding(
         padding: CbSpacingStyle.paddingWithAppBarHeight,
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Column(
             children: [
+              Image(image: AssetImage(CbImages.userExample)),
+              SizedBox(
+                height: 15,
+              ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 10,
                 children: [
-                  CbRoundedImage(
-                    imageUrl: CbImages.userExample, 
-                    borderRadius: 200, 
-                    // border: Border.all(color: CbColors.primary, width: 1.5),
-                    width: 100,
-                    height: 100,
-                  ),
-
-                  SizedBox(width: CbSizes.spaceBtwItems * 1.2,),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Obx(
-                          () => controller.profileLoading.value ? CbShimmerEffects(width: 80, height: 30) :
-                          Text(
-                            controller.user.value.name,
-                            overflow: TextOverflow.ellipsis,  
-                            maxLines: 2,
-                            style: Theme.of(context).textTheme.headlineMedium
-                          ),
-                        ),
-                    
-                        Row(
-                          children: [
-                            ProfileTextRow(counter: '13', text: 'seguidores',),
-                            Text(' · '),
-                            ProfileTextRow(counter: '17', text: 'seguindo'),
-                          ],
-                        )
-                      ]
-                    ),
+                  Text('@chicobuarque', style: 
+                    TextStyle(
+                      fontWeight: FontWeight.w500
+                    )
+                  ,),
+                  Text('•', style: 
+                    TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16
+                    )
+                  ,),
+                  Image(
+                    image: AssetImage(CbImages.ar3ptss),
+                    width: 30,
                   )
                 ],
               ),
-
-              const SizedBox(height: CbSizes.spaceBtwItems,),
-
-              CbActionTextButton(text: 'Editar', onTap: () => Get.to(SettingsScreen()),),
-
-              const SizedBox(height: CbSizes.spaceBtwSections,),
-
-              CbSectionHeading(title: 'Treinos Criados', onPressed: (){}, showButton: false,),
-
-              const SizedBox(height: CbSizes.spaceBtwItems,),
-
-              Column(
-                children: List.generate(4, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      children: [
-                        Image(
-                          image: AssetImage(CbImages.trainingExample),
-                          height: 55,
-                          width: 55,
-                        ),
-                    
-                        const SizedBox(width: CbSizes.spaceBtwItems / 2,),
-                    
-                        TrainingLibItemProfile(title: 'Controle de bola', description: 'Arremesso, Forma do Arremesso, 40 min',),
-                      ],
-                    ),
-                  );
-                })
+              SizedBox(
+                height: 5,
               ),
-
-              const SizedBox(height: CbSizes.spaceBtwSections,),
-
-              Center(child: CbActionTextButton(text: 'Ver todos os treinos criados', padding: const EdgeInsets.symmetric(horizontal: CbSizes.md), height: 32, onTap: () {},)),
-              const SizedBox(height: CbSizes.spaceBtwSections,),
-          
-            ]
+              Text('Chico Buarque', style: 
+                TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold
+                )
+              ,),
+              SizedBox(
+                height: 5,
+              ),
+              Text('O maior bagre que ja jogou no IFSC', style: 
+                TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w300
+                )
+              ,),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 30,
+                children: [
+                  Column(
+                    children: [
+                      HighlightText(
+                        textValue: '122',
+                        textSize: 30,
+                      ),
+                      PrimaryText(
+                        textValue: 'seguidores',
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      HighlightText(
+                        textValue:  '67',
+                        textSize: 30,
+                      ),
+                      PrimaryText( textValue: 'seguindo')
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      HighlightText(textValue: 'PG', textSize: 30,), PrimaryText(textValue: 'armador')
+                    ],
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                onPressed: () => {}, 
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25), 
+                  ),
+                ),
+                child: Text('Editar Perfil', style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800
+                ),)
+              ),
+            ],
           )
-        ),
+        ])),
       ),
     );
   }
 }
 
+class HighlightText extends StatelessWidget {
+  const HighlightText(
+      {super.key, required this.textValue, required this.textSize});
 
+  final String textValue;
+  final double textSize;
 
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      textValue,
+      style: TextStyle(
+        color: CbColors.primary,
+        fontSize: textSize,
+        fontWeight: FontWeight.w800,
+      ),
+    );
+  }
+}
 
+class PrimaryText extends StatelessWidget {
+  const PrimaryText(
+      {super.key, required this.textValue});
+
+  final String textValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      textValue,
+      style: TextStyle(
+        color: CbColors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+}
 
