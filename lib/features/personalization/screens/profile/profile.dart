@@ -1,4 +1,5 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
+import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -114,6 +115,8 @@ class ProfileScreen extends StatelessWidget {
                   fontWeight: FontWeight.w800
                 ),)
               ),
+
+              OutlinedButton(onPressed: () => AuthenticationRepository.instance.logout(), child: Text('logout'))
             ],
           )
         ])),

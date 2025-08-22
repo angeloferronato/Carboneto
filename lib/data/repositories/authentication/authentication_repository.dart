@@ -39,7 +39,7 @@ class AuthenticationRepository extends GetxController {
       final isGoogleSignIn = user.providerData.any((p) => p.providerId == 'google.com');
 
       if (isGoogleSignIn || user.emailVerified) {
-        Get.offAll(() => HomeMenu());
+        Get.offAll(() => WelcomeScreen());
       } else {
         Get.offAll(() => VerifyEmailScreen(email: user.email,));
       }
