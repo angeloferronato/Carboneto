@@ -1,5 +1,7 @@
 class CbImages {
-  // -- App Logos
+  // -- Videos
+  static const String videoExample = "assets/videos/arch_bounce_with_two_hands_over_head_between_legs.mp4";
+
 
   // -- Social Logos
   static const String google = "assets/logos/social_logos/icon-google.png";

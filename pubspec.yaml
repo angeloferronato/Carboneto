@@ -27,6 +27,10 @@ dependencies:
   lottie: ^3.2.0
   shimmer: ^3.0.0
 
+  # Videos
+  chewie: ^1.12.1
+  video_player: ^2.10.0
+
   # Icons
   iconsax: ^0.0.8
   cupertino_icons: ^1.0.8
@@ -41,6 +45,7 @@ dependencies:
   carousel_slider: ^5.0.0
   flutter_rating_bar: ^4.0.1
   capped_progress_indicator: ^0.0.2
+  percent_indicator: ^4.2.5
 
   # Firebase
   firebase_storage: ^12.4.5
@@ -83,6 +88,7 @@ flutter:
     - assets/animations/reset_password/
     - assets/images/explore/finalizacao/    
     - assets/images/explore/arremesso/
+    - assets/videos/
 
 
 

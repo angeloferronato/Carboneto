@@ -5,11 +5,13 @@ import 'package:carboneto/common/widgets/chips/tip_chip_training.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class TrainingDetailsScreen extends StatelessWidget {
@@ -87,7 +89,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                             Container(
                               width: 1,
                               height: 24,
-                              color: CbColors.white.withOpacity(0.8),
+                              color: CbColors.white.withValues(alpha: 0.8),
                             ),
                             const SizedBox(width: CbSizes.spaceBtwItems),
                             Row(
@@ -215,7 +217,7 @@ class TrainingDetailsScreen extends StatelessWidget {
         child: SizedBox(
           height: 60,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => Get.to(() => TrainingExecution()),
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
