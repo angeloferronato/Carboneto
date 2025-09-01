@@ -1,122 +1,225 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
-import 'package:carboneto/common/widgets/buttons/action_text_button.dart';
-import 'package:carboneto/common/widgets/images/rounded_image.dart';
-import 'package:carboneto/common/widgets/texts/section_heading.dart';
-import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
+import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
-import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+
+class Treino {
+  final String titulo;
+  final String imagem;
+  final String nivel;
+  final Color corNivel;
+  final List<IconData> icones;
+
+  Treino({
+    required this.titulo,
+    required this.imagem,
+    required this.nivel,
+    required this.corNivel,
+    required this.icones,
+  });
+}
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  ProfileScreen({super.key});
+
+  final List<Treino> treinos = [
+    Treino(
+      titulo: "treino de movimento assdasd asd asdsad as",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "INICIANTE",
+      corNivel: Colors.lightBlue,
+      icones: [Icons.circle],
+    ),
+    Treino(
+      titulo: "treino de arre...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "FUNDAMENTAL",
+      corNivel: Colors.blue,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+    Treino(
+      titulo: "kd floater...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "ELITE",
+      corNivel: Colors.amber,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+    Treino(
+      titulo: "treino de movi...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "INICIANTE",
+      corNivel: Colors.lightBlue,
+      icones: [Icons.circle],
+    ),
+    Treino(
+      titulo: "treino de arre...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "FUNDAMENTAL",
+      corNivel: Colors.blue,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+    Treino(
+      titulo: "kd floater...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "ELITE",
+      corNivel: Colors.amber,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+    Treino(
+      titulo: "treino de arre...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "FUNDAMENTAL",
+      corNivel: Colors.blue,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+    Treino(
+      titulo: "kd floater...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "ELITE",
+      corNivel: Colors.amber,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+    Treino(
+      titulo: "treino de movi...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "INICIANTE",
+      corNivel: Colors.lightBlue,
+      icones: [Icons.circle],
+    ),
+    Treino(
+      titulo: "treino de arre...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "FUNDAMENTAL",
+      corNivel: Colors.blue,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+    Treino(
+      titulo: "kd floater...",
+      imagem: CbImages.thumbnailTrainingExample,
+      nivel: "ELITE",
+      corNivel: Colors.amber,
+      icones: [Icons.circle, Icons.circle, Icons.circle],
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: CbSpacingStyle.paddingWithAppBarHeight,
+        padding: CbSpacingStyle.paddingWithAppBarHeight * 0,
         child: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Column(
             children: [
-              Image(image: AssetImage(CbImages.userExample)),
+              BannerWithPicture(
+                  profileImg: CbImages.userExample,
+                  bannerImg: CbImages.trainingImageExample),
               SizedBox(
-                height: 15,
+                height: 60,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 10,
                 children: [
-                  Text('@chicobuarque', style: 
-                    TextStyle(
-                      fontWeight: FontWeight.w500
-                    )
-                  ,),
-                  Text('•', style: 
-                    TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16
-                    )
-                  ,),
-                  Image(
-                    image: AssetImage(CbImages.ar3ptss),
-                    width: 30,
+                  Text(
+                    '@chicobuarque',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    '•',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                  ),
+                  CountryFlag.fromCountryCode(
+                    'za',
+                    width: 22,
+                    shape: RoundedRectangle(3),
+                    height: 15,
                   )
                 ],
               ),
               SizedBox(
                 height: 5,
               ),
-              Text('Chico Buarque', style: 
-                TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold
-                )
-              ,),
+              Text(
+                'Chico Buarque',
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              ),
               SizedBox(
                 height: 5,
               ),
-              Text('O maior bagre que ja jogou no IFSC', style: 
-                TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w300
-                )
-              ,),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 30,
-                children: [
-                  Column(
-                    children: [
-                      HighlightText(
-                        textValue: '122',
-                        textSize: 30,
-                      ),
-                      PrimaryText(
-                        textValue: 'seguidores',
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      HighlightText(
-                        textValue:  '67',
-                        textSize: 30,
-                      ),
-                      PrimaryText( textValue: 'seguindo')
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      HighlightText(textValue: 'PG', textSize: 30,), PrimaryText(textValue: 'armador')
-                    ],
-                  )
-                ],
+              Text(
+                'O maior bagre que ja jogou no IFSC',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
-              ElevatedButton(
-                onPressed: () => {}, 
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25), 
-                  ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: 350
                 ),
-                child: Text('Editar Perfil', style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800
-                ),)
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+                  children: [
+                    Flexible(
+                      child: Column(
+                        children: [
+                          HighlightText(
+                            textValue: '122',
+                            textSize: MediaQuery.of(context).size.width * 0.07, 
+                          ),
+                          PrimaryText(
+                            textValue: 'seguidores',
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: Column(
+                        children: [
+                          HighlightText(
+                            textValue: '67',
+                            textSize: MediaQuery.of(context).size.width * 0.07,
+                          ),
+                          PrimaryText(
+                            textValue: 'seguindo',
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: Column(
+                        children: [
+                          HighlightText(
+                            textValue: 'PG',
+                            textSize: MediaQuery.of(context).size.width * 0.07,
+                          ),
+                          PrimaryText(
+                            textValue: 'armador',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              SizedBox(
+                height: 40,
+              ),
+              HighlightBtn(
+                textValue: 'Editar Perfil',
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              ContentGrid(data: treinos, title: 'Treinos Criados'),
+              SizedBox(
+                height: 100,
+              )
             ],
           )
         ])),
@@ -125,20 +228,85 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class HighlightText extends StatelessWidget {
-  const HighlightText(
-      {super.key, required this.textValue, required this.textSize});
+class _TreinoCard extends StatelessWidget {
+  final Treino treino;
 
+  const _TreinoCard({required this.treino});
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = (screenWidth - 40 - 20) / 3; // 40 padding horizontal + 20 spacing
+    final imageHeight = cardWidth * 1.2; // proporção da imagem
+
+    return SizedBox(
+      width: cardWidth,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              treino.imagem,
+              height: imageHeight,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Text(
+              treino.titulo,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: cardWidth * 0.12, // tamanho do texto proporcional
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  treino.nivel,
+                  style: TextStyle(
+                    fontSize: cardWidth * 0.07,
+                    color: treino.corNivel,
+                  ),
+                ),
+                SizedBox(width: 4),
+                Row(
+                  children: treino.icones
+                      .map((icon) => Icon(icon, size: cardWidth * 0.08, color: treino.corNivel))
+                      .toList(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class HighlightText extends StatelessWidget {
+  const HighlightText({super.key, required this.textValue, required this.textSize});
   final String textValue;
   final double textSize;
 
   @override
   Widget build(BuildContext context) {
+    final textScaler = MediaQuery.textScalerOf(context);
     return Text(
       textValue,
       style: TextStyle(
         color: CbColors.primary,
-        fontSize: textSize,
+        fontSize: textScaler.scale(textSize),
         fontWeight: FontWeight.w800,
       ),
     );
@@ -146,8 +314,7 @@ class HighlightText extends StatelessWidget {
 }
 
 class PrimaryText extends StatelessWidget {
-  const PrimaryText(
-      {super.key, required this.textValue});
+  const PrimaryText({super.key, required this.textValue});
 
   final String textValue;
 
@@ -164,3 +331,122 @@ class PrimaryText extends StatelessWidget {
   }
 }
 
+class HighlightBtn extends StatelessWidget {
+  const HighlightBtn({super.key, required this.textValue});
+  final String textValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () => {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+        ),
+        child: Text(
+          textValue,
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+        ));
+  }
+}
+
+class BannerWithPicture extends StatelessWidget {
+  const BannerWithPicture({super.key, required this.profileImg, required this.bannerImg});
+  final String profileImg;
+  final String bannerImg;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bannerHeight = screenWidth * 0.6; // altura proporcional
+    final avatarRadius = screenWidth * 0.21;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        ShaderMask(
+          shaderCallback: (rect) {
+            return LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black, Colors.transparent],
+              stops: [0.1, 0.9],
+            ).createShader(rect);
+          },
+          blendMode: BlendMode.dstIn,
+          child: Image.asset(
+            bannerImg,
+            width: double.infinity,
+            height: bannerHeight,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Positioned(
+          bottom: -avatarRadius / 2,
+          child: Container(
+            padding: EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: CbColors.primary,
+            ),
+            child: CircleAvatar(
+              radius: avatarRadius,
+              backgroundImage: AssetImage(profileImg),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 40,
+          right: 16,
+          child: IconButton(
+            icon: Icon(Icons.more_vert, color: Colors.white, size: screenWidth * 0.07),
+            onPressed: () {},
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ContentGrid extends StatelessWidget {
+  const ContentGrid({super.key, required this.data, required this.title});
+  final List<Treino> data;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          HighlightText(
+            textValue: 'Treinos Criados',
+            textSize: 15,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(67, 147, 147, 147),
+            ),
+            height: 1,
+          ),
+          CbGridLayout(
+              itemCount: data.length,
+              mainAxisExtent: 200,
+              columnCount: 3,
+              crossSpacing: 10,
+              itemBuilder: (_, index) {
+                final treino = data[index];
+                return _TreinoCard(treino: treino);
+              }),
+        ],
+      ),
+    );
+  }
+}
