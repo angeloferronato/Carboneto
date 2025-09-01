@@ -1,3 +1,4 @@
+import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';
@@ -13,6 +14,28 @@ class UserRepository extends GetxController {
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  Future<UserModel> fetchUserDetails() async {
+    try {
+      final documentSnapshot = await _db.collection("users").doc(AuthenticationRepository.instance.authUser!.uid).get();
+
+      if (documentSnapshot.exists) {
+        return UserModel.fromSnapshot(documentSnapshot);
+      } else {
+        return UserModel.empty();
+      }
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
   /// Function to save user data to Firestore
   Future<void> saveUserRecord(UserModel userModel, UserCredential userCredential) async {
     try {
@@ -24,9 +47,9 @@ class UserRepository extends GetxController {
           .set({
         'userId': userCredential.user!.uid,
         'createdAt': FieldValue.serverTimestamp(),
-      });
+      }, SetOptions(merge: true));
 
-      await _db.collection('users').doc(userModel.id).set(userModel.toJson());
+      await _db.collection('users').doc(userModel.id).set(userModel.toJson(), SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {
@@ -55,6 +78,28 @@ class UserRepository extends GetxController {
       return null;
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<bool> userExists(String? email) async {
+    try {
+      final querySnapshot = await _db.collection("users").where('Email', isEqualTo: email).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 }

@@ -1,9 +1,9 @@
 flutter_native_splash:
   color: "#0f4299"
-  image: assets/logos/CLogo.png
+  image: assets/logos/lc.png
   android_12:
     color: "#0f4299"
-    image: assets/logos/CLogo.png
+    image: assets/logos/lc.png
   web: false
   android_gravity: fill 
   ios_content_mode: scaleAspectFill

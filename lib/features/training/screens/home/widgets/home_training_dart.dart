@@ -4,7 +4,6 @@ import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

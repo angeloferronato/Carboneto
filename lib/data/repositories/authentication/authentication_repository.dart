@@ -23,6 +23,8 @@ class AuthenticationRepository extends GetxController {
   final _auth = FirebaseAuth.instance;
   final deviceStorage = GetStorage();
 
+  User? get authUser => _auth.currentUser;
+
   @override
   void onReady() {
     FlutterNativeSplash.remove();
@@ -34,10 +36,12 @@ class AuthenticationRepository extends GetxController {
     final user = _auth.currentUser;
     
     if(user != null) {
-      if(user.emailVerified) {
-        Get.offAll(() => HomeMenu());
+      final isGoogleSignIn = user.providerData.any((p) => p.providerId == 'google.com');
+
+      if (isGoogleSignIn || user.emailVerified) {
+        Get.offAll(() => WelcomeScreen());
       } else {
-        Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email,));
+        Get.offAll(() => VerifyEmailScreen(email: user.email,));
       }
     } else {
       deviceStorage.writeIfNull('isFirstTime', true);
@@ -74,7 +78,7 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch(e) {
       throw CbPlatformException(e.code).message;
     } catch(e) {
-      throw 'Algo deu errado. Por favor tente novamente';
+      throw 'Algo deu errado. Por favor tente novamente $e';
     }
   }
 
@@ -95,7 +99,7 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
- /// [Email Verification] - Reset Password
+  /// [Email Verification] - Reset Password
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -150,43 +154,42 @@ class AuthenticationRepository extends GetxController {
   }
 
   /// [SignIn with Google] - LOGIN
-  Future<UserCredential?> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) return null;
+  Future<List> loginWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAccount? userAccount = await googleSignIn.signIn();
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
+      final GoogleSignInAuthentication? googleAuth = await userAccount?.authentication;
 
-    final userCredential = await _auth.signInWithCredential(credential);
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
 
-    // Cria o documento do usuário no Firestore se não existir
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userCredential.user!.uid)
-        .get();
+      final userCredential = await _auth.signInWithCredential(credential);
 
-    if (!userDoc.exists) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set({
-        'Id': userCredential.user!.uid,
-        'Name': userCredential.user!.displayName ?? '',
-        'Username': '',
-        'Email': userCredential.user!.email ?? '',
-      });
+      return [userCredential, userAccount];
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
     }
 
-    return userCredential;
   }
 
   /// [LogoutUser] - Valid for any authentication
   Future<void> logout() async {
     try {
+      await GoogleSignIn().signOut();
       await _auth.signOut();
       Get.offAll(() => LoginScreen());
     } on FirebaseAuthException catch (e) {

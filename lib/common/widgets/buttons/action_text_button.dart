@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 
 class CbActionTextButton extends StatelessWidget {
   const CbActionTextButton({
-    super.key, required this.text, this.padding, this.height,
+    super.key, required this.text, this.padding, this.height, this.onTap,
   });
 
   final String text;
   final EdgeInsetsGeometry? padding;
   final double? height;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: height ?? 35,
       child: ElevatedButton(
-        onPressed: (){},
+        onPressed: onTap,
         style: ElevatedButton.styleFrom(
           side: BorderSide(color: CbColors.primary),
           backgroundColor: Colors.transparent,
