@@ -1,23 +1,25 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
+import 'package:carboneto/features/personalization/screens/settings/settings.dart';
+import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:country_flags/country_flags.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class Treino {
   final String titulo;
   final String imagem;
-  final String nivel;
-  final Color corNivel;
-  final List<IconData> icones;
+  final DifficultyLevels nivel;
 
   Treino({
     required this.titulo,
     required this.imagem,
     required this.nivel,
-    required this.corNivel,
-    required this.icones,
   });
 }
 
@@ -28,79 +30,42 @@ class ProfileScreen extends StatelessWidget {
     Treino(
       titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "INICIANTE",
-      corNivel: Colors.lightBlue,
-      icones: [Icons.circle],
+      nivel: DifficultyLevels.elite,
     ),
     Treino(
-      titulo: "treino de arre...",
+      titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "FUNDAMENTAL",
-      corNivel: Colors.blue,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
+      nivel: DifficultyLevels.fundamental,
     ),
     Treino(
-      titulo: "kd floater...",
+      titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "ELITE",
-      corNivel: Colors.amber,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
+      nivel: DifficultyLevels.intermediate,
     ),
     Treino(
-      titulo: "treino de movi...",
+      titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "INICIANTE",
-      corNivel: Colors.lightBlue,
-      icones: [Icons.circle],
+      nivel: DifficultyLevels.begginer,
     ),
     Treino(
-      titulo: "treino de arre...",
+      titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "FUNDAMENTAL",
-      corNivel: Colors.blue,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
+      nivel: DifficultyLevels.elite,
     ),
     Treino(
-      titulo: "kd floater...",
+      titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "ELITE",
-      corNivel: Colors.amber,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
+      nivel: DifficultyLevels.elite,
     ),
     Treino(
-      titulo: "treino de arre...",
+      titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "FUNDAMENTAL",
-      corNivel: Colors.blue,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
+      nivel: DifficultyLevels.fundamental,
     ),
     Treino(
-      titulo: "kd floater...",
+      titulo: "treino de movimento assdasd asd asdsad as",
       imagem: CbImages.thumbnailTrainingExample,
-      nivel: "ELITE",
-      corNivel: Colors.amber,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
-    ),
-    Treino(
-      titulo: "treino de movi...",
-      imagem: CbImages.thumbnailTrainingExample,
-      nivel: "INICIANTE",
-      corNivel: Colors.lightBlue,
-      icones: [Icons.circle],
-    ),
-    Treino(
-      titulo: "treino de arre...",
-      imagem: CbImages.thumbnailTrainingExample,
-      nivel: "FUNDAMENTAL",
-      corNivel: Colors.blue,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
-    ),
-    Treino(
-      titulo: "kd floater...",
-      imagem: CbImages.thumbnailTrainingExample,
-      nivel: "ELITE",
-      corNivel: Colors.amber,
-      icones: [Icons.circle, Icons.circle, Icons.circle],
+      nivel: DifficultyLevels.fundamental,
     ),
   ];
 
@@ -134,7 +99,7 @@ class ProfileScreen extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
                   ),
                   CountryFlag.fromCountryCode(
-                    'za',
+                    'es',
                     width: 22,
                     shape: RoundedRectangle(3),
                     height: 15,
@@ -170,7 +135,7 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           HighlightText(
                             textValue: '122',
-                            textSize: MediaQuery.of(context).size.width * 0.07, 
+                            textSize: MediaQuery.of(context).size.width * 0.06, 
                           ),
                           PrimaryText(
                             textValue: 'seguidores',
@@ -183,7 +148,7 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           HighlightText(
                             textValue: '67',
-                            textSize: MediaQuery.of(context).size.width * 0.07,
+                            textSize: MediaQuery.of(context).size.width * 0.06,
                           ),
                           PrimaryText(
                             textValue: 'seguindo',
@@ -196,7 +161,7 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           HighlightText(
                             textValue: 'PG',
-                            textSize: MediaQuery.of(context).size.width * 0.07,
+                            textSize: MediaQuery.of(context).size.width * 0.06,
                           ),
                           PrimaryText(
                             textValue: 'armador',
@@ -259,7 +224,7 @@ class _TreinoCard extends StatelessWidget {
               treino.titulo,
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w300,
                 fontSize: cardWidth * 0.12, // tamanho do texto proporcional
               ),
               maxLines: 1,
@@ -271,19 +236,7 @@ class _TreinoCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  treino.nivel,
-                  style: TextStyle(
-                    fontSize: cardWidth * 0.07,
-                    color: treino.corNivel,
-                  ),
-                ),
-                SizedBox(width: 4),
-                Row(
-                  children: treino.icones
-                      .map((icon) => Icon(icon, size: cardWidth * 0.08, color: treino.corNivel))
-                      .toList(),
-                ),
+                LevelWidget(level: treino.nivel)
               ],
             ),
           ),
@@ -403,8 +356,8 @@ class BannerWithPicture extends StatelessWidget {
           top: 40,
           right: 16,
           child: IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.white, size: screenWidth * 0.07),
-            onPressed: () {},
+            icon: Icon(CupertinoIcons.settings, color: Colors.white, size: screenWidth * 0.07),
+            onPressed: () => Get.to(SettingsScreen()),
           ),
         ),
       ],
