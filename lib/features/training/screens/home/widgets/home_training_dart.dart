@@ -163,27 +163,32 @@ class LevelWidget extends StatelessWidget {
     String difficultyTitle = '';
     Color difficultyBorder = Colors.transparent;
     Color difficultyColor = Colors.transparent;
+    Color difficultyColorTxt = Colors.transparent;
+    int levelValue = 1;
 
     switch (level) {
       case DifficultyLevels.begginer:
         difficultyTitle = 'INICIANTE';
-        difficultyBorder = Colors.lightBlueAccent;
         difficultyColor = Colors.lightBlueAccent;
+        difficultyColorTxt = difficultyColor;
         break;
       case DifficultyLevels.fundamental:
         difficultyTitle = 'FUNDAMENTAL';
         difficultyColor = Colors.blue.shade600;
-        difficultyBorder = CbColors.primary;
+        difficultyColorTxt = difficultyColor;
         break;
       case DifficultyLevels.intermediate:
         difficultyTitle = 'INTERMEDIÁRIO';
-        difficultyBorder = Colors.red.shade900;
-        difficultyColor = Colors.redAccent;
+        difficultyColor = Colors.red;
+        difficultyColorTxt = difficultyColor;
+        levelValue = 2;
         break;
       case DifficultyLevels.elite:
         difficultyTitle = 'ELITE';
         difficultyBorder = isDarkMode ? Colors.amber : Colors.amber.shade900;
         difficultyColor = CbColors.dark;
+        difficultyColorTxt = Colors.amber;
+        levelValue = 3;
         break;
     }
 
@@ -193,28 +198,31 @@ class LevelWidget extends StatelessWidget {
         Text(
           difficultyTitle,
           style: TextStyle(
-              letterSpacing: 1.5, fontSize: 7, color: difficultyBorder),
+              letterSpacing: 1.5, fontSize: 7, color: difficultyColorTxt),
         ),
-        Row(spacing: 2, children: [
-          CbRoundedContainer(
-            width: 7,
-            height: 7,
-            border: Border.all(color: difficultyBorder),
-            backgroundColor: difficultyColor,
-          ),
-          CbRoundedContainer(
-            width: 7,
-            height: 7,
-            border: Border.all(color: difficultyBorder),
-            backgroundColor: difficultyColor,
-          ),
-          CbRoundedContainer(
-            width: 7,
-            height: 7,
-            border: Border.all(color: difficultyBorder),
-            backgroundColor: difficultyColor,
-          ),
-        ]),
+        Row(
+          spacing: 2,
+          children: [
+            ...(List.generate(
+                  levelValue,
+                  (i) => CbRoundedContainer(
+                    width: 7,
+                    height: 7,
+                    border: Border.all(color: (difficultyBorder)),
+                    backgroundColor: difficultyColor,
+                  ),
+                ) +
+                List.generate(
+                  3 - levelValue,
+                  (i) => CbRoundedContainer(
+                    width: 7,
+                    height: 7,
+                    border: Border.all(color: difficultyBorder.withAlpha(150)),
+                    backgroundColor: difficultyColor.withAlpha(150),
+                  ),
+                )),
+          ],
+        ),
       ],
     );
   }

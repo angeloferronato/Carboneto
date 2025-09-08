@@ -1,5 +1,6 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
+import 'package:carboneto/features/personalization/screens/profile/edit_profile/edit_profile.dart';
 import 'package:carboneto/features/personalization/screens/settings/settings.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -124,18 +125,16 @@ class ProfileScreen extends StatelessWidget {
                 height: 20,
               ),
               ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: 350
-                ),
+                constraints: BoxConstraints(maxWidth: 350),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Flexible(
                       child: Column(
                         children: [
                           HighlightText(
                             textValue: '122',
-                            textSize: MediaQuery.of(context).size.width * 0.06, 
+                            textSize: MediaQuery.of(context).size.width * 0.06,
                           ),
                           PrimaryText(
                             textValue: 'seguidores',
@@ -177,6 +176,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               HighlightBtn(
                 textValue: 'Editar Perfil',
+                onPressedEdit: () => Get.to(() => EditProfileScreen()),
               ),
               SizedBox(
                 height: 40,
@@ -201,7 +201,8 @@ class _TreinoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = (screenWidth - 40 - 20) / 3; // 40 padding horizontal + 20 spacing
+    final cardWidth =
+        (screenWidth - 40 - 20) / 3; // 40 padding horizontal + 20 spacing
     final imageHeight = cardWidth * 1.2; // proporção da imagem
 
     return SizedBox(
@@ -235,9 +236,7 @@ class _TreinoCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LevelWidget(level: treino.nivel)
-              ],
+              children: [LevelWidget(level: treino.nivel)],
             ),
           ),
         ],
@@ -246,9 +245,9 @@ class _TreinoCard extends StatelessWidget {
   }
 }
 
-
 class HighlightText extends StatelessWidget {
-  const HighlightText({super.key, required this.textValue, required this.textSize});
+  const HighlightText(
+      {super.key, required this.textValue, required this.textSize});
   final String textValue;
   final double textSize;
 
@@ -285,13 +284,14 @@ class PrimaryText extends StatelessWidget {
 }
 
 class HighlightBtn extends StatelessWidget {
-  const HighlightBtn({super.key, required this.textValue});
+  const HighlightBtn({super.key, required this.textValue, required this.onPressedEdit});
   final String textValue;
+  final VoidCallback? onPressedEdit;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () => {},
+        onPressed: onPressedEdit,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -307,7 +307,8 @@ class HighlightBtn extends StatelessWidget {
 }
 
 class BannerWithPicture extends StatelessWidget {
-  const BannerWithPicture({super.key, required this.profileImg, required this.bannerImg});
+  const BannerWithPicture(
+      {super.key, required this.profileImg, required this.bannerImg});
   final String profileImg;
   final String bannerImg;
 
@@ -356,7 +357,8 @@ class BannerWithPicture extends StatelessWidget {
           top: 40,
           right: 16,
           child: IconButton(
-            icon: Icon(CupertinoIcons.settings, color: Colors.white, size: screenWidth * 0.07),
+            icon: Icon(CupertinoIcons.settings,
+                color: Colors.white, size: screenWidth * 0.07),
             onPressed: () => Get.to(SettingsScreen()),
           ),
         ),

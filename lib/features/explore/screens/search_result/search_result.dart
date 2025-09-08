@@ -17,6 +17,7 @@ import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_f
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:carboneto/features/authentication/controllers/login/login_controller.dart';
+import 'package:logger/logger.dart';
 
 class SearchResultScreen extends StatelessWidget {
   const SearchResultScreen({super.key});
@@ -198,34 +199,7 @@ class SearchResultWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
 
-    String difficultyTitle = '';
-    Color difficultyBorder = Colors.transparent;
-    Color difficultyColor = Colors.transparent;
-
-    switch (level) {
-      case DifficultyLevels.begginer:
-        difficultyTitle = 'INICIANTE';
-        difficultyBorder = Colors.lightBlueAccent;
-        difficultyColor = Colors.lightBlueAccent;
-        break;
-      case DifficultyLevels.fundamental:
-        difficultyTitle = 'FUNDAMENTAL';
-        difficultyColor = Colors.blue.shade600;
-        difficultyBorder = CbColors.primary;
-        break;
-      case DifficultyLevels.intermediate:
-        difficultyTitle = 'INTERMEDIÁRIO';
-        difficultyBorder = Colors.red.shade900;
-        difficultyColor = Colors.redAccent;
-        break;
-      case DifficultyLevels.elite:
-        difficultyTitle = 'ELITE';
-        difficultyBorder = isDarkMode ? Colors.amber : Colors.amber.shade900;
-        difficultyColor = CbColors.white;
-        break;
-    }
 
     return GestureDetector(
       onTap: () => Get.to(() => TrainingDetailsScreen()),
@@ -300,36 +274,7 @@ class SearchResultWidget extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text(
-                      difficultyTitle,
-                      style: TextStyle(
-                          letterSpacing: 1.5,
-                          fontSize: 7,
-                          color: difficultyBorder),
-                    ),
-                    SizedBox(
-                      width: CbSizes.sm,
-                    ),
-                    Row(spacing: 2, children: [
-                      CbRoundedContainer(
-                        width: 8,
-                        height: 8,
-                        border: Border.all(color: difficultyBorder),
-                        backgroundColor: difficultyColor,
-                      ),
-                      CbRoundedContainer(
-                        width: 8,
-                        height: 8,
-                        border: Border.all(color: difficultyBorder),
-                        backgroundColor: difficultyColor,
-                      ),
-                      CbRoundedContainer(
-                        width: 8,
-                        height: 8,
-                        border: Border.all(color: difficultyBorder),
-                        backgroundColor: difficultyColor,
-                      ),
-                    ]),
+                    LevelWidget(level: level)
                   ],
                 ),
               ],
