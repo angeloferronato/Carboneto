@@ -12,6 +12,7 @@ class FocusedTextField extends StatelessWidget {
     this.controller,
     this.obscureText = false,
     this.validator,
+    this.savedInitialValue,
     this.paddingH = CbSizes.lg * 1.2,
   });
 
@@ -21,17 +22,19 @@ class FocusedTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final bool obscureText;
   final double paddingH;
+  final String? savedInitialValue;
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) => TextFormField(
         validator: validator,
+        initialValue: savedInitialValue,
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(
-              horizontal: paddingH, vertical: CbSizes.md),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: paddingH, vertical: CbSizes.md),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           prefixIconColor: CbColors.white,

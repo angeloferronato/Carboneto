@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/settings/settings.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -10,6 +11,7 @@ import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
+import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:country_picker/country_picker.dart';
@@ -30,8 +32,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final bannerHeight = screenWidth * 0.6; // altura proporcional
     final avatarRadius = screenWidth * 0.21;
+    final userController = Get.put(UserController());
 
     return Scaffold(
       appBar: AppBar(
@@ -84,11 +86,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(
                         height: 8,
                       ),
-                      FocusedTextField(
-                        hintText: 'Nome',
-                        paddingH: 20,
-                        // controller: controller.email,
-                        // validator: (value) => CbValidator.validateEmptyText(CbTexts.emailOrUserName, value),
+                      Obx(
+                        () => userController.profileLoading.value 
+                        ? CbShimmerEffects(width: 200, height: 60)
+                        : FocusedTextField(
+                          hintText: 'Nome',
+                          paddingH: 20,
+                          savedInitialValue: userController.user.value.name,
+                        ),
                       ),
                     ],
                   ),
@@ -104,11 +109,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(
                         height: 8,
                       ),
-                      FocusedTextField(
-                        hintText: 'Descrição',
-                        paddingH: 20,
-                        // controller: controller.email,
-                        // validator: (value) => CbValidator.validateEmptyText(CbTexts.emailOrUserName, value),
+                      Obx(
+                        () => userController.profileLoading.value 
+                        ? CbShimmerEffects(width: 200, height: 60)
+                        : FocusedTextField(
+                          hintText: 'Descrição',
+                          paddingH: 20,
+                          savedInitialValue: '',
+                        ),
                       ),
                     ],
                   ),
