@@ -168,17 +168,17 @@ class LevelWidget extends StatelessWidget {
 
     switch (level) {
       case DifficultyLevels.begginer:
-        difficultyTitle = 'INICIANTE';
+        difficultyTitle = 'ROOKIE';
         difficultyColor = Colors.lightBlueAccent;
         difficultyColorTxt = difficultyColor;
         break;
       case DifficultyLevels.fundamental:
-        difficultyTitle = 'FUNDAMENTAL';
-        difficultyColor = Colors.blue.shade600;
+        difficultyTitle = 'ALL-STAR';
+        difficultyColor = const Color.fromARGB(255, 93, 1, 185);
         difficultyColorTxt = difficultyColor;
         break;
       case DifficultyLevels.intermediate:
-        difficultyTitle = 'INTERMEDIÁRIO';
+        difficultyTitle = 'PRO';
         difficultyColor = Colors.red;
         difficultyColorTxt = difficultyColor;
         levelValue = 2;
