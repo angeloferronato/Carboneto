@@ -1,16 +1,20 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/edit_profile.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/followers_and_following.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
 import 'package:carboneto/features/personalization/screens/settings/settings.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class Treino {
   final String titulo;
@@ -72,6 +76,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.put(UserController());
     return Scaffold(
       body: Padding(
         padding: CbSpacingStyle.paddingWithAppBarHeight * 0,
@@ -86,33 +91,18 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 height: 60,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 10,
-                children: [
-                  Text(
-                    '@chicobuarque',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    '•',
-                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
-                  ),
-                  CountryFlag.fromCountryCode(
-                    'es',
-                    width: 22,
-                    shape: RoundedRectangle(3),
-                    height: 15,
-                  )
-                ],
-              ),
+              ProfileInfo(userController: userController),
               SizedBox(
                 height: 5,
               ),
-              Text(
-                'Chico Buarque',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              Obx(
+                () => userController.profileLoading.value
+                    ? CbShimmerEffects(width: 200, height: 60)
+                    : Text(
+                        userController.user.value.name,
+                        style: TextStyle(
+                            fontSize: 26, fontWeight: FontWeight.bold),
+                      ),
               ),
               SizedBox(
                 height: 5,
@@ -124,53 +114,7 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 350),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      child: Column(
-                        children: [
-                          HighlightText(
-                            textValue: '122',
-                            textSize: MediaQuery.of(context).size.width * 0.06,
-                          ),
-                          PrimaryText(
-                            textValue: 'seguidores',
-                          ),
-                        ],
-                      ),
-                    ),
-                    Flexible(
-                      child: Column(
-                        children: [
-                          HighlightText(
-                            textValue: '67',
-                            textSize: MediaQuery.of(context).size.width * 0.06,
-                          ),
-                          PrimaryText(
-                            textValue: 'seguindo',
-                          ),
-                        ],
-                      ),
-                    ),
-                    Flexible(
-                      child: Column(
-                        children: [
-                          HighlightText(
-                            textValue: 'PG',
-                            textSize: MediaQuery.of(context).size.width * 0.06,
-                          ),
-                          PrimaryText(
-                            textValue: 'armador',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              FollowersAndFollowing(),
               SizedBox(
                 height: 40,
               ),
@@ -245,26 +189,6 @@ class _TreinoCard extends StatelessWidget {
   }
 }
 
-class HighlightText extends StatelessWidget {
-  const HighlightText(
-      {super.key, required this.textValue, required this.textSize});
-  final String textValue;
-  final double textSize;
-
-  @override
-  Widget build(BuildContext context) {
-    final textScaler = MediaQuery.textScalerOf(context);
-    return Text(
-      textValue,
-      style: TextStyle(
-        color: CbColors.primary,
-        fontSize: textScaler.scale(textSize),
-        fontWeight: FontWeight.w800,
-      ),
-    );
-  }
-}
-
 class PrimaryText extends StatelessWidget {
   const PrimaryText({super.key, required this.textValue});
 
@@ -280,29 +204,6 @@ class PrimaryText extends StatelessWidget {
         fontWeight: FontWeight.w400,
       ),
     );
-  }
-}
-
-class HighlightBtn extends StatelessWidget {
-  const HighlightBtn({super.key, required this.textValue, required this.onPressedEdit});
-  final String textValue;
-  final VoidCallback? onPressedEdit;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: onPressedEdit,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-        ),
-        child: Text(
-          textValue,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
-        ));
   }
 }
 
@@ -405,3 +306,39 @@ class ContentGrid extends StatelessWidget {
     );
   }
 }
+
+class ProfileInfo extends StatelessWidget {
+  const ProfileInfo({super.key, required this.userController});
+  final dynamic userController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 10,
+      children: [
+        Obx(
+          () => userController.profileLoading.value
+              ? CbShimmerEffects(width: 200, height: 60)
+              : Text(
+                  "@${userController.user.value.username}",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+        ),
+        Text(
+          '•',
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+        ),
+        CountryFlag.fromCountryCode(
+          'es',
+          width: 22,
+          shape: RoundedRectangle(3),
+          height: 15,
+        )
+      ],
+    );
+  }
+}
+
+

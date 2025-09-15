@@ -174,12 +174,13 @@ class LevelWidget extends StatelessWidget {
         break;
       case DifficultyLevels.fundamental:
         difficultyTitle = 'ALL-STAR';
-        difficultyColor = const Color.fromARGB(255, 93, 1, 185);
+        difficultyColor = const Color.fromARGB(255, 255, 98, 0);
         difficultyColorTxt = difficultyColor;
+        levelValue = 3;
         break;
       case DifficultyLevels.intermediate:
         difficultyTitle = 'PRO';
-        difficultyColor = Colors.red;
+        difficultyColor = const Color.fromARGB(255, 0, 102, 255);
         difficultyColorTxt = difficultyColor;
         levelValue = 2;
         break;
