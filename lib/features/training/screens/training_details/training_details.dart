@@ -5,6 +5,7 @@ import 'package:carboneto/common/widgets/chips/tip_chip_training.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -46,80 +47,83 @@ class TrainingDetailsScreen extends StatelessWidget {
                     bottom: -30,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
-                      child: Container(
-                        padding: const EdgeInsets.all(CbSizes.md),
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(CbSizes.cardRadiusLg),
-                          color: isDarkMode
-                              ? Color.fromARGB(188, 70, 70, 70)
-                              : Color.fromARGB(255, 48, 48, 48),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Iconsax.clock4, color: CbColors.white),
-                                const SizedBox(width: CbSizes.spaceBtwItems),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '20 min',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .apply(
-                                              color: CbColors.light,
-                                              fontSizeFactor: 1.1),
-                                    ),
-                                    Text(
-                                      'Duração',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .apply(color: CbColors.light),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: CbSizes.spaceBtwItems),
-                            Container(
-                              width: 1,
-                              height: 24,
-                              color: CbColors.white.withValues(alpha: 0.8),
-                            ),
-                            const SizedBox(width: CbSizes.spaceBtwItems),
-                            Row(
-                              children: [
-                                Icon(Iconsax.chart, color: CbColors.white),
-                                const SizedBox(width: CbSizes.spaceBtwItems),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '5',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .apply(
-                                              color: CbColors.light,
-                                              fontSizeFactor: 1.1),
-                                    ),
-                                    Text(
-                                      'Exercícios',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium!
-                                          .apply(color: CbColors.light),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                        child: Container(
+                          padding: const EdgeInsets.all(CbSizes.md),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(CbSizes.cardRadiusLg),
+                            color: isDarkMode
+                                ? Color.fromARGB(188, 70, 70, 70)
+                                : Color.fromARGB(255, 48, 48, 48),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Iconsax.clock4, color: CbColors.white),
+                                  const SizedBox(width: CbSizes.spaceBtwItems),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '20 min',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(
+                                                color: CbColors.light,
+                                                fontSizeFactor: 1.1),
+                                      ),
+                                      Text(
+                                        'Duração',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(color: CbColors.light),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: CbSizes.spaceBtwItems),
+                              Container(
+                                width: 1,
+                                height: 24,
+                                color: CbColors.white.withValues(alpha: 0.8),
+                              ),
+                              const SizedBox(width: CbSizes.spaceBtwItems),
+                              Row(
+                                children: [
+                                  Icon(Iconsax.chart, color: CbColors.white),
+                                  const SizedBox(width: CbSizes.spaceBtwItems),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '5',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(
+                                                color: CbColors.light,
+                                                fontSizeFactor: 1.1),
+                                      ),
+                                      Text(
+                                        'Exercícios',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium!
+                                            .apply(color: CbColors.light),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -230,64 +234,4 @@ class TrainingDetailsScreen extends StatelessWidget {
   }
 }
 
-class CbTrainingQueueItem extends StatelessWidget {
-  const CbTrainingQueueItem({
-    super.key,
-    required this.image,
-    required this.title,
-    required this.duration,
-  });
 
-  final String image, title, duration;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDarkMode = CbHelperFunctions.isDarkMode(context);
-    return CbRoundedContainer(
-      padding: const EdgeInsets.symmetric(
-          vertical: CbSizes.xs, horizontal: CbSizes.sm),
-      backgroundColor: isDarkMode ? CbColors.darkerGrey : CbColors.grey,
-      width: double.infinity,
-      height: 70,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              CbRoundedImage(
-                imageUrl: image,
-                borderRadius: 15,
-                width: 50,
-                height: 50,
-              ),
-              const SizedBox(
-                width: CbSizes.md,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(
-                    height: CbSizes.xs,
-                  ),
-                  Text(
-                    duration,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          IconButton(
-              padding: const EdgeInsets.all(CbSizes.md),
-              onPressed: () {},
-              icon: Icon(Iconsax.play_circle4))
-        ],
-      ),
-    );
-  }
-}

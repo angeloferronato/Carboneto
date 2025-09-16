@@ -1,13 +1,13 @@
-import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'dart:ui';
+
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
+import 'package:carboneto/features/training/screens/training_execution/widgets/training_execution_action_buttons.dart';
 import 'package:carboneto/features/training/screens/training_execution/widgets/video_player.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:percent_indicator/flutter_percent_indicator.dart';
 import 'package:video_player/video_player.dart';
 
 class TrainingExecution extends StatelessWidget {
@@ -17,100 +17,108 @@ class TrainingExecution extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
-      appBar: CbAppBar(
-        title: Text('Treino Teste'),
-        showBackArrow: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(CbSizes.defaultSpace),
-          child: Stack(
+      extendBody: true,
+      body: Padding(
+        padding: const EdgeInsets.only(top: CbSizes.defaultSpace * 4),
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              Positioned(
-                right: 0,
-                child: Row(
+              Padding(
+                padding: const EdgeInsets.all(CbSizes.defaultSpace),
+                child: Stack(
                   children: [
-                    CbRoundedContainer(
-                      backgroundColor: CbColors.primary,
-                      width: 45,
-                      height: 45,
-                      borderRadius: 45,
-                      child: IconButton(
-                        onPressed: () {}, 
-                        icon: Icon(Icons.table_rows_rounded, color: CbColors.lightGrey,),
-                      ),
+                    Positioned(
+                      right: 0,
+                      child: TrainingExecutionActionButtons(),
                     ),
-                    SizedBox(width: CbSizes.spaceBtwItems / 2,),
-
-                    CbRoundedContainer(
-                      backgroundColor: CbColors.primary,
-                      width: 45,
-                      height: 45,
-                      borderRadius: 45,
-                      child: IconButton(
-                        onPressed: () {}, 
-                        icon: Icon(Icons.skip_next_rounded, size: 30,  color: CbColors.white,),
-                      ),
+                
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '8:24',
+                              style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 35),
+                            ),
+                            SizedBox(height: CbSizes.spaceBtwItems),
+                        
+                            LinearProgressIndicator(
+                              value: 0.6,
+                              valueColor: AlwaysStoppedAnimation(CbColors.primary),
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            SizedBox(height: CbSizes.spaceBtwItems),
+                        
+                            Text('Ball Handling with tennis ball', style: Theme.of(context).textTheme.bodyMedium,),
+                            SizedBox(height: CbSizes.spaceBtwItems),
+                          ],
+                        ),
+                      ],
                     ),
-                    SizedBox(width: CbSizes.spaceBtwItems / 2,),
-
-                    CbRoundedContainer(
-                      backgroundColor: CbColors.primary,
-                      width: 45,
-                      height: 45,
-                      borderRadius: 45,
-                      child: IconButton(
-                        splashColor: const Color.fromARGB(255, 21, 68, 171),
-                        onPressed: () {}, 
-                        icon: Icon(Icons.close_sharp, size: 30, color: CbColors.white,),
-                      ),
-                    ),
-                  ],
+                  ] 
                 ),
               ),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              SizedBox(
+                width: double.infinity,
+                height: 380,
+                child: VideoPlayerView(url: CbImages.videoExample, dataSourceType: DataSourceType.asset)
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 150,
+        padding: const EdgeInsets.all(CbSizes.defaultSpace),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 10),
+            child: Container(
+              padding: const EdgeInsets.all(CbSizes.md),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
+                color: isDarkTheme
+                    ? Color.fromARGB(195, 34, 34, 34)
+                    : Color.fromARGB(153, 189, 189, 189),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    '8:24',
-                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 35),
+                  Expanded(
+                    flex: 2,
+                    child: Text('0:45', style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 37),)
                   ),
-                  SizedBox(height: CbSizes.spaceBtwItems),
-
-                  SizedBox(
-                    height: CbSizes.sm,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-
-                      itemBuilder: (_, index) {
-                        return LinearPercentIndicator(
-                          width: 80,
-                          percent: 40 / 100,
-                          barRadius: Radius.circular(100),
-                        );
-                      }, 
-                      separatorBuilder: (_, __) => const SizedBox(width: 5,), 
-                      itemCount: 4,
+            
+                  Expanded(
+                    flex: 4,
+                    child: Text('Alternância de mãos', textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 15),)
+                  ),
+            
+                  Expanded(
+                    child: SizedBox(
+                      width: 50,
+                      child: ElevatedButton(
+                        onPressed: () {}, 
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: CbColors.primary,
+                          shape: CircleBorder(),
+                        ), 
+                        child: Icon(Icons.play_arrow_rounded, size: 30,),
+                      ),
                     ),
-                  ),
-
-                  
-
-
-                  Text('Ball Handling with tennis ball'),
-                  SizedBox(height: CbSizes.spaceBtwItems),
-
-              
-                  VideoPlayerView(url: CbImages.videoExample, dataSourceType: DataSourceType.asset),
+                  )
                 ],
               ),
-            ] 
-            
+            ),
           ),
         ),
       ),
     );
   }
 }
+
 

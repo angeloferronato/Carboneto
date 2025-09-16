@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -45,6 +46,14 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
           autoInitialize: true,
           autoPlay: true,
           videoPlayerController: _videoPlayerController,
+          materialProgressColors: ChewieProgressColors(
+            playedColor: CbColors.primary
+          ),
+          customControls: CupertinoControls(
+            backgroundColor: CbColors.dark,
+            iconColor: CbColors.grey,
+            
+          ),
         )
       )
     );
