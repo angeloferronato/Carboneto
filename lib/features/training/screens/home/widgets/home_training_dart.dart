@@ -11,111 +11,69 @@ import 'package:iconsax/iconsax.dart';
 
 class HomeTrainingWidget extends StatelessWidget {
   const HomeTrainingWidget({
-    super.key, required this.level, required this.imageThumbnail, required this.trainer, required this.description, required this.trainerImage, required this.title, this.numberPerson = 1, this.onTap,
+    super.key,
+    required this.imageThumbnail,
+    required this.level,
+    required this.trainer,
+    required this.description,
+    required this.trainerImage,
+    required this.title,
+    this.numberPerson = 1,
+    this.onTap,
   });
 
   final DifficultyLevels level;
   final String trainer, imageThumbnail, description, trainerImage, title;
-  final double? numberPerson;
+  final int? numberPerson;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
 
-    String difficultyTitle = '';
-    Color difficultyBorder = Colors.transparent;
-    Color difficultyColor = Colors.transparent;
-
-    switch (level) {
-      case DifficultyLevels.begginer: 
-        difficultyTitle = 'INICIANTE';
-        difficultyBorder = Colors.lightBlueAccent;
-        difficultyColor = Colors.lightBlueAccent; 
-        break;
-      case DifficultyLevels.fundamental:
-        difficultyTitle = 'FUNDAMENTAL';
-        difficultyColor = Colors.blue.shade600;
-        difficultyBorder = CbColors.primary; 
-        break;
-      case DifficultyLevels.intermediate:
-        difficultyTitle = 'INTERMEDIÁRIO';
-        difficultyBorder = Colors.red.shade900;
-        difficultyColor = Colors.redAccent; 
-        break;
-      case DifficultyLevels.elite:
-        difficultyTitle = 'ELITE';
-        difficultyBorder = isDarkMode ? Colors.amber : Colors.amber.shade900;
-        difficultyColor = CbColors.white; 
-        break;
-    }
-
     return GestureDetector(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.only(right: 12),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CbRoundedImage(
-              imageUrl: CbImages.trainingImageExample, // image
+              borderRadius: 20,
+              isNetworkImage: true,
+              imageUrl: imageThumbnail,
               width: 245,
               height: 135,
               backgroundColor: Colors.transparent,
             ),
-            const SizedBox(height: CbSizes.xs,),
-        
+            const SizedBox(
+              height: CbSizes.xs,
+            ),
             SizedBox(
               width: 235,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Level
-                      Row(
-                        children: [
-                          Text(
-                            difficultyTitle,
-                            style: TextStyle(
-                              letterSpacing: 1.5,
-                              fontSize: 7,
-                              color: difficultyBorder
-                            ),
-                          ),
-                  
-                          SizedBox(width: CbSizes.sm,),
-                  
-                          Row(
-                            spacing: 2,
-                            children: [
-                              CbRoundedContainer(
-                                width: 8,
-                                height: 8,
-                                border: Border.all(color: difficultyBorder),
-                                backgroundColor: difficultyColor,
-                              ),
-                              CbRoundedContainer(
-                                width: 8,
-                                height: 8,
-                                border: Border.all(color: difficultyBorder),
-                                backgroundColor: difficultyColor,
-                              ),
-                              CbRoundedContainer(
-                                width: 8,
-                                height: 8,
-                                border: Border.all(color: difficultyBorder),
-                                backgroundColor: difficultyColor,
-                              ),
-                            ]
-                          ),
-                        ],
+                      LevelWidget(
+                        level: level,
                       ),
-                  
+
                       Row(
                         children: [
-                          Icon(CupertinoIcons.group, size: 17.5, color: CbColors.primary, weight: 600,),
-                          SizedBox(width: 6,),
-                          Text('1', style: TextStyle(fontSize: 10, color: CbColors.primary),),
+                          Icon(
+                            CupertinoIcons.group,
+                            size: 17.5,
+                            color: CbColors.primary,
+                            weight: 600,
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text(numberPerson.toString(), style: TextStyle(fontSize: 10, color: CbColors.primary),),
                         ],
                       ),
                     ],
@@ -126,9 +84,12 @@ class HomeTrainingWidget extends StatelessWidget {
                     style: Theme.of(context).textTheme.labelLarge!.apply(fontSizeDelta: 1.2),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
+                    textAlign: TextAlign.start,
                   ),
-                  SizedBox(height: CbSizes.sm,),
-      
+                  SizedBox(
+                    height: CbSizes.sm,
+                  ),
+
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -137,25 +98,42 @@ class HomeTrainingWidget extends StatelessWidget {
                         width: 13,
                         height: 13,
                         fit: BoxFit.cover,
+                        isNetworkImage: true,
                       ),
-                      SizedBox(width: CbSizes.xs,),
-      
+                      SizedBox(
+                        width: CbSizes.xs,
+                      ),
                       Text(
                         trainer,
-                        style: Theme.of(context).textTheme.labelMedium!.copyWith(fontSize: 10, color: isDarkMode ? CbColors.grey : CbColors.dark),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium!
+                            .copyWith(
+                                fontSize: 10,
+                                color:
+                                    isDarkMode ? CbColors.grey : CbColors.dark),
                       ),
-                      SizedBox(width: CbSizes.xs,),
-      
-                      Icon(Iconsax.verify5, color: CbColors.primary, size: 10,)
+                      SizedBox(
+                        width: CbSizes.xs,
+                      ),
+                      Icon(
+                        Iconsax.verify5,
+                        color: CbColors.primary,
+                        size: 10,
+                      )
                     ],
                   ),
-                  SizedBox(height: CbSizes.xs,),
-      
+                  SizedBox(
+                    height: CbSizes.xs,
+                  ),
+
                   SizedBox(
                     width: 235,
                     child: Text(
                       description,
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(fontSize: 10, color: isDarkMode ? CbColors.grey : CbColors.dark),
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          fontSize: 10,
+                          color: isDarkMode ? CbColors.grey : CbColors.dark),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       textAlign: TextAlign.start,
@@ -164,11 +142,88 @@ class HomeTrainingWidget extends StatelessWidget {
                 ],
               ),
             ),
-          ], 
+          ],
         ),
       ),
-    ); 
+    );
   }
 }
 
+class LevelWidget extends StatelessWidget {
+  const LevelWidget({
+    super.key,
+    required this.level,
+  });
+  final DifficultyLevels level;
 
+  @override
+  Widget build(BuildContext context) {
+    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
+    String difficultyTitle = '';
+    Color difficultyBorder = Colors.transparent;
+    Color difficultyColor = Colors.transparent;
+    Color difficultyColorTxt = Colors.transparent;
+    int levelValue = 1;
+
+    switch (level) {
+      case DifficultyLevels.rookie:
+        difficultyTitle = 'ROOKIE';
+        difficultyColor = Colors.lightBlueAccent;
+        difficultyColorTxt = difficultyColor;
+        break;
+      case DifficultyLevels.allstar:
+        difficultyTitle = 'ALL-STAR';
+        difficultyColor = const Color.fromARGB(255, 255, 98, 0);
+        difficultyColorTxt = difficultyColor;
+        levelValue = 3;
+        break;
+      case DifficultyLevels.pro:
+        difficultyTitle = 'PRO';
+        difficultyColor = const Color.fromARGB(255, 0, 102, 255);
+        difficultyColorTxt = difficultyColor;
+        levelValue = 2;
+        break;
+      case DifficultyLevels.elite:
+        difficultyTitle = 'ELITE';
+        difficultyBorder = isDarkMode ? Colors.amber : Colors.amber.shade900;
+        difficultyColor = CbColors.dark;
+        difficultyColorTxt = Colors.amber;
+        levelValue = 3;
+        break;
+    }
+
+    return Row(
+      spacing: 7,
+      children: [
+        Text(
+          difficultyTitle,
+          style: TextStyle(
+              letterSpacing: 1.5, fontSize: 7, color: difficultyColorTxt),
+        ),
+        Row(
+          spacing: 2,
+          children: [
+            ...(List.generate(
+                  levelValue,
+                  (i) => CbRoundedContainer(
+                    width: 7,
+                    height: 7,
+                    border: Border.all(color: (difficultyBorder)),
+                    backgroundColor: difficultyColor,
+                  ),
+                ) +
+                List.generate(
+                  3 - levelValue,
+                  (i) => CbRoundedContainer(
+                    width: 7,
+                    height: 7,
+                    border: Border.all(color: difficultyBorder.withAlpha(150)),
+                    backgroundColor: difficultyColor.withAlpha(150),
+                  ),
+                )),
+          ],
+        ),
+      ],
+    );
+  }
+}

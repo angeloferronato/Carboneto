@@ -19,16 +19,14 @@ class CbTrainingQueueItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
-    return CbRoundedContainer(
-      padding: const EdgeInsets.symmetric(
-          vertical: CbSizes.xs, horizontal: CbSizes.sm),
-      backgroundColor: isDarkMode ? CbColors.darkerGrey : CbColors.grey,
-      width: double.infinity,
-      height: 70,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return CbRoundedContainer(
+          padding: const EdgeInsets.symmetric(vertical: CbSizes.xs, horizontal: CbSizes.sm),
+          backgroundColor: isDarkMode ? CbColors.darkerGrey : CbColors.grey,
+          height: 70,
+          width: constraints.maxWidth,
+          child: Row(
             children: [
               CbRoundedImage(
                 imageUrl: image,
@@ -36,34 +34,36 @@ class CbTrainingQueueItem extends StatelessWidget {
                 width: 50,
                 height: 50,
               ),
-              const SizedBox(
-                width: CbSizes.md,
+              const SizedBox(width: CbSizes.md),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: CbSizes.xs),
+                    Text(
+                      duration,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(
-                    height: CbSizes.xs,
-                  ),
-                  Text(
-                    duration,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
+              const SizedBox(width: CbSizes.md),
+              IconButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () {},
+                icon: Icon(Iconsax.play_circle4),
               ),
             ],
           ),
-          IconButton(
-              padding: const EdgeInsets.all(CbSizes.md),
-              onPressed: () {},
-              icon: Icon(Iconsax.play_circle4))
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -5,6 +5,8 @@ import 'package:carboneto/common/widgets/chips/tip_chip_training.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -16,7 +18,9 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class TrainingDetailsScreen extends StatelessWidget {
-  const TrainingDetailsScreen({super.key});
+  const TrainingDetailsScreen({super.key, this.training});
+
+  final TrainingModel? training;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,6 @@ class TrainingDetailsScreen extends StatelessWidget {
       appBar: CbAppBar(
         title: null,
         showBackArrow: true,
-        //teste
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -39,7 +42,8 @@ class TrainingDetailsScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   CbRoundedImage(
-                    imageUrl: CbImages.thumbnailTrainingExample,
+                    imageUrl: training!.thumbnail,
+                    isNetworkImage: true,
                     width: double.infinity,
                     borderRadius: CbSizes.cardRadiusLg,
                   ),
@@ -69,7 +73,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '20 min',
+                                        '${training!.duration.toString()} min',
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium!
@@ -103,7 +107,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '5',
+                                        training!.exercises.length.toString(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium!
@@ -137,7 +141,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Ball Handling with Tennis Ball',
+                   training!.title,
                     textAlign: TextAlign.start,
                     style: Theme.of(context)
                         .textTheme
@@ -153,33 +157,40 @@ class TrainingDetailsScreen extends StatelessWidget {
                         backgroundColor: CbColors.buttonChipTraining
                             .withValues(alpha: isDarkMode ? 0.58 : 1),
                         textColor: CbColors.white,
-                        text: 'Intermediário',
+                        text: training!.textLevel ?? '',
                       ),
                       const SizedBox(
                         width: CbSizes.sm,
                       ),
-                      CbTipChipTraining(
-                        text: 'Controle de bola',
-                        backgroundColor:
-                            isDarkMode ? CbColors.white : CbColors.dark,
-                        textColor: isDarkMode ? CbColors.dark : CbColors.white,
-                      ),
-                      const SizedBox(
-                        width: CbSizes.sm,
-                      ),
-                      CbTipChipTraining(
-                        text: 'Agilidade',
-                        backgroundColor:
-                            isDarkMode ? CbColors.white : CbColors.dark,
-                        textColor: isDarkMode ? CbColors.black : CbColors.white,
-                      ),
+
+                      SizedBox(
+                        height: 23,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: training!.categories.length,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (_, index) {
+                            return CbTipChipTraining(
+                              text: training!.categories[index],
+                              backgroundColor:
+                                  isDarkMode ? CbColors.white : CbColors.dark,
+                              textColor: isDarkMode ? CbColors.dark : CbColors.white,
+                            );
+                          },
+                          separatorBuilder: (_, __) {
+                            return SizedBox(width: CbSizes.sm,);
+                          },
+                        
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(
                     height: CbSizes.spaceBtwItems,
                   ),
                   Text(
-                    'Desafie seu controle de bola e coordenação com este treino inovador que combina o manuseio da bola de basquete com exercícios utilizando uma bola de tênis. Ideal para melhorar reflexos, agilidade e precisão em situações de jogo. ',
+                    training!.description,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
@@ -196,18 +207,23 @@ class TrainingDetailsScreen extends StatelessWidget {
                   const SizedBox(
                     height: CbSizes.spaceBtwItems,
                   ),
-                  ListView.separated(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (_, index) => CbTrainingQueueItem(
-                            image: CbImages.trainingExample,
-                            title: 'Alternância de mãos',
-                            duration: '01:00',
-                          ),
-                      separatorBuilder: (_, __) => const SizedBox(
-                            height: CbSizes.spaceBtwItems,
-                          ),
-                      itemCount: 5)
+                  Column(
+                    children: List.generate(training!.exercises.length, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: CbSizes.spaceBtwItems),
+                        child: CbTrainingQueueItem(
+                          image: CbImages.trainingExample,
+                          title: training!.exercises[index].title,
+                          duration: '01:00',
+                        ),
+                      );
+                    }),
+                  ),
+
+                  const SizedBox(
+                    height: 100,
+                  ),
+
                 ],
               ),
             ],
@@ -215,13 +231,28 @@ class TrainingDetailsScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(
-            left: CbSizes.lg, right: CbSizes.lg, bottom: CbSizes.lg),
+        padding: const EdgeInsets.only(left: CbSizes.lg, right: CbSizes.lg, bottom: CbSizes.lg),
         decoration: BoxDecoration(color: Colors.transparent),
         child: SizedBox(
           height: 60,
           child: ElevatedButton(
-            onPressed: () => Get.to(() => TrainingExecution()),
+            onPressed: () {},
+            // onPressed: () => Get.defaultDialog(
+            //   titlePadding: const EdgeInsets.only(top: CbSizes.lg),
+            //   contentPadding: EdgeInsets.all(CbSizes.lg),
+            //   title: 'Você deseja continuar?',
+            //   middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
+            //   confirm: ElevatedButton(
+            //     onPressed: () => Get.to(TrainingExecution()),
+            //     style: ElevatedButton.styleFrom(backgroundColor: CbColors.primary, side: BorderSide(color: CbColors.primary)),
+            //     child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
+            //   ),
+            //   cancel: OutlinedButton(
+            //     onPressed: () => Navigator.of(Get.overlayContext!).pop(), 
+            //     child: Text('Não'),
+            //   ),
+            //   backgroundColor: CbColors.dark
+            // ),
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),

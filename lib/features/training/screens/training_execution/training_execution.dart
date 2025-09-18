@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
+import 'package:carboneto/features/training/controllers/training_controller.dart';
 import 'package:carboneto/features/training/screens/training_execution/widgets/training_execution_action_buttons.dart';
 import 'package:carboneto/features/training/screens/training_execution/widgets/video_player.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -8,10 +9,23 @@ import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
-class TrainingExecution extends StatelessWidget {
+class TrainingExecution extends StatefulWidget {
   const TrainingExecution ({super.key});
+
+  @override
+  State<TrainingExecution> createState() => _TrainingExecutionState();
+}
+
+class _TrainingExecutionState extends State<TrainingExecution> {
+  final controller = Get.put(TrainingController());
+
+  @override 
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +52,16 @@ class TrainingExecution extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              '8:24',
-                              style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 35),
+                            Obx(
+                              () {
+                                String twoDigits(int n) => n.toString().padLeft(2, '0');
+                                final seconds = twoDigits(controller.duration.value.inSeconds.remainder(60));
+                                final minutes = twoDigits(controller.duration.value.inMinutes.remainder(60));
+                                return Text(
+                                  '$minutes:$seconds',
+                                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 35),
+                                );
+                              } 
                             ),
                             SizedBox(height: CbSizes.spaceBtwItems),
                         

@@ -1,5 +1,9 @@
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/data/repositories/training/training_repository.dart';
+import 'package:carboneto/data/repositories/user/user_repository.dart';
+import 'package:carboneto/features/personalization/models/user_model.dart';
+import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/features/training/screens/home/widgets/training_lib_item.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
@@ -12,11 +16,33 @@ import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen ({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final Future<List<TrainingModel>> _trainingsBallHandling;
+  late final Future<List<TrainingModel>> _trainingsDribbling;
+  late final Future<List<TrainingModel>> _trainingsMoves;
+  late final Future<List<TrainingModel>> _trainingsShooting;
+  final TrainingRepository trainingRepository = Get.put(TrainingRepository());
+  final UserRepository userRepository = Get.put(UserRepository());
+
+  @override
+  void initState() {
+    super.initState();
+    _trainingsBallHandling = trainingRepository.fetchTrainingDetails('Ballhandling');
+    _trainingsDribbling = trainingRepository.fetchTrainingDetails('Dribbling');
+    _trainingsMoves = trainingRepository.fetchTrainingDetails('Moves');
+    _trainingsShooting = trainingRepository.fetchTrainingDetails('Shooting');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    
     final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       body: MediaQuery.removePadding(
@@ -61,47 +87,227 @@ class HomeScreen extends StatelessWidget {
                     
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                  child: CbSectionHeading(title: 'Mais Populares', onPressed: () {})
+                  child: CbSectionHeading(title: 'Controle de Bola', onPressed: () {})
                 ),
                     
                 const SizedBox(height: CbSizes.spaceBtwItems,),
                     
                 SizedBox(
                   height: 250,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 4,
-                    padding: EdgeInsets.only(left: CbSizes.md),
-                    itemBuilder: (_, index) => HomeTrainingWidget(
-                      imageThumbnail: CbImages.trainingImageExample, 
-                      level: DifficultyLevels.elite, 
-                      trainerImage: CbImages.trainerExample, 
-                      trainer: 'Stephen Curry', 
-                      description: 'Arremesso, Forma do Arremesso.  40 min ', 
-                      title: 'Stephen Curry Precision Shooting Workout',
-                      onTap: () => Get.to(() => TrainingDetailsScreen()),
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    ),
+                  child: FutureBuilder<List<TrainingModel>>(
+                    future: _trainingsBallHandling, 
+
+                    builder: (context, snapshot) {
+                      debugPrint("TOTAL DOCS FETCHED: ${snapshot.data?[0]}");
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(child: Text("Erro: ${snapshot.error}"));
+                      }
+
+                      final trainings = snapshot.data ?? [];
+
+                      if (trainings.isEmpty) {
+                        return const Center(child: Text("Nenhum treino encontrado"));
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: trainings.length,
+                        padding: EdgeInsets.only(left: CbSizes.md),
+                        itemBuilder: (_, index) {
+                          final training = trainings[index];
+                          String description = '';
+                          for (var item in training.categories) {
+                            description = '$description $item,';
+                          }
+                          description = '$description ${training.duration} min';
+                          return HomeTrainingWidget(
+                            imageThumbnail: training.thumbnail, 
+                            level: training.level, 
+                            trainerImage: training.user!.profilePicture, 
+                            trainer: training.user!.name, 
+                            description: description, 
+                            title: training.title,
+                            numberPerson: training.people,
+                            onTap: () => Get.to(() => TrainingDetailsScreen(training: training,)),
+                          );
+                        },
+                        scrollDirection: Axis.horizontal,
+                      );
+                    }
+                  )
                 ),
-                    
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                  child: CbSectionHeading(title: "Arremesso de 3pts", onPressed: (){}),
+                  child: CbSectionHeading(title: "Drible", onPressed: (){}),
                 ),
                 const SizedBox(height: CbSizes.spaceBtwItems,),
                     
                 SizedBox(
                   height: 250,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 4,
-                    padding: EdgeInsets.only(left: CbSizes.md),
-                    itemBuilder: (_, index) => HomeTrainingWidget(imageThumbnail: CbImages.trainingImageExample, level: DifficultyLevels.elite, trainerImage: CbImages.trainerExample, trainer: 'Stephen Curry', description: 'Arremesso, Forma do Arremesso.  40 min ', title: 'Stephen Curry Precision Shooting Workout',),
-                    scrollDirection: Axis.horizontal,
-                  ),
+                  child: FutureBuilder<List<TrainingModel>>(
+                    future: _trainingsDribbling, 
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(child: Text("Erro: ${snapshot.error}"));
+                      }
+
+                      final trainings = snapshot.data ?? [];
+
+                      if (trainings.isEmpty) {
+                        return const Center(child: Text("Nenhum treino encontrado"));
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: trainings.length,
+                        padding: EdgeInsets.only(left: CbSizes.md),
+                        itemBuilder: (_, index) {
+                          final training = trainings[index];
+                          String description = '';
+                          for (var item in training.categories) {
+                            description = '$description $item,';
+                          }
+                          description = '$description ${training.duration} min';
+                          return HomeTrainingWidget(
+                            imageThumbnail: training.thumbnail, 
+                            level: training.level, 
+                            trainerImage: training.user!.profilePicture, 
+                            trainer: training.user!.name, 
+                            description: description, 
+                            title: training.title,
+                            numberPerson: training.people,
+                            onTap: () => Get.to(() => TrainingDetailsScreen(training: training,)),
+                          );
+                        },
+                        scrollDirection: Axis.horizontal,
+                      );
+                    }
+                  )
                 ),
                     
+                const SizedBox(height: CbSizes.spaceBtwItems,),
+                    
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  child: CbSectionHeading(title: 'Movimentos', onPressed: () {})
+                ),
+                    
+                const SizedBox(height: CbSizes.spaceBtwItems,),
+                    
+                SizedBox(
+                  height: 250,
+                  child: FutureBuilder<List<TrainingModel>>(
+                    future: _trainingsMoves, 
+                    builder: (context, snapshot) {
+                      debugPrint("TOTAL DOCS FETCHED: ${snapshot.data}");
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(child: Text("Erro: ${snapshot.error}"));
+                      }
+
+                      final trainings = snapshot.data ?? [];
+
+                      if (trainings.isEmpty) {
+                        return const Center(child: Text("Nenhum treino encontrado"));
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: trainings.length,
+                        padding: EdgeInsets.only(left: CbSizes.md),
+                        itemBuilder: (_, index) {
+                          final training = trainings[index];
+                          String description = '';
+                          for (var item in training.categories) {
+                            description = '$description $item,';
+                          }
+                          description = '$description ${training.duration} min';
+                          return HomeTrainingWidget(
+                            imageThumbnail: training.thumbnail, 
+                            level: training.level, 
+                            trainerImage: training.user!.profilePicture, 
+                            trainer: training.user!.name, 
+                            description: description, 
+                            title: training.title,
+                            numberPerson: training.people,
+                            onTap: () => Get.to(() => TrainingDetailsScreen(training: training,)),
+                          );
+                        },
+                        scrollDirection: Axis.horizontal,
+                      );
+                    }
+                  )
+                ),
+
+                const SizedBox(height: CbSizes.spaceBtwItems,),
+                    
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  child: CbSectionHeading(title: 'Arremesso', onPressed: () {})
+                ),
+                    
+                const SizedBox(height: CbSizes.spaceBtwItems,),
+                    
+                SizedBox(
+                  height: 250,
+                  child: FutureBuilder<List<TrainingModel>>(
+                    future: _trainingsShooting, 
+                    builder: (context, snapshot) {
+                      debugPrint("TOTAL DOCS FETCHED: ${snapshot.data}");
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(child: Text("Erro: ${snapshot.error}"));
+                      }
+
+                      final trainings = snapshot.data ?? [];
+
+                      if (trainings.isEmpty) {
+                        return const Center(child: Text("Nenhum treino encontrado"));
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: trainings.length,
+                        padding: EdgeInsets.only(left: CbSizes.md),
+                        itemBuilder: (_, index) {
+                          final training = trainings[index];
+                          String description = '';
+                          for (var item in training.categories) {
+                            description = '$description $item,';
+                          }
+                          description = '$description ${training.duration} min';
+                          return HomeTrainingWidget(
+                            imageThumbnail: training.thumbnail, 
+                            level: training.level, 
+                            trainerImage: training.user!.profilePicture, 
+                            trainer: training.user!.name, 
+                            description: description, 
+                            title: training.title,
+                            numberPerson: training.people,
+                            onTap: () => Get.to(() => TrainingDetailsScreen(training: training,)),
+                          );
+                        },
+                        scrollDirection: Axis.horizontal,
+                      );
+                    }
+                  )
+                ),
+
                 SizedBox(height: 100,)
             
               ],

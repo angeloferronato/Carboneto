@@ -6,6 +6,7 @@ import 'package:carboneto/utils/exceptions/format_exceptions.dart';
 import 'package:carboneto/utils/exceptions/platform_exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -62,6 +63,33 @@ class UserRepository extends GetxController {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   } 
+
+  Future<UserModel> searchUser(String id) async {
+    try {
+      final query = await _db.collection('users').where('Id', isEqualTo: 'admin').get();
+
+      if (query.docs.isNotEmpty) {
+        final user = UserModel.fromSnapshot(query.docs[0]);
+        
+        return user;
+      } else {
+        return UserModel.empty();
+      }
+
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  } 
+
+
 
   Future<String?> findEmailByUsername(String username) async {
     try {

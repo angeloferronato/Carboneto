@@ -1,15 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ExerciseModel {
-  String description, title, video;
-  int repetitions;
+  String description, title, video, id;
+  int repetitions, duration;
 
-  ExerciseModel({required this.description, required this.title, required this.repetitions, required this.video});
+  ExerciseModel({required this.description, required this.title, required this.repetitions, required this.video, required this.id, required this.duration});
 
-  factory ExerciseModel.fromJson(Map<String, dynamic> json) {
+  factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     return ExerciseModel(
-      description: json['Description'], 
-      title: json['Title'], 
-      repetitions: json['Repetitions'], 
-      video: json['Video']
+      duration: snapshot['Duration'],
+      description: snapshot['Description'], 
+      title: snapshot['Title'], 
+      repetitions: snapshot['Repetitions'], 
+      video: snapshot['Video'],
+      id: snapshot['ID']
     );
   }
 
@@ -18,8 +22,19 @@ class ExerciseModel {
       'Description': description,
       'Title': title,
       'Repetitions': repetitions,
-      'Video': video
+      'Video': video,
+      'ID': id,
+      'Duration' : duration,
     };
   }
+
+ static ExerciseModel empty() => ExerciseModel(
+    description: '', 
+    title: '', 
+    repetitions: 0, 
+    video: '', 
+    id: '', 
+    duration: 0
+  );
 
 }

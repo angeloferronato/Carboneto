@@ -10,8 +10,10 @@ class FocusedTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.controller,
-    this.obscureText = false, 
+    this.obscureText = false,
     this.validator,
+    this.savedInitialValue,
+    this.paddingH = CbSizes.lg * 1.2,
   });
 
   final String hintText;
@@ -19,45 +21,44 @@ class FocusedTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
   final bool obscureText;
+  final double paddingH;
+  final String? savedInitialValue;
 
   @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) => TextFormField(
         validator: validator,
+        initialValue: savedInitialValue,
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: CbSizes.lg*1.2, vertical: CbSizes.md),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: paddingH, vertical: CbSizes.md),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           prefixIconColor: CbColors.white,
           hintText: hintText,
           fillColor: CbColors.inputBG,
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.all(Radius.circular(10))
-          ),
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.all(Radius.circular(10))
-          ),
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.all(Radius.circular(10))
-          ),
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
           filled: true,
           hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            color: CbColors.darkGrey,
-            fontWeight: FontWeight.w300,
-            fontSize: 14,
-          ),
+                color: CbColors.darkGrey,
+                fontWeight: FontWeight.w300,
+                fontSize: 14,
+              ),
         ),
       ),
     );

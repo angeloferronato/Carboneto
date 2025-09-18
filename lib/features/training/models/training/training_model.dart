@@ -1,38 +1,59 @@
+import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class TrainingModel {
   final String authorId;
   final List<String> categories;
   final String description;
   final int? duration;
-  final List<ExerciseModel> exercises;
+  List<ExerciseModel> exercises;
   final String id;
-  final String level;
+  final DifficultyLevels level;
+  final String? textLevel;
   final int people;
   final String thumbnail;
   final String title;
+  UserModel? user;
 
   TrainingModel({
     required this.authorId, required this.categories, required this.description, this.duration,
     required this.exercises, required this.id, required this.level, required this.people, required this.thumbnail, required this.title,
+    this.user, this.textLevel
   });
 
   factory TrainingModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
+    final DifficultyLevels level;
+    switch (data['Level'].toString().toLowerCase()) {
+      case 'allstar' || 'all-star':
+        level = DifficultyLevels.allstar;
+      case 'pro':
+        level = DifficultyLevels.pro;
+      case 'elite':
+        level = DifficultyLevels.elite;
+      default:
+        level = DifficultyLevels.rookie;
+    }
+
     return TrainingModel(
-      id: document.id, 
-      duration: data['Duration'],
-      authorId: data['AuthorId'] ?? '', 
-      categories: data["Categories"], 
-      description: data["Description"], 
-      exercises: data["Exercises"].map((json) => ExerciseModel.fromJson(json)).toList(),
-      level: data["Level"], 
-      people: data['People'], 
-      thumbnail: data['Thumbnail'], 
-      title: data['Title'],
+      id: document.id,
+      duration: data['Duration'] ?? 0,
+      authorId: data['AuthorId'] ?? '',
+      categories: List<String>.from(data['Categories'] ?? []),
+      description: data['Description'] ?? '',
+      exercises: [],
+      level: level,
+      people: data['People'] ?? 0,
+      thumbnail: data['Thumbnail'] ?? '',
+      title: data['Title'] ?? '',
+      textLevel: data['Level'].toString().capitalize,
     );
   }
+
+
 
   factory TrainingModel.fromJson(Map<String, dynamic> json) {
     return TrainingModel(
@@ -41,7 +62,7 @@ class TrainingModel {
       authorId: json['AuthorId'] ?? '', 
       categories: json["Categories"], 
       description: json["Description"], 
-      exercises: json["Exercises"].map((map) => ExerciseModel.fromJson(map)).toList(),
+      exercises: json["Exercises"],
       level: json["Level"], 
       people: json['People'], 
       thumbnail: json['Thumbnail'], 
@@ -56,7 +77,7 @@ class TrainingModel {
       'AuthorId': authorId,
       'Categories': categories,
       'Description': description,
-      'Exercises': exercises.map((exercise) => exercise.toJson()).toList(),
+      'Exercises': exercises,
       'Level': level,
       'People': people,
       'Thumbnail': thumbnail,
@@ -70,7 +91,7 @@ class TrainingModel {
     description: '', 
     exercises: [], 
     id: '', 
-    level: '', 
+    level: DifficultyLevels.rookie, 
     people: 0, 
     thumbnail: '', 
     title: ''
