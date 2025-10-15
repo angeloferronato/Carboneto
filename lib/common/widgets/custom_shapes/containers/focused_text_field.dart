@@ -14,6 +14,10 @@ class FocusedTextField extends StatelessWidget {
     this.validator,
     this.savedInitialValue,
     this.paddingH = CbSizes.lg * 1.2,
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: CbSizes.lg, vertical: CbSizes.md),
+    this.onChanged,
+    this.maxLines = 1,
+    this.onSubmitted,
   });
 
   final String hintText;
@@ -22,45 +26,58 @@ class FocusedTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final bool obscureText;
   final double paddingH;
+  final int? maxLines;
   final String? savedInitialValue;
+  final EdgeInsetsGeometry? contentPadding;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) => TextFormField(
-        validator: validator,
-        initialValue: savedInitialValue,
-        controller: controller,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: paddingH, vertical: CbSizes.md),
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          prefixIconColor: CbColors.white,
-          hintText: hintText,
-          fillColor: CbColors.inputBG,
-          border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          filled: true,
-          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: CbColors.darkGrey,
-                fontWeight: FontWeight.w300,
-                fontSize: 14,
-              ),
+    return TextFormField(
+      controller: controller,
+      initialValue: savedInitialValue,
+      validator: validator,
+      obscureText: obscureText,
+      maxLines: maxLines,
+      onChanged: onChanged,
+      onFieldSubmitted: onSubmitted,
+      decoration: InputDecoration(
+        contentPadding: contentPadding,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        prefixIconColor: CbColors.white,
+        hintText: hintText,
+        fillColor: CbColors.inputBG,
+        filled: true,
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: CbColors.darkGrey,
+              fontWeight: FontWeight.w300,
+              fontSize: 15,
+              height: 1.7,
+            ),
       ),
+      style: const TextStyle(color: Colors.white),
     );
   }
 }
+
+
