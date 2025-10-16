@@ -114,9 +114,9 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              FollowersAndFollowing(),
+              // FollowersAndFollowing(),
               SizedBox(
-                height: 40,
+                height: 10,
               ),
               HighlightBtn(
                 textValue: 'Editar Perfil',
@@ -331,7 +331,7 @@ class ProfileInfo extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
         ),
         CountryFlag.fromCountryCode(
-          'es',
+          'BR',
           width: 22,
           shape: RoundedRectangle(3),
           height: 15,

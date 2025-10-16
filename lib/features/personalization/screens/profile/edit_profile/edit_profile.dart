@@ -183,7 +183,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     });
                                   });
                             },
-                            child: Text(_selectedCountry == null? 'País':"${_selectedCountry!.name}  ${_selectedCountry!.flagEmoji}"),
+                            child: Text(_selectedCountry == null? 'País':"${_selectedCountry!.name}  ${_selectedCountry!.countryCode}"),
                           ),
                         ),
                       ]),

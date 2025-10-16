@@ -69,5 +69,5 @@ class CbImages {
   static const String stepback = "assets/images/explore/arremesso/step-back.png";
 
   // Create Images
-  static const String basket = "/assets/images/create/basket.png";
+  static const String basket = "assets/images/create/basket.png";
 }
