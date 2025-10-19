@@ -93,7 +93,7 @@ class SearchScreen extends StatelessWidget {
                       onTap: () {
                         Get.to(SearchResultScreen());
                       },
-                      child: Icon(Iconsax.search_normal_1),
+                      child: Icon(Iconsax.search_normal_1, size: 20,),
                     ),
                   ),
                 ),
