@@ -61,4 +61,7 @@ class CbImages {
   static const String lancel = "assets/images/explore/arremesso/lancel.png";
   static const String midran = "assets/images/explore/arremesso/Midran.png";
   static const String stepback = "assets/images/explore/arremesso/step-back.png";
+
+  // Create Images
+  static const String basket = "assets/images/create/basket.png";
 }

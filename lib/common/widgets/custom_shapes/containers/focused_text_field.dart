@@ -16,7 +16,11 @@ class FocusedTextField extends StatelessWidget {
     this.savedInitialValue,
     this.paddingH = CbSizes.lg * 1.2,
     this.maxLines = 1,
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: CbSizes.lg, vertical: CbSizes.md),
+    this.onChanged,
+    this.onSubmitted,
   }) : hasErrorNotifier = ValueNotifier(false);
+    
 
   final String hintText;
   final Widget? prefixIcon, suffixIcon;
@@ -24,15 +28,22 @@ class FocusedTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final bool obscureText;
   final double paddingH;
+  final int? maxLines;
   final String? savedInitialValue;
-  final int maxLines;
+  final EdgeInsetsGeometry? contentPadding;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final ValueNotifier<bool> hasErrorNotifier;
+
+  
 
   @override
   Widget build(BuildContext context) {
     return CustomFocusedShape (
       hasErrorNotifier: hasErrorNotifier,
       builder: (focusNode) => TextFormField(
+        onChanged: onChanged,
+        onFieldSubmitted: onSubmitted,
         textAlign: TextAlign.start,
         textAlignVertical: TextAlignVertical.center,
         maxLines: maxLines,
@@ -53,8 +64,8 @@ class FocusedTextField extends StatelessWidget {
           hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(
             color: CbColors.darkGrey,
           ),
-        ),
-      ),
+        )
+      )
     );
   }
 }

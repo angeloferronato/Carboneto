@@ -130,9 +130,9 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              FollowersAndFollowing(),
+              // FollowersAndFollowing(),
               SizedBox(
-                height: 40,
+                height: 10,
               ),
               HighlightBtn(
                 textValue: 'Editar Perfil',

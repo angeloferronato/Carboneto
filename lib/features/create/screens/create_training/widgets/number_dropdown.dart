@@ -1,0 +1,87 @@
+import 'package:carboneto/utils/constants/colors.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
+import '../controllers/number_dropdown_controller.dart';
+
+class NumberDropdown extends StatelessWidget {
+  const NumberDropdown({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(NumberDropdownController());
+
+    return Obx(() {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: CbColors.primary,
+          borderRadius: BorderRadius.circular(17),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<dynamic>(
+            value: controller.selectedValue.value,
+            isDense: true,
+            isExpanded: false,
+            dropdownColor: CbColors.dark,
+            borderRadius: BorderRadius.circular(20),
+            icon: const SizedBox.shrink(), // remove ícone padrão
+            
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Plus Jakarta Sans',
+            ),
+
+            selectedItemBuilder: (BuildContext context) {
+              return controller.values.map((value) {
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      controller.selectedValue.value.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                  ],
+                );
+              }).toList();
+            },
+
+            onChanged: (dynamic newValue) {
+              controller.setValue(newValue);
+            },
+
+            items: controller.values.map((value) {
+              return DropdownMenuItem<dynamic>(
+                value: value,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0), // 👈 menor padding vertical
+                    child: Text(
+                      value.toString(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    });
+  }
+}
+
