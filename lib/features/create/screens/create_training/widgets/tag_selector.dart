@@ -1,5 +1,5 @@
 import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/tag_search_screen.dart';
+import 'package:carboneto/features/create/screens/create_training/tag_search/tag_search_screen.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +35,7 @@ class TagSelector extends StatelessWidget {
                               ? CbColors.white
                               : CbColors.black),
                           fontWeight: FontWeight.w600,
+                          fontFamily: 'Plus Jakarta Sans'
                         ),
                       ),
                       backgroundColor: CbColors.dark,
@@ -51,8 +52,8 @@ class TagSelector extends StatelessWidget {
             onPressed: _openTagSearch,
             icon: const Icon(
               Icons.arrow_forward_ios,
-              color: Colors.blueAccent,
-              size: 20,
+              color: CbColors.primary,
+              size: 25,
             ),
           ),
         ],

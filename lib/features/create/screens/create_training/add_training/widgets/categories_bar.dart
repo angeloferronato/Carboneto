@@ -20,7 +20,6 @@ class CategoriesBar extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25),
                   onTap: () {
-                    Get.snackbar('Filter', 'Filter button tapped!');
                   },
                   child: Container(
                     height: 40,

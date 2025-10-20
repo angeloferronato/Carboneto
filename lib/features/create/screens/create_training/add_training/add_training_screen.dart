@@ -2,8 +2,9 @@ import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/controllers/exercises_controller.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/categories_bar.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/exercises_list.dart';
+import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
+import 'package:carboneto/features/create/screens/create_training/create_exercise/create_exercise_screen.dart';
+import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercises_list.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class AddTrainingScreen extends StatelessWidget {
         showBackArrow: true,
         actions: [
           IconButton(
-            onPressed: () {}, 
+            onPressed: () => Get.to(() => const CreateExerciseScreen()), 
             icon: Icon(Icons.add, color: CbColors.primary, size: 30,),)
         ],
       ),
