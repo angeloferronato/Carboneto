@@ -25,7 +25,8 @@ class CbUserProfileTile extends StatelessWidget {
             child: Row(
               children: [
                 CbRoundedImage(
-                  imageUrl: CbImages.userExample,
+                  imageUrl: controller.user.value.profilePicture != '' ? controller.user.value.profilePicture : CbImages.userDefault,
+                  isNetworkImage: controller.user.value.profilePicture != '',
                   height: 75,
                   borderRadius: 75,
                   border: Border.all(color: CbColors.primary, width: 1),

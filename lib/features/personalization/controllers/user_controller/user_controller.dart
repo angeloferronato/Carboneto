@@ -43,6 +43,9 @@ class UserController extends GetxController {
           username: username, 
           email: userCredentials.user?.email ?? userAccount?.email ?? '', 
           profilePicture: userCredentials.user!.photoURL ?? '',
+          description: '',
+          position: '',
+          countryCode: '',
         );
 
         await UserRepository.instance.saveUserRecord(user, userCredentials);

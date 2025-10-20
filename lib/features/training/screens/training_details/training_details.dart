@@ -209,12 +209,16 @@ class TrainingDetailsScreen extends StatelessWidget {
                   ),
                   Column(
                     children: List.generate(training!.exercises.length, (index) {
+                      String twoDigits(int n) => n.toString().padLeft(2, '0');
+                      final timeExecution = Duration(minutes: training!.exercises[index].duration);
+                      final minutes = twoDigits(timeExecution.inMinutes.remainder(60));
                       return Padding(
                         padding: const EdgeInsets.only(bottom: CbSizes.spaceBtwItems),
                         child: CbTrainingQueueItem(
+                          video: training!.exercises[index].video,
                           image: CbImages.trainingExample,
                           title: training!.exercises[index].title,
-                          duration: '01:00',
+                          duration: '$minutes:00',
                         ),
                       );
                     }),
@@ -236,23 +240,22 @@ class TrainingDetailsScreen extends StatelessWidget {
         child: SizedBox(
           height: 60,
           child: ElevatedButton(
-            onPressed: () {},
-            // onPressed: () => Get.defaultDialog(
-            //   titlePadding: const EdgeInsets.only(top: CbSizes.lg),
-            //   contentPadding: EdgeInsets.all(CbSizes.lg),
-            //   title: 'Você deseja continuar?',
-            //   middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
-            //   confirm: ElevatedButton(
-            //     onPressed: () => Get.to(TrainingExecution()),
-            //     style: ElevatedButton.styleFrom(backgroundColor: CbColors.primary, side: BorderSide(color: CbColors.primary)),
-            //     child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
-            //   ),
-            //   cancel: OutlinedButton(
-            //     onPressed: () => Navigator.of(Get.overlayContext!).pop(), 
-            //     child: Text('Não'),
-            //   ),
-            //   backgroundColor: CbColors.dark
-            // ),
+            onPressed: () => Get.defaultDialog(
+              titlePadding: const EdgeInsets.only(top: CbSizes.lg),
+              contentPadding: EdgeInsets.all(CbSizes.lg),
+              title: 'Você deseja continuar?',
+              middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
+              confirm: ElevatedButton(
+                onPressed: () => Get.to(TrainingExecution(training: training ?? TrainingModel.empty(),)),
+                style: ElevatedButton.styleFrom(backgroundColor: CbColors.primary, side: BorderSide(color: CbColors.primary)),
+                child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
+              ),
+              cancel: OutlinedButton(
+                onPressed: () => Navigator.of(Get.overlayContext!).pop(), 
+                child: Text('Não'),
+              ),
+              backgroundColor: CbColors.dark
+            ),
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),

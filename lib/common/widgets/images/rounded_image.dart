@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/material.dart';
 class CbRoundedImage extends StatelessWidget {
   const CbRoundedImage({
@@ -45,11 +47,16 @@ class CbRoundedImage extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: applyImageRadius ? BorderRadius.circular(borderRadius) : BorderRadius.zero,
-          child: Image(
+          child: isNetworkImage ? CachedNetworkImage(
             fit: fit,
-            image: isNetworkImage ? NetworkImage(imageUrl) : AssetImage(imageUrl) as ImageProvider,
-            
-          ),
+            imageUrl: imageUrl,
+            progressIndicatorBuilder: (context, url, progress) => CbShimmerEffects(width: width ?? 55, height: height ?? 55, radius: borderRadius,),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ) : Image(
+            fit: fit,
+            image: AssetImage(imageUrl) as ImageProvider,
+          )
+
         ),
       ),
     );

@@ -1,13 +1,15 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
+import 'package:carboneto/features/training/controllers/training_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
 class TrainingExecutionActionButtons extends StatelessWidget {
   const TrainingExecutionActionButtons({
-    super.key,
+    super.key, required this.controller,
   });
 
+  final TrainingController controller;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -18,7 +20,7 @@ class TrainingExecutionActionButtons extends StatelessWidget {
           height: 45,
           borderRadius: 45,
           child: IconButton(
-            onPressed: () {}, 
+            onPressed: () => controller.toggleSheet(), 
             icon: Icon(Icons.table_rows_rounded, color: CbColors.lightGrey,),
           ),
         ),
@@ -30,7 +32,7 @@ class TrainingExecutionActionButtons extends StatelessWidget {
           height: 45,
           borderRadius: 45,
           child: IconButton(
-            onPressed: () {}, 
+            onPressed: () => controller.nextExercise(), 
             icon: Icon(Icons.skip_next_rounded, size: 30,  color: CbColors.white,),
           ),
         ),
@@ -43,7 +45,7 @@ class TrainingExecutionActionButtons extends StatelessWidget {
           borderRadius: 45,
           child: IconButton(
             splashColor: const Color.fromARGB(255, 21, 68, 171),
-            onPressed: () {}, 
+            onPressed: () => controller.showCancelMessage(), 
             icon: Icon(Icons.close_sharp, size: 30, color: CbColors.white,),
           ),
         ),

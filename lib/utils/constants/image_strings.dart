@@ -1,15 +1,13 @@
 class CbImages {
   // -- Videos
   static const String videoExample = "assets/videos/arch_bounce_with_two_hands_over_head_between_legs.mp4";
-
+  static const String userDefault = "assets/images/signup/user-image.png";
 
   // -- Social Logos
   static const String google = "assets/logos/social_logos/icon-google.png";
   static const String facebook = "assets/logos/social_logos/icon-facebook.png";
-  static const String blackApple =
-      "assets/logos/social_logos/icon-apple-black.png";
-  static const String whiteApple =
-      "assets/logos/social_logos/icon-apple-white.png";
+  static const String blackApple = "assets/logos/social_logos/icon-apple-black.png";
+  static const String whiteApple = "assets/logos/social_logos/icon-apple-white.png";
 
   // SignUp Images
   static const String playerImage = "assets/images/signup/player.png";
@@ -31,16 +29,12 @@ class CbImages {
   static const String trainingExample = "assets/images/training/training_example.png";
   static const String trainingImageExample = "assets/images/training/training_video_example.png";
   static const String trainerExample = "assets/images/training/trainer_example.jpg";
-  static const String thumbnailTrainingExample =
-      "assets/images/training/training_thumbnail_details.png";
+  static const String thumbnailTrainingExample = "assets/images/training/training_thumbnail_details.png";
 
   // Onboarding Images
-  static const String onboardingIlustration1 =
-      "assets/images/onboarding/omb1.png";
-  static const String onboardingIlustration2 =
-      "assets/images/onboarding/omb2.png";
-  static const String onboardingIlustration3 =
-      "assets/images/onboarding/omb3.png";
+  static const String onboardingIlustration1 = "assets/images/onboarding/omb1.png";
+  static const String onboardingIlustration2 = "assets/images/onboarding/omb2.png";
+  static const String onboardingIlustration3 = "assets/images/onboarding/omb3.png";
   static const String cbWhiteLogo = "assets/logos/lc.png";
   static const String cbBlueLogo = "assets/logos/lcWhite.png";
 

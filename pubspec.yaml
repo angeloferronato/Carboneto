@@ -29,10 +29,13 @@ dependencies:
   shimmer: ^3.0.0
   country_code_picker: ^3.4.0
   country_picker: ^2.0.27
+  cached_network_image: ^3.4.1
+  world_info_plus: ^1.0.1
   
   # Videos
   chewie: ^1.12.1
   video_player: ^2.10.0
+  flutter_cache_manager: ^3.4.1
 
   # Icons
   iconsax: ^0.0.8

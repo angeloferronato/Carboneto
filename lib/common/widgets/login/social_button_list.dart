@@ -27,21 +27,6 @@ class SocialButtonList extends StatelessWidget {
         SizedBox(
           height: CbSizes.spaceBtwInputFields,
         ),
-        CbSocialButton(
-          socialIcon: AssetImage(CbImages.facebook),
-          socialText: CbTexts.loginWithFacebook,
-        ),
-        SizedBox(
-          height: CbSizes.spaceBtwInputFields,
-        ),
-        CbSocialButton(
-          socialIcon: AssetImage(
-              isDarkTheme ? CbImages.whiteApple : CbImages.blackApple),
-          socialText: CbTexts.loginWithApple,
-        ),
-        SizedBox(
-          height: CbSizes.spaceBtwInputFields,
-        ),
       ],
     );
   }

@@ -6,7 +6,10 @@ class UserModel {
   final String username;
   final String email;
   final String name;
-  String profilePicture;
+  final String profilePicture;
+  final String description;
+  final String position;
+  final String countryCode;
 
   UserModel({
     required this.id,
@@ -14,6 +17,9 @@ class UserModel {
     required this.email,
     required this.name,
     required this.profilePicture,
+    required this.description,
+    required this.position,
+    required this.countryCode,
   });
 
   static List<String> nameParts(fullName) => fullName.split(" ");
@@ -23,18 +29,21 @@ class UserModel {
     String firstName = nameParts[0].toLowerCase();  
     String lastName = nameParts.length > 1 ? nameParts[1].toLowerCase() : "";
 
-    String camelCaseUsername = "$firstName$lastName"; // Combine first and last name
-    String usernameWithPrefix = "cb_$camelCaseUsername"; // Add "cwt_" prefix
+    String camelCaseUsername = "$firstName$lastName"; 
+    String usernameWithPrefix = "cb_$camelCaseUsername"; 
     return usernameWithPrefix;
   }
 
   // Static function to create an empty user model.
   static UserModel empty() => UserModel(
-      id: "",
-      username: "",
-      email: "",
-      profilePicture: "",
-      name: "",
+    id: "",
+    username: "",
+    email: "",
+    profilePicture: "",
+    name: "",
+    description: "",
+    position: "",
+    countryCode: "",
   );
 
   // Convert model to JSON structure for storing data in Firebase.
@@ -45,6 +54,9 @@ class UserModel {
       'Username': username,
       'Email': email,
       'ProfilePicture': profilePicture,
+      'Description': description,
+      'Position': position,
+      'CountryCode': countryCode,
     };
   }
 
@@ -57,6 +69,9 @@ class UserModel {
       email: data['Email'] ?? "",
       profilePicture: data['ProfilePicture'] ?? "",
       name: data['Name'] ?? "",
+      description: data['Description'] ?? '',
+      position: data['Position'] ?? '',
+      countryCode: data['CountryCode'] ?? '',
     );
   }
 }

@@ -78,7 +78,7 @@ class WelcomeSection extends StatelessWidget {
                   : WelcomeCircleUser(
                   width: 160,
                   height: 160,
-                  child: CbRoundedImage(imageUrl: userRepository.user.value.profilePicture, isNetworkImage: true, borderRadius: 280, width: 160, height: 160,)),
+                  child: CbRoundedImage(imageUrl: userRepository.user.value.profilePicture.isEmpty ? CbImages.userDefault : userRepository.user.value.profilePicture, isNetworkImage: userRepository.user.value.profilePicture.isNotEmpty, borderRadius: 280, width: 160, height: 160,)),
                 ),
  
               ],

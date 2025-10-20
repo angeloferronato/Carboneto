@@ -2,6 +2,7 @@ import 'package:carboneto/data/repositories/authentication/authentication_reposi
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
+import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
@@ -14,6 +15,7 @@ class SignupController extends GetxController {
   static SignupController get instance => Get.find();
   
   // Variables
+  final EditProfileController editProfileController = Get.put(EditProfileController());
   final hidePassword = true.obs;
   final policyPrivacy = false.obs;
   Rx<String> selectedAccountType = 'atleta'.obs;
@@ -21,7 +23,10 @@ class SignupController extends GetxController {
   final TextEditingController password = TextEditingController();
   final TextEditingController name = TextEditingController();
   final TextEditingController username = TextEditingController();
+  final TextEditingController description = TextEditingController();
   final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
+  String? dropDownValue;
+  List<String> dropDownList = ['Armador', 'Ala-Armador', 'Ala', 'Ala-Pivô', 'Pivô'];
   
 
   void signup() async {
@@ -36,6 +41,23 @@ class SignupController extends GetxController {
 
       // Form Validation
       if (!signupFormKey.currentState!.validate()) {
+        CbFullScreenLoader.stopLoading();
+        return;
+      }
+
+      if (editProfileController.countryCode.value.isEmpty) {
+        CbLoaders.warningSnackBar(title: 'Selecionar País', message: 'Você precisa selecionar um país para continuar o cadastro.');
+        CbFullScreenLoader.stopLoading();
+        return;
+
+      }
+
+      // Check Position
+      if (dropDownValue == null) {
+        CbLoaders.warningSnackBar(
+          title: 'Selecione uma Posição',
+          message: 'Para criar uma conta, você deve escolher uma posição.',
+        );
         CbFullScreenLoader.stopLoading();
         return;
       }
@@ -61,6 +83,9 @@ class SignupController extends GetxController {
         email: email.text.trim(), 
         name: name.text.trim(), 
         profilePicture: '',
+        description: description.text.trim(),
+        position: dropDownValue ?? '',
+        countryCode: editProfileController.countryCode.value.trim(),
       );
 
       final userRepository = Get.put(UserRepository());

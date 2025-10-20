@@ -4,6 +4,7 @@ import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
+import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/features/training/screens/home/widgets/training_lib_item.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
@@ -13,6 +14,7 @@ import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
+import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -91,29 +93,38 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                     
                 const SizedBox(height: CbSizes.spaceBtwItems,),
-                    
-                SizedBox(
-                  height: 250,
-                  child: FutureBuilder<List<TrainingModel>>(
-                    future: _trainingsBallHandling, 
-
-                    builder: (context, snapshot) {
-                      debugPrint("TOTAL DOCS FETCHED: ${snapshot.data?[0]}");
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (snapshot.hasError) {
-                        return Center(child: Text("Erro: ${snapshot.error}"));
-                      }
-
-                      final trainings = snapshot.data ?? [];
-
-                      if (trainings.isEmpty) {
-                        return const Center(child: Text("Nenhum treino encontrado"));
-                      }
-
-                      return ListView.builder(
+ 
+                FutureBuilder<List<TrainingModel>>(
+                  future: _trainingsBallHandling, 
+                  builder: (context, snapshot) {
+                    debugPrint("TOTAL DOCS FETCHED: ${snapshot.data?[0]}");
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return SizedBox(
+                        height: 250,
+                        child: ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.only(left: CbSizes.md),
+                          shrinkWrap: true,
+                          itemCount: 2,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => HomeShimmer(),
+                        ),
+                      );
+                    }
+                
+                    if (snapshot.hasError) {
+                      return Center(child: Text("Erro: ${snapshot.error}"));
+                    }
+                
+                    final trainings = snapshot.data ?? [];
+                
+                    if (trainings.isEmpty) {
+                      return const Center(child: Text("Nenhum treino encontrado"));
+                    }
+                
+                    return SizedBox(
+                      height: 250,
+                      child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: trainings.length,
                         padding: EdgeInsets.only(left: CbSizes.md),
@@ -136,9 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                         scrollDirection: Axis.horizontal,
-                      );
-                    }
-                  )
+                      ),
+                    );
+                  }
                 ),
 
                 Padding(
@@ -153,7 +164,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     future: _trainingsDribbling, 
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
+                        return SizedBox(
+                          height: 250,
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.only(left: CbSizes.md),
+                            shrinkWrap: true,
+                            itemCount: 2,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) => HomeShimmer(),
+                          ),
+                        );
                       }
 
                       if (snapshot.hasError) {
@@ -210,7 +231,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context, snapshot) {
                       debugPrint("TOTAL DOCS FETCHED: ${snapshot.data}");
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
+                        return SizedBox(
+                          height: 250,
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.only(left: CbSizes.md),
+                            shrinkWrap: true,
+                            itemCount: 2,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) => HomeShimmer(),
+                          ),
+                        );
                       }
 
                       if (snapshot.hasError) {
@@ -267,7 +298,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context, snapshot) {
                       debugPrint("TOTAL DOCS FETCHED: ${snapshot.data}");
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
+                        return SizedBox(
+                          height: 250,
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.only(left: CbSizes.md),
+                            shrinkWrap: true,
+                            itemCount: 2,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) => HomeShimmer(),
+                          ),
+                        );
                       }
 
                       if (snapshot.hasError) {

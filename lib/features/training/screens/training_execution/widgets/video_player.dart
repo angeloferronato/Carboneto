@@ -1,80 +1,111 @@
 import 'dart:io';
-
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerView extends StatefulWidget {
-  const VideoPlayerView({super.key, required this.url, required this.dataSourceType});
+  const VideoPlayerView({
+    super.key,
+    required this.url,
+    required this.dataSourceType,
+  });
 
   final String url;
   final DataSourceType dataSourceType;
 
   @override
-  State<VideoPlayerView> createState() => _VideoPlayerViewState();
+  VideoPlayerViewState createState() => VideoPlayerViewState();
+
 }
 
 class _VideoPlayerViewState extends State<VideoPlayerView> {
-  late VideoPlayerController _videoPlayerController;
-
-  late ChewieController _chewieController;
+  VideoPlayerController? _videoPlayerController;
+  ChewieController? _chewieController;
+  
 
   @override
   void initState() {
     super.initState();
-   
+    _setupVideo();
+  }
+
+  Future<void> _setupVideo() async {
+    VideoPlayerController controller;
+
     switch (widget.dataSourceType) {
       case DataSourceType.asset:
-        _videoPlayerController = VideoPlayerController.asset(widget.url);
+        controller = VideoPlayerController.asset(widget.url);
         break;
       case DataSourceType.network:
-        _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(widget.url));
+        final file = await DefaultCacheManager().getSingleFile(widget.url);
+        controller = VideoPlayerController.file(File(file.path));
         break;
       case DataSourceType.file:
-        _videoPlayerController = VideoPlayerController.file(File(widget.url));
+        controller = VideoPlayerController.file(File(widget.url));
         break;
       case DataSourceType.contentUri:
-        _videoPlayerController = VideoPlayerController.contentUri(Uri.parse(widget.url));
+        controller = VideoPlayerController.contentUri(Uri.parse(widget.url));
         break;
     }
 
+    await controller.initialize();
 
-    _videoPlayerController.initialize().then(
-      (_) => setState(
-        () => _chewieController = ChewieController(
-          autoInitialize: true,
-          autoPlay: true,
-          videoPlayerController: _videoPlayerController,
-          materialProgressColors: ChewieProgressColors(
-            playedColor: CbColors.primary
-          ),
-          customControls: CupertinoControls(
-            backgroundColor: CbColors.dark,
-            iconColor: CbColors.grey,
-            
-          ),
-        )
-      )
-    );
+    setState(() {
+      _videoPlayerController = controller;
+      _chewieController = ChewieController(
+        autoInitialize: true,
+        autoPlay: true,
+        videoPlayerController: controller,
+        materialProgressColors: ChewieProgressColors(playedColor: CbColors.primary),
+        customControls: CupertinoControls(
+          backgroundColor: CbColors.dark,
+          iconColor: CbColors.grey,
+        ),
+      );
+    });
+  }
+
+  void stopVideo() {
+    _chewieController?.pause();
+    _videoPlayerController?.pause();
+    _videoPlayerController?.seekTo(Duration.zero);
+
+    _chewieController?.dispose();
+    _videoPlayerController?.dispose();
+
+    _chewieController = null;
+    _videoPlayerController = null;
   }
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    _videoPlayerController?.dispose();
+    _chewieController?.dispose();
     super.dispose();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child:  _videoPlayerController.value.isInitialized 
-        ? Chewie(
-          controller: _chewieController,
-        )
-        : const SizedBox()
-    );
+    if (_chewieController != null &&
+        _videoPlayerController != null &&
+        _videoPlayerController!.value.isInitialized) {
+      return AspectRatio(
+        aspectRatio: _videoPlayerController!.value.aspectRatio,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50)
+          ),
+          child: Chewie(controller: _chewieController!)
+        ),
+      );
+    }
+
+    return const Center(child: CircularProgressIndicator());
   }
 }
+
+class VideoPlayerViewState extends _VideoPlayerViewState {}

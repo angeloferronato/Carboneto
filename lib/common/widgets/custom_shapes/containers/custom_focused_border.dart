@@ -3,10 +3,14 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
+
+
+
 class CustomFocusedShape extends StatefulWidget {
-  const CustomFocusedShape ({super.key, required this.builder});
+  const CustomFocusedShape ({super.key, required this.builder, required this.hasErrorNotifier});
   
   final Widget Function(FocusNode) builder;
+  final ValueNotifier<bool> hasErrorNotifier;
 
   @override
   _CustomFocusedShapeState createState() => _CustomFocusedShapeState();
@@ -35,21 +39,24 @@ class _CustomFocusedShapeState extends State<CustomFocusedShape> {
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: isDarkMode ? CbColors.dark : CbColors.white,
-        borderRadius: BorderRadius.circular(CbSizes.inputFieldRadius),
-        boxShadow: _isFocused ? [
-          BoxShadow(
-            color: CbColors.primary,
-            spreadRadius: .5,
-            blurRadius: 5,
-            offset: Offset(0, 0),
-          ),
-        ]
-        : [],
+    return ValueListenableBuilder(
+      valueListenable: widget.hasErrorNotifier,
+      builder:(context, value, child) => Container(
+        decoration: BoxDecoration(
+          color: isDarkMode ? CbColors.dark : CbColors.white,
+          borderRadius: BorderRadius.circular(CbSizes.inputFieldRadius),
+          boxShadow: (_isFocused && !widget.hasErrorNotifier.value)? [
+            BoxShadow(
+              color: CbColors.primary,
+              spreadRadius: .5,
+              blurRadius: 5,
+              offset: Offset(0, 0),
+            ),
+          ]
+          : [],
+        ),
+        child: widget.builder(_focusNode),
       ),
-      child: widget.builder(_focusNode),
     );
   }
 }

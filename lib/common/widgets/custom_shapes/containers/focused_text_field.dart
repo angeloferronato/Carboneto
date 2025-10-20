@@ -2,9 +2,10 @@ import 'package:carboneto/common/widgets/custom_shapes/containers/custom_focused
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class FocusedTextField extends StatelessWidget {
-  const FocusedTextField({
+  FocusedTextField({
     super.key,
     required this.hintText,
     this.prefixIcon,
@@ -14,7 +15,8 @@ class FocusedTextField extends StatelessWidget {
     this.validator,
     this.savedInitialValue,
     this.paddingH = CbSizes.lg * 1.2,
-  });
+    this.maxLines = 1,
+  }) : hasErrorNotifier = ValueNotifier(false);
 
   final String hintText;
   final Widget? prefixIcon, suffixIcon;
@@ -23,42 +25,34 @@ class FocusedTextField extends StatelessWidget {
   final bool obscureText;
   final double paddingH;
   final String? savedInitialValue;
+  final int maxLines;
+  final ValueNotifier<bool> hasErrorNotifier;
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) => TextFormField(
-        validator: validator,
+    return CustomFocusedShape (
+      hasErrorNotifier: hasErrorNotifier,
+      builder: (focusNode) => TextFormField(
+        textAlign: TextAlign.start,
+        textAlignVertical: TextAlignVertical.center,
+        maxLines: maxLines,
+        validator:  (value) {
+          final error = validator?.call(value);
+          hasErrorNotifier.value = error != null;
+          return error;
+        },
         initialValue: savedInitialValue,
         controller: controller,
         obscureText: obscureText,
+        focusNode: focusNode,
         decoration: InputDecoration(
-          contentPadding:
-              EdgeInsets.symmetric(horizontal: paddingH, vertical: CbSizes.md),
+          contentPadding: EdgeInsets.symmetric(horizontal: paddingH, vertical: CbSizes.md),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
-          prefixIconColor: CbColors.white,
           hintText: hintText,
-          fillColor: CbColors.inputBG,
-          border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
-          filled: true,
-          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: CbColors.darkGrey,
-                fontWeight: FontWeight.w300,
-                fontSize: 14,
-              ),
+          hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(
+            color: CbColors.darkGrey,
+          ),
         ),
       ),
     );

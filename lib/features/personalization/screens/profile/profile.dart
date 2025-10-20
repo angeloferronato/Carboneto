@@ -1,4 +1,5 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
+import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/edit_profile.dart';
@@ -10,6 +11,7 @@ import 'package:carboneto/features/training/screens/home/widgets/home_training_d
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/cupertino.dart';
@@ -97,19 +99,33 @@ class ProfileScreen extends StatelessWidget {
               ),
               Obx(
                 () => userController.profileLoading.value
-                    ? CbShimmerEffects(width: 200, height: 60)
-                    : Text(
-                        userController.user.value.name,
-                        style: TextStyle(
-                            fontSize: 26, fontWeight: FontWeight.bold),
-                      ),
+                    ? CbShimmerEffects(width: 200, height: 30)
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                        child: Text(
+                            userController.user.value.name,
+                            style: TextStyle(
+                                fontSize: 26, fontWeight: FontWeight.bold),
+                        ),
+                    ),
               ),
               SizedBox(
                 height: 5,
               ),
-              Text(
-                'O maior bagre que ja jogou no IFSC',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                child: Obx(
+                  () => !userController.profileLoading.value ? Text(
+                    userController.user.value.description,
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                  ) : Column(
+                    children: [
+                      CbShimmerEffects(width: 120, height: 10),
+                      SizedBox(height: 5,),
+                      CbShimmerEffects(width: 100, height: 10),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -146,8 +162,8 @@ class _TreinoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final cardWidth =
-        (screenWidth - 40 - 20) / 3; // 40 padding horizontal + 20 spacing
-    final imageHeight = cardWidth * 1.2; // proporção da imagem
+        (screenWidth - 40 - 20) / 3; 
+    final imageHeight = cardWidth * 1.2;
 
     return SizedBox(
       width: cardWidth,
@@ -170,7 +186,7 @@ class _TreinoCard extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w300,
-                fontSize: cardWidth * 0.12, // tamanho do texto proporcional
+                fontSize: cardWidth * 0.12,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -208,15 +224,16 @@ class PrimaryText extends StatelessWidget {
 }
 
 class BannerWithPicture extends StatelessWidget {
-  const BannerWithPicture(
-      {super.key, required this.profileImg, required this.bannerImg});
+  const BannerWithPicture({super.key, required this.profileImg, required this.bannerImg});
   final String profileImg;
   final String bannerImg;
+  
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.put(UserController());
     final screenWidth = MediaQuery.of(context).size.width;
-    final bannerHeight = screenWidth * 0.6; // altura proporcional
+    final bannerHeight = screenWidth * 0.6;
     final avatarRadius = screenWidth * 0.21;
 
     return Stack(
@@ -248,9 +265,8 @@ class BannerWithPicture extends StatelessWidget {
               shape: BoxShape.circle,
               color: CbColors.primary,
             ),
-            child: CircleAvatar(
-              radius: avatarRadius,
-              backgroundImage: AssetImage(profileImg),
+            child: Obx(
+              () => !userController.profileLoading.value ? (userController.user.value.profilePicture != '' ? CbRoundedImage(imageUrl: userController.user.value.profilePicture, isNetworkImage: true, borderRadius: avatarRadius, width: 180, height: 180,) : CbRoundedImage(imageUrl: CbImages.userDefault, borderRadius: avatarRadius, width: 180,)) : CbShimmerEffects(width: 180, height: 180, radius: avatarRadius,),
             ),
           ),
         ),
@@ -309,7 +325,7 @@ class ContentGrid extends StatelessWidget {
 
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({super.key, required this.userController});
-  final dynamic userController;
+  final UserController userController;
 
   @override
   Widget build(BuildContext context) {
@@ -320,7 +336,7 @@ class ProfileInfo extends StatelessWidget {
       children: [
         Obx(
           () => userController.profileLoading.value
-              ? CbShimmerEffects(width: 200, height: 60)
+              ? CbShimmerEffects(width: 200, height: 12)
               : Text(
                   "@${userController.user.value.username}",
                   style: TextStyle(fontWeight: FontWeight.w500),
@@ -330,11 +346,13 @@ class ProfileInfo extends StatelessWidget {
           '•',
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
         ),
-        CountryFlag.fromCountryCode(
-          'es',
-          width: 22,
-          shape: RoundedRectangle(3),
-          height: 15,
+        Obx(
+          () => !userController.profileLoading.value ? CountryFlag.fromCountryCode(
+            userController.user.value.countryCode,
+            width: 22,
+            shape: RoundedRectangle(3),
+            height: 15,
+          ) :CbShimmerEffects(width: 22, height: 15)
         )
       ],
     );
