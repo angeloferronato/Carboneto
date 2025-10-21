@@ -2,9 +2,15 @@ import 'package:carboneto/features/create/screens/create_training/widgets/cb_pri
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
+class SquareUploadWidget extends StatelessWidget {
+  const SquareUploadWidget({
+    super.key,
+    required this.onSelectFiles,
+    this.label = "",
+    this.description = "",
+  });
 
-class VideoUploadWidget extends StatelessWidget {
-  const VideoUploadWidget({super.key, required this.onSelectFiles});
+  final String label, description;
 
   final VoidCallback onSelectFiles;
 
@@ -14,9 +20,11 @@ class VideoUploadWidget extends StatelessWidget {
       child: Container(
         height: 250,
         decoration: BoxDecoration(
-          border: Border.all(color: CbColors.primary, width: 1, ),
-          borderRadius: BorderRadius.circular(20)
-        ),
+            border: Border.all(
+              color: CbColors.darkGrey,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(20)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -36,10 +44,11 @@ class VideoUploadWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-        
+
             // Main text
-            const Text(
-              "Upload video",
+            Text(
+              // "Upload video",
+              label,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -47,24 +56,23 @@ class VideoUploadWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-        
+
             // Subtext
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: const Text(
-                "Selecionar arquivo de video. Tamanho máx 50mb.",
+              child:  Text(
+                // "Selecionar arquivo de video. Tamanho máx 50mb.",
+                description,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 11,
                   color: CbColors.lightGrey,
-                  
                 ),
               ),
             ),
             const SizedBox(height: 15),
-        
             // Select files button
-            CbPrimaryBtn(label: 'Selecionar', fontSize: 13,onPressed: () => {})
+            CbPrimaryBtn(label: 'Selecionar', fontSize: 13, onPressed: () => {})
           ],
         ),
       ),
