@@ -23,6 +23,16 @@ class CbValidator {
     return null;
   }
 
+  static String? validateSpecificField(String? fieldName, String? value, String? waitedResult) {
+    if (value == null || value.isEmpty) {
+      return '$fieldName obrigatório';
+    } else if (value == waitedResult) {
+      return '$fieldName deve ser diferente para ser possível editar';
+    }
+
+    return null;
+  }
+
 
 
   static String? validatePassword(String? value) {

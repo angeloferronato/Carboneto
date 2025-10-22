@@ -2,6 +2,8 @@ import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:get/get.dart';
 
 class ExercisesController extends GetxController {
+  static ExercisesController get instance => Get.find();
+
   final RxList<Map<String, dynamic>> exercises = [
     {
       'title': 'Alternância de Mãos',

@@ -2,6 +2,7 @@ import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_f
 import 'package:carboneto/common/widgets/login/login_no_account_text.dart';
 import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/features/authentication/screens/login/login.dart';
+import 'package:carboneto/features/authentication/screens/signup/widgets/position_selector.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/terms_text.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/country_selector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -92,38 +93,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: CbSizes.sm),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: CbColors.darkGrey,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(CbSizes.md),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        dropdownColor: CbColors.dark,
-                        value: controller.dropDownValue,
-                        hint: Text('Selecione uma opção', style: Theme.of(context).textTheme.bodyMedium,),
-                        items: controller.dropDownList.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value, style: Theme.of(context).textTheme.bodyLarge,),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            controller.dropDownValue = newValue;
-                          });
-                        },
-                        icon: const Icon(Icons.arrow_drop_down),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                
-                
+                  PositionSelector(),
                 ],
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
@@ -160,3 +130,4 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 }
+

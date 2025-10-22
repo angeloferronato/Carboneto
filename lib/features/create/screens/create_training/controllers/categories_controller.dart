@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesController extends GetxController {
-
+  static CategoriesController get instance => Get.find();
   final ScrollController scrollController = ScrollController();
 
   final RxList<String> categories = <String>[

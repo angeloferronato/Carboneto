@@ -1,4 +1,5 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';
@@ -118,6 +119,38 @@ class UserRepository extends GetxController {
       } else {
         return false;
       }
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+  Future<void> updateUserDetails(UserModel updatedUser) async {
+    try {
+      await _db.collection('users').doc(UserController.instance.user.value.id).update(updatedUser.toJson());
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+  Future<void> updateSingleField(Map<String, dynamic> json) async {
+    try {
+      await _db.collection('users').doc(UserController.instance.user.value.id).update(json);
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {

@@ -1,6 +1,7 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/custom_focused_border.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
@@ -19,6 +20,7 @@ class FocusedTextField extends StatelessWidget {
     this.contentPadding = const EdgeInsets.symmetric(horizontal: CbSizes.lg, vertical: CbSizes.md),
     this.onChanged,
     this.onSubmitted,
+    this.readOnly = false,
   }) : hasErrorNotifier = ValueNotifier(false);
     
 
@@ -34,38 +36,35 @@ class FocusedTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final ValueNotifier<bool> hasErrorNotifier;
-
-  
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
-    return CustomFocusedShape (
-      hasErrorNotifier: hasErrorNotifier,
-      builder: (focusNode) => TextFormField(
-        onChanged: onChanged,
-        onFieldSubmitted: onSubmitted,
-        textAlign: TextAlign.start,
-        textAlignVertical: TextAlignVertical.center,
-        maxLines: maxLines,
-        validator:  (value) {
-          final error = validator?.call(value);
-          hasErrorNotifier.value = error != null;
-          return error;
-        },
-        initialValue: savedInitialValue,
-        controller: controller,
-        obscureText: obscureText,
-        focusNode: focusNode,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: paddingH, vertical: CbSizes.md),
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          hintText: hintText,
-          hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(
-            color: CbColors.darkGrey,
-          ),
-        )
+    return TextFormField(
+      readOnly: readOnly,
+      onChanged: onChanged,
+      onFieldSubmitted: onSubmitted,
+      textAlign: TextAlign.start,
+      textAlignVertical: TextAlignVertical.center,
+      maxLines: maxLines,
+      validator:  (value) {
+        final error = validator?.call(value);
+        hasErrorNotifier.value = error != null;
+        return error;
+      },
+      initialValue: savedInitialValue,
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: paddingH, vertical: CbSizes.md),
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        hintText: hintText,
+        hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(
+          color: CbColors.darkGrey,
+        ),
       )
     );
+    
   }
 }

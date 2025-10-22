@@ -1,10 +1,16 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
+import 'package:carboneto/common/widgets/images/rounded_image.dart';
+import 'package:carboneto/features/authentication/controllers/position_selector/position_selector_controller.dart';
+import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
+import 'package:carboneto/features/authentication/screens/signup/widgets/position_selector.dart';
+import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/country_selector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
+import 'package:carboneto/utils/validators/validation.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,13 +23,22 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  
+  @override
+  void initState() {
+    final editProfileController = Get.put(EditProfileController());
+    editProfileController.nameController.text = UserController.instance.user.value.name;
+    editProfileController.descriptionController.text = UserController.instance.user.value.description;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final avatarRadius = screenWidth * 0.21;
     final userController = Get.put(UserController());
-
+    final positionSelectorController = Get.put(PositionSelectorController());
+    final editProfileController = Get.put(EditProfileController());
+    positionSelectorController.dropDownValue = userController.user.value.position;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -39,8 +54,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         centerTitle: true,
       ),
       body: Padding(
-        padding:
-            EdgeInsets.symmetric(vertical: 0, horizontal: CbSizes.defaultSpace),
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: CbSizes.defaultSpace),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -54,94 +68,105 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     shape: BoxShape.circle,
                     color: CbColors.primary,
                   ),
-                  child: CircleAvatar(
-                    radius: avatarRadius,
-                    backgroundImage: AssetImage(CbImages.userExample),
+                  child: Obx(
+                    () => !userController.profileLoading.value ? (userController.user.value.profilePicture != '' ? CbRoundedImage(imageUrl: userController.user.value.profilePicture, isNetworkImage: true, borderRadius: avatarRadius, width: 180, height: 180,) : CbRoundedImage(imageUrl: CbImages.userDefault, borderRadius: avatarRadius, width: 180,)) : CbShimmerEffects(width: 180, height: 180, radius: avatarRadius,),
                   ),
                 ),
               ),
-              Column(
-                spacing: 20,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Nome',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w800),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Obx(
-                        () => userController.profileLoading.value 
-                        ? CbShimmerEffects(width: 200, height: 60)
-                        : FocusedTextField(
-                          hintText: 'Nome',
-                          paddingH: 20,
-                          savedInitialValue: userController.user.value.name,
+              Form(
+                key: editProfileController.editProfileFormKey,
+                child: Column(
+                  spacing: 20,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Nome',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w800),
                         ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Descrição',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w800),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Obx(
-                        () => userController.profileLoading.value 
-                        ? CbShimmerEffects(width: 200, height: 60)
-                        : FocusedTextField(
-                          hintText: 'Descrição',
-                          paddingH: 20,
-                          savedInitialValue: '',
+                        SizedBox(
+                          height: 8,
                         ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Posição Favorita',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w800),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      FocusedTextField(
-                        hintText: 'Armador',
-                        paddingH: 20,
-                        // controller: controller.email,
-                        // validator: (value) => CbValidator.validateEmptyText(CbTexts.emailOrUserName, value),
-                      ),
-                    ],
-                  ),
-                  CbCountrySelector(),
-                  SizedBox(),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 17),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
-                    child: Text(
-                      'Salvar Alterações',
-                      style: TextStyle(fontWeight: FontWeight.w800),
+                        Obx(
+                          () {
+                            if (userController.profileLoading.value) {
+                              return CbShimmerEffects(width: 200, height: 60);
+                              
+                            } else {
+                              return FocusedTextField(
+                                controller: editProfileController.nameController,
+                                validator: (value) => CbValidator.validateEmptyText('Nome', value),
+                                hintText: 'Nome',
+                                paddingH: 20,
+                              );
+                            }
+                          }  
+                           
+                          
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Descrição',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w800),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Obx(
+                          () {
+                            if (userController.profileLoading.value ) {
+                              return CbShimmerEffects(width: double.infinity, height: 60);
+                            } else {
+                              return FocusedTextField(
+                                controller: editProfileController.descriptionController,
+                                hintText: 'Descrição',
+                                maxLines: 2,
+                                paddingH: 20,
+                              );
+                            }
+                          } 
+                         
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Posição Favorita',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w800),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        PositionSelector(width: double.infinity,),
+                      ],
+                    ),
+                    CbCountrySelector(),
+                    SizedBox(),
+                    ElevatedButton(
+                      onPressed: () => editProfileController.updateUserDetails(),
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 17),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
+                      child: Text(
+                        'Salvar Alterações',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -149,8 +174,5 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
   }
-
-
-
 }
 

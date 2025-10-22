@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
 class NumberDropdownController extends GetxController {
+  static NumberDropdownController get instance => Get.find();
+
   final selectedValue = '1'.obs;
 
   // Todos os valores como String

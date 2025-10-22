@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 class CreateTrainingController extends GetxController {
+  static CreateTrainingController get instance => Get.find();
   final RxList<String> allTags = <String>[
     "Intermediário",
     "Avançado",

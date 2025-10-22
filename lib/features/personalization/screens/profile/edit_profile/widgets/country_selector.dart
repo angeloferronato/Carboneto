@@ -1,4 +1,5 @@
 import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:country_picker/country_picker.dart';
@@ -15,7 +16,8 @@ class CbCountrySelector extends StatefulWidget {
 }
 
 class _CbCountrySelectorState extends State<CbCountrySelector> {
-  Country? _selectedCountry;
+  Country? _selectedCountry = Country.tryParse(UserController.instance.user.value.countryCode);
+  
   @override
   Widget build(BuildContext context) {
     final editProfileController = Get.put(EditProfileController());
@@ -36,7 +38,7 @@ class _CbCountrySelectorState extends State<CbCountrySelector> {
           child: ElevatedButton(
             style: ButtonStyle(
               alignment: Alignment.centerLeft,
-              backgroundColor: WidgetStatePropertyAll(CbColors.inputBG),
+              backgroundColor: WidgetStatePropertyAll(Colors.transparent),
               foregroundColor: WidgetStatePropertyAll(CbColors.darkGrey),
               padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 20, vertical: 17)),
               shape: WidgetStatePropertyAll(
@@ -48,7 +50,7 @@ class _CbCountrySelectorState extends State<CbCountrySelector> {
               overlayColor: WidgetStatePropertyAll(Colors.transparent),
               shadowColor: WidgetStatePropertyAll(Colors.transparent),
               elevation: WidgetStatePropertyAll(0),
-              side: WidgetStateBorderSide.resolveWith((states) => BorderSide.none),
+              side: WidgetStateBorderSide.resolveWith((states) => BorderSide(color: CbColors.darkGrey)),
             ),
             onPressed: () {
               showCountryPicker(
@@ -61,7 +63,7 @@ class _CbCountrySelectorState extends State<CbCountrySelector> {
                 }
               );
             },
-            child: Text(_selectedCountry == null? 'País':"${_selectedCountry!.name}  ${_selectedCountry!.flagEmoji}"),
+            child: Text(_selectedCountry == null ? 'País' : "${_selectedCountry!.name}  ${_selectedCountry!.flagEmoji}", style: Theme.of(context).textTheme.bodyMedium,),
           ),
         ),
       ]
