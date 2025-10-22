@@ -6,6 +6,7 @@ import 'package:carboneto/features/personalization/screens/profile/edit_profile/
 import 'package:carboneto/features/personalization/screens/profile/widgets/followers_and_following.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/profile_info.dart';
 import 'package:carboneto/features/personalization/screens/settings/settings.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -101,30 +102,37 @@ class ProfileScreen extends StatelessWidget {
                 () => userController.profileLoading.value
                     ? CbShimmerEffects(width: 200, height: 30)
                     : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: CbSizes.defaultSpace),
                         child: Text(
-                            userController.user.value.name,
-                            style: TextStyle(
-                                fontSize: 26, fontWeight: FontWeight.bold),
+                          userController.user.value.name,
+                          style: TextStyle(
+                              fontSize: 26, fontWeight: FontWeight.bold),
                         ),
-                    ),
+                      ),
               ),
               SizedBox(
                 height: 5,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: CbSizes.defaultSpace),
                 child: Obx(
-                  () => !userController.profileLoading.value ? Text(
-                    userController.user.value.description,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-                  ) : Column(
-                    children: [
-                      CbShimmerEffects(width: 120, height: 10),
-                      SizedBox(height: 5,),
-                      CbShimmerEffects(width: 100, height: 10),
-                    ],
-                  ),
+                  () => !userController.profileLoading.value
+                      ? Text(
+                          userController.user.value.description,
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w300),
+                        )
+                      : Column(
+                          children: [
+                            CbShimmerEffects(width: 120, height: 10),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            CbShimmerEffects(width: 100, height: 10),
+                          ],
+                        ),
                 ),
               ),
               SizedBox(
@@ -153,81 +161,15 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class _TreinoCard extends StatelessWidget {
-  final Treino treino;
 
-  const _TreinoCard({required this.treino});
 
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth =
-        (screenWidth - 40 - 20) / 3; 
-    final imageHeight = cardWidth * 1.2;
 
-    return SizedBox(
-      width: cardWidth,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              treino.imagem,
-              height: imageHeight,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Text(
-              treino.titulo,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-                fontSize: cardWidth * 0.12,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [LevelWidget(level: treino.nivel)],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PrimaryText extends StatelessWidget {
-  const PrimaryText({super.key, required this.textValue});
-
-  final String textValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      textValue,
-      style: TextStyle(
-        color: CbColors.white,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-  }
-}
 
 class BannerWithPicture extends StatelessWidget {
-  const BannerWithPicture({super.key, required this.profileImg, required this.bannerImg});
+  const BannerWithPicture(
+      {super.key, required this.profileImg, required this.bannerImg});
   final String profileImg;
   final String bannerImg;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -257,6 +199,7 @@ class BannerWithPicture extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
+        
         Positioned(
           bottom: -avatarRadius / 2,
           child: Container(
@@ -266,7 +209,25 @@ class BannerWithPicture extends StatelessWidget {
               color: CbColors.primary,
             ),
             child: Obx(
-              () => !userController.profileLoading.value ? (userController.user.value.profilePicture != '' ? CbRoundedImage(imageUrl: userController.user.value.profilePicture, isNetworkImage: true, borderRadius: avatarRadius, width: 180, height: 180,) : CbRoundedImage(imageUrl: CbImages.userDefault, borderRadius: avatarRadius, width: 180,)) : CbShimmerEffects(width: 180, height: 180, radius: avatarRadius,),
+              () => !userController.profileLoading.value
+                  ? (userController.user.value.profilePicture != ''
+                      ? CbRoundedImage(
+                          imageUrl: userController.user.value.profilePicture,
+                          isNetworkImage: true,
+                          borderRadius: avatarRadius,
+                          width: 180,
+                          height: 180,
+                        )
+                      : CbRoundedImage(
+                          imageUrl: CbImages.userDefault,
+                          borderRadius: avatarRadius,
+                          width: 180,
+                        ))
+                  : CbShimmerEffects(
+                      width: 180,
+                      height: 180,
+                      radius: avatarRadius,
+                    ),
             ),
           ),
         ),
@@ -308,55 +269,63 @@ class ContentGrid extends StatelessWidget {
             ),
             height: 1,
           ),
-          CbGridLayout(
-              itemCount: data.length,
-              mainAxisExtent: 200,
-              columnCount: 3,
-              crossSpacing: 10,
-              itemBuilder: (_, index) {
-                final treino = data[index];
-                return _TreinoCard(treino: treino);
-              }),
+
+          // FAZER NO FUTURO A LOGICA DE MOSTRAR OS TREINOS SE EXISTIREM: 
+          // WIDGET PRONTO:
+          // CbGridLayout(
+          //     itemCount: data.length,
+          //     mainAxisExtent: 200,
+          //     columnCount: 3,
+          //     crossSpacing: 5,
+          //     itemBuilder: (_, index) {
+          //       final treino = data[index];
+          //       return _TreinoCard(treino: treino);
+          //     }),
+
+          Column(
+            children: [
+              const SizedBox(height: 40,),
+              Icon(
+                Icons.add,
+                size: 70,
+                color: CbColors.buttonSecondary, // opcional, para combinar com seu tema
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Você ainda não possui treinos criados.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: CbColors.buttonSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'Crie um novo treino para começar a organizar suas sessões de basquete.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: CbColors.buttonSecondary,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
   }
 }
-
-class ProfileInfo extends StatelessWidget {
-  const ProfileInfo({super.key, required this.userController});
-  final UserController userController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 10,
-      children: [
-        Obx(
-          () => userController.profileLoading.value
-              ? CbShimmerEffects(width: 200, height: 12)
-              : Text(
-                  "@${userController.user.value.username}",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-        ),
-        Text(
-          '•',
-          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
-        ),
-        Obx(
-          () => !userController.profileLoading.value ? CountryFlag.fromCountryCode(
-            userController.user.value.countryCode,
-            width: 22,
-            shape: RoundedRectangle(3),
-            height: 15,
-          ) :CbShimmerEffects(width: 22, height: 15)
-        )
-      ],
-    );
-  }
-}
-
 

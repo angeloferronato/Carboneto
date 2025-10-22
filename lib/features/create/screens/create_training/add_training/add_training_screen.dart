@@ -1,22 +1,21 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
-import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/controllers/exercises_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
 import 'package:carboneto/features/create/screens/create_training/create_exercise/create_exercise_screen.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercises_list.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:get/get.dart';
+
 
 class AddTrainingScreen extends StatelessWidget {
   const AddTrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     final exercisesController = Get.put(ExercisesController());
 
     return Scaffold(
@@ -74,13 +73,26 @@ class AddTrainingScreen extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 24),
+                      // HEREEEE
                       child: FloatingActionButton.extended(
                         backgroundColor: CbColors.primary,
                         elevation: 6,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25), 
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.back();
+                          Future.delayed(const Duration(milliseconds: 200), () {
+                            Get.snackbar(
+                              "Exercício${selectedCount > 1 ? 's' : ''} adicionado${selectedCount > 1 ? 's' : ''}",
+                              "Os exercícios selecionados foram adicionados com sucesso.",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: CbColors.primary,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 2),
+                            );
+                          });
+                        },
                         icon: const Icon(Iconsax.add, color: Colors.white),
                         label: Text(
                           "Adicionar Exercício${selectedCount > 1 ? 's' : ''} ($selectedCount)",

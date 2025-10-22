@@ -2,6 +2,7 @@ import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
+import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
@@ -56,24 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 SafeArea(
-                  child: SizedBox(
-                    height: 40,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.only(left: CbSizes.defaultSpace),
-                      itemCount: 6,
-                      shrinkWrap: true,
-                      itemBuilder: (_, index) => RawChip(
-                        backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
-                        selected: index % 3 == 0 ? true : false,
-                        showCheckmark: false,
-                        label: Text('For You'),
-                        labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(color: isDarkTheme ? CbColors.white : index % 3 == 0 ? CbColors.white : CbColors.black),
-                        
-                      ),
-                      separatorBuilder: (_, __) => SizedBox(width: 10,),
-                    ),
-                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: CbSizes.defaultSpace),
+                    child: CategoriesBar(),
+                  )
                 ),
     
                 Padding(

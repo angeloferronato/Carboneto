@@ -1,5 +1,4 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/add_training_screen.dart';
 import 'package:carboneto/features/create/screens/create_training/controllers/exercises_controller.dart';
