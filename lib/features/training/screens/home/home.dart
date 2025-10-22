@@ -1,6 +1,7 @@
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
+import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
@@ -45,16 +46,16 @@ class _HomeScreenState extends State<HomeScreen> {
         removeBottom: true,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: CbSizes.defaultSpace),
+            padding: const EdgeInsets.only(bottom: CbSizes.defaultSpace),
             child: Column(
               children: [
                 SafeArea(
-                  child: Padding(
+                  child: TopLogo()
+                ),
+                Padding(
                     padding: const EdgeInsets.only(left: CbSizes.defaultSpace),
                     child: CategoriesBar(),
-                  )
                 ),
-    
                 // Padding(
                 //   padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
                 //   child: CbGridLayout(

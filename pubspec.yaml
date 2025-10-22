@@ -91,6 +91,7 @@ flutter:
     - assets/images/home_menu/
     - assets/images/training/
     - assets/images/onboarding/
+    - assets/images/profile/
     - assets/images/create/
     - assets/animations/loading/
     - assets/animations/email_verification/
