@@ -3,7 +3,7 @@ import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_f
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/controllers/exercises_controller.dart';
-import 'package:carboneto/features/create/screens/create_training/create_exercise/widgets/video_upload.dart';
+import 'package:carboneto/features/create/screens/create_training/widgets/square_upload.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/cb_primary_btn.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
@@ -46,8 +46,10 @@ class CreateExerciseScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              VideoUploadWidget(
+              SquareUploadWidget(
                 onSelectFiles: () {},
+                label: 'Upload video',
+                description: 'Selecionar arquivo de video. Tamanho máx 50mb.',
               ),
               const SizedBox(height: 20),
               CreateForm(
@@ -61,7 +63,7 @@ class CreateExerciseScreen extends StatelessWidget {
                 hintText:
                     'Start with the ball in the triple threat position close to the basket. Stand straight on and square to the basket, feet a shade over shoulder width apart, back straight, head upright, eyes looking at the rim.',
                 validateEmpty: 'Descrição do treino',
-                maxLines: 7,
+                maxLines: 5,
               ),
               const SizedBox(height: 20),
               const FormLabel(label: 'Adicionar Tags'),
