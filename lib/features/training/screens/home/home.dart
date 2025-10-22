@@ -1,21 +1,13 @@
-import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
-import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
-import 'package:carboneto/features/training/screens/home/widgets/training_lib_item.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
-import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/enums.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
-import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,14 +55,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ),
     
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                  child: CbGridLayout(
-                    itemCount: 6,
-                    itemBuilder: (_, index) => TrainingLibItem(image: CbImages.trainingExample, text: CbTexts.trainingHomeTitleExample,),
-                    mainAxisExtent: 55,
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                //   child: CbGridLayout(
+                //     itemCount: 6,
+                //     itemBuilder: (_, index) => TrainingLibItem(image: CbImages.trainingExample, text: CbTexts.trainingHomeTitleExample,),
+                //     mainAxisExtent: 55,
+                //   ),
+                // ),
 
                 const SizedBox(height: CbSizes.spaceBtwItems,),
                     
