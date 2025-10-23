@@ -37,7 +37,7 @@ class BannerWithPicture extends StatelessWidget {
           },
           blendMode: BlendMode.dstIn,
           child: Image.asset(
-            CbImages.bannerDefault,
+            bannerImg,
             width: double.infinity,
             height: bannerHeight,
             fit: BoxFit.cover,

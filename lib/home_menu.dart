@@ -3,6 +3,7 @@ import 'package:carboneto/common/custom_shapes/curved_edges/home/custom_curved_e
 import 'package:carboneto/common/widgets/navigation_bar/navigation_destination.dart';
 import 'package:carboneto/features/create/screens/create_training/create_training.dart';
 import 'package:carboneto/features/explore/screens/search/search.dart';
+import 'package:carboneto/features/library/screens/library.dart';
 import 'package:carboneto/features/personalization/screens/profile/profile.dart';
 import 'package:carboneto/features/training/screens/home/home.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -80,7 +81,7 @@ class HomeMenuController extends GetxController {
     HomeScreen(),
     SearchScreen(),
     CreateTraining(),
-    Container(color: Colors.yellow,),
+    LibraryScreen(),
     ProfileScreen(),
   ];
 }
