@@ -3,19 +3,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ExerciseModel {
   String description, title, video, id;
   int repetitions, duration;
+  String authorId;
+  List<dynamic>? categories;
+  
 
-  ExerciseModel({required this.description, required this.title, required this.repetitions, required this.video, required this.id, required this.duration});
+  ExerciseModel({required this.description, required this.title, required this.repetitions, required this.video, required this.id, required this.duration, required this.authorId, required this.categories});
 
-  factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    return ExerciseModel(
-      duration: snapshot['Duration'],
-      description: snapshot['Description'], 
-      title: snapshot['Title'], 
-      repetitions: snapshot['Repetitions'], 
-      video: snapshot['Video'],
-      id: snapshot['ID']
-    );
+factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  final data = snapshot.data();
+  if (data == null) {
+    return ExerciseModel.empty(); 
   }
+  return ExerciseModel(
+    duration: (data['Duration'] as int?) ?? 0, 
+    description: data['Description'] as String? ?? '', 
+    title: data['Title'] as String? ?? '', 
+    repetitions: (data['Repetitions'] as int?) ?? 0, 
+    video: data['Video'] as String? ?? '',
+    id: data['ID'] as String? ?? snapshot.id, 
+    authorId: data['AuthorId'] as String? ?? '',
+    categories: data['Categories'] as List<dynamic>? ?? List.empty(),
+  );
+}
 
   Map<String, dynamic> toJson() {
     return {
@@ -24,7 +33,9 @@ class ExerciseModel {
       'Repetitions': repetitions,
       'Video': video,
       'ID': id,
-      'Duration' : duration,
+      'Duration': duration,
+      'AuthorId': authorId,
+      'Categories': categories, 
     };
   }
 
@@ -34,7 +45,9 @@ class ExerciseModel {
     repetitions: 0, 
     video: '', 
     id: '', 
-    duration: 0
+    duration: 0,
+    authorId: '',
+    categories: List.empty(),
   );
 
 }

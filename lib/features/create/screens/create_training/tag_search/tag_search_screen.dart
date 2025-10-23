@@ -1,17 +1,18 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
-import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
+import 'package:carboneto/features/create/controllers/create_training_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class TagSearchScreen extends StatelessWidget {
-  const TagSearchScreen({super.key});
+  const TagSearchScreen({super.key, required this.tag});
+  final String tag;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<CreateTrainingController>();
+    final controller = Get.put(CreateTrainingController(), tag: tag);
     final TextEditingController textCtrl = TextEditingController();
 
     return Scaffold(

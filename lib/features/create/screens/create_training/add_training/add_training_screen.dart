@@ -1,7 +1,6 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
-import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
-import 'package:carboneto/features/create/screens/create_training/controllers/exercises_controller.dart';
+import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
 import 'package:carboneto/features/create/screens/create_training/create_exercise/create_exercise_screen.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercises_list.dart';
@@ -80,7 +79,7 @@ class AddTrainingScreen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25), 
                         ),
-                        onPressed: () {},
+                        onPressed: () => Get.back(),
                         icon: const Icon(Iconsax.add, color: Colors.white),
                         label: Text(
                           "Adicionar Exercício${selectedCount > 1 ? 's' : ''} ($selectedCount)",

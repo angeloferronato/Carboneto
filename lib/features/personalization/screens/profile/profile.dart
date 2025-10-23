@@ -103,9 +103,9 @@ class ProfileScreen extends StatelessWidget {
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
                         child: Text(
-                            userController.user.value.name,
-                            style: TextStyle(
-                                fontSize: 26, fontWeight: FontWeight.bold),
+                          userController.user.value.name,
+                          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
                     ),
               ),
@@ -118,6 +118,7 @@ class ProfileScreen extends StatelessWidget {
                   () => !userController.profileLoading.value ? Text(
                     userController.user.value.description,
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                    textAlign: TextAlign.center,
                   ) : Column(
                     children: [
                       CbShimmerEffects(width: 120, height: 10),

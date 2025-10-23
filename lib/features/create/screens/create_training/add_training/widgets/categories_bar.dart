@@ -1,7 +1,7 @@
+import 'package:carboneto/features/create/controllers/categories_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/features/create/screens/create_training/controllers/categories_controller.dart';
 
 class CategoriesBar extends StatelessWidget {
   CategoriesBar({super.key});

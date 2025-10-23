@@ -24,7 +24,9 @@ class CbPrimaryBtn extends StatelessWidget {
           elevation: 3),
       child: Text(
         label,
-        style: TextStyle(fontSize: fontSize, fontFamily: 'Plus Jakarta Sans'),
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+          fontSize: fontSize,
+        ),
       ),
     );
   }

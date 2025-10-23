@@ -1,21 +1,22 @@
-import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
+import 'package:carboneto/features/create/controllers/create_training_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/tag_search/tag_search_screen.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TagSelector extends StatelessWidget {
-  TagSelector({super.key});
+  const TagSelector({super.key, required this.controllerTag});
 
-  final controller = Get.find<CreateTrainingController>();
-
-  void _openTagSearch() {
-    Get.to(() => const TagSearchScreen());
-  }
+  final String controllerTag;
 
   @override
   Widget build(BuildContext context) {
+    void openTagSearch() {
+      Get.to(TagSearchScreen(tag: controllerTag,));
+    }
+
     final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final controller = Get.put(CreateTrainingController(), tag: controllerTag);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -42,14 +43,14 @@ class TagSelector extends StatelessWidget {
                       shape: StadiumBorder(
                         side: BorderSide(color: CbColors.primary),
                       ),
-                      onDeleted: () => controller.removeTag(tag),
+                      onDeleted: () => controller.onTagChanged(tag),
                       deleteIconColor: CbColors.accent,
                     );
                   }).toList(),
                 )),
           ),
           IconButton(
-            onPressed: _openTagSearch,
+            onPressed: openTagSearch,
             icon: const Icon(
               Icons.arrow_forward_ios,
               color: CbColors.primary,

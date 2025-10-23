@@ -70,4 +70,7 @@ class CbTexts {
       'Acompanhe seu desempenho. Seus treinos viram progresso real — e você sente isso em quadra.';
   static const String onboardingSubtitle3 =
       'Treine com propósito, acompanhe seus dados e vá além do básico. É assim que se evolui de verdade.';
+
+  static const String exerciseControllerTag = 'exercise';
+  static const String trainingControllerTag = 'training';
 }

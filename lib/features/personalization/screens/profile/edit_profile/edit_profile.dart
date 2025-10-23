@@ -76,7 +76,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               Form(
                 key: editProfileController.editProfileFormKey,
                 child: Column(
-                  spacing: 20,
+                  spacing: 10,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +88,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               fontSize: 16, fontWeight: FontWeight.w800),
                         ),
                         SizedBox(
-                          height: 8,
+                          height: CbSizes.md,
                         ),
                         Obx(
                           () {
@@ -101,6 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 validator: (value) => CbValidator.validateEmptyText('Nome', value),
                                 hintText: 'Nome',
                                 paddingH: 20,
+                                maxLength: 60,
                               );
                             }
                           }  
@@ -119,7 +120,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               fontSize: 16, fontWeight: FontWeight.w800),
                         ),
                         SizedBox(
-                          height: 8,
+                          height: CbSizes.md,
                         ),
                         Obx(
                           () {
@@ -131,6 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 hintText: 'Descrição',
                                 maxLines: 2,
                                 paddingH: 20,
+                                maxLength: 200,
                               );
                             }
                           } 

@@ -1,15 +1,17 @@
+import 'package:carboneto/features/create/controllers/number_dropdown_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import '../controllers/number_dropdown_controller.dart';
 
 class NumberDropdown extends StatelessWidget {
-  const NumberDropdown({super.key});
+  const NumberDropdown({super.key, required this.controllerTag});
+
+  final String controllerTag;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NumberDropdownController());
+    final controller = Get.put(NumberDropdownController(), tag: controllerTag);
 
     return Obx(() {
       return Container(

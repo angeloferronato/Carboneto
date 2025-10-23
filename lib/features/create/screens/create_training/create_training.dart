@@ -1,9 +1,9 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/common/widgets/images/rounded_image.dart';
-import 'package:carboneto/features/create/screens/create_training/controllers/create_training_controller.dart';
+import 'package:carboneto/features/create/controllers/create_training_controller.dart';
+import 'package:carboneto/features/create/controllers/exercises_controller.dart';
+import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/add_training_screen.dart';
-import 'package:carboneto/features/create/screens/create_training/controllers/exercises_controller.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/cb_primary_btn.dart';
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/exercises_selected.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/form_label.dart';
@@ -13,6 +13,7 @@ import 'package:carboneto/features/create/screens/create_training/widgets/tag_se
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,8 +22,8 @@ class CreateTraining extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        Get.put(CreateTrainingController()); // Use the controller
+    final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.trainingControllerTag);
+    final controller = Get.put(CreateTrainingController()); 
     final exercisesController = Get.put(ExercisesController());
     return Scaffold(
       appBar: CbAppBar(
@@ -45,7 +46,8 @@ class CreateTraining extends StatelessWidget {
             children: [
               // Upload thumbnail
               SquareUploadWidget(
-                onSelectFiles: () {},
+                uploadImageController: uploadImageController,
+                onSelectFiles: uploadImageController.pickSingleFile,
                 label: 'Upload thumbnail',
                 description:
                     'Selecione um arquivo de imagem para a capa do treino. Tamanho máx 20mb',
@@ -57,8 +59,8 @@ class CreateTraining extends StatelessWidget {
                 label: 'Titulo',
                 hintText: 'How to train like Steph Curry',
                 validateEmpty: 'How to train like Steph Curry',
+                maxLength: 80,
               ),
-              const SizedBox(height: 20),
 
               // Description Form Section
               CreateForm(
@@ -66,13 +68,14 @@ class CreateTraining extends StatelessWidget {
                 hintText: 'Want to shoot, move, and handle the ball like one of the greatest shooters in NBA history? In this video, we break down Steph Curry’s signature training routine on this all in one training session.',
                 validateEmpty: 'Descrição do treino',
                 maxLines: 5,
+                maxLength: 200,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: CbSizes.defaultSpace),
 
               // Tags Section
               const FormLabel(label: 'Adicionar Tags'),
               const SizedBox(height: 10),
-              TagSelector(), // Tag selector widget
+              TagSelector(controllerTag: CbTexts.trainingControllerTag,), // Tag selector widget
               const SizedBox(height: 25),
               const FormLabel(label: 'Exercícios'),
               // Exercises Section
@@ -116,8 +119,7 @@ class CreateTraining extends StatelessWidget {
                   // Add Exercise Button
                   CbPrimaryBtn(
                     label: 'Adicionar Exercício',
-                    onPressed: () => Get.to(() =>
-                        const AddTrainingScreen()), // Navigate to Add Training Screen
+                    onPressed: () => Get.to(() => const AddTrainingScreen()), // Navigate to Add Training Screen
                   ),
                   const SizedBox(height: 30),
 
@@ -126,7 +128,7 @@ class CreateTraining extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const FormLabel(label: 'N° de pessoas necessárias'),
-                      const NumberDropdown(), // Assuming custom widget for number selection
+                      const NumberDropdown(controllerTag: CbTexts.trainingControllerTag,), // Assuming custom widget for number selection
                     ],
                   ),
                   const SizedBox(height: 40),

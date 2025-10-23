@@ -31,11 +31,13 @@ class CreateTrainingController extends GetxController {
   }
 
   // Functions to handle Tag management
-  void onTagChanged(String tag, bool added) {
+  void onTagChanged(String tag, [bool added = false]) {
     if (added) {
-      addTag(tag);
+        addTag(tag);
     } else {
-      removeTag(tag);
+      if (selectedTags.length > 2) {
+        removeTag(tag);
+      }
     }
   }
 

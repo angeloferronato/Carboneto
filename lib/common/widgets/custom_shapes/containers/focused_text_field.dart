@@ -21,6 +21,7 @@ class FocusedTextField extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.readOnly = false,
+    this.maxLength,
   }) : hasErrorNotifier = ValueNotifier(false);
     
 
@@ -37,10 +38,12 @@ class FocusedTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final ValueNotifier<bool> hasErrorNotifier;
   final bool readOnly;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: maxLength,
       readOnly: readOnly,
       onChanged: onChanged,
       onFieldSubmitted: onSubmitted,

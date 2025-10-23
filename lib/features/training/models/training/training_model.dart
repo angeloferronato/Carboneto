@@ -41,7 +41,7 @@ class TrainingModel {
     return TrainingModel(
       id: document.id,
       duration: data['Duration'] ?? 0,
-      authorId: data['AuthorId'] ?? '',
+      authorId: data['AuthorID'] ?? '',
       categories: List<String>.from(data['Categories'] ?? []),
       description: data['Description'] ?? '',
       exercises: [],

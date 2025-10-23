@@ -71,7 +71,10 @@ class EditProfileController extends GetxController {
       CbFullScreenLoader.stopLoading();
 
       CbLoaders.successSnackBar(title: 'Perfil Atualizado!', message: 'Seu perfil foi atualizado com sucesso! Agora é só desfrutar o Carboneto!');
-      Get.offAll(HomeMenu());
+
+      Get.offAll(() => HomeMenu());
+      final homeMenuController = Get.put(HomeMenuController());
+      homeMenuController.selectedIndex.value = 4;
 
     } catch(e) {
       CbFullScreenLoader.stopLoading();
