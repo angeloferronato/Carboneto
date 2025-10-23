@@ -54,7 +54,7 @@ class CreateExerciseScreen extends StatelessWidget {
                 CreateForm(
                   controller: controller.title,
                   label: 'Titulo',
-                  hintText: 'Form Shooting',
+                  hintText: 'Bandeja Reversa com a Mesma Mão',
                   validateEmpty: 'Título',
                   maxLength: 80,
                 ),
@@ -63,10 +63,10 @@ class CreateExerciseScreen extends StatelessWidget {
                   controller: controller.description,
                   label: 'Descrição',
                   hintText:
-                      'Start with the ball in the triple threat position close to the basket. Stand straight on and square to the basket, feet a shade over shoulder width apart, back straight, head upright, eyes looking at the rim.',
+                      'Drible até a cesta e faça bandeja invertida, impulsionando-se com o pé oposto, girando o corpo e lançando a bola com a mesma mão do lado da cesta. Repita do outro lado, alternando mãos e pés.',
                   validateEmpty: 'Descrição do treino',
                   maxLines: 5,
-                  maxLength: 200,
+                  maxLength: 400,
                 ),
                 
                 const SizedBox(height: 20),

@@ -92,7 +92,7 @@ class ExercisesController extends GetxController {
         duration: 5, 
         authorId: userController.user.value.id, 
         categories: createTrainingController.selectedTags.value, 
-        //thumb: 'https://firebasestorage.googleapis.com/v0/b/carboneto-fe55b.firebasestorage.app/o/default-ui-image-placeholder-wireframes-600nw-1037719192.webp?alt=media&token=9e26bdef-6613-4f42-9d49-4fd99332aba8'
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/carboneto-fe55b.firebasestorage.app/o/default-ui-image-placeholder-wireframes-600nw-1037719192.webp?alt=media&token=9e26bdef-6613-4f42-9d49-4fd99332aba8'
       );
 
       exerciseRepository.saveExerciseRecord(newExercise);
