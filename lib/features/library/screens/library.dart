@@ -1,15 +1,5 @@
-import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/exercises_selected.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/form_label.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/number_dropdown.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/square_upload.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/tag_selector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
-import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 
 class LibraryScreen extends StatelessWidget {

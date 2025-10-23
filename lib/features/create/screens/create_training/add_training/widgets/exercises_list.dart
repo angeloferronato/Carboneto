@@ -14,25 +14,26 @@ class ExercisesList extends StatelessWidget {
 
   final controller = Get.put(ExercisesController());
 
-  // --- FUNÇÃO INTEGRADA PARA BUSCAR A IMAGEM DE PERFIL ---
-  /// Busca o URL da imagem de perfil do autor do exercício usando o UserRepository.
-  /// Assume que `authorId` é o `id` do usuário no Firestore.
-  Future<String> fetchAuthorProfilePicture(String authorId) async {
+  // --- FUNÇÃO ATUALIZADA PARA BUSCAR O USER MODEL COMPLETO ---
+  /// Busca o UserModel do autor do exercício usando o UserRepository.
+  /// Retorna o UserModel completo em caso de sucesso, ou null em caso de erro.
+  Future<UserModel?> fetchAuthorModel(String authorId) async {
     try {
       if (authorId.isEmpty) {
-        return ''; // Retorna string vazia se o ID for vazio
+        return null; // Retorna null se o ID for vazio
       }
       // Usa o UserRepository para buscar o UserModel
+      // Assumindo que searchUser retorna um UserModel
       final UserModel user = await UserRepository.instance.searchUser(authorId);
-      // Retorna a URL da imagem de perfil. Assumindo que UserModel tem a propriedade profilePicture.
-      return user.profilePicture; 
+      // Retorna o UserModel completo.
+      return user; 
     } catch (e) {
-      // Em caso de erro, retorna uma string vazia para exibir um placeholder
-      debugPrint('Erro ao buscar imagem do autor $authorId: $e');
-      return '';
+      // Em caso de erro, retorna null.
+      debugPrint('Erro ao buscar UserModel do autor $authorId: $e');
+      return null;
     }
   }
-  // --- FIM DA FUNÇÃO INTEGRADA ---
+  // --- FIM DA FUNÇÃO ATUALIZADA ---
 
   @override
   Widget build(BuildContext context) {
@@ -165,41 +166,58 @@ class ExercisesList extends StatelessWidget {
                                                 const SizedBox(height: 4),
                                                 Row(
                                                   children: [
-                                                    // --- NOVO FutureBuilder PARA A IMAGEM DO PERFIL ---
-                                                    FutureBuilder<String>(
-                                                      future: fetchAuthorProfilePicture(exercise.authorId),
+                                                    // --- NOVO FutureBuilder PARA O USER MODEL ---
+                                                    FutureBuilder<UserModel?>(
+                                                      future: fetchAuthorModel(exercise.authorId),
                                                       builder: (context, snapshot) {
-                                                        final imageUrl = snapshot.data;
-                                                        if (snapshot.connectionState == ConnectionState.done && imageUrl != null && imageUrl.isNotEmpty) {
-                                                          // Imagem de perfil do Firebase
-                                                          return CircleAvatar(
-                                                            radius: 8,
-                                                            backgroundImage: NetworkImage(imageUrl),
-                                                            backgroundColor: CbColors.primary,
+                                                        final UserModel? author = snapshot.data;
+                                                        final bool hasImage = author != null && author.profilePicture.isNotEmpty;
+
+                                                        // Use o NetworkImage se houver uma URL válida, caso contrário use um placeholder.
+                                                        final Widget profileAvatar = CircleAvatar(
+                                                          radius: 8,
+                                                          backgroundImage: hasImage
+                                                              ? NetworkImage(author.profilePicture)
+                                                              : null,
+                                                          backgroundColor: CbColors.primary,
+                                                          child: hasImage ? null : const Icon(Icons.person, size: 10, color: CbColors.white),
+                                                        );
+
+                                                        // Exibe o avatar
+                                                        Widget avatarWidget;
+                                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                                          // Estado de carregamento
+                                                          avatarWidget = const SizedBox(
+                                                            height: 16,
+                                                            width: 16,
+                                                            child: CircularProgressIndicator(strokeWidth: 2, color: CbColors.primary),
                                                           );
                                                         } else {
-                                                          // Placeholder/Ícone padrão (enquanto carrega ou se não tiver imagem/erro)
-                                                          return const CircleAvatar(
-                                                            radius: 8,
-                                                            backgroundColor: CbColors.primary,
-                                                          );
+                                                          avatarWidget = profileAvatar;
                                                         }
+
+                                                        return Row(
+                                                          children: [
+                                                            // Avatar/Imagem do Perfil
+                                                            avatarWidget,
+                                                            const SizedBox(width: 6),
+                                                            // Nome do Autor (usando fullName ou username, se existir)
+                                                            Text(
+                                                              author != null && author.name.isNotEmpty ? author.name : 'Autor Desconhecido',
+                                                              style: const TextStyle(
+                                                                color: Colors.white70,
+                                                                fontSize: 10,
+                                                                fontWeight: FontWeight.w500,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(width: 6),
+                                                            const Icon(Icons.verified, color: Colors.amber, size: 10),
+                                                          ],
+                                                        );
                                                       },
                                                     ),
                                                     // --- FIM DO NOVO FutureBuilder ---
 
-                                                    const SizedBox(width: 6),
-                                                    // Usando o AuthorId como 'trainer'
-                                                    Text(
-                                                      exercise.authorId.isNotEmpty ? exercise.authorId : 'Autor Desconhecido',
-                                                      style: const TextStyle(
-                                                        color: Colors.white70,
-                                                        fontSize: 10,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 6),
-                                                    const Icon(Icons.verified, color: Colors.amber, size: 10),
                                                   ],
                                                 ),
                                                 const SizedBox(height: 4),
