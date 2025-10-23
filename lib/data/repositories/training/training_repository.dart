@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
@@ -8,6 +10,7 @@ import 'package:carboneto/utils/exceptions/format_exceptions.dart';
 import 'package:carboneto/utils/exceptions/platform_exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -117,5 +120,34 @@ class TrainingRepository extends GetxController {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
+
+  Future<String?> uploadVideoToFirebase(File file, ) async {
+  try {
+
+    // Passo 2: Nome único para o vídeo
+    final fileName = 'Videos/${DateTime.now().millisecondsSinceEpoch}.mp4';
+
+    // Passo 3: Referência no Firebase Storage
+    final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+
+    // Passo 4: Fazer upload
+    final UploadTask uploadTask = storageRef.putFile(file);
+
+    // Passo 5: Acompanhar progresso (opcional)
+    uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+      final progress = snapshot.bytesTransferred / snapshot.totalBytes;
+      debugPrint('Progresso: ${(progress * 100).toStringAsFixed(2)}%');
+    });
+
+    // Passo 6: Esperar terminar e pegar a URL
+    final TaskSnapshot completed = await uploadTask.whenComplete(() {});
+    final String downloadURL = await completed.ref.getDownloadURL();
+
+
+    return downloadURL;
+  } catch (e) {
+    return null;
+  }
+}
 
 }

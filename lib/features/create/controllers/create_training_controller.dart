@@ -1,7 +1,15 @@
+import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/helpers/network_manager.dart';
+import 'package:carboneto/utils/popups/full_screen_loader.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class CreateTrainingController extends GetxController {
   static CreateTrainingController get instance => Get.find();
+  final title = TextEditingController();
+  final description = TextEditingController();
+  final GlobalKey<FormState> createTrainingFormKey = GlobalKey<FormState>();
+
   // Managing Tags
   final RxList<String> allTags = <String>[
     "Intermediário",
@@ -55,6 +63,27 @@ class CreateTrainingController extends GetxController {
     if (tag.isNotEmpty && !allTags.contains(tag)) {
       allTags.add(tag);
       selectedTags.add(tag);
+    }
+  }
+
+  Future<void> createTraining() async {
+    try {
+      CbFullScreenLoader.openLoadingDialog(CbImages.loadingAnimation, 'Estamos criando seu treino');
+
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        return;
+      }
+
+      // Form Validation
+      if (!createTrainingFormKey.currentState!.validate()) {
+        CbFullScreenLoader.stopLoading();
+        return;
+      }
+
+
+    } catch (e) {
+      CbFullScreenLoader.stopLoading();
     }
   }
 

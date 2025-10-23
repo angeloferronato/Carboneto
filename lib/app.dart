@@ -14,7 +14,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       initialBinding: GeneralBindings(),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       darkTheme: CbAppTheme.darkTheme,
       supportedLocales: const [
         Locale('en'),

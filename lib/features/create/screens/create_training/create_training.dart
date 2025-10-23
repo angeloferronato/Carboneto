@@ -50,12 +50,13 @@ class CreateTraining extends StatelessWidget {
                 onSelectFiles: uploadImageController.pickSingleFile,
                 label: 'Upload thumbnail',
                 description:
-                    'Selecione um arquivo de imagem para a capa do treino. Tamanho máx 20mb',
+                    'Selecione um arquivo de imagem para a capa do treino.',
               ),
               const SizedBox(height: 20),
 
               // Title Form Section
               CreateForm(
+                controller: controller.title,
                 label: 'Titulo',
                 hintText: 'How to train like Steph Curry',
                 validateEmpty: 'How to train like Steph Curry',
@@ -64,6 +65,7 @@ class CreateTraining extends StatelessWidget {
 
               // Description Form Section
               CreateForm(
+                controller: controller.description,
                 label: 'Descrição',
                 hintText: 'Want to shoot, move, and handle the ball like one of the greatest shooters in NBA history? In this video, we break down Steph Curry’s signature training routine on this all in one training session.',
                 validateEmpty: 'Descrição do treino',

@@ -12,13 +12,14 @@ class CreateForm extends StatelessWidget {
     required this.hintText,
     required this.validateEmpty,
     this.maxLines = 1,
-    this.maxLength,
+    this.maxLength, required this.controller,
   });
   final String label;
   final String hintText;
   final String validateEmpty;
   final int maxLines;
   final int? maxLength;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class CreateForm extends StatelessWidget {
         ),
         const SizedBox(height: CbSizes.md),
         FocusedTextField(
+          controller: controller,
           maxLength: maxLength,
           hintText: hintText,
           validator: (value) =>
