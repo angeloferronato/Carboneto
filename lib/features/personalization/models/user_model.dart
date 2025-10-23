@@ -10,6 +10,7 @@ class UserModel {
   final String description;
   final String position;
   final String countryCode;
+  final bool isVerify;
 
   UserModel({
     required this.id,
@@ -20,31 +21,33 @@ class UserModel {
     required this.description,
     required this.position,
     required this.countryCode,
+    required this.isVerify,
   });
 
   static List<String> nameParts(fullName) => fullName.split(" ");
-  
+
   static String generateUsername(fullName) {
     List<String> nameParts = fullName.split(" ");
-    String firstName = nameParts[0].toLowerCase();  
+    String firstName = nameParts[0].toLowerCase();
     String lastName = nameParts.length > 1 ? nameParts[1].toLowerCase() : "";
 
-    String camelCaseUsername = "$firstName$lastName"; 
-    String usernameWithPrefix = "cb_$camelCaseUsername"; 
+    String camelCaseUsername = "$firstName$lastName";
+    String usernameWithPrefix = "cb_$camelCaseUsername";
     return usernameWithPrefix;
   }
 
   // Static function to create an empty user model.
   static UserModel empty() => UserModel(
-    id: "",
-    username: "",
-    email: "",
-    profilePicture: "",
-    name: "",
-    description: "",
-    position: "",
-    countryCode: "",
-  );
+        id: "",
+        username: "",
+        email: "",
+        profilePicture: "",
+        name: "",
+        description: "",
+        position: "",
+        countryCode: "",
+        isVerify: false,
+      );
 
   // Convert model to JSON structure for storing data in Firebase.
   Map<String, dynamic> toJson() {
@@ -57,11 +60,13 @@ class UserModel {
       'Description': description,
       'Position': position,
       'CountryCode': countryCode,
+      'IsVerify': isVerify,
     };
   }
 
   // Factory method to create a UserModel from a Firebase document snapshot.
-  factory UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
+  factory UserModel.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
     return UserModel(
       id: document.id,
@@ -72,6 +77,7 @@ class UserModel {
       description: data['Description'] ?? '',
       position: data['Position'] ?? '',
       countryCode: data['CountryCode'] ?? '',
+      isVerify: data['IsVerify'] ?? '',
     );
   }
 }

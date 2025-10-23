@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -33,8 +35,6 @@ class ExercisesList extends StatelessWidget {
       return null;
     }
   }
-  // --- FIM DA FUNÇÃO ATUALIZADA ---
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -139,13 +139,23 @@ class ExercisesList extends StatelessWidget {
                                         // Substituído por ícone/placeholder, já que não temos 'thumbnail'
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(20),
-                                          child: Image.asset(
-                                            // Acesso a propriedades do ExerciseModel
-                                            CbImages.trainingImageExample, 
-                                            height: 90,
-                                            width: 140,
+                                          child:
+                                          CachedNetworkImage(
+                                            imageUrl: exercise.thumb,
                                             fit: BoxFit.cover,
-                                          ),
+                                            // Placeholder enquanto carrega
+                                            placeholder: (context, url) => Container(
+                                              color: CbColors.inputBG, // Um placeholder cinza
+                                              child: Icon(Icons.image, color: CbColors.primary,),
+                                            ),
+                                            // Widget em caso de erro
+                                            errorWidget: (context, url, error) => Container(
+                                              color: Colors.grey[100],
+                                              child: Icon(Icons.error, color: Colors.red),
+                                            ),
+                                            width: 140,
+                                            height: 90,
+                                        ), 
                                         ),
                                         const SizedBox(width: 12),
                                         Expanded(
@@ -156,6 +166,8 @@ class ExercisesList extends StatelessWidget {
                                               children: [
                                                 Text(
                                                   exercise.title,
+                                                  maxLines: 2, // Limita a 1 linha
+                                                  overflow: TextOverflow.ellipsis, // Mostra "..." se ultrapassar
                                                   style: const TextStyle(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w700,
@@ -163,6 +175,7 @@ class ExercisesList extends StatelessWidget {
                                                     color: Colors.white,
                                                   ),
                                                 ),
+
                                                 const SizedBox(height: 4),
                                                 Row(
                                                   children: [
@@ -203,6 +216,8 @@ class ExercisesList extends StatelessWidget {
                                                             const SizedBox(width: 6),
                                                             // Nome do Autor (usando fullName ou username, se existir)
                                                             Text(
+                                                              maxLines: 1, // Limita a 1 linha
+                                                              overflow: TextOverflow.ellipsis, 
                                                               author != null && author.name.isNotEmpty ? author.name : 'Autor Desconhecido',
                                                               style: const TextStyle(
                                                                 color: Colors.white70,
@@ -211,7 +226,10 @@ class ExercisesList extends StatelessWidget {
                                                               ),
                                                             ),
                                                             const SizedBox(width: 6),
-                                                            const Icon(Icons.verified, color: Colors.amber, size: 10),
+                                                            if (author?.isVerify == true)
+                                                              const Icon(Icons.verified, color: Colors.amber, size: 10)
+                                                            else
+                                                              const SizedBox()
                                                           ],
                                                         );
                                                       },

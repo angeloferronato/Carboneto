@@ -87,6 +87,7 @@ class SignupController extends GetxController {
         description: description.text.trim(),
         position: positionSelectorController.dropDownValue,
         countryCode: editProfileController.countryCode.value.trim(),
+        isVerify: false,
       );
 
       final userRepository = Get.put(UserRepository());

@@ -63,6 +63,7 @@ class EditProfileController extends GetxController {
         description: descriptionController.text.trim(), 
         position: positionSelectorController.dropDownValue, 
         countryCode: countryCode.value != '' ?  countryCode.value : user.countryCode,
+        isVerify: user.isVerify,
       );
 
       userRepository.updateUserDetails(updatedUser);

@@ -58,8 +58,8 @@ class CreateTraining extends StatelessWidget {
               CreateForm(
                 controller: controller.title,
                 label: 'Titulo',
-                hintText: 'How to train like Steph Curry',
-                validateEmpty: 'How to train like Steph Curry',
+                hintText: 'Como arremessar igual ao Stephen Curry',
+                validateEmpty: 'Como arremessar igual ao Stephen Curry',
                 maxLength: 80,
               ),
 
@@ -67,7 +67,7 @@ class CreateTraining extends StatelessWidget {
               CreateForm(
                 controller: controller.description,
                 label: 'Descrição',
-                hintText: 'Want to shoot, move, and handle the ball like one of the greatest shooters in NBA history? In this video, we break down Steph Curry’s signature training routine on this all in one training session.',
+                hintText: 'Quer arremessar como um dos maiores arremessadores da história da NBA? Neste treino, detalhamos a rotina de treino característica de Steph Curry em uma sessão completa de treinamento.',
                 validateEmpty: 'Descrição do treino',
                 maxLines: 5,
                 maxLength: 200,

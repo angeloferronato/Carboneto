@@ -101,7 +101,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 validator: (value) => CbValidator.validateEmptyText('Nome', value),
                                 hintText: 'Nome',
                                 paddingH: 20,
-                                maxLength: 60,
+                                maxLength: 30,
                               );
                             }
                           }  
@@ -132,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 hintText: 'Descrição',
                                 maxLines: 2,
                                 paddingH: 20,
-                                maxLength: 200,
+                                maxLength: 150,
                               );
                             }
                           } 

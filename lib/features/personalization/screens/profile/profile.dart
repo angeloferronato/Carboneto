@@ -54,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: CbSizes.defaultSpace),
+                    horizontal: CbSizes.defaultSpace*2.5),
                 child: Obx(
                   () => !userController.profileLoading.value ? Text(
                     userController.user.value.description,
