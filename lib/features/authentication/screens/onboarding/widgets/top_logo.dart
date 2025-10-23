@@ -4,22 +4,14 @@ import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 
 class TopLogo extends StatelessWidget {
-  const TopLogo({super.key, this.width = 0.18});
+  const TopLogo({super.key, this.width = 90});
   final double width;
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: Center(
-        child: Image(
-          image: CbHelperFunctions.isDarkMode(context)
-              ? AssetImage(CbImages.cbWhiteLogo)
-              : AssetImage(CbImages.cbBlueLogo),
-          width: width,
-          fit: BoxFit.cover,
-        ),
+    return Center(
+      child: Image(
+        image: AssetImage(CbImages.cbWhiteLogo),
+        width: width,
       ),
     );
   }

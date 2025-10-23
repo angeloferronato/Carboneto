@@ -24,8 +24,8 @@ class OnBoardingScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), 
         child: Stack(
+          alignment: Alignment.center,
           children: [
-            TopLogo(),
             SizedBox(
               height: screenHeight,
               child: PageView(
@@ -54,7 +54,7 @@ class OnBoardingScreen extends StatelessWidget {
               ),
             ),
             OnboardingDotNavigation(),
-            OnboardingBottomButtons()
+            OnboardingBottomButtons(),
           ],
         ),
       ),

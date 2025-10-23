@@ -1,16 +1,15 @@
-import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
+import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
+import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
-import 'package:carboneto/features/training/screens/home/widgets/training_lib_item.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,38 +48,24 @@ class _HomeScreenState extends State<HomeScreen> {
         removeBottom: true,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: CbSizes.defaultSpace),
+            padding: const EdgeInsets.only(bottom: CbSizes.defaultSpace),
             child: Column(
               children: [
                 SafeArea(
-                  child: SizedBox(
-                    height: 40,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.only(left: CbSizes.defaultSpace),
-                      itemCount: 6,
-                      shrinkWrap: true,
-                      itemBuilder: (_, index) => RawChip(
-                        backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
-                        selected: index % 3 == 0 ? true : false,
-                        showCheckmark: false,
-                        label: Text('For You'),
-                        labelStyle: Theme.of(context).textTheme.labelLarge!.copyWith(color: isDarkTheme ? CbColors.white : index % 3 == 0 ? CbColors.white : CbColors.black),
-                        
-                      ),
-                      separatorBuilder: (_, __) => SizedBox(width: 10,),
-                    ),
-                  ),
+                  child: TopLogo()
                 ),
-    
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                  child: CbGridLayout(
-                    itemCount: 6,
-                    itemBuilder: (_, index) => TrainingLibItem(image: CbImages.trainingExample, text: CbTexts.trainingHomeTitleExample,),
-                    mainAxisExtent: 55,
-                  ),
+                    padding: const EdgeInsets.only(left: CbSizes.defaultSpace),
+                    child: CategoriesBar(),
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                //   child: CbGridLayout(
+                //     itemCount: 6,
+                //     itemBuilder: (_, index) => TrainingLibItem(image: CbImages.trainingExample, text: CbTexts.trainingHomeTitleExample,),
+                //     mainAxisExtent: 55,
+                //   ),
+                // ),
 
                 const SizedBox(height: CbSizes.spaceBtwItems,),
                     

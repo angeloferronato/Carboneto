@@ -5,17 +5,17 @@ import 'package:carboneto/features/create/screens/create_training/add_training/w
 import 'package:carboneto/features/create/screens/create_training/create_exercise/create_exercise_screen.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercises_list.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:get/get.dart';
+
 
 class AddTrainingScreen extends StatelessWidget {
   const AddTrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
     final exercisesController = Get.put(ExercisesController());
 
     return Scaffold(
@@ -73,6 +73,7 @@ class AddTrainingScreen extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 24),
+                      // HEREEEE
                       child: FloatingActionButton.extended(
                         backgroundColor: CbColors.primary,
                         elevation: 6,

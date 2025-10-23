@@ -11,6 +11,7 @@ class SelectedExecises extends StatelessWidget {
     final exercisesController =
     Get.put(ExercisesController());
     return Column(
+      spacing: 15,
       children: exercisesController.selectedIndexes.map((index) {
         final exercise = exercisesController.exercises[index];
         return ListTile(
@@ -25,6 +26,18 @@ class SelectedExecises extends StatelessWidget {
             },
           ),
         );
+        // ListTile(
+        //   leading: Image.asset(exercise['thumbnail'], width: 60, height: 60),
+        //   title: Text(exercise['title']),
+        //   subtitle: Text(exercise['duration']),
+        //   trailing: IconButton(
+        //     icon: const Icon(Icons.close, color: Colors.red),
+        //     onPressed: () {
+        //       exercisesController
+        //           .toggleSelection(index); // Deselect the exercise
+        //     },
+        //   ),
+        // );
       }).toList(),
     );
   }

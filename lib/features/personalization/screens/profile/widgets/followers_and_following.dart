@@ -1,5 +1,6 @@
 import 'package:carboneto/features/personalization/screens/profile/profile.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/primary_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
