@@ -90,6 +90,7 @@ class CreateTrainingController extends GetxController {
   // Functions to handle Exercise management
   void addExercise(ExerciseItem exercise) {
     exercises.add(exercise);
+    print(exercises.toString());
   }
 
   void removeExercise(int index) {

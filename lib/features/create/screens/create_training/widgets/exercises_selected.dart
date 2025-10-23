@@ -3,6 +3,7 @@ import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

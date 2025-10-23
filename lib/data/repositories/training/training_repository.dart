@@ -122,32 +122,75 @@ class TrainingRepository extends GetxController {
   }
 
   Future<String?> uploadVideoToFirebase(File file, ) async {
-  try {
+    try {
 
-    // Passo 2: Nome único para o vídeo
-    final fileName = 'Videos/${DateTime.now().millisecondsSinceEpoch}.mp4';
+      // Passo 2: Nome único para o vídeo
+      final fileName = 'Videos/${DateTime.now().millisecondsSinceEpoch}.mp4';
 
-    // Passo 3: Referência no Firebase Storage
-    final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+      // Passo 3: Referência no Firebase Storage
+      final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
 
-    // Passo 4: Fazer upload
-    final UploadTask uploadTask = storageRef.putFile(file);
+      // Passo 4: Fazer upload
+      final UploadTask uploadTask = storageRef.putFile(file);
 
-    // Passo 5: Acompanhar progresso (opcional)
-    uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-      final progress = snapshot.bytesTransferred / snapshot.totalBytes;
-      debugPrint('Progresso: ${(progress * 100).toStringAsFixed(2)}%');
-    });
+      // Passo 5: Acompanhar progresso (opcional)
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        final progress = snapshot.bytesTransferred / snapshot.totalBytes;
+        debugPrint('Progresso: ${(progress * 100).toStringAsFixed(2)}%');
+      });
 
-    // Passo 6: Esperar terminar e pegar a URL
-    final TaskSnapshot completed = await uploadTask.whenComplete(() {});
-    final String downloadURL = await completed.ref.getDownloadURL();
+      // Passo 6: Esperar terminar e pegar a URL
+      final TaskSnapshot completed = await uploadTask.whenComplete(() {});
+      final String downloadURL = await completed.ref.getDownloadURL();
 
 
-    return downloadURL;
-  } catch (e) {
-    return null;
+      return downloadURL;
+    } catch (e) {
+      return null;
+    }
   }
-}
 
+  Future<String?> uploadImageToFirebase(File file, String path) async {
+    try {
+
+      // Passo 2: Nome único para o arquivo
+      final fileName = 'Images/$path/${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      // Passo 3: Referência no Firebase Storage
+      final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+
+      // Passo 4: Fazer upload
+      final UploadTask uploadTask = storageRef.putFile(file);
+
+      // Passo 5: (opcional) acompanhar progresso
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        final progress = snapshot.bytesTransferred / snapshot.totalBytes;
+        debugPrint('Progresso: ${(progress * 100).toStringAsFixed(2)}%');
+      });
+
+      // Passo 6: Esperar concluir e pegar a URL de download
+      final TaskSnapshot completed = await uploadTask.whenComplete(() {});
+      final String downloadURL = await completed.ref.getDownloadURL();
+
+      return downloadURL;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> saveTrainingRecord(TrainingModel trainingModel) async {
+    try {
+      await _db.collection('allTrainings').doc(trainingModel.id).set(trainingModel.toJson(), SetOptions(merge: true));
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  } 
 }
