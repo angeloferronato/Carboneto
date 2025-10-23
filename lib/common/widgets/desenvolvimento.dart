@@ -16,13 +16,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-class LibraryScreen extends StatelessWidget {
-  const LibraryScreen({super.key});
+class DesenvolvimentoScreen extends StatelessWidget {
+  const DesenvolvimentoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CbColors.dark,
+      appBar: CbAppBar(
+        showBackArrow: true,
+        actions: [],
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 60),

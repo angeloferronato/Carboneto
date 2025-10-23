@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carboneto/common/widgets/desenvolvimento.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
 import 'package:carboneto/features/library/screens/library.dart';
@@ -157,7 +158,7 @@ class SearchScreen extends StatelessWidget {
                                       title: item['title']!,
                                       imagePath: item['image']!,
                                       onTap: () {
-                                        Get.to(() => LibraryScreen());
+                                        Get.to(() => DesenvolvimentoScreen());
                                       },
                                     ),
                                     if (index <
@@ -254,7 +255,7 @@ class SearchScreen extends StatelessWidget {
                                           title: item['title']!,
                                           imagePath: item['image']!,
                                           onTap: () {
-                                            Get.to(() => LibraryScreen());
+                                            Get.to(() => DesenvolvimentoScreen());
                                           },
                                         ),
                                       );
@@ -320,7 +321,7 @@ class SubCategoryList extends StatelessWidget {
                     title: subcategory['title']!, // Passando o título
                     imagePath: subcategory['image']!,
                     onTap: () {
-                      Get.to(() => LibraryScreen());
+                      Get.to(() => DesenvolvimentoScreen());
                       // Aqui você pode navegar para a tela de treinos dessa subcategoria
                       // Get.to(() => TrainingListScreen(category: subcategory['title']!));
                     },
