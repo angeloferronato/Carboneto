@@ -28,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
             children: [
               BannerWithPicture(
                   profileImg: CbImages.userExample,
-                  bannerImg: CbImages.trainingImageExample),
+                  bannerImg: CbImages.bannerDefault),
               SizedBox(
                 height: 60,
               ),

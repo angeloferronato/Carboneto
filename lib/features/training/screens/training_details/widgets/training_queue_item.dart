@@ -60,23 +60,25 @@ class CbTrainingQueueItem extends StatelessWidget {
               ),
               const SizedBox(width: CbSizes.md),
               IconButton(
-                padding: const EdgeInsets.all(0),
-                onPressed: () => Get.dialog(
+              padding: EdgeInsets.zero,
+              icon: const Icon(Iconsax.play_circle),
+              onPressed: () {
+                Get.dialog(
                   Dialog(
-                    constraints: BoxConstraints(
-                      minHeight: 350,
-                      minWidth: 370,
-                      maxHeight: 350,
-                      maxWidth: 370,
-                    ),
                     backgroundColor: CbColors.dark,
-                    child: PopScope(
-                      child: VideoPlayerView(url: video, dataSourceType: DataSourceType.network)
+                    child: SizedBox(
+                      height: 350,
+                      width: 370,
+                      child: VideoPlayerView(
+                        url: video,
+                        dataSourceType: DataSourceType.network,
+                      ),
                     ),
-                  )
-                ),
-                icon: Icon(Iconsax.play_circle4),
-              ),
+                  ),
+                  barrierDismissible: true,
+                );
+              },
+            ),
             ],
           ),
         );

@@ -87,5 +87,5 @@ class CbImages {
   static const String basket = "assets/images/create/basket.png";
 
   // Profile
-  static const String bannerDefault = "assets/images/profile/bannerdefault.png";
+  static const String bannerDefault = "assets/images/profile/bannerdefault.jpg";
 }
