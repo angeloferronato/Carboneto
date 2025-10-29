@@ -25,7 +25,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: CbSizes.md,),
+      padding: EdgeInsets.symmetric(horizontal: 5),
       child: AppBar(
         automaticallyImplyLeading: false,
         leading: showBackArrow ? IconButton(

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/desenvolvimento.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
@@ -22,9 +23,21 @@ class SearchScreen extends StatelessWidget {
 
     return Scaffold(
       extendBody: true,
+      appBar: CbAppBar(
+        title: Text(
+          'Explorar',
+          style: TextStyle(
+            fontSize: 33,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Plus Jakarta Sans',
+          ),
+        ),
+        showBackArrow: false,
+      ),
       body: MediaQuery.removePadding(
         context: context,
         removeBottom: true,
+        
         // SingleChildScrollView foi mantido para o caso do conteúdo
         // ficar maior que a tela após o loading
         child: SingleChildScrollView(
@@ -35,23 +48,6 @@ class SearchScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // --- CABEÇALHO E PESQUISA (Aparecem instantaneamente) ---
-                SafeArea(
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                    child: Text(
-                      'Explorar',
-                      style: TextStyle(
-                        fontSize: 33,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: CbSizes.spaceBtwItems * 2.5,
-                ),
                 Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),

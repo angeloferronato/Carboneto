@@ -1,6 +1,8 @@
+import 'package:carboneto/common/widgets/buttons/see_all_btn.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
 class CbSectionHeading extends StatelessWidget {
   const CbSectionHeading({
@@ -37,24 +39,11 @@ class CbSectionHeading extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             if (showButton)
-              TextButton(
-                onPressed: onPressed,
-                style: TextButton.styleFrom(
-                  backgroundColor:
-                      isDarkMode ? CbColors.darkContainer : CbColors.lightGrey,
-                ),
-                child: Text(
-                  buttonTitle,
-                  style: Theme.of(context).textTheme.labelMedium!.apply(
-                      color: isDarkMode
-                          ? CbColors.grey.withValues(alpha: 0.8)
-                          : CbColors.darkerGrey.withValues(alpha: 0.9),
-                      fontWeightDelta: 2),
-                ),
-              ),
+              SeeAllBtn(onPressed: onPressed, buttonTitle: buttonTitle)
           ],
         ),
       ],
     );
   }
 }
+
