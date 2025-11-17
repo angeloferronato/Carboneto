@@ -6,6 +6,7 @@ import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:get/get.dart';
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
@@ -40,31 +41,15 @@ class LibraryScreen extends StatelessWidget {
             SizedBox(
               height: CbSizes.spaceBtwSections,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: CbSizes.defaultSpace),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.history,
-                        size: 25,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        'Histórico',
-                        style:
-                            TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                  SeeAllBtn(onPressed: () {})
-                ],
+            SectionMain(
+              title: 'Histórico',
+              icon: Icons.history,
+              actionBtn: SeeAllBtn(
+                onPressed: () {},
               ),
+              showActionBtn: true,
             ),
+            SizedBox(height: 15,),
             SizedBox(
               height: 200, // define a height for horizontal list
               child: ListView.separated(
@@ -76,8 +61,98 @@ class LibraryScreen extends StatelessWidget {
                     const SizedBox(width: 17), // 👈 spacing between cards
               ),
             ),
+            SectionMain(
+              title: 'Sua Lista de Treinos',
+              icon: Icons.list,
+              showActionBtn: true,
+              actionBtn: SortSelector(label: 'Recentes', onTap: () {}),
+            )
           ],
         ),
+      ),
+    );
+  }
+}
+
+
+
+class SortSelector extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const SortSelector({super.key, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10, right: 10),
+        decoration: BoxDecoration(
+          color: CbColors.inputBG,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SectionMain extends StatelessWidget {
+  const SectionMain(
+      {super.key,
+      required this.title,
+      this.icon = Icons.history,
+      this.showActionBtn = false,
+      this.actionBtn});
+
+  final String title;
+  final dynamic icon;
+  final bool showActionBtn;
+  final dynamic actionBtn;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                icon,
+                size: 25,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+          if (showActionBtn) actionBtn,
+        ],
       ),
     );
   }
