@@ -7,8 +7,6 @@ import 'package:carboneto/features/training/models/training/training_model.dart'
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
-import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 FutureBuilder<List<TrainingModel>>(
                   future: _trainingsBallHandling, 
                   builder: (context, snapshot) {
-                    debugPrint("TOTAL DOCS FETCHED: ${snapshot.data?[0]}");
+                  
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
                         height: 250,
@@ -211,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: FutureBuilder<List<TrainingModel>>(
                     future: _trainingsMoves, 
                     builder: (context, snapshot) {
-                      debugPrint("TOTAL DOCS FETCHED: ${snapshot.data}");
+                    
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return SizedBox(
                           height: 250,
@@ -278,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: FutureBuilder<List<TrainingModel>>(
                     future: _trainingsShooting, 
                     builder: (context, snapshot) {
-                      debugPrint("TOTAL DOCS FETCHED: ${snapshot.data}");
+                    
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return SizedBox(
                           height: 250,

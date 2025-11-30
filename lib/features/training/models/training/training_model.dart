@@ -24,10 +24,9 @@ class TrainingModel {
     this.user, this.textLevel
   });
 
-  factory TrainingModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
-    final data = document.data()!;
+  static DifficultyLevels parseStringToLevel(String data) {
     final DifficultyLevels level;
-    switch (data['Level'].toString().toLowerCase()) {
+    switch (data) {
       case 'allstar' || 'all-star':
         level = DifficultyLevels.allstar;
       case 'pro':
@@ -37,7 +36,28 @@ class TrainingModel {
       default:
         level = DifficultyLevels.rookie;
     }
+    return level;
+  }
 
+  static String parseLevelToString(DifficultyLevels data) {
+    final String level;
+    switch (data) {
+      case DifficultyLevels.allstar:
+        level = 'allstar';
+      case DifficultyLevels.pro:
+        level = 'pro';
+      case DifficultyLevels.elite:
+        level = 'elite';
+      default:
+        level = 'rookie';
+    }
+    return level;
+  }
+
+
+  factory TrainingModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
+    final data = document.data()!;
+  
     return TrainingModel(
       id: document.id,
       duration: data['Duration'] ?? 0,
@@ -45,7 +65,7 @@ class TrainingModel {
       categories: List<String>.from(data['Categories'] ?? []),
       description: data['Description'] ?? '',
       exercises: [],
-      level: level,
+      level: parseStringToLevel(data['Level'].toString().toLowerCase()),
       people: data['People'] ?? 0,
       thumbnail: data['Thumbnail'] ?? '',
       title: data['Title'] ?? '',
@@ -77,8 +97,8 @@ class TrainingModel {
       'AuthorId': authorId,
       'Categories': categories,
       'Description': description,
-      'Exercises': exercises,
-      'Level': level,
+      'Exercises': exercises.map((single) => single.id).toList(),
+      'Level': parseLevelToString(level),
       'People': people,
       'Thumbnail': thumbnail,
       'Title': title,

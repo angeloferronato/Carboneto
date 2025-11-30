@@ -150,11 +150,11 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future<String?> uploadImageToFirebase(File file, String path) async {
+  Future<String?> uploadImageToFirebase(File file) async {
     try {
 
       // Passo 2: Nome único para o arquivo
-      final fileName = 'Images/$path/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final fileName = 'Images/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
       // Passo 3: Referência no Firebase Storage
       final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);

@@ -1,4 +1,4 @@
-import 'package:carboneto/features/create/controllers/create_training_controller.dart';
+import 'package:carboneto/features/create/controllers/tag_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/tag_search/tag_search_screen.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class TagSelector extends StatelessWidget {
     }
 
     final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
-    final controller = Get.put(CreateTrainingController(), tag: controllerTag);
+    final controller = Get.put(TagController(), tag: controllerTag);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -25,29 +25,29 @@ class TagSelector extends StatelessWidget {
         children: [
           Expanded(
             child: Obx(() => Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: controller.selectedTags.map((tag) {
-                    return InputChip(
-                      label: Text(
-                        tag,
-                        style: TextStyle(
-                          color: (isDarkTheme
-                              ? CbColors.white
-                              : CbColors.black),
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Plus Jakarta Sans'
-                        ),
-                      ),
-                      backgroundColor: CbColors.dark,
-                      shape: StadiumBorder(
-                        side: BorderSide(color: CbColors.primary),
-                      ),
-                      onDeleted: () => controller.onTagChanged(tag),
-                      deleteIconColor: CbColors.accent,
-                    );
-                  }).toList(),
-                )),
+              spacing: 8,
+              runSpacing: 8,
+              children: controller.selectedTags.map((tag) {
+                return InputChip(
+                  label: Text(
+                    tag,
+                    style: TextStyle(
+                      color: (isDarkTheme
+                          ? CbColors.white
+                          : CbColors.black),
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Plus Jakarta Sans'
+                    ),
+                  ),
+                  backgroundColor: CbColors.dark,
+                  shape: StadiumBorder(
+                    side: BorderSide(color: CbColors.primary),
+                  ),
+                  onDeleted: () => controller.onTagChanged(tag),
+                  deleteIconColor: CbColors.accent,
+                );
+              }).toList(),
+            )),
           ),
           IconButton(
             onPressed: openTagSearch,
