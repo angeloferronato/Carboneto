@@ -1,5 +1,7 @@
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/utils/popups/loaders.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class ExercisesController extends GetxController {
@@ -7,15 +9,37 @@ class ExercisesController extends GetxController {
   final exercises = <ExerciseModel>[].obs;
   final _trainingRepository = Get.put(TrainingRepository());
   final RxList<int> selectedIndexes = <int>[].obs;
+  DocumentSnapshot? lastDoc;
+  final isLoadingMore = false.obs;
 
-  Future<List<ExerciseModel>> fetchAllExercises() async {
+
+  Future<List<ExerciseModel>> fetchAllExercises(bool isEmpty) async {
     try {
-      final fetchedExercises = await _trainingRepository.fetchAllExercises();
-      // Atualiza a lista observável, o Obx no widget será reconstruído
-      exercises.assignAll(fetchedExercises); 
-      return fetchedExercises;
+      if (!isEmpty) {
+        return exercises;
+      }
+
+      final result = await _trainingRepository.fetchAllExercises(10, lastDoc);
+      lastDoc = result[1];
+      exercises.assignAll(result[0]); 
+      return result[0];
     } catch (e) {
-      // Re-lança a exceção para que o FutureBuilder possa capturá-la
+      rethrow; 
+    }
+  }
+
+  Future<void> loadMoreExercises(int? limit) async {
+    try {
+      final result = await _trainingRepository.loadMoreExercises(limit, lastDoc);
+      if (result.isEmpty) {
+        CbLoaders.customToast(message: 'Todos os exercícios foram carregados');
+        isLoadingMore.value = true;
+        return;
+      }
+      exercises.addAll(result[0]); 
+      lastDoc = result[1];
+      isLoadingMore.value = false;
+    } catch (e) {
       rethrow; 
     }
   }

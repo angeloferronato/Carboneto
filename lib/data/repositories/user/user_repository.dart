@@ -163,5 +163,21 @@ class UserRepository extends GetxController {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
+
+  Future<UserModel?> fetchAuthorModel(String authorId) async {
+    try {
+      if (authorId.isEmpty) {
+        return null; 
+      }
+      
+      final UserModel user = await UserRepository.instance.searchUser(authorId);
+      
+      return user; 
+    } catch (e) {
+      
+      debugPrint('Erro ao buscar UserModel do autor $authorId: $e');
+      return null;
+    }
+  }
 }
 

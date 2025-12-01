@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:path/path.dart' as p;
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
@@ -85,26 +86,23 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  /// Busca todos os exercícios da coleção 'allExercises'.
-  Future<List<ExerciseModel>> fetchAllExercises([int? limit]) async {
+  Future<List<dynamic>> fetchAllExercises(int? limit, lastDoc) async {
     try {
-      // Constrói a query para a coleção 'allExercises'
       Query<Map<String, dynamic>> query = _db.collection("allExercises");
 
-      // Adiciona o limite se for fornecido
       if (limit != null) {
         query = query.limit(limit);
       }
 
-      // Executa a query
       final querySnapshot = await query.get();
-      debugPrint("FETCHED ${querySnapshot.docs.length} EXERCISES");
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Mapeia cada documento para um ExerciseModel
-        return querySnapshot.docs
+        lastDoc = querySnapshot.docs.last;
+
+  
+        return [querySnapshot.docs
             .map((doc) => ExerciseModel.fromSnapshot(doc))
-            .toList();
+            .toList(), lastDoc];
       } else {
         return [];
       }
@@ -119,6 +117,31 @@ class TrainingRepository extends GetxController {
     } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
+  }
+
+  Future <List<dynamic>> loadMoreExercises(int? limit, DocumentSnapshot? lastDoc) async {
+    if (lastDoc == null) return [];
+
+    final query = FirebaseFirestore.instance
+        .collection("allExercises")
+        .startAfterDocument(lastDoc)
+        .limit(limit ?? 0);
+
+    final snapshot = await query.get();
+
+    if (snapshot.docs.isNotEmpty) {
+      lastDoc = snapshot.docs.last;
+
+      final newExercises = snapshot.docs
+          .map((doc) => ExerciseModel.fromSnapshot(doc))
+          .toList();
+
+      return [newExercises, lastDoc];
+    } else {
+      lastDoc = null;
+    }
+
+    return [];
   }
 
   Future<String?> uploadVideoToFirebase(File file, ) async {
