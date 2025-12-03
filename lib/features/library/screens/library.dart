@@ -1,9 +1,12 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/buttons/see_all_btn.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
+import 'package:carboneto/features/library/screens/all_trainings.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
@@ -66,7 +69,31 @@ class LibraryScreen extends StatelessWidget {
               icon: Icons.list,
               showActionBtn: true,
               actionBtn: SortSelector(label: 'Recentes', onTap: () {}),
-            )
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              height: 200, // define a height for horizontal list
+              child: ListView.separated(
+                padding: EdgeInsets.only(left: CbSizes.defaultSpace),
+                scrollDirection: Axis.horizontal,
+                itemCount: 15, // however many trainings you want
+                itemBuilder: (context, index) => const CreatedTraining(),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(width: 10), // 👈 spacing between cards
+              ),
+            ),
+            HighlightBtn(
+                textValue: 'Ver todos',
+                onPressedEdit: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AllTrainingsScreen(),
+                  ),
+                );
+              },
+                labelColor: CbColors.primary,
+            ),
           ],
         ),
       ),
@@ -74,6 +101,40 @@ class LibraryScreen extends StatelessWidget {
   }
 }
 
+class CreatedTraining extends StatelessWidget {
+  const CreatedTraining({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 115,
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 5,
+        children: [
+          CbRoundedImage(imageUrl: CbImages.thumbnailTrainingExample, height: 115, fit: BoxFit.cover, ),
+          Text('USA Full Week', 
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,    
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 14,
+            
+          ),),
+          Text('Coach K', 
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1, 
+          style: TextStyle(
+            color: CbColors.buttonDisabled,
+            fontWeight: FontWeight.w200,
+            fontSize: 12
+          ),)
+        ],
+      ),
+    );
+  }
+}
 
 
 class SortSelector extends StatelessWidget {
@@ -170,19 +231,64 @@ class HistoryTraining extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 2,
         children: [
-          CbRoundedImage(
-            imageUrl: CbImages.trainingImageExample,
-            width: 165,
-            height: 100,
-            fit: BoxFit.cover,
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  CbImages.trainingImageExample,
+                  fit: BoxFit.cover,
+                  width: 165,
+                  height: 100,
+                ),
+              ),
+
+              // Timer no canto inferior direito
+              Positioned(
+                right: 5,
+                bottom: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '40:00',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
+
           SizedBox(
             height: 3,
           ),
-          Text(
-            'Stephen Curry Preseason Workout',
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Stephen Curry Preseason Workout',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,          
+                ),
+              ),
+
+              GestureDetector(
+                onTap: () {},
+                child: const Icon(
+                  Icons.more_vert,
+                  size: 16, // super pequeno
+                ),
+              )
+
+
+            ],
           ),
           Row(
             children: [
@@ -200,7 +306,7 @@ class HistoryTraining extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               )
             ],
-          )
+          ),
         ],
       ),
     );

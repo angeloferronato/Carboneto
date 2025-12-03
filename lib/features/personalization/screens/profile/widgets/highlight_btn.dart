@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class HighlightBtn extends StatelessWidget {
   const HighlightBtn(
-      {super.key, required this.textValue, required this.onPressedEdit});
+      {super.key,
+      required this.textValue,
+      required this.onPressedEdit,
+      this.labelColor = Colors.white});
   final String textValue;
+  final Color labelColor;
   final VoidCallback? onPressedEdit;
 
   @override
@@ -19,7 +23,7 @@ class HighlightBtn extends StatelessWidget {
         ),
         child: Text(
           textValue,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: labelColor),
         ));
   }
 }
