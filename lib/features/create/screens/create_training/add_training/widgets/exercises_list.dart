@@ -3,10 +3,9 @@ import 'package:carboneto/features/create/controllers/exercises_controller.dart'
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-
 import 'package:carboneto/data/repositories/user/user_repository.dart'; 
 
 class ExercisesList extends StatelessWidget {
@@ -68,16 +67,21 @@ class ExercisesList extends StatelessWidget {
                         );
                       }
 
-                      return Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: ElevatedButton(
-                          onPressed: () => controller.isLoadingMore.value
-                              ? null
-                              : controller.loadMoreExercises(10),
-                          child: controller.isLoadingMore.value
-                              ? const CircularProgressIndicator(color: CbColors.white,)
-                              : const Text("Carregar mais"),
-                        ),
+                      return Column(
+                        children: [
+                          const SizedBox(height: CbSizes.defaultSpace,),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: ElevatedButton(
+                              onPressed: () => controller.isLoadingMore.value
+                                  ? null
+                                  : controller.loadMoreExercises(10),
+                              child: controller.isLoadingMore.value
+                                  ? const CircularProgressIndicator(color: CbColors.white,)
+                                  : const Text("Carregar mais"),
+                            ),
+                          ),
+                        ],
                       );
                     });
                   }

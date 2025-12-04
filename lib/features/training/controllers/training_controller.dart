@@ -94,7 +94,7 @@ class TrainingController extends GetxController {
       title: 'Você deseja finalizar o treino?',
       middleText: 'Assim que você sair, o treino será cancelado.',
       confirm: ElevatedButton(
-        onPressed: () => Get.to(HomeMenu()),
+        onPressed: () => Get.offAll(HomeMenu()),
         style: ElevatedButton.styleFrom(backgroundColor: CbColors.error, side: BorderSide(color: CbColors.error)),
         child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
       ),

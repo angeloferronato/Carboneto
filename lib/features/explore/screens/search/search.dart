@@ -3,7 +3,6 @@ import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/desenvolvimento.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
-import 'package:carboneto/features/library/screens/library.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
@@ -19,7 +18,6 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Inicia o ExploreController
     final ExploreController controller = Get.put(ExploreController());
-    final bool isDarkTheme = CbHelperFunctions.isDarkMode(context);
 
     return Scaffold(
       extendBody: true,

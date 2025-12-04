@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SelectedExecises extends StatelessWidget {
-  const SelectedExecises({super.key});
+  SelectedExecises({super.key});
 
+  final exercisesController = Get.put(ExercisesController());
   @override
   Widget build(BuildContext context) {
-    final exercisesController = Get.put(ExercisesController());
     return Column(
       spacing: 15,
       children: exercisesController.selectedIndexes.map((index) {
