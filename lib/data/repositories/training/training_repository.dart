@@ -173,33 +173,19 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future<String?> uploadImageToFirebase(File file) async {
+  Future<String?> uploadImageToFirebase(File file, {String folder = 'Images'}) async {
     try {
-
-      // Passo 2: Nome único para o arquivo
-      final fileName = 'Images/${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-      // Passo 3: Referência no Firebase Storage
+      final fileName = '$folder/${DateTime.now().millisecondsSinceEpoch}.jpg';
       final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
-
-      // Passo 4: Fazer upload
       final UploadTask uploadTask = storageRef.putFile(file);
 
-      // Passo 5: (opcional) acompanhar progresso
-      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-        final progress = snapshot.bytesTransferred / snapshot.totalBytes;
-        debugPrint('Progresso: ${(progress * 100).toStringAsFixed(2)}%');
-      });
-
-      // Passo 6: Esperar concluir e pegar a URL de download
-      final TaskSnapshot completed = await uploadTask.whenComplete(() {});
-      final String downloadURL = await completed.ref.getDownloadURL();
-
-      return downloadURL;
+      final completed = await uploadTask.whenComplete(() {});
+      return await completed.ref.getDownloadURL();
     } catch (e) {
       return null;
     }
   }
+
 
   Future<void> saveTrainingRecord(TrainingModel trainingModel) async {
     try {

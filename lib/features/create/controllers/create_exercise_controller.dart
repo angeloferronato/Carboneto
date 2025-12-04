@@ -16,6 +16,7 @@ import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class CreateExerciseController extends GetxController {
   static CreateExerciseController get instance => Get.find();
@@ -28,6 +29,28 @@ class CreateExerciseController extends GetxController {
   final description = TextEditingController(); 
   final numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.exerciseControllerTag);
   final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.exerciseControllerTag);
+  
+
+  Future<String> generateThumbFromVideo(File video) async {
+
+    final thumbPath = await VideoThumbnail.thumbnailFile(
+      video: video.path,
+      imageFormat: ImageFormat.PNG,
+      maxHeight: 300,
+      quality: 75,
+      timeMs: 1000,
+    );
+
+    if (thumbPath == null) return "";
+
+
+    final thumbFile = File(thumbPath);
+
+    final thumbUrl =
+        await TrainingRepository.instance.uploadImageToFirebase(thumbFile, folder: "Exercises Thumbnails");
+
+    return thumbUrl ?? "";
+  }
 
   Future<void> createExercise() async {
     try {
@@ -38,7 +61,6 @@ class CreateExerciseController extends GetxController {
         return;
       }
 
-      // Form Validation
       if (!createExerciseFormKey.currentState!.validate()) {
         CbFullScreenLoader.stopLoading();
         return;
@@ -50,10 +72,16 @@ class CreateExerciseController extends GetxController {
         return;
       }
 
-      final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(uploadImageController.selectedVideo.value ?? File(''));
-      
+      /// --------------------------------------------
+      /// 🔥 Upload do vídeo
+      /// --------------------------------------------
+      final videoFile = uploadImageController.selectedVideo.value!;
+      final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(videoFile);
+      final thumbUrl = await generateThumbFromVideo(videoFile);
+
       const uuid = Uuid();
       String customId = uuid.v4().substring(0, 10);
+
       final newExercise = ExerciseModel(
         description: description.text.trim(), 
         title: title.text.trim(), 
@@ -63,7 +91,9 @@ class CreateExerciseController extends GetxController {
         duration: 5, 
         authorId: userController.user.value.id, 
         categories: tagController.selectedTags, 
-        thumb: 'https://firebasestorage.googleapis.com/v0/b/carboneto-fe55b.firebasestorage.app/o/default-ui-image-placeholder-wireframes-600nw-1037719192.webp?alt=media&token=9e26bdef-6613-4f42-9d49-4fd99332aba8'
+        thumb: thumbUrl.isNotEmpty
+            ? thumbUrl
+            : 'https://firebasestorage.googleapis.com/v0/b/carboneto-fe55b.firebasestorage.app/o/default-ui-image-placeholder-wireframes-600nw-1037719192.webp?alt=media&token=9e26bdef-6613-4f42-9d49-4fd99332aba8',
       );
 
       exerciseRepository.saveExerciseRecord(newExercise);

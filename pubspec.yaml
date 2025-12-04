@@ -38,6 +38,7 @@ dependencies:
   chewie: ^1.12.1
   video_player: ^2.10.0
   flutter_cache_manager: ^3.4.1
+  video_thumbnail: ^0.5.6
 
   # Icons
   iconsax: ^0.0.8
