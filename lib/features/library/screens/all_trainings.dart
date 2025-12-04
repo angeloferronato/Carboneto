@@ -1,6 +1,8 @@
-import 'package:carboneto/features/library/screens/library.dart';
-import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/image_strings.dart';
 
 class AllTrainingsScreen extends StatelessWidget {
   const AllTrainingsScreen({super.key});
@@ -9,34 +11,97 @@ class AllTrainingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CbColors.dark,
-      appBar: AppBar(
-        backgroundColor: CbColors.dark,
-        elevation: 0,
-        title: const Text(
-          "Seus Treinos",
+      appBar: CbAppBar(
+        title: Text(
+          'Seus Treinos',
           style: TextStyle(
-            fontSize: 27,
-            fontWeight: FontWeight.w800,
-            fontFamily: 'Plus Jakarta Sans'
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Plus Jakarta Sans',
           ),
         ),
+        showBackArrow: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: GridView.builder(
-          physics: const BouncingScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,       // 👈 3 colunas fixas
-            mainAxisSpacing: 16,     // espaçamento vertical
-            crossAxisSpacing: 16,    // espaçamento horizontal
-            childAspectRatio: 0.6,   // controla altura do card
-          ),
-          itemCount: 18,              // simula "todos os treinos"
-          itemBuilder: (context, index) {
-            return const CreatedTraining();
-          },
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            // GRID
+            SizedBox(height: 20,),
+            GridView.builder(
+              physics: const NeverScrollableScrollPhysics(), // 👈 impede scroll interno
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 5,
+                childAspectRatio: 0.62,
+              ),
+              itemCount: 12,
+              itemBuilder: (_, index) => const TrainingCard(),
+            ),
+
+            // BOTÃO QUE ROLA JUNTO
+            HighlightBtn(textValue: '+ Novo Treino', onPressedEdit: () => {}, labelColor: CbColors.primary,),
+
+            const SizedBox(height: 30),
+          ],
         ),
       ),
     );
   }
 }
+
+class TrainingCard extends StatelessWidget {
+  const TrainingCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 4,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.asset(
+            CbImages.thumbnailTrainingExample,
+            height: 120,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                'Arremessos',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w200,
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            const Icon(Icons.more_vert, size: 14, color: CbColors.textSecondary,),
+          ],
+        ),
+        Text(
+          'Chico Buarque',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: CbColors.buttonDisabled,
+            fontSize: 10,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+      ],
+    );
+  }
+}
+

@@ -64,11 +64,12 @@ class LibraryScreen extends StatelessWidget {
                     const SizedBox(width: 17), // 👈 spacing between cards
               ),
             ),
+            SizedBox(height: 30,),
             SectionMain(
               title: 'Sua Lista de Treinos',
               icon: Icons.list,
               showActionBtn: true,
-              actionBtn: SortSelector(label: 'Recentes', onTap: () {}),
+              actionBtn: SortSelector(label: 'Recentes', onTap: () {}, ),
             ),
             SizedBox(height: 20),
             SizedBox(
