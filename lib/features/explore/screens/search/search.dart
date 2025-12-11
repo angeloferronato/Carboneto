@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/desenvolvimento.dart';
+import 'package:carboneto/common/widgets/searchinput/search_input.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
 import 'package:carboneto/features/library/screens/library.dart';
@@ -48,17 +49,7 @@ class SearchScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // --- CABEÇALHO E PESQUISA (Aparecem instantaneamente) ---
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                  child: FocusedTextField(
-                    hintText: 'O que você quer treinar?',
-                    prefixIcon: Icon(
-                      Iconsax.search_normal_1,
-                      size: 20,
-                    ),
-                  ),
-                ),
+                SearchInput(placeholder: 'O que você quer treinar?',),
                 const SizedBox(
                   height: CbSizes.spaceBtwItems * 2,
                 ),

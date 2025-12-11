@@ -1,7 +1,9 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/buttons/see_all_btn.dart';
+import 'package:carboneto/common/widgets/desenvolvimento.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/library/screens/all_trainings.dart';
+import 'package:carboneto/features/library/screens/history.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -28,15 +30,6 @@ class LibraryScreen extends StatelessWidget {
           ),
         ),
         showBackArrow: false,
-        actions: [
-          IconButton(
-            onPressed: () => {},
-            icon: Icon(
-              Iconsax.search_normal_1,
-              size: 25,
-            ),
-          )
-        ],
       ),
       body: SizedBox(
         child: Column(
@@ -48,7 +41,7 @@ class LibraryScreen extends StatelessWidget {
               title: 'Histórico',
               icon: Icons.history,
               actionBtn: SeeAllBtn(
-                onPressed: () {},
+                onPressed: () => Get.to(() => HistoryScreen()),
               ),
               showActionBtn: true,
             ),
@@ -65,13 +58,16 @@ class LibraryScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 30,),
+
             SectionMain(
               title: 'Sua Lista de Treinos',
               icon: Icons.list,
               showActionBtn: true,
               actionBtn: SortSelector(label: 'Recentes', onTap: () {}, ),
             ),
+
             SizedBox(height: 20),
+
             SizedBox(
               height: 200, // define a height for horizontal list
               child: ListView.separated(
@@ -83,16 +79,10 @@ class LibraryScreen extends StatelessWidget {
                     const SizedBox(width: 10), // 👈 spacing between cards
               ),
             ),
+            
             HighlightBtn(
                 textValue: 'Ver todos',
-                onPressedEdit: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AllTrainingsScreen(),
-                  ),
-                );
-              },
+                onPressedEdit: () => Get.to(() => AllTrainingsScreen()),
                 labelColor: CbColors.primary,
             ),
           ],
