@@ -1,7 +1,13 @@
+import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
+import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/content_grid_profile_shimmer.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/treino_card.dart';
+import 'package:carboneto/features/training/models/training/training_model.dart';
+import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
 class ContentGrid extends StatelessWidget {
@@ -9,6 +15,7 @@ class ContentGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final trainingController = Get.put(TrainingController());
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -29,62 +36,82 @@ class ContentGrid extends StatelessWidget {
 
           // FAZER NO FUTURO A LOGICA DE MOSTRAR OS TREINOS SE EXISTIREM:
           // WIDGET PRONTO:
-          // CbGridLayout(
-          //     itemCount: data.length,
-          //     mainAxisExtent: 200,
-          //     columnCount: 3,
-          //     crossSpacing: 5,
-          //     itemBuilder: (_, index) {
-          //       final treino = data[index];
-          //       return _TreinoCard(treino: treino);
-          //     }),
 
-          Column(
-            children: [
-              const SizedBox(
-                height: 40,
-              ),
-              Icon(
-                Icons.add,
-                size: 70,
-                color: CbColors
-                    .buttonSecondary, // opcional, para combinar com seu tema
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Você ainda não possui treinos criados.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: CbColors.buttonSecondary,
-                        fontWeight: FontWeight.w500,
+
+          Obx(
+            () {
+              if (trainingController.isLoading.value) {
+                return ContentGridProfileShimmer();
+              }
+
+              final list = trainingController.trainingsList;
+
+              if (list.isEmpty) {
+                return Center(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 40,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        'Crie um novo treino para começar a organizar suas sessões de basquete.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
+                      IconButton(
+                        icon: Icon(
+                          Icons.add,
+                          size: 70,
                           color: CbColors.buttonSecondary,
-                          fontWeight: FontWeight.w300,
+                        ), 
+                        onPressed: () {
+                          Get.offAll(HomeMenu());
+                          final controller = Get.put(HomeMenuController());
+                          controller.selectedIndex.value = 2;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Você ainda não possui treinos criados.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: CbColors.buttonSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                'Crie um novo treino para começar a organizar suas sessões de basquete.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: CbColors.buttonSecondary,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
+                    ],
+                  )
+                );
+              }
+
+              return CbGridLayout(
+                itemCount: list.length,
+                itemBuilder: (context, index) => TreinoCard(training: list[index]),
+                mainAxisExtent: 200,
+                columnCount: 3,
+                crossSpacing: 5,
+              );
+            },
+          )   
         ],
       ),
     );

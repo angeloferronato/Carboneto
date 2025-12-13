@@ -2,8 +2,6 @@ import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/onboarding.dart';
 import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
 import 'package:carboneto/features/authentication/screens/welcome/welcome.dart';
-import 'package:carboneto/features/personalization/models/user_model.dart';
-import 'package:carboneto/features/training/screens/home/home.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';

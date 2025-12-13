@@ -27,14 +27,17 @@ class TrainingModel {
   static DifficultyLevels parseStringToLevel(String data) {
     final DifficultyLevels level;
     switch (data) {
-      case 'allstar' || 'all-star':
-        level = DifficultyLevels.allstar;
+      case 'rookie':
+        level = DifficultyLevels.rookie;
+        break;
       case 'pro':
         level = DifficultyLevels.pro;
+        break;
       case 'elite':
         level = DifficultyLevels.elite;
+        break;
       default:
-        level = DifficultyLevels.rookie;
+        level = DifficultyLevels.allstar;
     }
     return level;
   }
@@ -44,12 +47,16 @@ class TrainingModel {
     switch (data) {
       case DifficultyLevels.allstar:
         level = 'allstar';
+        break;
       case DifficultyLevels.pro:
         level = 'pro';
+        break;
       case DifficultyLevels.elite:
         level = 'elite';
+        break;
       default:
         level = 'rookie';
+        break;
     }
     return level;
   }
@@ -79,7 +86,7 @@ class TrainingModel {
     return TrainingModel(
       id: json['Id'], 
       duration: json['Duration'],
-      authorId: json['AuthorId'] ?? '', 
+      authorId: json['AuthorID'] ?? '', 
       categories: json["Categories"], 
       description: json["Description"], 
       exercises: json["Exercises"],
@@ -94,7 +101,7 @@ class TrainingModel {
     return {
       'Id': id,
       'Duration': duration,
-      'AuthorId': authorId,
+      'AuthorID': authorId,
       'Categories': categories,
       'Description': description,
       'Exercises': exercises.map((single) => single.id).toList(),

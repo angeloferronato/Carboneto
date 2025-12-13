@@ -1,8 +1,11 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/features/create/screens/create_training/create_training.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
+import 'package:carboneto/home_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:get/get.dart';
 
 class AllTrainingsScreen extends StatelessWidget {
   const AllTrainingsScreen({super.key});
@@ -30,7 +33,7 @@ class AllTrainingsScreen extends StatelessWidget {
             // GRID
             SizedBox(height: 20,),
             GridView.builder(
-              physics: const NeverScrollableScrollPhysics(), // 👈 impede scroll interno
+              physics: const NeverScrollableScrollPhysics(), 
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -42,8 +45,11 @@ class AllTrainingsScreen extends StatelessWidget {
               itemBuilder: (_, index) => const TrainingCard(),
             ),
 
-            // BOTÃO QUE ROLA JUNTO
-            HighlightBtn(textValue: '+ Novo Treino', onPressedEdit: () => {}, labelColor: CbColors.primary,),
+            HighlightBtn(textValue: '+ Novo Treino', onPressedEdit: () {
+              Get.offAll(HomeMenu());
+              final controller = Get.put(HomeMenuController());
+              controller.selectedIndex.value = 2;
+            }, labelColor: CbColors.primary,),
 
             const SizedBox(height: 30),
           ],

@@ -69,18 +69,21 @@ class ExercisesList extends StatelessWidget {
 
                       return Column(
                         children: [
-                          const SizedBox(height: CbSizes.defaultSpace,),
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: ElevatedButton(
-                              onPressed: () => controller.isLoadingMore.value
-                                  ? null
-                                  : controller.loadMoreExercises(10),
-                              child: controller.isLoadingMore.value
-                                  ? const CircularProgressIndicator(color: CbColors.white,)
-                                  : const Text("Carregar mais"),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: ElevatedButton(
+                                onPressed: () => controller.isLoadingMore.value
+                                    ? null
+                                    : controller.loadMoreExercises(10),
+                                child: controller.isLoadingMore.value
+                                    ? const CircularProgressIndicator(color: CbColors.white,)
+                                    : const Text("Carregar mais"),
+                              ),
                             ),
                           ),
+                          const SizedBox(height: 85,),
                         ],
                       );
                     });

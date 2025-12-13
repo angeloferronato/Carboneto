@@ -1,4 +1,3 @@
-import 'package:carboneto/utils/formatters/formatter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
@@ -11,6 +10,7 @@ class UserModel {
   final String position;
   final String countryCode;
   final bool isVerify;
+  final List<dynamic>? userTrainings;
 
   UserModel({
     required this.id,
@@ -22,6 +22,7 @@ class UserModel {
     required this.position,
     required this.countryCode,
     required this.isVerify,
+    required this.userTrainings,
   });
 
   static List<String> nameParts(fullName) => fullName.split(" ");
@@ -38,16 +39,17 @@ class UserModel {
 
   // Static function to create an empty user model.
   static UserModel empty() => UserModel(
-        id: "",
-        username: "",
-        email: "",
-        profilePicture: "",
-        name: "",
-        description: "",
-        position: "",
-        countryCode: "",
-        isVerify: false,
-      );
+    id: "",
+    username: "",
+    email: "",
+    profilePicture: "",
+    name: "",
+    description: "",
+    position: "",
+    countryCode: "",
+    isVerify: false, 
+    userTrainings: [],
+  );
 
   // Convert model to JSON structure for storing data in Firebase.
   Map<String, dynamic> toJson() {
@@ -61,12 +63,12 @@ class UserModel {
       'Position': position,
       'CountryCode': countryCode,
       'IsVerify': isVerify,
+      'UserTrainings': userTrainings,
     };
   }
 
   // Factory method to create a UserModel from a Firebase document snapshot.
-  factory UserModel.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> document) {
+  factory UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
     return UserModel(
       id: document.id,
@@ -77,7 +79,8 @@ class UserModel {
       description: data['Description'] ?? '',
       position: data['Position'] ?? '',
       countryCode: data['CountryCode'] ?? '',
-      isVerify: data['IsVerify'] ?? '',
+      isVerify: data['IsVerify'] ?? '', 
+      userTrainings: data['UserTrainings'] ?? [],
     );
   }
 }

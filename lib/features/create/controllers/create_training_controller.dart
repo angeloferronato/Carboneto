@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:carboneto/data/repositories/training/training_repository.dart';
+import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/features/create/controllers/number_dropdown_controller.dart';
 import 'package:carboneto/features/create/controllers/tag_controller.dart';
@@ -30,6 +31,7 @@ class CreateTrainingController extends GetxController {
   final TagController tagController = Get.put(TagController(), tag: CbTexts.trainingControllerTag);
   final ExercisesController exercisesController = Get.put(ExercisesController());
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
+  final UserRepository userRepository = Get.put(UserRepository());
 
   Future<void> createTraining() async {
     try {
@@ -73,9 +75,13 @@ class CreateTrainingController extends GetxController {
         people: numberDropdownController.selectedValue.value == '+7' ? 7 : int.parse(numberDropdownController.selectedValue.value), 
         thumbnail: imageUrl ?? '', 
         title: title.text.trim(),
+        duration: exercisesList.length * 5,
       );
 
-      trainingRepository.saveTrainingRecord(newTraining);
+      userController.user.value.userTrainings!.add(customId);
+      await userRepository.updateSingleField({'UserTrainings': userController.user.value.userTrainings});
+
+      await trainingRepository.saveTrainingRecord(newTraining);
 
       CbLoaders.successSnackBar(title: 'Sucesso', message: 'O Seu treino foi cadastrado com sucesso!');
       CbFullScreenLoader.stopLoading();

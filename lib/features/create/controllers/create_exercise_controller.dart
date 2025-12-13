@@ -72,9 +72,9 @@ class CreateExerciseController extends GetxController {
         return;
       }
 
-      /// --------------------------------------------
-      /// 🔥 Upload do vídeo
-      /// --------------------------------------------
+
+
+
       final videoFile = uploadImageController.selectedVideo.value!;
       final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(videoFile);
       final thumbUrl = await generateThumbFromVideo(videoFile);

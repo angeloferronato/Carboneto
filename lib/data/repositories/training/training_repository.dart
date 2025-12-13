@@ -33,7 +33,7 @@ class TrainingRepository extends GetxController {
         for (var training in trainings) {
           final List<ExerciseModel> listExercises = [];
           for (var exercise in training.data()['Exercises']) {
-            final singleExercise = await fetchExerciseDetails(collection, exercise);
+            final singleExercise = await fetchExerciseDetails(exercise);
             listExercises.add(singleExercise);
           }
 
@@ -61,7 +61,45 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future<ExerciseModel> fetchExerciseDetails(String collection, String id) async {
+  Future<List<TrainingModel>> fetchUserTrainingDetails(String authorId, [int? limit]) async {
+    try {
+      final query = await _db.collection("allTrainings").where('AuthorID', isEqualTo: authorId).limit(limit ?? 10).get();
+      
+      if (query.docs.isNotEmpty) {
+        final trainings = query.docs;
+        final List<TrainingModel> listTrainings = [];
+        for (var training in trainings) {
+          final List<ExerciseModel> listExercises = [];
+          for (var exercise in training.data()['Exercises']) {
+            final singleExercise = await fetchExerciseDetails(exercise);
+            listExercises.add(singleExercise);
+          }
+
+          final singleTraining = TrainingModel.fromSnapshot(training);
+          singleTraining.exercises = listExercises;
+          debugPrint(singleTraining.textLevel);
+          final UserModel user = await userRepository.searchUser(singleTraining.authorId);
+          singleTraining.user = user;
+          listTrainings.add(singleTraining);
+        } 
+        return listTrainings;
+      } else {  
+        return [];
+      }
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+  Future<ExerciseModel> fetchExerciseDetails(String id) async {
     try {
       
       final query = await _db.collection('allExercises').where('ID', isEqualTo: id).get();

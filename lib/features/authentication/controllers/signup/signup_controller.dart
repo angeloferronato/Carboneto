@@ -1,7 +1,6 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/controllers/position_selector/position_selector_controller.dart';
-import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
 import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
@@ -11,7 +10,6 @@ import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 
 class SignupController extends GetxController {
   static SignupController get instance => Get.find();
@@ -88,6 +86,7 @@ class SignupController extends GetxController {
         position: positionSelectorController.dropDownValue,
         countryCode: editProfileController.countryCode.value.trim(),
         isVerify: false,
+        userTrainings: [],
       );
 
       final userRepository = Get.put(UserRepository());

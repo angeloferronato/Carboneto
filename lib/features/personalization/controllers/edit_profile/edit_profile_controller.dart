@@ -1,9 +1,7 @@
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/controllers/position_selector/position_selector_controller.dart';
-import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
-import 'package:carboneto/features/personalization/screens/profile/profile.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
@@ -12,7 +10,6 @@ import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 
 class EditProfileController extends GetxController {
   static EditProfileController get instance => Get.find();
@@ -55,6 +52,7 @@ class EditProfileController extends GetxController {
 
       final user = UserController.instance.user.value;
       final updatedUser = UserModel(
+        userTrainings: user.userTrainings,
         id: user.id, 
         username: user.username, 
         email: user.email, 

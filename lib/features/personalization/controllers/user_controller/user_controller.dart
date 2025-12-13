@@ -38,6 +38,7 @@ class UserController extends GetxController {
 
         // Map data
         final user = UserModel(
+          userTrainings: [],
           name: userCredentials.user!.displayName ?? '',
           id: userCredentials.user!.uid, 
           username: username, 
