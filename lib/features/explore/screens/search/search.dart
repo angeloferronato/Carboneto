@@ -1,17 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/common/widgets/desenvolvimento.dart';
 import 'package:carboneto/common/widgets/searchinput/search_input.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
-import 'package:carboneto/features/library/screens/library.dart';
+import 'package:carboneto/features/explore/screens/category_screen/category_screen.dart';
+import 'package:carboneto/features/explore/screens/search/widgets/subcategory_card.dart';
+import 'package:carboneto/features/explore/screens/search/widgets/subcategory_list.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -27,18 +25,17 @@ class SearchScreen extends StatelessWidget {
       appBar: CbAppBar(
         title: Text(
           'Explorar',
-          style: TextStyle(
-            fontSize: 33,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Plus Jakarta Sans',
-          ),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontSize: 33,
+                fontWeight: FontWeight.w700,
+              ),
         ),
         showBackArrow: false,
       ),
       body: MediaQuery.removePadding(
         context: context,
         removeBottom: true,
-        
+
         // SingleChildScrollView foi mantido para o caso do conteúdo
         // ficar maior que a tela após o loading
         child: SingleChildScrollView(
@@ -49,7 +46,9 @@ class SearchScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // --- CABEÇALHO E PESQUISA (Aparecem instantaneamente) ---
-                SearchInput(placeholder: 'O que você quer treinar?',),
+                SearchInput(
+                  placeholder: 'O que você quer treinar?',
+                ),
                 const SizedBox(
                   height: CbSizes.spaceBtwItems * 2,
                 ),
@@ -115,7 +114,6 @@ class SearchScreen extends StatelessWidget {
                         ),
 
                         // --- Carrossel "Categorias em destaque" ---
-                        // O Obx interno é mantido para reagir à lista
                         Obx(() {
                           // A verificação de isLoading foi removida daqui
                           if (controller.featuredSubcategories.isEmpty) {
@@ -129,31 +127,28 @@ class SearchScreen extends StatelessWidget {
                           }
 
                           return SizedBox(
-                            height: 100, // Altura do SubcategoryCard
-                            child: ListView.builder(
+                            height: 100,
+                            child: ListView.separated(
                               scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  controller.featuredSubcategories.length,
+                              itemCount: controller.featuredSubcategories.length,
                               padding: EdgeInsets.symmetric(
-                                  horizontal: CbSizes.defaultSpace),
+                                horizontal: CbSizes.defaultSpace,
+                              ),
+                              separatorBuilder: (_, __) => const SizedBox(width: 15),
                               itemBuilder: (context, index) {
-                                final item =
-                                    controller.featuredSubcategories[index];
-                                return Row(
-                                  children: [
-                                    SubcategoryCard(
-                                      title: item['title']!,
-                                      imagePath: item['image']!,
-                                      onTap: () {
-                                        Get.to(() => DesenvolvimentoScreen());
-                                      },
-                                    ),
-                                    if (index <
-                                        controller
-                                                .featuredSubcategories.length -
-                                            1)
-                                      const SizedBox(width: 15),
-                                  ],
+                                final item = controller.featuredSubcategories[index];
+
+                                final String title = item['title'] as String;
+                                final String imagePath = item['image'] as String;
+
+                                return SubcategoryCard(
+                                  title: title,
+                                  imagePath: imagePath,
+                                  onTap: () {
+                                    Get.to(() => CategoryScreen(
+                                          title: 'TITULO AQUI'
+                                    ));
+                                  },
                                 );
                               },
                             ),
@@ -242,7 +237,9 @@ class SearchScreen extends StatelessWidget {
                                           title: item['title']!,
                                           imagePath: item['image']!,
                                           onTap: () {
-                                            Get.to(() => DesenvolvimentoScreen());
+                                            Get.to(() => CategoryScreen(
+                                                  title: 'TITULO AQUI',
+                                                ));
                                           },
                                         ),
                                       );
@@ -262,105 +259,6 @@ class SearchScreen extends StatelessWidget {
                   }
                 }),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SubCategoryList extends StatelessWidget {
-  final String title;
-  final List<Map<String, String>> data;
-
-  const SubCategoryList({
-    super.key,
-    required this.title,
-    required this.data,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CbSectionHeading(
-          title: title,
-          showButton: false,
-          onPressed: () => {},
-          fontSize: 1.3,
-        ),
-        const SizedBox(
-          height: CbSizes.spaceBtwItems,
-        ),
-        SizedBox(
-          height: 100,
-          width: CbHelperFunctions.screenWidth(),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: data.length,
-            // padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-            itemBuilder: (_, index) {
-              final subcategory = data[index];
-              return Row(
-                children: [
-                  SubcategoryCard(
-                    title: subcategory['title']!, // Passando o título
-                    imagePath: subcategory['image']!,
-                    onTap: () {
-                      Get.to(() => DesenvolvimentoScreen());
-                      // Aqui você pode navegar para a tela de treinos dessa subcategoria
-                      // Get.to(() => TrainingListScreen(category: subcategory['title']!));
-                    },
-                  ),
-                  if (index < data.length - 1) const SizedBox(width: 15),
-                ],
-              );
-            },
-            scrollDirection: Axis.horizontal,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class SubcategoryCard extends StatelessWidget {
-  final String title;
-  final String imagePath; // Agora esta string é uma URL
-  final VoidCallback? onTap;
-
-  const SubcategoryCard({
-    super.key,
-    required this.title,
-    required this.imagePath,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 175,
-        height: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        // ClipRRect é necessário para o CachedNetworkImage respeitar o borderRadius
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: CachedNetworkImage(
-            imageUrl: imagePath,
-            fit: BoxFit.cover,
-            // Placeholder enquanto carrega
-            placeholder: (context, url) => Container(
-              color: Colors.grey[300], // Um placeholder cinza
-            ),
-            // Widget em caso de erro
-            errorWidget: (context, url, error) => Container(
-              color: Colors.grey[100],
-              child: Icon(Icons.error, color: Colors.red),
             ),
           ),
         ),
