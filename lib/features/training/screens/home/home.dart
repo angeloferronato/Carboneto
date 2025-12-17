@@ -123,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             description: description, 
                             title: training.title,
                             numberPerson: training.people,
-                            onTap: () => Get.to(() => TrainingDetailsScreen(training: training,)),
+                            onTap: () {
+                              Get.to(() => TrainingDetailsScreen(training: training,));
+                            }
                           );
                         },
                         scrollDirection: Axis.horizontal,

@@ -22,12 +22,12 @@ import 'package:uuid/uuid.dart';
 
 class CreateTrainingController extends GetxController {
   static CreateTrainingController get instance => Get.find();
-  final userController = Get.put(UserController());
-  final title = TextEditingController();
-  final description = TextEditingController();
+  final UserController userController = Get.put(UserController());
+  final TextEditingController title = TextEditingController();
+  final TextEditingController description = TextEditingController();
   final GlobalKey<FormState> createTrainingFormKey = GlobalKey<FormState>();
   final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.trainingControllerTag);
-  final numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.trainingControllerTag);
+  final NumberDropdownController numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.trainingControllerTag);
   final TagController tagController = Get.put(TagController(), tag: CbTexts.trainingControllerTag);
   final ExercisesController exercisesController = Get.put(ExercisesController());
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
@@ -35,7 +35,7 @@ class CreateTrainingController extends GetxController {
 
   Future<void> createTraining() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos criando seu treino', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog('Estamos criando seu treino...', CbImages.loadingAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {

@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:carboneto/features/create/controllers/exercises_controller.dart';
-import 'package:path/path.dart' as p;
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
@@ -31,15 +29,9 @@ class TrainingRepository extends GetxController {
         final trainings = query.docs;
         final List<TrainingModel> listTrainings = [];
         for (var training in trainings) {
-          final List<ExerciseModel> listExercises = [];
-          for (var exercise in training.data()['Exercises']) {
-            final singleExercise = await fetchExerciseDetails(exercise);
-            listExercises.add(singleExercise);
-          }
-
           final singleTraining = TrainingModel.fromSnapshot(training);
-          singleTraining.exercises = listExercises;
           debugPrint(singleTraining.textLevel);
+
           final UserModel user = await userRepository.searchUser(singleTraining.authorId);
           singleTraining.user = user;
           listTrainings.add(singleTraining);
@@ -61,6 +53,29 @@ class TrainingRepository extends GetxController {
     }
   }
 
+  Future<List<ExerciseModel>> fetchSpecificExerciseDetails(List<String> exercises, [int? limit]) async {
+    try {
+      final List<ExerciseModel> listExercises = [];
+      for (var exercise in exercises) {
+        final singleExercise = await fetchExerciseDetails(exercise);
+        listExercises.add(singleExercise);
+      }
+
+      return listExercises;
+
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
   Future<List<TrainingModel>> fetchUserTrainingDetails(String authorId, [int? limit]) async {
     try {
       final query = await _db.collection("allTrainings").where('AuthorID', isEqualTo: authorId).limit(limit ?? 10).get();
@@ -69,15 +84,9 @@ class TrainingRepository extends GetxController {
         final trainings = query.docs;
         final List<TrainingModel> listTrainings = [];
         for (var training in trainings) {
-          final List<ExerciseModel> listExercises = [];
-          for (var exercise in training.data()['Exercises']) {
-            final singleExercise = await fetchExerciseDetails(exercise);
-            listExercises.add(singleExercise);
-          }
-
           final singleTraining = TrainingModel.fromSnapshot(training);
-          singleTraining.exercises = listExercises;
           debugPrint(singleTraining.textLevel);
+
           final UserModel user = await userRepository.searchUser(singleTraining.authorId);
           singleTraining.user = user;
           listTrainings.add(singleTraining);
@@ -224,7 +233,6 @@ class TrainingRepository extends GetxController {
     }
   }
 
-
   Future<void> saveTrainingRecord(TrainingModel trainingModel) async {
     try {
       await _db.collection('allTrainings').doc(trainingModel.id).set(trainingModel.toJson(), SetOptions(merge: true));
@@ -240,4 +248,24 @@ class TrainingRepository extends GetxController {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   } 
+
+  Future<void> deleteImageFromFirebase(String imageUrl) async {
+    try {
+      final ref = FirebaseStorage.instance.refFromURL(imageUrl);
+      await ref.delete();
+    } on FirebaseAuthException catch (e) {
+        throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      if (e.code == 'object-not-found') {
+        return;
+      }
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
 }

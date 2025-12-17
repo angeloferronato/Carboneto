@@ -60,6 +60,7 @@ class BannerWithPicture extends StatelessWidget {
                           borderRadius: avatarRadius,
                           width: 180,
                           height: 180,
+                          fit: BoxFit.cover,
                         )
                       : CbRoundedImage(
                           imageUrl: CbImages.userDefault,

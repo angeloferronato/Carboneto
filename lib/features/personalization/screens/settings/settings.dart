@@ -1,9 +1,7 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/personalization/screens/settings/widgets/settings_menu_tile.dart';
 import 'package:carboneto/features/personalization/screens/settings/widgets/user_profile_tile.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';

@@ -1,13 +1,12 @@
 import 'dart:ui';
-
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/chips/tip_chip_training.dart';
-import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
-import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
+import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_shimmer.dart';
 import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -17,10 +16,35 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class TrainingDetailsScreen extends StatelessWidget {
-  const TrainingDetailsScreen({super.key, this.training});
+class TrainingDetailsScreen extends StatefulWidget {
+  const TrainingDetailsScreen({super.key, required this.training});
 
-  final TrainingModel? training;
+  final TrainingModel training;
+
+  @override
+  State<TrainingDetailsScreen> createState() => _TrainingDetailsScreenState();
+}
+
+class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
+  final trainingController = Get.put(TrainingController());
+  TrainingModel training = TrainingModel.empty();
+
+  @override
+  void initState() {
+    super.initState();
+    training = widget.training;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchExercises(training);
+    });
+  }
+
+  Future<void> _fetchExercises(TrainingModel training) async {
+    final updatedTraining = await trainingController.fetchExercises(training);
+    setState(() {
+      this.training = updatedTraining;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +66,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   CbRoundedImage(
-                    imageUrl: training!.thumbnail,
+                    imageUrl: training.thumbnail,
                     isNetworkImage: true,
                     width: double.infinity,
                     borderRadius: CbSizes.cardRadiusLg,
@@ -73,7 +97,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '${training!.duration.toString()} min',
+                                        '${training.duration.toString()} min',
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium!
@@ -107,7 +131,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        training!.exercises.length.toString(),
+                                        training.exercisesId!.length.toString(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium!
@@ -115,6 +139,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                                                 color: CbColors.light,
                                                 fontSizeFactor: 1.1),
                                       ),
+                                      
                                       Text(
                                         'Exercícios',
                                         style: Theme.of(context)
@@ -141,7 +166,7 @@ class TrainingDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                   training!.title,
+                   training.title,
                     textAlign: TextAlign.start,
                     style: Theme.of(context)
                         .textTheme
@@ -151,46 +176,50 @@ class TrainingDetailsScreen extends StatelessWidget {
                   const SizedBox(
                     height: CbSizes.spaceBtwItems,
                   ),
-                  Row(
-                    children: [
-                      CbTipChipTraining(
-                        backgroundColor: CbColors.buttonChipTraining
-                            .withValues(alpha: isDarkMode ? 0.58 : 1),
-                        textColor: CbColors.white,
-                        text: training!.textLevel ?? '',
-                      ),
-                      const SizedBox(
-                        width: CbSizes.sm,
-                      ),
-
-                      SizedBox(
-                        height: 23,
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: training!.categories.length,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (_, index) {
-                            return CbTipChipTraining(
-                              text: training!.categories[index],
-                              backgroundColor:
-                                  isDarkMode ? CbColors.white : CbColors.dark,
-                              textColor: isDarkMode ? CbColors.dark : CbColors.white,
-                            );
-                          },
-                          separatorBuilder: (_, __) {
-                            return SizedBox(width: CbSizes.sm,);
-                          },
-                        
+                  SizedBox(
+                    height: 25,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        CbTipChipTraining(
+                          backgroundColor: CbColors.buttonChipTraining
+                              .withValues(alpha: isDarkMode ? 0.58 : 1),
+                          textColor: CbColors.white,
+                          text: training.textLevel ?? '',
                         ),
-                      )
-                    ],
+                        const SizedBox(
+                          width: CbSizes.sm,
+                        ),
+                    
+                        SizedBox(
+                          height: 23,
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: training.categories.length,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (_, index) {
+                              return CbTipChipTraining(
+                                text: training.categories[index],
+                                backgroundColor:
+                                    isDarkMode ? CbColors.white : CbColors.dark,
+                                textColor: isDarkMode ? CbColors.dark : CbColors.white,
+                              );
+                            },
+                            separatorBuilder: (_, __) {
+                              return SizedBox(width: CbSizes.sm,);
+                            },
+                          
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: CbSizes.spaceBtwItems,
                   ),
                   Text(
-                    training!.description,
+                    training.description,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
@@ -207,22 +236,24 @@ class TrainingDetailsScreen extends StatelessWidget {
                   const SizedBox(
                     height: CbSizes.spaceBtwItems,
                   ),
-                  Column(
-                    children: List.generate(training!.exercises.length, (index) {
+
+                  Obx(() => !trainingController.isLoading.value ? Column(
+                    children: List.generate(training.exercises.length, (index) {
                       String twoDigits(int n) => n.toString().padLeft(2, '0');
-                      final timeExecution = Duration(minutes: training!.exercises[index].duration);
+                      final timeExecution = Duration(minutes: training.exercises[index].duration);
                       final minutes = twoDigits(timeExecution.inMinutes.remainder(60));
                       return Padding(
                         padding: const EdgeInsets.only(bottom: CbSizes.spaceBtwItems),
                         child: CbTrainingQueueItem(
-                          video: training!.exercises[index].video,
+                          video: training.exercises[index].video,
                           image: CbImages.trainingExample,
-                          title: training!.exercises[index].title,
+                          title: training.exercises[index].title,
                           duration: '$minutes:00',
                         ),
                       );
                     }),
-                  ),
+                  ) : TrainingQueueShimmer()),
+                  
 
                   const SizedBox(
                     height: 100,
@@ -246,7 +277,7 @@ class TrainingDetailsScreen extends StatelessWidget {
               title: 'Você deseja continuar?',
               middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
               confirm: ElevatedButton(
-                onPressed: () => Get.to(TrainingExecution(training: training ?? TrainingModel.empty(),)),
+                onPressed: () => Get.to(TrainingExecution(training: training)),
                 style: ElevatedButton.styleFrom(backgroundColor: CbColors.primary, side: BorderSide(color: CbColors.primary)),
                 child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
               ),

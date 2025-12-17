@@ -1,7 +1,6 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/authentication/controllers/position_selector/position_selector_controller.dart';
-import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/position_selector.dart';
 import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
@@ -11,9 +10,9 @@ import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:carboneto/utils/validators/validation.dart';
-import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -61,18 +60,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               SizedBox(
                 height: 20,
               ),
+
               Center(
-                child: Container(
-                  padding: EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: CbColors.primary,
-                  ),
-                  child: Obx(
-                    () => !userController.profileLoading.value ? (userController.user.value.profilePicture != '' ? CbRoundedImage(imageUrl: userController.user.value.profilePicture, isNetworkImage: true, borderRadius: avatarRadius, width: 180, height: 180,) : CbRoundedImage(imageUrl: CbImages.userDefault, borderRadius: avatarRadius, width: 180,)) : CbShimmerEffects(width: 180, height: 180, radius: avatarRadius,),
-                  ),
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: CbColors.primary,
+                      ),
+                      child: Obx(
+                        () => !userController.profileLoading.value ? (userController.user.value.profilePicture != '' ? CbRoundedImage(imageUrl: userController.user.value.profilePicture, isNetworkImage: true, borderRadius: avatarRadius, width: 180, height: 180, fit: BoxFit.cover,) : CbRoundedImage(imageUrl: CbImages.userDefault, borderRadius: avatarRadius, width: 180,)) : CbShimmerEffects(width: 180, height: 180, radius: avatarRadius,),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: CbColors.primary,
+                          borderRadius: BorderRadius.circular(100)
+                        ),
+                        child: IconButton(
+                          iconSize: 16,
+                          onPressed: () => editProfileController.uploadProfileImageToFirebase(), 
+                          icon: Icon(Icons.camera_alt, size: 20,),
+                          color: CbColors.light,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+                
               Form(
                 key: editProfileController.editProfileFormKey,
                 child: Column(

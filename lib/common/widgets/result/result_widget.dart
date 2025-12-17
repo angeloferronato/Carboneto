@@ -1,8 +1,5 @@
-import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
-import 'package:carboneto/common/widgets/texts/section_heading.dart';
-import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
-import 'package:carboneto/features/explore/screens/search/search.dart';
+import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -10,14 +7,10 @@ import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
-import 'package:carboneto/utils/validators/validation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:carboneto/features/authentication/controllers/login/login_controller.dart';
-import 'package:logger/logger.dart';
 
 class ResultWidget extends StatelessWidget {
   const ResultWidget({
@@ -43,7 +36,7 @@ class ResultWidget extends StatelessWidget {
 
 
     return GestureDetector(
-      onTap: () => Get.to(() => TrainingDetailsScreen()),
+      onTap: () => Get.to(() => TrainingDetailsScreen(training: TrainingModel.empty(),)),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: CbSizes.md),
         child: Column(

@@ -9,6 +9,7 @@ class TrainingModel {
   final List<String> categories;
   final String description;
   final int? duration;
+  List<String>? exercisesId;
   List<ExerciseModel> exercises;
   final String id;
   final DifficultyLevels level;
@@ -19,7 +20,7 @@ class TrainingModel {
   UserModel? user;
 
   TrainingModel({
-    required this.authorId, required this.categories, required this.description, this.duration,
+    required this.authorId, required this.categories, required this.description, this.duration, this.exercisesId,
     required this.exercises, required this.id, required this.level, required this.people, required this.thumbnail, required this.title,
     this.user, this.textLevel
   });
@@ -76,7 +77,8 @@ class TrainingModel {
       people: data['People'] ?? 0,
       thumbnail: data['Thumbnail'] ?? '',
       title: data['Title'] ?? '',
-      textLevel: data['Level'].toString().capitalize,
+      textLevel: data['Level'].toString().capitalize, 
+      exercisesId: List<String>.from(data['Exercises'] ?? []),
     );
   }
 
@@ -93,7 +95,8 @@ class TrainingModel {
       level: json["Level"], 
       people: json['People'], 
       thumbnail: json['Thumbnail'], 
-      title: json['Title'],
+      title: json['Title'], 
+      exercisesId: [],
     );
   }
 
@@ -113,6 +116,7 @@ class TrainingModel {
   }
 
   static TrainingModel empty() => TrainingModel(
+    exercisesId: [],
     authorId: '', 
     categories: [], 
     description: '', 

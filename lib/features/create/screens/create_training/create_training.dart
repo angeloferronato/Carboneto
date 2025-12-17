@@ -92,7 +92,6 @@ class CreateTraining extends StatelessWidget {
                       if (exercisesController.selectedCount == 0) {
                         return Column(
                           children: [
-                            // HERE WILL BE THE LIST OF EXERICESE
                             Image(
                               image: AssetImage(CbImages.basket),
                               width: 70,

@@ -34,10 +34,6 @@ class ContentGrid extends StatelessWidget {
             height: 1,
           ),
 
-          // FAZER NO FUTURO A LOGICA DE MOSTRAR OS TREINOS SE EXISTIREM:
-          // WIDGET PRONTO:
-
-
           Obx(
             () {
               if (trainingController.isLoading.value) {

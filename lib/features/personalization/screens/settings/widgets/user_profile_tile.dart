@@ -29,7 +29,9 @@ class CbUserProfileTile extends StatelessWidget {
                   isNetworkImage: controller.user.value.profilePicture != '',
                   height: 75,
                   borderRadius: 75,
+                  width: 75,
                   border: Border.all(color: CbColors.primary, width: 1),
+                  fit: BoxFit.cover,
                 ),
             
                 const SizedBox(width: CbSizes.spaceBtwItems,),

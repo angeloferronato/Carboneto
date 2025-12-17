@@ -145,7 +145,7 @@ class SearchScreen extends StatelessWidget {
                                   imagePath: imagePath,
                                   onTap: () {
                                     Get.to(() => CategoryScreen(
-                                          title: 'TITULO AQUI'
+                                          title: 'Lance Livre'
                                     ));
                                   },
                                 );

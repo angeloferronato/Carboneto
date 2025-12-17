@@ -1,11 +1,9 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/features/create/screens/create_training/create_training.dart';
 import 'package:carboneto/features/library/screens/all_trainings_screen/widgets/training_card.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:get/get.dart';
 
 class AllTrainingsScreen extends StatelessWidget {

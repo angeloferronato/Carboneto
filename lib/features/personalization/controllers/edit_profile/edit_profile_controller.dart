@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/controllers/position_selector/position_selector_controller.dart';
+import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/home_menu.dart';
@@ -17,10 +21,12 @@ class EditProfileController extends GetxController {
   final Rx<String> countryCode = ''.obs;
   Rx<Country>? userCountry = Country.parse('br').obs;
   final GlobalKey<FormState> editProfileFormKey = GlobalKey<FormState>();
-  final nameController = TextEditingController(text: 'Carregando...');
-  final descriptionController = TextEditingController(text: 'Carregando...');
-  final positionSelectorController = Get.put(PositionSelectorController());
+  final TextEditingController nameController = TextEditingController(text: 'Carregando...');
+  final TextEditingController descriptionController = TextEditingController(text: 'Carregando...');
+  final PositionSelectorController positionSelectorController = Get.put(PositionSelectorController());
   final UserRepository userRepository = Get.put(UserRepository());
+  final UploadImageController uploadImageController = Get.put(UploadImageController());
+  final UserController userController = Get.put(UserController());
 
 
   void changeCode(String newCode) {
@@ -30,7 +36,7 @@ class EditProfileController extends GetxController {
 
   Future<void> updateUserDetails() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações...', CbImages.loadingAnimation);
       
       // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -81,4 +87,39 @@ class EditProfileController extends GetxController {
     }
   }
 
+  Future<void> uploadProfileImageToFirebase() async {
+    try {
+      CbFullScreenLoader.openLoadingDialog('Estamos atualizando sua foto de perfil...', CbImages.loadingAnimation);
+
+      // Check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        return;
+      }
+
+      await uploadImageController.pickSingleFile();
+      if (uploadImageController.selectedFile.value == null) {
+        CbFullScreenLoader.stopLoading();
+        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve selecionar uma imagem para continuar');
+        return;
+      }
+
+      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''));
+      
+      if (userController.user.value.profilePicture.isNotEmpty) {
+        await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.profilePicture);
+      }
+
+      await userRepository.updateSingleField({'ProfilePicture': newUrl});
+      
+      await userController.fetchUserDetails();
+
+      CbLoaders.successSnackBar(title: 'Sucesso!', message: 'Sua foto de perfil foi atualizada com sucesso!');
+      CbFullScreenLoader.stopLoading();
+
+    } catch (e) {
+      CbFullScreenLoader.stopLoading();
+      CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
+    }
+  }
 }

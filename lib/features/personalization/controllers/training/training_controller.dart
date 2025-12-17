@@ -21,6 +21,13 @@ class TrainingController extends GetxController {
     });
   }
 
+  Future<TrainingModel> fetchExercises(TrainingModel training) async {
+    isLoading.value = true;
+    training.exercises = await _trainingRepository.fetchSpecificExerciseDetails(training.exercisesId ?? []);
+    isLoading.value = false;
+    return training;
+  }
+
   Future<List<TrainingModel>> fetchAllTrainings() async {
     try {
       isLoading.value = true;

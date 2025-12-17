@@ -38,7 +38,7 @@ class CbTrainingQueueItem extends StatelessWidget {
             children: [
               Flexible(
                 child: Align(
-                  alignment: Alignment.centerLeft,  // Correct alignment
+                  alignment: Alignment.centerLeft,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -22,17 +22,14 @@ class ProfileScreen extends StatelessWidget {
       body: Padding(
         padding: CbSpacingStyle.paddingWithAppBarHeight * 0,
         child: SingleChildScrollView(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Column(
             children: [
-              BannerWithPicture(
-                  profileImg: CbImages.userExample,
-                  bannerImg: CbImages.bannerDefault),
+              BannerWithPicture(profileImg: CbImages.userExample, bannerImg: CbImages.bannerDefault),
               SizedBox(
                 height: 60,
               ),
-              ProfileInfo(userController: userController),
+              ProfileInfo(),
               SizedBox(
                 height: 5,
               ),

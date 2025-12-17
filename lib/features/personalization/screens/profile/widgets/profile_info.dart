@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileInfo extends StatelessWidget {
-  const ProfileInfo({super.key, required this.userController});
-  final UserController userController;
+  const ProfileInfo({super.key,});
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.put(UserController());
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
