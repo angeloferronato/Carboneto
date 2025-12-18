@@ -31,7 +31,7 @@ class ExploreRepository extends GetxController {
         final data = doc.data();
         
         // Pega o nome do documento (Ex: "3 pontos") como o título
-        final String subCategoryTitle = doc.id; 
+        final String subCategoryTitle = data['Title']; 
         
         // Pega os campos do documento
         // [IMPORTANTE]: Estou assumindo que os campos se chamam 'category' e 'image'

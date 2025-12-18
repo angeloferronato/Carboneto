@@ -1,10 +1,10 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/result/result_widget.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/features/explore/screens/widgets/gradient_title.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -111,43 +111,10 @@ class CategoryScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final titleWords = title?.trim().split(RegExp(r'\s+'));
-    final firstTitle = titleWords?.first;
-    final restTitle = (titleWords != null && titleWords.length > 1)
-        ? titleWords.sublist(1).join(' ')
-        : '';
 
     return Scaffold(
       appBar: CbAppBar(
-        title: RichText(
-          text: TextSpan(
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall!
-                .apply(color: CbColors.white, fontSizeFactor: 1.3),
-            children: [
-              TextSpan(text: firstTitle),
-              TextSpan(text: ' '),
-              TextSpan(
-                text: restTitle,
-                style: TextStyle(
-                  foreground: Paint()
-                    ..shader = const LinearGradient(
-                      colors: [
-                        Color(0xFF0047FF),
-                        Color(0xFF1B5FF3),
-                        Color(0xFF5386F4),
-                        Color(0xFF6FB9FF),
-                        Color(0xFFA3D4FF),
-                      ],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ).createShader(Rect.fromLTWH(0, 0, 600, 0)),
-                ),
-              ),
-            ],
-          ),
-        ),
+        title: GradientTitle(title: title),
         showBackArrow: true,
       ),
       body: ListView(
