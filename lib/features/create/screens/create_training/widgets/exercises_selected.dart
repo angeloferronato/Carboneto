@@ -26,10 +26,11 @@ class SelectedExecises extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CbRoundedImage(
-                imageUrl: CbImages.thumbnailTrainingExample,
+                imageUrl: exercise.thumb,
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
+                isNetworkImage: true,
               ),
               SizedBox(
                 width: 15,

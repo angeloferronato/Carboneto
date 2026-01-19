@@ -21,7 +21,7 @@ class TreinoCard extends StatelessWidget {
       child: SizedBox(
         width: cardWidth,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(16),

@@ -3,7 +3,6 @@ import 'package:carboneto/features/personalization/controllers/training/training
 import 'package:carboneto/features/personalization/screens/profile/widgets/content_grid_profile_shimmer.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/treino_card.dart';
-import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';

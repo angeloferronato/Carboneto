@@ -1,6 +1,9 @@
 import 'package:carboneto/data/repositories/training/training_repository.dart';
+import 'package:carboneto/features/create/controllers/create_training_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TrainingController extends GetxController {
@@ -10,6 +13,7 @@ class TrainingController extends GetxController {
   final UserController userController = Get.put(UserController());
   final RxList<TrainingModel> trainingsList = <TrainingModel>[].obs;
   final Rx<bool> isLoading = false.obs;
+  final CreateTrainingController createTrainingController = Get.put(CreateTrainingController());
 
   @override
   Future<void> onInit() async {
@@ -40,4 +44,39 @@ class TrainingController extends GetxController {
       rethrow; 
     }
   }
+
+  void showTrainingUserOptions(TrainingModel training) {
+    showModalBottomSheet(
+      context: Get.context!,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.only(left: CbSizes.md, right: CbSizes.md, bottom: CbSizes.md),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.edit_rounded),
+                title: Text('Editar'),
+                onTap: () {
+                  Get.back();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete_rounded, color: Colors.red),
+                title: Text(
+                  'Deletar',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () => createTrainingController.showCancelDeleteTrainingMessage(training),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  
 }

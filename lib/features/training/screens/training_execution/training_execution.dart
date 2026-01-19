@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
-import 'package:carboneto/features/training/controllers/training_controller.dart';
+import 'package:carboneto/features/training/controllers/training_execution_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_execution/widgets/training_execution_action_buttons.dart';
@@ -31,10 +31,10 @@ class _TrainingExecutionState extends State<TrainingExecution> {
 
   @override
   Widget build(BuildContext context) {
-    if (Get.isRegistered<TrainingController>()) {
-      Get.delete<TrainingController>();
+    if (Get.isRegistered<TrainingExecutionController>()) {
+      Get.delete<TrainingExecutionController>();
     }
-    final controller = Get.put(TrainingController(training: widget.training));
+    final controller = Get.put(TrainingExecutionController(training: widget.training));
     final isDarkTheme = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       extendBody: true,

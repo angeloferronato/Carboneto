@@ -268,4 +268,20 @@ class TrainingRepository extends GetxController {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
+
+  Future<void> deleteTrainingFromFirebase(String trainingId) async {
+    try {
+      await _db.collection('allTrainings').doc(trainingId).delete();
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
 }

@@ -9,10 +9,10 @@ import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TrainingController extends GetxController {
-  static TrainingController get instance => Get.find();
+class TrainingExecutionController extends GetxController {
+  static TrainingExecutionController get instance => Get.find();
 
-  TrainingController({required this.training});
+  TrainingExecutionController({required this.training});
 
   late Rx<Duration> duration;
   final TrainingModel training;

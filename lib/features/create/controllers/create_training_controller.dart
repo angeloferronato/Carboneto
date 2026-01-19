@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
@@ -10,13 +9,16 @@ import 'package:carboneto/features/personalization/controllers/user_controller/u
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/home_menu.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
@@ -31,6 +33,7 @@ class CreateTrainingController extends GetxController {
   final TagController tagController = Get.put(TagController(), tag: CbTexts.trainingControllerTag);
   final ExercisesController exercisesController = Get.put(ExercisesController());
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
+  final HomeMenuController homeMenuController = Get.put(HomeMenuController());
   final UserRepository userRepository = Get.put(UserRepository());
 
   Future<void> createTraining() async {
@@ -83,7 +86,7 @@ class CreateTrainingController extends GetxController {
 
       await trainingRepository.saveTrainingRecord(newTraining);
 
-      CbLoaders.successSnackBar(title: 'Sucesso', message: 'O Seu treino foi cadastrado com sucesso!');
+      CbLoaders.successSnackBar(title: 'Sucesso', message: 'O seu treino foi cadastrado com sucesso!');
       CbFullScreenLoader.stopLoading();
       Get.offAll(() => HomeMenu());
 
@@ -93,5 +96,49 @@ class CreateTrainingController extends GetxController {
     }
   }
   
+  Future<void> deleteTraining(TrainingModel training) async {
+    try {
+      CbFullScreenLoader.openLoadingDialog('Estamos excluindo seu treino...', CbImages.loadingAnimation);
+
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        return;
+      }
+
+      await trainingRepository.deleteTrainingFromFirebase(training.id);
+
+      final userTrainings = userController.user.value.userTrainings;
+      userTrainings!.remove(training.id);
+
+      await userRepository.updateSingleField({'UserTrainings': userTrainings});
+
+      CbLoaders.successSnackBar(title: 'Sucesso', message: 'O seu treino foi excluído com sucesso!');
+      CbFullScreenLoader.stopLoading();
+      Get.offAll(HomeMenu());
+      homeMenuController.selectedIndex.value = 4;
+    } catch (e) {
+      CbLoaders.errorSnackBar(title: e.toString());
+      CbFullScreenLoader.stopLoading();
+    }
+  }
+
+  void showCancelDeleteTrainingMessage(TrainingModel training) {
+    Get.defaultDialog(
+      titlePadding: const EdgeInsets.only(top: CbSizes.lg, left: CbSizes.lg, right: CbSizes.lg),
+      contentPadding: EdgeInsets.all(CbSizes.lg),
+      title: 'Você deseja excluir o treino "${training.title}"?',
+      middleText: 'Uma vez concluída essa ação, o treino será excluído para sempre.',
+      confirm: ElevatedButton(
+        onPressed: () => deleteTraining(training),
+        style: ElevatedButton.styleFrom(backgroundColor: CbColors.error, side: BorderSide(color: CbColors.error)),
+        child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
+      ),
+      cancel: OutlinedButton(
+        onPressed: () => Navigator.of(Get.overlayContext!).pop(), 
+        child: Text('Não'),
+      ),
+      backgroundColor: CbColors.dark
+    );
+  }
 }
 

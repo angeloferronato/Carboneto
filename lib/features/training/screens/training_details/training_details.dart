@@ -4,6 +4,7 @@ import 'package:carboneto/common/widgets/chips/tip_chip_training.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_shimmer.dart';
@@ -49,11 +50,19 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
+    final isCreatorTraining = UserController.instance.user.value.id == training.authorId;
     return Scaffold(
       extendBody: true,
       appBar: CbAppBar(
         title: null,
         showBackArrow: true,
+        actions: [
+          isCreatorTraining ? 
+          IconButton(
+            icon: Icon(Icons.more_vert_outlined),
+            onPressed: () => trainingController.showTrainingUserOptions(training)
+          ) : SizedBox(),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),

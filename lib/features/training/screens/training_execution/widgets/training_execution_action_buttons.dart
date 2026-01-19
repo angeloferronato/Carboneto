@@ -1,5 +1,5 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
-import 'package:carboneto/features/training/controllers/training_controller.dart';
+import 'package:carboneto/features/training/controllers/training_execution_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ class TrainingExecutionActionButtons extends StatelessWidget {
     super.key, required this.controller,
   });
 
-  final TrainingController controller;
+  final TrainingExecutionController controller;
   @override
   Widget build(BuildContext context) {
     return Row(

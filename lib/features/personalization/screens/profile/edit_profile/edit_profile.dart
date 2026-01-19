@@ -12,7 +12,6 @@ import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:carboneto/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -84,7 +83,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         child: IconButton(
                           iconSize: 16,
-                          onPressed: () => editProfileController.uploadProfileImageToFirebase(), 
+                          onPressed: () => editProfileController.sendToConfirmScreen(), 
                           icon: Icon(Icons.camera_alt, size: 20,),
                           color: CbColors.light,
                         ),

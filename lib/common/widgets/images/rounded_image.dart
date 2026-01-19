@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -18,6 +20,8 @@ class CbRoundedImage extends StatelessWidget {
     this.isNetworkImage = false, 
     this.onPressed, 
     this.borderRadius = CbSizes.md, 
+    this.isFileImage = false,
+    this.file,
   });
 
   final double? width, height;
@@ -27,9 +31,10 @@ class CbRoundedImage extends StatelessWidget {
   final Color backgroundColor;
   final BoxFit? fit; 
   final EdgeInsetsGeometry? padding, margin;
-  final bool isNetworkImage;
+  final bool isNetworkImage, isFileImage;
   final VoidCallback? onPressed;
   final double borderRadius;
+  final File? file;
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +57,10 @@ class CbRoundedImage extends StatelessWidget {
             imageUrl: imageUrl,
             progressIndicatorBuilder: (context, url, progress) => CbShimmerEffects(width: width ?? 55, height: height ?? 55, radius: borderRadius,),
             errorWidget: (context, url, error) => const Icon(Icons.error),
-          ) : Image(
+          ) : !isFileImage ? Image(
             fit: fit,
             image: AssetImage(imageUrl) as ImageProvider,
-          )
+          ) : Image.file(file ?? File('')),
 
         ),
       ),
