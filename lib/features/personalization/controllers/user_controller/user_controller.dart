@@ -47,7 +47,7 @@ class UserController extends GetxController {
           description: '',
           position: 'Armador',
           countryCode: 'BR',
-          isVerify: false,
+          isVerified: false,
         );
 
         await UserRepository.instance.saveUserRecord(user, userCredentials);

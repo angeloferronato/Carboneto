@@ -1,4 +1,5 @@
 import 'package:carboneto/features/personalization/models/user_model.dart';
+import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,11 +19,12 @@ class TrainingModel {
   final String thumbnail;
   final String title;
   UserModel? user;
+  final CreatorModel creator;
 
   TrainingModel({
     required this.authorId, required this.categories, required this.description, this.duration, this.exercisesId,
     required this.exercises, required this.id, required this.level, required this.people, required this.thumbnail, required this.title,
-    this.user, this.textLevel
+    this.user, this.textLevel, required this.creator
   });
 
   static DifficultyLevels parseStringToLevel(String data) {
@@ -67,7 +69,7 @@ class TrainingModel {
     final data = document.data()!;
   
     return TrainingModel(
-      id: document.id,
+      id: data['Id'],
       duration: data['Duration'] ?? 0,
       authorId: data['AuthorID'] ?? '',
       categories: List<String>.from(data['Categories'] ?? []),
@@ -79,6 +81,7 @@ class TrainingModel {
       title: data['Title'] ?? '',
       textLevel: data['Level'].toString().capitalize, 
       exercisesId: List<String>.from(data['Exercises'] ?? []),
+      creator: CreatorModel.fromMap(Map<String, dynamic>.from(data['Creator'] ?? {})),
     );
   }
 
@@ -97,6 +100,7 @@ class TrainingModel {
       thumbnail: json['Thumbnail'], 
       title: json['Title'], 
       exercisesId: [],
+      creator: CreatorModel.fromMap(Map<String, dynamic>.from(json['Creator'] ?? {})),
     );
   }
 
@@ -112,6 +116,7 @@ class TrainingModel {
       'People': people,
       'Thumbnail': thumbnail,
       'Title': title,
+      'Creator': creator.toMap(),
     };
   }
 
@@ -125,6 +130,7 @@ class TrainingModel {
     level: DifficultyLevels.rookie, 
     people: 0, 
     thumbnail: '', 
-    title: ''
+    title: '',
+    creator: CreatorModel.empty(),
   );
 }

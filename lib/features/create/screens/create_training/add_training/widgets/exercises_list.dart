@@ -238,7 +238,7 @@ class ExercisesList extends StatelessWidget {
                                                                 ),
                                                               ),
                                                               const SizedBox(width: 6),
-                                                              if (author?.isVerify == true)
+                                                              if (author?.isVerified == true)
                                                                 const Icon(Icons.verified, color: CbColors.primary, size: 10)
                                                               else
                                                                 const SizedBox()

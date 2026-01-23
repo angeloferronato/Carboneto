@@ -166,6 +166,33 @@ class TrainingRepository extends GetxController {
     }
   }
 
+  Future<List<TrainingModel>> fetchAllTrainings() async {
+    try {
+      Query<Map<String, dynamic>> query = _db.collection("allTrainings");
+
+      final querySnapshot = await query.get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+
+        return querySnapshot.docs
+          .map((doc) => TrainingModel.fromSnapshot(doc))
+          .toList();
+      } else {
+        return [];
+      }
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw CbFormatException();
+    } on PlatformException catch (e) {
+      throw CbPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
   Future <List<dynamic>> loadMoreExercises(int? limit, DocumentSnapshot? lastDoc) async {
     if (lastDoc == null) return [];
 

@@ -3,24 +3,23 @@ import 'package:flutter/material.dart';
 
 class CategoriesController extends GetxController {
   static CategoriesController get instance => Get.find();
+
   final ScrollController scrollController = ScrollController();
 
   final RxList<String> categories = <String>[
     'For you',
     'Arremesso',
+    'Atleticismo',
     'Defesa',
-    'Condicionamento',
-    'Agilidade',
-    'Passe',
-    'Drible',
-    'Força',
+    'Controle de Bola',
+    'Finalização',
+    'QI de Basquete',
+    'Outros'
   ].obs;
 
-  final RxString selectedCategory = 'For you'.obs;
+  final RxnString selectedCategory = RxnString();
 
   void selectCategory(String category) {
-    if (category == selectedCategory.value) return;
-
     selectedCategory.value = category;
 
     if (category != 'For you') {

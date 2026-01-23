@@ -6,6 +6,7 @@ import 'package:carboneto/features/create/controllers/number_dropdown_controller
 import 'package:carboneto/features/create/controllers/tag_controller.dart';
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/home_menu.dart';
@@ -79,6 +80,11 @@ class CreateTrainingController extends GetxController {
         thumbnail: imageUrl ?? '', 
         title: title.text.trim(),
         duration: exercisesList.length * 5,
+        creator: CreatorModel(
+          name: userController.user.value.name, 
+          isVerified: userController.user.value.isVerified, 
+          profilePicture: userController.user.value.profilePicture,
+        )
       );
 
       userController.user.value.userTrainings!.add(customId);

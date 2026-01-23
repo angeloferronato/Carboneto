@@ -1,5 +1,6 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
+import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -12,20 +13,18 @@ import 'package:iconsax/iconsax.dart';
 class HomeTrainingWidget extends StatelessWidget {
   const HomeTrainingWidget({
     super.key,
-    required this.imageThumbnail,
-    required this.level,
-    required this.trainer,
-    required this.description,
-    required this.trainerImage,
-    required this.title,
-    this.numberPerson = 1,
     this.onTap,
+    this.borderRadius = 20,
+    this.fit = BoxFit.cover,
+    this.paddingRight = 12, 
+    required this.training,
   });
 
-  final DifficultyLevels level;
-  final String trainer, imageThumbnail, description, trainerImage, title;
-  final int? numberPerson;
   final VoidCallback? onTap;
+  final double borderRadius, paddingRight;
+  final BoxFit fit;
+  final TrainingModel training;
+
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +33,18 @@ class HomeTrainingWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.only(right: 12),
+        padding: EdgeInsets.only(right: paddingRight),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CbRoundedImage(
-              borderRadius: 20,
+              borderRadius: borderRadius,
               isNetworkImage: true,
-              imageUrl: imageThumbnail,
+              imageUrl: training.thumbnail,
               width: 245,
               height: 135,
               backgroundColor: Colors.transparent,
+              fit: fit,
             ),
             const SizedBox(
               height: CbSizes.xs,
@@ -59,7 +59,7 @@ class HomeTrainingWidget extends StatelessWidget {
                     children: [
                       // Level
                       LevelWidget(
-                        level: level,
+                        level: training.level,
                       ),
 
                       Row(
@@ -73,14 +73,14 @@ class HomeTrainingWidget extends StatelessWidget {
                           SizedBox(
                             width: 6,
                           ),
-                          Text(numberPerson.toString(), style: TextStyle(fontSize: 10, color: CbColors.primary),),
+                          Text(training.people.toString(), style: TextStyle(fontSize: 10, color: CbColors.primary),),
                         ],
                       ),
                     ],
                   ),
                   // Título
                   Text(
-                    title,
+                    training.title,
                     style: Theme.of(context).textTheme.labelLarge!.apply(fontSizeDelta: 1.2),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
@@ -94,33 +94,33 @@ class HomeTrainingWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       CbRoundedImage(
-                        imageUrl: trainerImage,
+                        imageUrl: training.creator.profilePicture.isNotEmpty ? training.creator.profilePicture : CbImages.userDefault,
                         width: 13,
                         height: 13,
                         fit: BoxFit.cover,
-                        isNetworkImage: true,
+                        isNetworkImage: training.creator.profilePicture.isNotEmpty,
                       ),
                       SizedBox(
                         width: CbSizes.xs,
                       ),
                       Text(
-                        trainer,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelMedium!
-                            .copyWith(
-                                fontSize: 10,
-                                color:
-                                    isDarkMode ? CbColors.grey : CbColors.dark),
+                        training.creator.name,
+                        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          fontSize: 10,
+                          color:
+                          isDarkMode ? CbColors.grey : CbColors.dark
+                        ),
                       ),
                       SizedBox(
                         width: CbSizes.xs,
                       ),
-                      Icon(
+                      
+                      training.creator.isVerified ? Icon(
                         Iconsax.verify5,
                         color: CbColors.primary,
                         size: 10,
-                      )
+                      ) : SizedBox(),
+
                     ],
                   ),
                   SizedBox(
@@ -130,7 +130,7 @@ class HomeTrainingWidget extends StatelessWidget {
                   SizedBox(
                     width: 235,
                     child: Text(
-                      description,
+                      training.description,
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           fontSize: 10,
                           color: isDarkMode ? CbColors.grey : CbColors.dark),

@@ -1,22 +1,50 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TagController extends GetxController {
   static TagController get instance => Get.find();
+  final TextEditingController queryController = TextEditingController();
 
   final RxList<String> allTags = <String>[
-    "Intermediário",
-    "Avançado",
-    "Arremesso",
-    "Agilidade",
-    "Defesa",
-    "Passe",
-    "Condicionamento",
-    "Drible",
+    "Arremesso de 3 Pontos",
+    "Arremesso em Movimento",
+    "Arremesso sob Pressão",
+    "Fade-Away",
+    "Lance-livre",
+    "Mid-Range",
+    "Step-Back",
+    "Explosão",
+    "Coordenação Motora",
+    "Impulsão",
+    "Mudança de Direção",
+    "Velocidade",
+    "Behind The Back",
+    "Mudança de Ritmo",
+    "Crossover",
+    "Drible de Proteção",
+    "Entre as Pernas",
+    "In and Out",
+    "Spin Move",
+    "Box Out",
+    "Contestação de Arremesso",
+    "Defesa de Garrafão",
+    "Defesa Individual",
+    "Marcação Perímetro",
+    "Roubo de Bola",
+    "Bandeja Simples",
+    "Enterrada",
+    "Euro Step",
+    "Finger Roll",
+    "Floater",
+    "Layup em Velocidade",
+    "Reverse Layup",
+    "Controle de Jogo",
+    "Jogo de Transição",
+    "Tomade de Decisão",
   ].obs;
 
   final RxList<String> selectedTags = <String>[
-    "Intermediário",
-    "Agilidade",
+    "Arremesso de 3 Pontos"
   ].obs;
 
   final RxString searchQuery = ''.obs;
@@ -33,7 +61,10 @@ class TagController extends GetxController {
   // Functions to handle Tag management
   void onTagChanged(String tag, [bool added = false]) {
     if (added) {
-        addTag(tag);
+      if (selectedTags.length == 5) {
+        return;
+      }
+      addTag(tag);
     } else {
       if (selectedTags.length > 2) {
         removeTag(tag);
@@ -51,16 +82,15 @@ class TagController extends GetxController {
     selectedTags.remove(tag);
   }
 
-  void addNewTag(String tag) {
-    if (tag.isNotEmpty && !allTags.contains(tag)) {
-      allTags.add(tag);
-      selectedTags.add(tag);
-    }
-  }
+  // void addNewTag(String tag) {
+  //   if (tag.isNotEmpty && !allTags.contains(tag)) {
+  //     allTags.add(tag);
+  //     selectedTags.add(tag);
+  //   }
+  // }
 
   void addExercise(ExerciseItem exercise) {
     exercises.add(exercise);
-    print(exercises.toString());
   }
 
   void removeExercise(int index) {

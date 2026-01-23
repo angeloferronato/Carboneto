@@ -13,7 +13,6 @@ class TagSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TagController(), tag: tag);
-    final TextEditingController textCtrl = TextEditingController();
 
     return Scaffold(
       backgroundColor: CbColors.dark,
@@ -33,14 +32,20 @@ class TagSearchScreen extends StatelessWidget {
         child: Column(
           children: [
             FocusedTextField(
-              controller: textCtrl,
-              hintText: "Pesquisar ou criar nova tag...",
+              controller: controller.queryController,
+              hintText: "Pesquisar tag...",
               onChanged: (value) => controller.searchQuery.value = value,
               onSubmitted: (value) {
-                controller.addNewTag(value);
-                textCtrl.clear();
-                controller.searchQuery.value = '';
+                // textCtrl.clear();
+                // controller.searchQuery.value = '';
               },
+              suffixIcon: IconButton(
+                onPressed: () {
+                  controller.queryController.clear();
+                  controller.searchQuery.value = '';
+                }, 
+                icon: Icon(Iconsax.trash)
+              ),
               contentPadding: const EdgeInsets.all(14),
               prefixIcon: GestureDetector(
                 child: Icon(Iconsax.search_normal_1, size: 20,),

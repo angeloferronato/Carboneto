@@ -2,7 +2,12 @@ import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/features/create/controllers/create_training_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
+import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
+import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/network_manager.dart';
+import 'package:carboneto/utils/popups/full_screen_loader.dart';
+import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -77,6 +82,30 @@ class TrainingController extends GetxController {
         );
       },
     );
+  }
+
+  Future<void> startTraining(TrainingModel training) async {
+    try {
+      CbFullScreenLoader.openLoadingDialog('Estamos iniciando seu treino...', CbImages.loadingAnimation);
+
+      // Check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        CbLoaders.errorSnackBar(title: 'Sem conexão de internet!', message: 'Sem internet não é possível iniciar seu treino.');
+        CbFullScreenLoader.stopLoading();
+        return;
+      }
+
+      CbFullScreenLoader.stopLoading();
+
+      // To do: Make a function to store the training id in the history.
+      // To do: Pass all the trainings to allTrainings.
+      Get.to(TrainingExecution(training: training));  
+
+    } catch (e){
+      CbFullScreenLoader.stopLoading();
+      CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
+    }
   }
   
 }

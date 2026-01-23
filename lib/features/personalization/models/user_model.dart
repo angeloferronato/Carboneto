@@ -9,7 +9,7 @@ class UserModel {
   final String description;
   final String position;
   final String countryCode;
-  final bool isVerify;
+  final bool isVerified;
   final List<dynamic>? userTrainings;
 
   UserModel({
@@ -21,7 +21,7 @@ class UserModel {
     required this.description,
     required this.position,
     required this.countryCode,
-    required this.isVerify,
+    required this.isVerified,
     required this.userTrainings,
   });
 
@@ -47,7 +47,7 @@ class UserModel {
     description: "",
     position: "",
     countryCode: "",
-    isVerify: false, 
+    isVerified: false, 
     userTrainings: [],
   );
 
@@ -62,7 +62,7 @@ class UserModel {
       'Description': description,
       'Position': position,
       'CountryCode': countryCode,
-      'IsVerify': isVerify,
+      'IsVerified': isVerified,
       'UserTrainings': userTrainings,
     };
   }
@@ -79,7 +79,7 @@ class UserModel {
       description: data['Description'] ?? '',
       position: data['Position'] ?? '',
       countryCode: data['CountryCode'] ?? '',
-      isVerify: data['IsVerify'] ?? '', 
+      isVerified: data['IsVerified'] ?? '', 
       userTrainings: data['UserTrainings'] ?? [],
     );
   }

@@ -24,9 +24,11 @@ class TrainingExecutionController extends GetxController {
   final Rx<bool> isPaused = false.obs;
   final Rx<bool> isSheetVisible = true.obs;
 
+
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    print('novo treino no histórico: ${training.id}');
     activeExercise.value = training.exercises[0];
     duration = Duration(minutes: training.duration ?? 0).obs;
     trainingRelativeDuration = Duration(minutes: activeExercise.value.duration).obs;
@@ -114,4 +116,6 @@ class TrainingExecutionController extends GetxController {
     totalTimer?.cancel();
     exerciseTimer?.cancel();
   }
+
+  
 }

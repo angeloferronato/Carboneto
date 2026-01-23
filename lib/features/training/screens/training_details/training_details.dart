@@ -8,7 +8,6 @@ import 'package:carboneto/features/personalization/controllers/user_controller/u
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_shimmer.dart';
-import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -78,7 +77,9 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
                     imageUrl: training.thumbnail,
                     isNetworkImage: true,
                     width: double.infinity,
+                    height: 250,
                     borderRadius: CbSizes.cardRadiusLg,
+                    fit: BoxFit.cover,
                   ),
                   Positioned(
                     bottom: -30,
@@ -286,7 +287,7 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
               title: 'Você deseja continuar?',
               middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
               confirm: ElevatedButton(
-                onPressed: () => Get.to(TrainingExecution(training: training)),
+                onPressed: () => trainingController.startTraining(training),
                 style: ElevatedButton.styleFrom(backgroundColor: CbColors.primary, side: BorderSide(color: CbColors.primary)),
                 child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
               ),

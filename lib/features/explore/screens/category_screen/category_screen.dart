@@ -140,13 +140,7 @@ class CategoryScreen extends StatelessWidget {
               padding: EdgeInsets.only(left: CbSizes.md),
               itemBuilder: (_, index) {
                 return HomeTrainingWidget(
-                  imageThumbnail: 'THUMB AQUI',
-                  level: DifficultyLevels.pro,
-                  trainerImage: 'FOTO DO TRAINER AQUI',
-                  trainer: 'Carboneto',
-                  description: 'Treino completo de arremesso de 3 pontos',
-                  title: 'Arremesso após o drible',
-                  numberPerson: 2,
+                  training: TrainingModel.empty(),
                   onTap: () => Get.to(() => TrainingDetailsScreen(training: TrainingModel.empty(),)),
                 );
               },
