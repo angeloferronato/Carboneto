@@ -41,12 +41,13 @@ class AddTrainingScreen extends StatelessWidget {
             Column(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: FocusedTextField(
+                    controller: exercisesController.searchQueryController,
                     hintText: "Pesquisar exercício",
                     contentPadding: const EdgeInsets.all(14),
                     prefixIcon: const Icon(Iconsax.search_normal_1, size: 20),
+                    onChanged: (value) => exercisesController.searchQuery.value = value,
                   ),
                 ),
                 Padding(
@@ -58,8 +59,8 @@ class AddTrainingScreen extends StatelessWidget {
             ),
 
             Obx(() {
-              final selectedCount = exercisesController.selectedCount;
-              final showButton = selectedCount > 0;
+              final selectedCount = exercisesController.intermediateSelectedCount;
+              final showButton = exercisesController.intermediateSelectedCount > 0;
 
               return AnimatedSlide(
                 duration: const Duration(milliseconds: 350),
@@ -72,14 +73,16 @@ class AddTrainingScreen extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 24),
-                      // HEREEEE
                       child: FloatingActionButton.extended(
                         backgroundColor: CbColors.primary,
                         elevation: 6,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25), 
                         ),
-                        onPressed: () => Get.back(),
+                        onPressed: () => {
+                          exercisesController.addExercisesToAddTrainingScreen(),
+                          Get.back(),
+                        },
                         icon: const Icon(Iconsax.add, color: Colors.white),
                         label: Text(
                           "Adicionar Exercício${selectedCount > 1 ? 's' : ''} ($selectedCount)",

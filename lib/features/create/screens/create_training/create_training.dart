@@ -5,7 +5,7 @@ import 'package:carboneto/features/create/controllers/upload_image_controller.da
 import 'package:carboneto/features/create/screens/create_training/add_training/add_training_screen.dart';
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
-import 'package:carboneto/features/create/screens/create_training/widgets/exercises_selected.dart';
+import 'package:carboneto/features/create/screens/create_training/widgets/selected_exercises.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/form_label.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/number_dropdown.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/square_upload.dart';
@@ -89,7 +89,7 @@ class CreateTraining extends StatelessWidget {
             
                     // Display selected exercises
                     Obx(() {
-                      if (exercisesController.selectedCount == 0) {
+                      if (exercisesController.selectedIndexes.isEmpty) {
                         return Column(
                           children: [
                             Image(
@@ -114,7 +114,7 @@ class CreateTraining extends StatelessWidget {
                         );
                       }
             
-                      return SelectedExecises();
+                      return SelectedExercises();
                     }),
             
                     const SizedBox(height: 25),
@@ -155,24 +155,3 @@ class CreateTraining extends StatelessWidget {
     );
   }
 }
-
-
-                  // HERE WILL BE THE LIST OF AN EXERICESE
-                  // Image(
-                  //   image: AssetImage(CbImages.basket),
-                  //   width: 70,
-                  // ),
-                  // const SizedBox(height: 10),
-                  // Padding(
-                  //   padding:
-                  //       const EdgeInsets.symmetric(horizontal: 50, vertical: 0),
-                  //   child: Text(
-                  //     'Adicione um exercicio para começar seu treinamento',
-                  //     textAlign: TextAlign.center,
-                  //     style: TextStyle(
-                  //       fontSize: 14,
-                  //       color: CbColors.darkGrey,
-                  //       fontWeight: FontWeight.w300,
-                  //     ),
-                  //   ),
-                  // ),

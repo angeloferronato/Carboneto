@@ -1,53 +1,38 @@
-import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/features/training/screens/home/widgets/home_training_shimmer.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/material.dart';
 
 class HomeShimmer extends StatelessWidget {
-  const HomeShimmer ({super.key});
+  const HomeShimmer({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView.builder(
+      itemCount: 3,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (_, index) => Column(
         children: [
-          CbShimmerEffects(
-            radius: 20,
-            width: 245,
-            height: 135
+          const SizedBox(height: 16),
+          Align(
+            alignment: AlignmentGeometry.centerLeft,
+            child: CbShimmerEffects(width: 160, height: 26)
           ),
-          const SizedBox(height: CbSizes.sm,),
-                        
+          const SizedBox(height: 10),
           SizedBox(
-            width: 245,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CbShimmerEffects(width: 85, height: 10),
-                CbShimmerEffects(width: 40, height: 10),
-              ],
+            height: 230,
+            child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: 2,
+              shrinkWrap: true,
+              itemBuilder: (_, __) =>  HomeTrainingShimmer(),
+              scrollDirection: Axis.horizontal,
             ),
-          ),
-          const SizedBox(height: CbSizes.xs,),
-                        
-          CbShimmerEffects(width: 200, height: 12),
-          const SizedBox(height: CbSizes.sm,),
-                        
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CbShimmerEffects(width: 15, height: 15),
-              const SizedBox(width: CbSizes.sm,),
-              CbShimmerEffects(width: 70, height: 10),
-            ],
-          ),
-          const SizedBox(height: CbSizes.xs,),
-                        
-          CbShimmerEffects(width: 50, height: 10),
+          )
         ],
-      
-      ),
+      )
     );
   }
 }

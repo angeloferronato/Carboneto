@@ -7,7 +7,7 @@ import 'package:carboneto/features/create/screens/create_training/add_training/w
 import 'package:carboneto/features/training/controllers/home_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
-import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
+import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -53,11 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildLoading() {
     return ListView(
+      shrinkWrap: true,
       children: [
         TopLogo(),
         CategoriesBar(),
-        const SizedBox(height: 16),
-        HomeShimmer(), // depois deixamos bonito
+        HomeShimmer(),
       ],
     );
   }
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildSectionHeader(title),
         const SizedBox(height: 12),
         SizedBox(
-          height: 250,
+          height: 235,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: trainings.length,

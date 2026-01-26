@@ -1,3 +1,4 @@
+import 'package:carboneto/data/repositories/exercises/exercise_repository.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/features/create/controllers/create_training_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
@@ -14,7 +15,8 @@ import 'package:get/get.dart';
 class TrainingController extends GetxController {
   static TrainingController get instance => Get.find();
 
-  final TrainingRepository _trainingRepository = Get.put(TrainingRepository()); 
+  final TrainingRepository trainingRepository = Get.put(TrainingRepository()); 
+  final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
   final UserController userController = Get.put(UserController());
   final RxList<TrainingModel> trainingsList = <TrainingModel>[].obs;
   final Rx<bool> isLoading = false.obs;
@@ -32,7 +34,7 @@ class TrainingController extends GetxController {
 
   Future<TrainingModel> fetchExercises(TrainingModel training) async {
     isLoading.value = true;
-    training.exercises = await _trainingRepository.fetchSpecificExerciseDetails(training.exercisesId ?? []);
+    training.exercises = await exerciseRepository.fetchSpecificExerciseDetails(training.exercisesId ?? []);
     isLoading.value = false;
     return training;
   }
@@ -40,7 +42,7 @@ class TrainingController extends GetxController {
   Future<List<TrainingModel>> fetchAllTrainings() async {
     try {
       isLoading.value = true;
-      final result = await _trainingRepository.fetchUserTrainingDetails(userController.user.value.id);
+      final result = await trainingRepository.fetchUserTrainingDetails(userController.user.value.id);
       trainingsList.assignAll(result); 
       isLoading.value = false;
       return result;

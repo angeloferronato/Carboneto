@@ -1,6 +1,6 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
-import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
+import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

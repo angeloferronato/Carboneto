@@ -63,7 +63,8 @@ class HomeController extends GetxController {
       }
     }
 
-    final  newMap = Map<String, List<TrainingModel>>.from(putKeyToLastPosition(map, 'Outros'));
+    // Para garantir que Outros fica por último
+    final newMap = Map<String, List<TrainingModel>>.from(putKeyToLastPosition(map, 'Outros'));
     sections.value = newMap;
   }
 

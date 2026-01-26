@@ -1,9 +1,6 @@
-import 'package:carboneto/common/widgets/custom_shapes/containers/custom_focused_border.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class FocusedTextField extends StatelessWidget {
   FocusedTextField({

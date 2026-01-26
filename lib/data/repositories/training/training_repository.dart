@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:carboneto/data/repositories/exercises/exercise_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
@@ -19,6 +20,7 @@ class TrainingRepository extends GetxController {
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final UserRepository userRepository = Get.put(UserRepository());
+  final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
 
   Future<List<TrainingModel>> fetchTrainingDetails(String collection, [int? limit]) async {
     try {
@@ -40,29 +42,6 @@ class TrainingRepository extends GetxController {
       } else {  
         return [];
       }
-    } on FirebaseAuthException catch (e) {
-      throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
-      throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
-      throw CbFormatException();
-    } on PlatformException catch(e) {
-      throw CbPlatformException(e.code).message;
-    } catch(e) {
-      throw 'Algo deu errado. Por favor tente novamente';
-    }
-  }
-
-  Future<List<ExerciseModel>> fetchSpecificExerciseDetails(List<String> exercises, [int? limit]) async {
-    try {
-      final List<ExerciseModel> listExercises = [];
-      for (var exercise in exercises) {
-        final singleExercise = await fetchExerciseDetails(exercise);
-        listExercises.add(singleExercise);
-      }
-
-      return listExercises;
-
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {
@@ -108,63 +87,7 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future<ExerciseModel> fetchExerciseDetails(String id) async {
-    try {
-      
-      final query = await _db.collection('allExercises').where('ID', isEqualTo: id).get();
-      
-      if (query.docs.isNotEmpty) {
-        final exercise = ExerciseModel.fromSnapshot(query.docs[0]);
-        return exercise;
-      } else {  
-        debugPrint("Exercício não encontrado: $id");
-        return ExerciseModel.empty();
-      }
-    } on FirebaseAuthException catch (e) {
-      throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
-      throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
-      throw CbFormatException();
-    } on PlatformException catch(e) {
-      throw CbPlatformException(e.code).message;
-    } catch(e) {
-      throw 'Algo deu errado. Por favor tente novamente';
-    }
-  }
-
-  Future<List<dynamic>> fetchAllExercises(int? limit, lastDoc) async {
-    try {
-      Query<Map<String, dynamic>> query = _db.collection("allExercises");
-
-      if (limit != null) {
-        query = query.limit(limit);
-      }
-
-      final querySnapshot = await query.get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        lastDoc = querySnapshot.docs.last;
-
   
-        return [querySnapshot.docs
-            .map((doc) => ExerciseModel.fromSnapshot(doc))
-            .toList(), lastDoc];
-      } else {
-        return [];
-      }
-    } on FirebaseAuthException catch (e) {
-      throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch (e) {
-      throw CbFirebaseException(e.code).message;
-    } on FormatException catch (_) {
-      throw CbFormatException();
-    } on PlatformException catch (e) {
-      throw CbPlatformException(e.code).message;
-    } catch (e) {
-      throw 'Algo deu errado. Por favor tente novamente';
-    }
-  }
 
   Future<List<TrainingModel>> fetchAllTrainings() async {
     try {
@@ -191,31 +114,6 @@ class TrainingRepository extends GetxController {
     } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
-  }
-
-  Future <List<dynamic>> loadMoreExercises(int? limit, DocumentSnapshot? lastDoc) async {
-    if (lastDoc == null) return [];
-
-    final query = FirebaseFirestore.instance
-        .collection("allExercises")
-        .startAfterDocument(lastDoc)
-        .limit(limit ?? 0);
-
-    final snapshot = await query.get();
-
-    if (snapshot.docs.isNotEmpty) {
-      lastDoc = snapshot.docs.last;
-
-      final newExercises = snapshot.docs
-          .map((doc) => ExerciseModel.fromSnapshot(doc))
-          .toList();
-
-      return [newExercises, lastDoc];
-    } else {
-      lastDoc = null;
-    }
-
-    return [];
   }
 
   Future<String?> uploadVideoToFirebase(File file, ) async {

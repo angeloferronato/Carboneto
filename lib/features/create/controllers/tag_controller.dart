@@ -56,7 +56,7 @@ class TagController extends GetxController {
   List<String> get filteredTags {
     final query = searchQuery.value.toLowerCase();
     return allTags.where((t) => t.toLowerCase().contains(query)).toList();
-  }
+  }   
 
   // Functions to handle Tag management
   void onTagChanged(String tag, [bool added = false]) {

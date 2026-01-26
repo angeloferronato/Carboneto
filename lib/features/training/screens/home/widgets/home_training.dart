@@ -110,6 +110,9 @@ class HomeTrainingWidget extends StatelessWidget {
                           color:
                           isDarkMode ? CbColors.grey : CbColors.dark
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        textAlign: TextAlign.start,
                       ),
                       SizedBox(
                         width: CbSizes.xs,
@@ -130,7 +133,7 @@ class HomeTrainingWidget extends StatelessWidget {
                   SizedBox(
                     width: 235,
                     child: Text(
-                      training.description,
+                      training.categories.join(', '),
                       style: Theme.of(context).textTheme.labelMedium!.copyWith(
                           fontSize: 10,
                           color: isDarkMode ? CbColors.grey : CbColors.dark),

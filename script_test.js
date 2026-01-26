@@ -1,6 +1,5 @@
-const admin = require("firebase-admin");
-
-const serviceAccount = require('./private_key_firebase.json');
+const admin = require('firebase-admin');
+const serviceAccount = require('./private_key_firebase.json')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -8,71 +7,72 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-async function migrateTrainings() {
-  const trainingsSnapshot = await db.collection("allTrainings").get();
+async function addCreatorToExercises() {
+  const exercisesSnap = await db.collection("allExercises").get();
 
-  if (trainingsSnapshot.empty) {
-    console.log("Nenhum treino encontrado.");
+  if (exercisesSnap.empty) {
+    console.log("Nenhum exercício encontrado.");
     return;
   }
 
-  console.log(`Encontrados ${trainingsSnapshot.size} treinos.`);
+  // 🔥 Cache de usuários (evita leituras repetidas)
+  const userCache = new Map();
 
-  const BATCH_LIMIT = 500;
-  let batch = db.batch();
-  let operationCount = 0;
+  let updated = 0;
+  let skipped = 0;
 
-  for (const doc of trainingsSnapshot.docs) {
-    const trainingData = doc.data();
+  for (const exerciseDoc of exercisesSnap.docs) {
+    const exercise = exerciseDoc.data();
 
-    const authorId = trainingData.AuthorID;
-
-    if (!authorId) {
-      console.warn(`Treino ${doc.id} sem AuthorID. Ignorado.`);
+    // 🧯 Já tem Creator
+    if (exercise.Creator) {
+      skipped++;
       continue;
     }
 
-    const userRef = db.collection("users").doc(authorId);
-    const userSnap = await userRef.get();
-
-    if (!userSnap.exists) {
-      console.warn(`Usuário ${authorId} não encontrado.`);
+    // ❌ Sem autor
+    if (!exercise.AuthorID) {
+      skipped++;
       continue;
     }
 
-    const userData = userSnap.data();
+    let userData;
 
-    batch.update(doc.ref, {
-      Creator: {
-        Name: userData.Name ?? "",
-        ProfilePicture: userData.ProfilePicture ?? null,
-        IsVerified: userData.IsVerified ?? false,
-      },
-    });
+    // ⚡ Cache
+    if (userCache.has(exercise.AuthorID)) {
+      userData = userCache.get(exercise.AuthorID);
+    } else {
+      const userSnap = await db
+        .collection("users")
+        .doc(exercise.AuthorID)
+        .get();
 
-    operationCount++;
+      if (!userSnap.exists) {
+        skipped++;
+        continue;
+      }
 
-    // 🔹 Commit automático ao atingir o limite
-    if (operationCount === BATCH_LIMIT) {
-      await batch.commit();
-      batch = db.batch();
-      operationCount = 0;
-      console.log("Batch commitado (500).");
+      userData = userSnap.data();
+      userCache.set(exercise.AuthorID, userData);
     }
+
+    const creator = {
+      IsVerified: userData.IsVerified ?? false,
+      Name: userData.Name ?? "",
+      ProfilePicture: userData.ProfilePicture ?? "",
+    };
+
+    await exerciseDoc.ref.update({ Creator: creator });
+    updated++;
   }
 
-  // 🔹 Commit final
-  if (operationCount > 0) {
-    await batch.commit();
-    console.log("Batch final commitado.");
-  }
-
-  console.log("✅ Migração concluída.");
+  console.log(`✅ Creator criado em ${updated} exercícios.`);
+  console.log(`⏭️ Exercícios ignorados: ${skipped}`);
 }
 
-migrateTrainings()
+addCreatorToExercises()
   .then(() => process.exit(0))
-  .catch(err => {
-    console.error("❌ Erro na migração:", err);
+  .catch((err) => {
+    console.error(err);
     process.exit(1);
   });

@@ -1,20 +1,25 @@
 module.exports = {
   env: {
-    es6: true,
+    es2020: true,
     node: true,
   },
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2020,
   },
+  plugins: ["@typescript-eslint"],
   extends: [
     "eslint:recommended",
-    "google",
+    "plugin:@typescript-eslint/recommended",
   ],
   rules: {
-    "no-restricted-globals": ["error", "name", "length"],
-    "prefer-arrow-callback": "error",
-    "quotes": ["error", "double", {"allowTemplateLiterals": true}],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
   },
+  ignorePatterns: [
+    "lib/**",
+    "node_modules/**",
+  ],
   overrides: [
     {
       files: ["**/*.spec.*"],

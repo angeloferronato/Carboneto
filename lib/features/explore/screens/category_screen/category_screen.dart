@@ -3,7 +3,7 @@ import 'package:carboneto/common/widgets/result/result_widget.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/explore/screens/widgets/gradient_title.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
-import 'package:carboneto/features/training/screens/home/widgets/home_training_dart.dart';
+import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:carboneto/features/create/controllers/number_dropdown_controller.dart';
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
+import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/data/repositories/exercises/exercise_repository.dart';
@@ -94,6 +95,11 @@ class CreateExerciseController extends GetxController {
         thumb: thumbUrl.isNotEmpty
             ? thumbUrl
             : 'https://firebasestorage.googleapis.com/v0/b/carboneto-fe55b.firebasestorage.app/o/default-ui-image-placeholder-wireframes-600nw-1037719192.webp?alt=media&token=9e26bdef-6613-4f42-9d49-4fd99332aba8',
+        creator: CreatorModel(
+          name: userController.user.value.name, 
+          profilePicture: userController.user.value.profilePicture, 
+          isVerified: userController.user.value.isVerified,
+        )
       );
 
       exerciseRepository.saveExerciseRecord(newExercise);
