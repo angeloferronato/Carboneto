@@ -1,132 +1,74 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/common/widgets/result/empty_data.dart';
 import 'package:carboneto/common/widgets/searchinput/search_input.dart';
-import 'package:carboneto/features/library/screens/history_screen/history_day_result.dart';
-import 'package:carboneto/utils/constants/enums.dart';
+import 'package:carboneto/features/library/controllers/history_controller.dart';
+import 'package:carboneto/features/library/screens/history_screen/history_timeline.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
-
+import 'package:get/get.dart';
 
 class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({super.key});
+  HistoryScreen({super.key});
+
+  final HistoryController controller = Get.find<HistoryController>();
+  final ScrollController scroll = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    // DADOS DE TESTE
-    final history = {
-      "Hoje": [
-        WorkoutHistory(
-          title: "Stephen Curry Precision Shooting Workout",
-          trainerName: "Stephen Curry",
-          trainerImageUrl: CbImages.trainerExample,
-          thumbnail: CbImages.thumbnailTrainingExample,
-          description: "Treino focado em precisão e controle de arremesso.",
-          durationString: "24:08",
-          people: 1,
-          level: DifficultyLevels.elite,
-          completedAt: DateTime.now(),
-        ),
-      ],
-      "Quarta-feira": [
-        WorkoutHistory(
-          title: "Ball Handling Intenso",
-          trainerName: "Kyrie Irving",
-          trainerImageUrl: CbImages.trainerExample,
-          thumbnail: CbImages.thumbnailTrainingExample,
-          description: "Dribles avançados e mudança rápida de direção.",
-          durationString: "18:34",
-          people: 1,
-          level: DifficultyLevels.allstar,
-          completedAt: DateTime.now().subtract(const Duration(days: 2)),
-        ),
-        WorkoutHistory(
-          title: "Treino de Finalizações",
-          trainerName: "Ja Morant",
-          trainerImageUrl: CbImages.trainerExample,
-          thumbnail: CbImages.thumbnailTrainingExample,
-          description: "Bandejas, eurosteps e controle aéreo.",
-          durationString: "31:12",
-          people: 1,
-          level: DifficultyLevels.rookie,
-          completedAt: DateTime.now().subtract(const Duration(days: 2)),
-        ),
-        WorkoutHistory(
-          title: "Treino de Finalizações",
-          trainerName: "Ja Morant",
-          trainerImageUrl: CbImages.trainerExample,
-          thumbnail: CbImages.thumbnailTrainingExample,
-          description: "Bandejas, eurosteps e controle aéreo.",
-          durationString: "31:12",
-          people: 1,
-          level: DifficultyLevels.rookie,
-          completedAt: DateTime.now().subtract(const Duration(days: 2)),
-        ),
-        WorkoutHistory(
-          title: "Treino de Finalizações",
-          trainerName: "Ja Morant",
-          trainerImageUrl: CbImages.trainerExample,
-          thumbnail: CbImages.thumbnailTrainingExample,
-          description: "Bandejas, eurosteps e controle aéreo.",
-          durationString: "31:12",
-          people: 1,
-          level: DifficultyLevels.rookie,
-          completedAt: DateTime.now().subtract(const Duration(days: 2)),
-        ),
-        WorkoutHistory(
-          title: "Treino de Finalizações",
-          trainerName: "Ja Morant",
-          trainerImageUrl: CbImages.trainerExample,
-          thumbnail: CbImages.thumbnailTrainingExample,
-          description: "Bandejas, eurosteps e controle aéreo.",
-          durationString: "31:12",
-          people: 1,
-          level: DifficultyLevels.rookie,
-          completedAt: DateTime.now().subtract(const Duration(days: 2)),
-        ),
-        WorkoutHistory(
-          title: "Treino de Finalizações",
-          trainerName: "Ja Morant",
-          trainerImageUrl: CbImages.trainerExample,
-          thumbnail: CbImages.thumbnailTrainingExample,
-          description: "Bandejas, eurosteps e controle aéreo.",
-          durationString: "31:12",
-          people: 1,
-          level: DifficultyLevels.rookie,
-          completedAt: DateTime.now().subtract(const Duration(days: 2)),
-        ),
-      ],
-    };
+    scroll.addListener(() {
+      if (scroll.position.pixels >= scroll.position.maxScrollExtent - 300) {
+        controller.fetchMore();
+      }
+    });
 
     return Scaffold(
       backgroundColor: CbColors.dark,
       appBar: CbAppBar(
-        title: Text('Histórico',
-        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-          fontSize: 25,
-          fontWeight: FontWeight.w700,
-        )),
-        actions: [],
+        title: Text(
+          'Histórico',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontSize: 25,
+                fontWeight: FontWeight.w700,
+              ),
+        ),
         showBackArrow: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            
-            SearchInput(
-              placeholder: 'Pesquisar no histórico de exibição',
-            ),
+      body: Obx(() {
+        final history = controller.history;
+        final TextEditingController searchCtrl = TextEditingController();
 
-            const SizedBox(height: 20),
-            ...history.entries.map((entry) {
-              return HistoryDayResult(entry: entry);
-            }),
-
-          ],
-        ),
-      ),
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+          child: ListView(
+            controller: scroll,
+            children: [
+              const SizedBox(height: 16),
+              SearchInput(
+                placeholder: 'Pesquisar no histórico',
+                controller: searchCtrl,
+              ),
+              const SizedBox(height: 16),
+              if (history.isNotEmpty)
+                HistoryTimeline(items: history)
+              else
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 100,
+                    ),
+                    EmptyData(),
+                  ],
+                ),
+              if (controller.isLoadingMore.value)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
-

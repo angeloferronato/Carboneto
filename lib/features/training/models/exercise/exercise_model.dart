@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ExerciseModel {
-  String description, title, video, id, thumb;
+  String description, title, video, id, thumb, type;
   int repetitions, duration;
   String authorId;
   List<dynamic>? categories;
   
 
-  ExerciseModel({required this.description, required this.title, required this.repetitions, required this.video, required this.id, required this.duration, required this.authorId, required this.categories, required this.thumb});
+  ExerciseModel({required this.description, required this.type, required this.title, required this.repetitions, required this.video, required this.id, required this.duration, required this.authorId, required this.categories, required this.thumb});
 
 factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
   final data = snapshot.data();
@@ -24,6 +24,7 @@ factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapsh
     authorId: data['AuthorId'] as String? ?? '',
     categories: data['Categories'] as List<dynamic>? ?? List.empty(),
     thumb: data['Thumbnail'] as String? ?? '',
+    type: data['Type'] as String ? ?? '',
   );
 }
 
@@ -38,6 +39,7 @@ factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapsh
       'AuthorId': authorId,
       'Categories': categories, 
       'Thumbnail': thumb,
+      'Type': type,
     };
   }
 
@@ -51,6 +53,7 @@ factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapsh
     authorId: '',
     categories: List.empty(),
     thumb: '',
+    type: '',
   );
 
 }

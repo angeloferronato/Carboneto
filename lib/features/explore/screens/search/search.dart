@@ -38,11 +38,14 @@ class SearchScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                SearchInput(
-                  placeholder: 'O que você quer treinar?',
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  child: SearchInput(
+                    placeholder: 'O que você quer treinar?',
+                    controller: TextEditingController(),
+                  ),
                 ),
-
+                
                 const SizedBox(
                   height: CbSizes.spaceBtwItems * 2,
                 ),

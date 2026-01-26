@@ -153,8 +153,11 @@ class LevelWidget extends StatelessWidget {
   const LevelWidget({
     super.key,
     required this.level,
+    this.size = 7,
   });
   final DifficultyLevels level;
+  final double size;
+
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +201,7 @@ class LevelWidget extends StatelessWidget {
         Text(
           difficultyTitle,
           style: TextStyle(
-              letterSpacing: 1.5, fontSize: 7, color: difficultyColorTxt),
+              letterSpacing: 1.5, fontSize: size, color: difficultyColorTxt),
         ),
         Row(
           spacing: 2,
@@ -206,8 +209,8 @@ class LevelWidget extends StatelessWidget {
             ...(List.generate(
                   levelValue,
                   (i) => CbRoundedContainer(
-                    width: 7,
-                    height: 7,
+                    width: size,
+                    height: size,
                     border: Border.all(color: (difficultyBorder)),
                     backgroundColor: difficultyColor,
                   ),
@@ -215,8 +218,8 @@ class LevelWidget extends StatelessWidget {
                 List.generate(
                   3 - levelValue,
                   (i) => CbRoundedContainer(
-                    width: 7,
-                    height: 7,
+                    width: size,
+                    height: size,
                     border: Border.all(color: difficultyBorder.withAlpha(150)),
                     backgroundColor: difficultyColor.withAlpha(150),
                   ),
