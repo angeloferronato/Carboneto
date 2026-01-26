@@ -13,6 +13,7 @@ class CreateForm extends StatelessWidget {
     required this.validateEmpty,
     this.maxLines = 1,
     this.maxLength, required this.controller,
+    this.suffixIcon,
   });
   final String label;
   final String hintText;
@@ -20,6 +21,7 @@ class CreateForm extends StatelessWidget {
   final int maxLines;
   final int? maxLength;
   final TextEditingController controller;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class CreateForm extends StatelessWidget {
           controller: controller,
           maxLength: maxLength,
           hintText: hintText,
+          suffixIcon: suffixIcon,
           validator: (value) =>
               CbValidator.validateEmptyText(validateEmpty, value),
           contentPadding: const EdgeInsets.all(15),
