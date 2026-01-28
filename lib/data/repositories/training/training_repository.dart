@@ -20,11 +20,108 @@ class TrainingRepository extends GetxController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final UserRepository userRepository = Get.put(UserRepository());
 
-  Future<List<TrainingModel>> fetchTrainingDetails(String collection, [int? limit]) async {
+  DocumentReference trainingProgressRef(String uid, String trainingId) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('trainingProgress')
+        .doc(trainingId);
+  }
+
+  DocumentReference trainingHistoryRef(String uid, String historyId) {
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('trainingHistory')
+        .doc(historyId);
+  }
+
+  Future<DocumentSnapshot> getTrainingProgress(
+      String uid, String trainingId) async {
+    return await trainingProgressRef(uid, trainingId).get();
+  }
+
+  Future<void> createTrainingProgress({
+    required String uid,
+    required TrainingModel training,
+    required int remainingTime,
+    required Map<String, dynamic> trainingStats,
+  }) async {
+    await trainingProgressRef(uid, training.id).set({
+      'TrainingId': training.id,
+      'Title': training.title,
+      'Thumbnail': training.thumbnail,
+      'Creator': {
+        'Name': training.creator.name,
+        'ProfilePicture': training.creator.profilePicture,
+        'IsVerified': training.creator.isVerified,
+      },
+      'Categories': training.categories,
+      'Level': training.level.name,
+      'TrainingRemainingTime': remainingTime,
+      'TrainingDuration': training.duration! * 60,
+      'Status': 'in_progress',
+      'StartedAt': FieldValue.serverTimestamp(),
+      'LastUpdatedAt': FieldValue.serverTimestamp(),
+      'CurrentExerciseIndex': 0,
+      'TrainingProgress': 0,
+      'TotalExercises': training.exercises.length,
+      'TrainingStats': trainingStats,
+    });
+  }
+
+  Future<void> createOrUpdateTrainingHistory({
+    required String uid,
+    required String historyId,
+    required TrainingModel training,
+  }) async {
+    await trainingHistoryRef(uid, historyId).set({
+      'TrainingId': training.id,
+      'Title': training.title,
+      'Thumbnail': training.thumbnail,
+      'Creator': {
+        'Name': training.creator.name,
+        'ProfilePicture': training.creator.profilePicture,
+        'IsVerified': training.creator.isVerified,
+      },
+      'StartedAt': FieldValue.serverTimestamp(),
+      'Status': 'in_progress',
+      'Level': training.level.name,
+      'TrainingProgress': 0,
+      'SearchKeywords': [],
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> updateTrainingProgress({
+    required String uid,
+    required String trainingId,
+    required Map<String, dynamic> data,
+  }) async {
+    await trainingProgressRef(uid, trainingId).update(data);
+  }
+
+  Future<void> updateTrainingHistory({
+    required String uid,
+    required String historyId,
+    required Map<String, dynamic> data,
+  }) async {
+    await trainingHistoryRef(uid, historyId).update(data);
+  }
+
+  Future<void> deleteTrainingProgress(String uid, String trainingId) async {
+    await trainingProgressRef(uid, trainingId).delete();
+  }
+
+  Future<List<TrainingModel>> fetchTrainingDetails(String collection,
+      [int? limit]) async {
     try {
-      final query = await _db.collection("trainings").doc(collection).collection(collection).get();
+      final query = await _db
+          .collection("trainings")
+          .doc(collection)
+          .collection(collection)
+          .get();
       debugPrint("FETCHED ${query.docs.length} TRAININGS FROM $collection");
-      
+
       if (query.docs.isNotEmpty) {
         final trainings = query.docs;
         final List<TrainingModel> listTrainings = [];
@@ -32,28 +129,31 @@ class TrainingRepository extends GetxController {
           final singleTraining = TrainingModel.fromSnapshot(training);
           debugPrint(singleTraining.textLevel);
 
-          final UserModel user = await userRepository.searchUser(singleTraining.authorId);
+          final UserModel user =
+              await userRepository.searchUser(singleTraining.authorId);
           singleTraining.user = user;
           listTrainings.add(singleTraining);
-        } 
+        }
         return listTrainings;
-      } else {  
+      } else {
         return [];
       }
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 
-  Future<List<ExerciseModel>> fetchSpecificExerciseDetails(List<String> exercises, [int? limit]) async {
+  Future<List<ExerciseModel>> fetchSpecificExerciseDetails(
+      List<String> exercises,
+      [int? limit]) async {
     try {
       final List<ExerciseModel> listExercises = [];
       for (var exercise in exercises) {
@@ -62,24 +162,28 @@ class TrainingRepository extends GetxController {
       }
 
       return listExercises;
-
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 
-  Future<List<TrainingModel>> fetchUserTrainingDetails(String authorId, [int? limit]) async {
+  Future<List<TrainingModel>> fetchUserTrainingDetails(String authorId,
+      [int? limit]) async {
     try {
-      final query = await _db.collection("allTrainings").where('AuthorID', isEqualTo: authorId).limit(limit ?? 10).get();
-      
+      final query = await _db
+          .collection("allTrainings")
+          .where('AuthorID', isEqualTo: authorId)
+          .limit(limit ?? 10)
+          .get();
+
       if (query.docs.isNotEmpty) {
         final trainings = query.docs;
         final List<TrainingModel> listTrainings = [];
@@ -87,48 +191,49 @@ class TrainingRepository extends GetxController {
           final singleTraining = TrainingModel.fromSnapshot(training);
           debugPrint(singleTraining.textLevel);
 
-          final UserModel user = await userRepository.searchUser(singleTraining.authorId);
+          final UserModel user =
+              await userRepository.searchUser(singleTraining.authorId);
           singleTraining.user = user;
           listTrainings.add(singleTraining);
-        } 
+        }
         return listTrainings;
-      } else {  
+      } else {
         return [];
       }
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 
   Future<ExerciseModel> fetchExerciseDetails(String id) async {
     try {
-      
-      final query = await _db.collection('allExercises').where('ID', isEqualTo: id).get();
-      
+      final query =
+          await _db.collection('allExercises').where('ID', isEqualTo: id).get();
+
       if (query.docs.isNotEmpty) {
         final exercise = ExerciseModel.fromSnapshot(query.docs[0]);
         return exercise;
-      } else {  
+      } else {
         debugPrint("Exercício não encontrado: $id");
         return ExerciseModel.empty();
       }
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
@@ -146,10 +251,12 @@ class TrainingRepository extends GetxController {
       if (querySnapshot.docs.isNotEmpty) {
         lastDoc = querySnapshot.docs.last;
 
-  
-        return [querySnapshot.docs
-            .map((doc) => ExerciseModel.fromSnapshot(doc))
-            .toList(), lastDoc];
+        return [
+          querySnapshot.docs
+              .map((doc) => ExerciseModel.fromSnapshot(doc))
+              .toList(),
+          lastDoc
+        ];
       } else {
         return [];
       }
@@ -173,10 +280,9 @@ class TrainingRepository extends GetxController {
       final querySnapshot = await query.get();
 
       if (querySnapshot.docs.isNotEmpty) {
-
         return querySnapshot.docs
-          .map((doc) => TrainingModel.fromSnapshot(doc))
-          .toList();
+            .map((doc) => TrainingModel.fromSnapshot(doc))
+            .toList();
       } else {
         return [];
       }
@@ -193,7 +299,8 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future <List<dynamic>> loadMoreExercises(int? limit, DocumentSnapshot? lastDoc) async {
+  Future<List<dynamic>> loadMoreExercises(
+      int? limit, DocumentSnapshot? lastDoc) async {
     if (lastDoc == null) return [];
 
     final query = FirebaseFirestore.instance
@@ -206,9 +313,8 @@ class TrainingRepository extends GetxController {
     if (snapshot.docs.isNotEmpty) {
       lastDoc = snapshot.docs.last;
 
-      final newExercises = snapshot.docs
-          .map((doc) => ExerciseModel.fromSnapshot(doc))
-          .toList();
+      final newExercises =
+          snapshot.docs.map((doc) => ExerciseModel.fromSnapshot(doc)).toList();
 
       return [newExercises, lastDoc];
     } else {
@@ -218,14 +324,16 @@ class TrainingRepository extends GetxController {
     return [];
   }
 
-  Future<String?> uploadVideoToFirebase(File file, ) async {
+  Future<String?> uploadVideoToFirebase(
+    File file,
+  ) async {
     try {
-
       // Passo 2: Nome único para o vídeo
       final fileName = 'Videos/${DateTime.now().millisecondsSinceEpoch}.mp4';
 
       // Passo 3: Referência no Firebase Storage
-      final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child(fileName);
 
       // Passo 4: Fazer upload
       final UploadTask uploadTask = storageRef.putFile(file);
@@ -240,17 +348,18 @@ class TrainingRepository extends GetxController {
       final TaskSnapshot completed = await uploadTask.whenComplete(() {});
       final String downloadURL = await completed.ref.getDownloadURL();
 
-
       return downloadURL;
     } catch (e) {
       return null;
     }
   }
 
-  Future<String?> uploadImageToFirebase(File file, {String folder = 'Images'}) async {
+  Future<String?> uploadImageToFirebase(File file,
+      {String folder = 'Images'}) async {
     try {
       final fileName = '$folder/${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child(fileName);
       final UploadTask uploadTask = storageRef.putFile(file);
 
       final completed = await uploadTask.whenComplete(() {});
@@ -262,36 +371,39 @@ class TrainingRepository extends GetxController {
 
   Future<void> saveTrainingRecord(TrainingModel trainingModel) async {
     try {
-      await _db.collection('allTrainings').doc(trainingModel.id).set(trainingModel.toJson(), SetOptions(merge: true));
+      await _db
+          .collection('allTrainings')
+          .doc(trainingModel.id)
+          .set(trainingModel.toJson(), SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
-  } 
+  }
 
   Future<void> deleteImageFromFirebase(String imageUrl) async {
     try {
       final ref = FirebaseStorage.instance.refFromURL(imageUrl);
       await ref.delete();
     } on FirebaseAuthException catch (e) {
-        throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
       if (e.code == 'object-not-found') {
         return;
       }
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
@@ -301,13 +413,13 @@ class TrainingRepository extends GetxController {
       await _db.collection('allTrainings').doc(trainingId).delete();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }

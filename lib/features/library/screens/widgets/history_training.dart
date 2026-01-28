@@ -78,7 +78,7 @@ class HistoryTraining extends StatelessWidget {
           Row(
             children: [
               CbRoundedImage(
-                imageUrl: training.authorPicture,
+                imageUrl: training.creator.profilePicture,
                 width: 15,
                 height: 15,
                 fit: BoxFit.cover,
@@ -88,7 +88,7 @@ class HistoryTraining extends StatelessWidget {
                 width: 5,
               ),
               Text(
-                training.author,
+                training.creator.name,
                 style: TextStyle(
                   color: CbColors.grey,
                   fontSize: 11,

@@ -90,32 +90,35 @@ class SettingsController extends GetxController {
 
   // Pergunta pro usuario se quer limpar msm e chama a funcao de limpar
   Future<void> confirmClearCache(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Limpar cache'),
-        content: const Text(
-          'Isso remove apenas arquivos temporários e não apaga seus treinos ou progresso.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child:
-                const Text('Cancelar', style: TextStyle(color: CbColors.grey)),
+    Get.defaultDialog(
+      title: 'Limpar cache',
+      titlePadding: EdgeInsets.symmetric(vertical: 20),
+      content: const Text(
+        'Isso remove apenas arquivos temporários e não apaga seus treinos ou progresso.',
+      ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20),
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(),
+          child: const Text(
+            'Cancelar',
+            style: TextStyle(color: CbColors.grey),
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await clearAppCache();
-            },
-            child: const Text(
-              'Limpar',
-              style:
-                  TextStyle(color: CbColors.info, fontWeight: FontWeight.w600),
+        ),
+        TextButton(
+          onPressed: () async {
+            Get.back();
+            await clearAppCache();
+          },
+          child: const Text(
+            'Limpar',
+            style: TextStyle(
+              color: CbColors.info,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
