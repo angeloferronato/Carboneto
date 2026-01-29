@@ -198,7 +198,7 @@ class TrainingExecutionController extends GetxController
   Future<void> saveProgress({bool completed = false}) async {
     final totalExercises = training.exercises.length;
 
-    double progress = totalExercises == 1
+    double progress = activeIndexTraining.value == 0
         ? (1 - (duration.value.inSeconds / (training.duration! * 60))) * 100
         : (activeIndexTraining.value / totalExercises) * 100;
 

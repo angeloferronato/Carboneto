@@ -42,7 +42,7 @@ class HistoryTimeline extends StatelessWidget {
                 trainingProgress: t.trainingProgress,
                 trainingStatus: t.status,
                 historyResult: true,
-                trainingId: t.id,
+                trainingId: t.trainingId,
               ),
             ),
           ],

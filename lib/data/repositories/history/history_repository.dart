@@ -60,7 +60,6 @@ class HistoryRepository {
   }
 }
 
-// Classe auxiliar para retornar dados paginados
 class HistoryPage {
   final List<TrainingHistoryModel> items;
   final DocumentSnapshot? lastDoc;

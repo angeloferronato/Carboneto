@@ -1,19 +1,21 @@
+import 'package:carboneto/features/training/models/training/training_model.dart';
+import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
+import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';
+import 'package:carboneto/utils/exceptions/format_exceptions.dart';
+import 'package:carboneto/utils/exceptions/platform_exceptions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class ExploreRepository extends GetxController {
   static ExploreRepository get instance => Get.find();
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  /// Busca todas as subcategorias do Firestore e as agrupa dinamicamente
-  /// por sua categoria principal.
   Future<List<Map<String, dynamic>>> fetchAllCategories() async {
     try {
-      // 1. Faz UMA ÚNICA chamada de rede para a coleção "Subcategorias"
       final snapshot = await _db.collection('Subcategorias').get();
 
       if (snapshot.docs.isEmpty) {
@@ -21,58 +23,34 @@ class ExploreRepository extends GetxController {
         return [];
       }
 
-      // 2. Cria um mapa temporário para agrupar as subcategorias
-      // Ex: { "Arremesso": [ (map_3pts), (map_midrange) ], "Finalização": [ (map_bandeja) ] }
+      // Agrupa as subcategorias por categoria principal
       final Map<String, List<Map<String, String>>> categoriesMap = {};
 
-      // 3. Itera sobre cada documento (Ex: "3 pontos", "Mid-Range", etc.)
       for (var doc in snapshot.docs) {
         final data = doc.data();
         
-        // Pega o nome do documento (Ex: "3 pontos") como o título
-        final String subCategoryTitle = data['Title']; 
-        
-        // Pega os campos do documento
-        // [IMPORTANTE]: Estou assumindo que os campos se chamam 'category' e 'image'
-        // Se os nomes forem diferentes, é SÓ mudar aqui.
+        final String subCategoryTitle = data['Title'] ?? '';
         final String mainCategory = data['Categories'] ?? 'Outros';
         final String imageUrl = data['Image'] ?? '';
 
-        // Se a URL estiver vazia, pula este item
-        if (imageUrl.isEmpty) continue;
+        if (subCategoryTitle.isEmpty || imageUrl.isEmpty) continue;
 
-        // Cria o map da subcategoria (Ex: { "title": "3 pontos", "image": "url..." })
         final Map<String, String> subCategoryMap = {
           'title': subCategoryTitle,
           'image': imageUrl,
         };
 
-        // Adiciona este map à sua categoria principal no mapa temporário
-        if (categoriesMap.containsKey(mainCategory)) {
-          // Se "Arremesso" já existe no mapa, só adiciona o novo item
-          categoriesMap[mainCategory]!.add(subCategoryMap);
-        } else {
-          // Se "Arremesso" não existe, cria a chave e adiciona o primeiro item
-          categoriesMap[mainCategory] = [subCategoryMap];
-        }
+        categoriesMap.putIfAbsent(mainCategory, () => []).add(subCategoryMap);
       }
+      final List<Map<String, dynamic>> allCategories = categoriesMap.entries
+          .map((entry) => {
+                'title': entry.key,
+                'subcategories': entry.value,
+              })
+          .toList()
+        ..sort((a, b) => (a['title'] as String? ?? '').compareTo(b['title'] as String? ?? ''));
 
-      // 4. Converte o Mapa Agrupado para a Lista final que o Controller espera
-      // Ex: [ { "title": "Arremesso", "subcategories": [...] }, { "title": "Finalização", "subcategories": [...] } ]
-      final List<Map<String, dynamic>> allCategories = [];
-      categoriesMap.forEach((title, subcategories) {
-        allCategories.add({
-          'title': title,
-          'subcategories': subcategories,
-        });
-      });
-      
-      // (Opcional) Ordena as categorias principais em ordem alfabética
-      allCategories.sort((a, b) => a['title'].compareTo(b['title']));
-
-      // BINGO!
       return allCategories;
-
     } on FirebaseException catch (e) {
       debugPrint('FirebaseException em fetchAllCategories: $e');
       throw 'Erro no Firebase: ${e.message}';
@@ -84,4 +62,35 @@ class ExploreRepository extends GetxController {
       throw 'Algo deu errado ao buscar as categorias. Por favor tente novamente';
     }
   }
+
+  /// Busca treinos por nome de categoria
+  Future<List<TrainingModel>> getTrainingsByCategory(String categoryName) async {
+    try {
+      final querySnapshot = await _db
+          .collection('allTrainings')
+          .where('Categories', arrayContains: categoryName)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        debugPrint('Nenhum treino encontrado para a categoria: $categoryName');
+        return [];
+      }
+
+      return querySnapshot.docs
+          .map((doc) => TrainingModel.fromSnapshot(doc))
+          .toList();
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw CbFormatException();
+    } on PlatformException catch (e) {
+      throw CbPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+
 }

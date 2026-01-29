@@ -48,6 +48,7 @@ class TrainingRepository extends GetxController {
     required Map<String, dynamic> trainingStats,
   }) async {
     await trainingProgressRef(uid, training.id).set({
+      'AuthorID': training.authorId,
       'TrainingId': training.id,
       'Title': training.title,
       'Thumbnail': training.thumbnail,
@@ -76,6 +77,7 @@ class TrainingRepository extends GetxController {
     required TrainingModel training,
   }) async {
     await trainingHistoryRef(uid, historyId).set({
+      'AuthorID': training.authorId,
       'TrainingId': training.id,
       'Title': training.title,
       'Thumbnail': training.thumbnail,
@@ -110,6 +112,40 @@ class TrainingRepository extends GetxController {
 
   Future<void> deleteTrainingProgress(String uid, String trainingId) async {
     await trainingProgressRef(uid, trainingId).delete();
+  }
+
+  Future<TrainingModel?> fetchTrainingById(String trainingId) async {
+    try {
+      final query = await _db
+          .collection('allTrainings')
+          .where('Id', isEqualTo: trainingId)
+          .limit(1)
+          .get();
+
+      if (query.docs.isEmpty) {
+        debugPrint('Training not found with ID: $trainingId');
+        return null;
+      }
+
+      final doc = query.docs.first;
+      final training = TrainingModel.fromSnapshot(doc);
+
+      final UserModel user = await userRepository.searchUser(training.authorId);
+      training.user = user;
+
+      debugPrint('Training fetched: ${training.title}');
+      return training;
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw CbFormatException();
+    } on PlatformException catch (e) {
+      throw CbPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
   }
 
   Future<List<TrainingModel>> fetchTrainingDetails(String collection,

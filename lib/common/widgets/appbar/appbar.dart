@@ -1,4 +1,3 @@
-import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +11,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIcon,
     this.actions,
     this.leadingOnPressed,
-    this.centerTitle = false, // <-- ADICIONE ESTA PROPRIEDADE
+    this.centerTitle = false, 
   });
 
   final Widget? title;
@@ -20,7 +19,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? leadingIcon;
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
-  final bool centerTitle; // <-- DECLARE A PROPRIEDADE AQUI
+  final bool centerTitle; 
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +27,30 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: AppBar(
         automaticallyImplyLeading: false,
-        leading: showBackArrow ? IconButton(
-          onPressed: () => Get.back(),
-          icon: Icon(Iconsax.arrow_left),
-        ) : leadingIcon != null ? IconButton(
-          onPressed: leadingOnPressed,
-          icon: Icon(leadingIcon),
-        ) : null,
+        leading: showBackArrow
+            ? IconButton(
+                onPressed: () {
+                  try {
+                    if (Get.isSnackbarOpen) {
+                      Get.closeAllSnackbars();
+                    }
+                    Get.back();
+                  } catch (e) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                icon: Icon(Iconsax.arrow_left),
+              )
+            : leadingIcon != null
+                ? IconButton(
+                    onPressed: leadingOnPressed,
+                    icon: Icon(leadingIcon),
+                  )
+                : null,
         actions: actions,
         title: title,
-        centerTitle: centerTitle, // <-- PASSE A PROPRIEDADE PARA O AppBar INTERNO
+        centerTitle:
+            centerTitle,
       ),
     );
   }

@@ -20,7 +20,7 @@ class CbPopupDropdown<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return PopupMenuButton<T>(
-        color: CbColors.inputBG,
+        color: CbColors.dark,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

@@ -1,9 +1,11 @@
+import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TrainingHistoryModel {
   final String id;
   final String trainingId;
   final String title;
+  final String authorId;
   final String thumbnail;
   final CreatorModel creator;
   final String level;
@@ -29,6 +31,7 @@ class TrainingHistoryModel {
     required this.sessionEndedAt,
     required this.status,
     required this.trainingProgress,
+    required this.authorId,
     required this.trainingDuration,
     required this.trainingType,
     required this.level,
@@ -43,6 +46,7 @@ class TrainingHistoryModel {
 
     return TrainingHistoryModel(
       id: json['Id'],
+      authorId: json['AuthorID'],
       trainingId: json['TrainingId'],
       title: json['Title'],
       thumbnail: json['Thumbnail'],
@@ -62,10 +66,12 @@ class TrainingHistoryModel {
           .toList(),
     );
   }
+  
 
   Map<String, dynamic> toJson() {
     return {
       'Id': id,
+      'AuthorID': authorId,
       'TrainingId': trainingId,
       'Title': title,
       'Thumbnail': thumbnail,
@@ -96,6 +102,7 @@ class TrainingHistoryModel {
 
     return TrainingHistoryModel(
       id: doc.id,
+      authorId: data['AuthorID'],
       trainingId: data['TrainingId'],
       title: data['Title'],
       thumbnail: data['Thumbnail'],
