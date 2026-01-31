@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 
 class CbSocialButton extends StatelessWidget {
   const CbSocialButton({
-    super.key, required this.socialIcon, required this.socialText, this.onTap,
+    super.key, required this.socialIcon, required this.socialText, this.onTap, this.isIcon = false, this.socialIconData,
   });
 
-  final AssetImage socialIcon;
+  final String socialIcon;
   final String socialText;
   final VoidCallback? onTap;
+  final bool isIcon;
+  final IconData? socialIconData;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +30,13 @@ class CbSocialButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace / 2, vertical: 8),
           child: Row(
             children: [
-              Image(
-                width: 38,
-                height: 38,
-                image: socialIcon,
+              !isIcon 
+              ? Image(
+                  width: 38,
+                  height: 38,
+                  image: AssetImage(socialIcon),
+              ) : Icon(
+                socialIconData, size: 38,
               ),
       
               SizedBox(width: CbSizes.spaceBtwItems,),

@@ -64,7 +64,6 @@ class TrainingModel {
     return level;
   }
 
-
   factory TrainingModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
   

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:carboneto/data/repositories/exercises/exercise_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
-import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';
@@ -87,8 +86,6 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  
-
   Future<List<TrainingModel>> fetchAllTrainings() async {
     try {
       Query<Map<String, dynamic>> query = _db.collection("allTrainings");
@@ -155,6 +152,16 @@ class TrainingRepository extends GetxController {
       return await completed.ref.getDownloadURL();
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<bool> imageExists(String imagePath) async {
+    try {
+      final ref = FirebaseStorage.instance.ref(imagePath);
+      await ref.getDownloadURL();
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

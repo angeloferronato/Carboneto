@@ -21,14 +21,16 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 class CreateExerciseController extends GetxController {
   static CreateExerciseController get instance => Get.find();
-  final exerciseRepository = Get.put(ExerciseRepository());
-  final exercisesController = Get.put(ExercisesController());
+  final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
+  final ExercisesController exercisesController = Get.put(ExercisesController());
   final UserController userController = Get.put(UserController());
-  final tagController = Get.put(TagController(), tag: CbTexts.exerciseControllerTag);
+  final TagController tagController = Get.put(TagController(), tag: CbTexts.exerciseControllerTag);
   final GlobalKey<FormState> createExerciseFormKey = GlobalKey<FormState>();
-  final title = TextEditingController(); 
-  final description = TextEditingController(); 
-  final numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.exerciseControllerTag);
+  final TextEditingController title = TextEditingController(); 
+  final TextEditingController description = TextEditingController(); 
+  final TextEditingController repetitions = TextEditingController(); 
+  final TextEditingController duration = TextEditingController(); 
+  final NumberDropdownController numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.exerciseControllerTag);
   final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.exerciseControllerTag);
   
 
@@ -62,19 +64,28 @@ class CreateExerciseController extends GetxController {
         return;
       }
 
-      if (!createExerciseFormKey.currentState!.validate()) {
-        CbFullScreenLoader.stopLoading();
-        return;
-      }
-
       if (uploadImageController.selectedVideo.value == null) {
         CbFullScreenLoader.stopLoading();
         CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve selecionar um vídeo para continuar.');
         return;
       }
 
+      if (!createExerciseFormKey.currentState!.validate()) {
+        CbFullScreenLoader.stopLoading();
+        return;
+      }
 
+      if (!repetitions.text.isNumericOnly || repetitions.text == "0") {
+        CbFullScreenLoader.stopLoading();
+        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve colocar um número de repeticões que condiz com a realidade.');
+        return;
+      }
 
+      if (!duration.text.isNumericOnly || duration.text == "0") {
+        CbFullScreenLoader.stopLoading();
+        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve colocar uma duração que condiz com a realidade.');
+        return;
+      }
 
       final videoFile = uploadImageController.selectedVideo.value!;
       final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(videoFile);
@@ -86,12 +97,13 @@ class CreateExerciseController extends GetxController {
       final newExercise = ExerciseModel(
         description: description.text.trim(), 
         title: title.text.trim(), 
-        repetitions: 10, 
+        repetitions: int.parse(repetitions.text.trim()),
         video: videoUrl ?? '', 
         id: customId, 
-        duration: 5, 
+        duration: int.parse(duration.text.trim()), 
         authorId: userController.user.value.id, 
         categories: tagController.selectedTags, 
+        type: 'time',
         thumb: thumbUrl.isNotEmpty
             ? thumbUrl
             : 'https://firebasestorage.googleapis.com/v0/b/carboneto-fe55b.firebasestorage.app/o/default-ui-image-placeholder-wireframes-600nw-1037719192.webp?alt=media&token=9e26bdef-6613-4f42-9d49-4fd99332aba8',

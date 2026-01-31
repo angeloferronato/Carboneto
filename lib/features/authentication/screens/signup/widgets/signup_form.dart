@@ -4,11 +4,10 @@ import 'package:carboneto/features/authentication/controllers/signup/signup_cont
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/position_selector.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/terms_text.dart';
+import 'package:carboneto/features/personalization/controllers/date_picker/date_picker_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/country_selector.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
-import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:carboneto/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,9 +22,9 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  
   @override
   Widget build(BuildContext context) {
+    final DatePickerController datePickerController = Get.put(DatePickerController());
     final controller = Get.put(SignupController());
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -80,6 +79,15 @@ class _SignUpFormState extends State<SignUpForm> {
                 controller: controller.description,
                 hintText: 'Descrição(opcional)',
                 maxLines: 2,
+              ),
+              SizedBox(height: CbSizes.spaceBtwInputFields),
+
+              FocusedTextField(
+                hintText: '24 de agosto de 2008',
+                controller: controller.birthDate,
+                readOnly: true,
+                prefixIcon: Icon(Icons.cake_rounded),
+                onTap: () => datePickerController.showDatePickerAction(controller.birthDate),
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
               

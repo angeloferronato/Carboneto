@@ -1,5 +1,6 @@
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/content_grid_profile_shimmer.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/treino_card.dart';
@@ -14,7 +15,8 @@ class ContentGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final trainingController = Get.put(TrainingController());
+    final TrainingController trainingController = Get.put(TrainingController());
+    final UserController userController = Get.put(UserController());
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -23,24 +25,19 @@ class ContentGrid extends StatelessWidget {
             textValue: 'Treinos Criados',
             textSize: 15,
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10),
           Container(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(67, 147, 147, 147),
-            ),
+            decoration: BoxDecoration(color: const Color.fromARGB(67, 147, 147, 147)),
             height: 1,
           ),
 
           Obx(
             () {
-              if (trainingController.isLoading.value) {
+              if (trainingController.isLoading.value || userController.profileLoading.value) {
                 return ContentGridProfileShimmer();
               }
 
               final list = trainingController.trainingsList;
-
               if (list.isEmpty) {
                 return Center(
                   child: Column(

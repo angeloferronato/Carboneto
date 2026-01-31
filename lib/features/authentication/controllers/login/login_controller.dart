@@ -5,7 +5,6 @@ import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -56,7 +55,7 @@ class LoginController extends GetxController {
         localStorage.write('REMEMBER_ME_PASSWORD', '');
       }
       // Login com Email e Senha
-      final userCredential = await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
+      await AuthenticationRepository.instance.loginWithEmailAndPassword(email.text.trim(), password.text.trim());
 
       // Remove o loader
       CbFullScreenLoader.stopLoading();

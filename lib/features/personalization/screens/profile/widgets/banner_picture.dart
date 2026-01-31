@@ -1,6 +1,6 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
-import 'package:carboneto/features/personalization/screens/settings/settings.dart';
+import 'package:carboneto/features/settings/settings.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';

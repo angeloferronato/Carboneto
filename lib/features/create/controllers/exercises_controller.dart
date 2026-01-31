@@ -1,5 +1,7 @@
 import 'package:carboneto/data/repositories/exercises/exercise_repository.dart';
+import 'package:carboneto/features/create/controllers/categories_controller.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/utils/mappers/category_mapper.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +9,17 @@ import 'package:get/get.dart';
 
 class ExercisesController extends GetxController {
   static ExercisesController get instance => Get.find();
-  final exercises = <ExerciseModel>[].obs;
+  final RxList<ExerciseModel> exercises = <ExerciseModel>[].obs;
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
   final RxList<int> selectedIndexes = <int>[].obs;
   final RxList<int> selectedIntermediateIndexes = <int>[].obs;
   final RxList<int> preAddIndexes = <int>[].obs;
-  final isLoading = false.obs;
-  final allExercisesLoaded = false.obs;
+  final RxBool isLoading = false.obs;
+  final RxBool allExercisesLoaded = false.obs;
   final Rx<String> searchQuery = ''.obs;
   final TextEditingController searchQueryController = TextEditingController();
+  final CategoriesController categoriesController = Get.put(CategoriesController(), tag: 'exercises');
+
   DocumentSnapshot? lastDoc;
 
   @override
@@ -63,7 +67,17 @@ class ExercisesController extends GetxController {
 
   List<ExerciseModel> get filteredExercises {
     final query = searchQuery.value.toLowerCase();
-    return exercises.where((exercise) => exercise.title.toLowerCase().contains(query)).toList();
+    // Função de filtro de pesquisa
+    final searchExercises = exercises.where((exercise) => exercise.title.toLowerCase().contains(query)).toList();
+    
+    // Função para filtro com categoria
+    if (categoriesController.selectedCategory.value == categoriesController.categories.first) {
+      return searchExercises;
+    }
+    return searchExercises.where((exercise) {
+      final mainCategories = CategoryMapper.mapTagsToMainCategories(exercise.categories!.map((e) => e.toString()).toList());
+      return mainCategories.contains(categoriesController.selectedCategory.value);
+    }).toList();
   }
 
   bool isSelected(int index) => selectedIndexes.contains(index);

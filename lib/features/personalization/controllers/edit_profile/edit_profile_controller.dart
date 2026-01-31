@@ -27,9 +27,6 @@ class EditProfileController extends GetxController {
   final UserRepository userRepository = Get.put(UserRepository());
   final UploadImageController uploadImageController = Get.put(UploadImageController());
   final UserController userController = Get.put(UserController());
-  final controller = Get.put(HomeMenuController());
-                          
-
 
   void changeCode(String newCode) {
     countryCode.value = newCode;
@@ -70,6 +67,7 @@ class EditProfileController extends GetxController {
         position: positionSelectorController.dropDownValue, 
         countryCode: countryCode.value != '' ?  countryCode.value : user.countryCode,
         isVerified: user.isVerified,
+        birthDate: user.birthDate
       );
 
       userRepository.updateUserDetails(updatedUser);
@@ -101,7 +99,7 @@ class EditProfileController extends GetxController {
 
       final newUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''));
       
-      if (userController.user.value.profilePicture.isNotEmpty) {
+      if (userController.user.value.profilePicture.isNotEmpty && await TrainingRepository.instance.imageExists('Images/${userController.user.value.profilePicture}')) {
         await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.profilePicture);
       }
 

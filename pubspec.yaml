@@ -33,7 +33,9 @@ dependencies:
   cached_network_image: ^3.4.1
   world_info_plus: ^1.0.1
   uuid: ^4.5.2
-  
+  syncfusion_flutter_charts: ^32.1.25
+  syncfusion_flutter_datepicker: ^32.1.25
+
   # Videos
   chewie: ^1.12.1
   video_player: ^2.10.0
@@ -46,7 +48,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
 
   # State Management
-  get: ^4.6.6
+  get: ^4.7.3
   get_storage: ^2.1.1
 
   # Product Specific

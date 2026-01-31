@@ -23,6 +23,7 @@ class SignupController extends GetxController {
   final TextEditingController password = TextEditingController();
   final TextEditingController name = TextEditingController();
   final TextEditingController username = TextEditingController();
+  final TextEditingController birthDate = TextEditingController();
   final TextEditingController description = TextEditingController();
   final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
   final positionSelectorController = Get.put(PositionSelectorController());
@@ -87,6 +88,7 @@ class SignupController extends GetxController {
         countryCode: editProfileController.countryCode.value.trim(),
         isVerified: false,
         userTrainings: [],
+        birthDate: birthDate.text.trim(),
       );
 
       final userRepository = Get.put(UserRepository());

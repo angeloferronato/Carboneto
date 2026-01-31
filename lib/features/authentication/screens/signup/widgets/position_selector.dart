@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PositionSelector extends StatefulWidget {
-  const  PositionSelector ({super.key, this.width});
+  const PositionSelector ({super.key, this.width});
 
   final double? width;
 

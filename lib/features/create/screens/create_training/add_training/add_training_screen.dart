@@ -52,7 +52,7 @@ class AddTrainingScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, bottom: 8),
-                  child: CategoriesBar(),
+                  child: CategoriesBar(controllerTag: 'exercises',),
                 ),
                 ExercisesList(),
               ],
@@ -81,7 +81,7 @@ class AddTrainingScreen extends StatelessWidget {
                         ),
                         onPressed: () => {
                           exercisesController.addExercisesToAddTrainingScreen(),
-                          Get.back(),
+                          Navigator.of(context).pop()
                         },
                         icon: const Icon(Iconsax.add, color: Colors.white),
                         label: Text(

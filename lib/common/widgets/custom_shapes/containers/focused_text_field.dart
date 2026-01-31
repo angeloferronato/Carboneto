@@ -19,6 +19,8 @@ class FocusedTextField extends StatelessWidget {
     this.onSubmitted,
     this.readOnly = false,
     this.maxLength,
+    this.keyboardType = TextInputType.text,
+    this.onTap,
   }) : hasErrorNotifier = ValueNotifier(false);
     
 
@@ -36,10 +38,14 @@ class FocusedTextField extends StatelessWidget {
   final ValueNotifier<bool> hasErrorNotifier;
   final bool readOnly;
   final int? maxLength;
+  final TextInputType? keyboardType;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: onTap,
+      keyboardType: keyboardType,
       maxLength: maxLength,
       readOnly: readOnly,
       onChanged: onChanged,
@@ -62,7 +68,7 @@ class FocusedTextField extends StatelessWidget {
         hintText: hintText,
         hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(
           color: CbColors.darkGrey,
-        ),
+        ),                              
       )
     );
     

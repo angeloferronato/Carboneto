@@ -43,14 +43,6 @@ class UserRepository extends GetxController {
     try {
       await userCredential.user!.updateDisplayName(userModel.name);
 
-      await FirebaseFirestore.instance
-          .collection('usernames')
-          .doc(userModel.username)
-          .set({
-        'userId': userCredential.user!.uid,
-        'createdAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-
       await _db.collection('users').doc(userModel.id).set(userModel.toJson(), SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
@@ -132,6 +124,31 @@ class UserRepository extends GetxController {
     }
   }
 
+    Future<bool> usernameExists(String username) async {
+    try {
+      final usernameDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .where("Username", isEqualTo: username)
+        .get();
+
+      if (usernameDoc.docs.isNotEmpty) {
+        return true;
+      } 
+      return false;
+
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
+    }
+  }
+
   Future<void> updateUserDetails(UserModel updatedUser) async {
     try {
       await _db.collection('users').doc(UserController.instance.user.value.id).update(updatedUser.toJson());
@@ -151,6 +168,22 @@ class UserRepository extends GetxController {
   Future<void> updateSingleField(Map<String, dynamic> json) async {
     try {
       await _db.collection('users').doc(UserController.instance.user.value.id).update(json);
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+  Future<void> deleteUserInfo() async {
+    try {
+      await _db.collection('users').doc(UserController.instance.user.value.id).delete();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {

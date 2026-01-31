@@ -1,3 +1,4 @@
+import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
@@ -23,10 +24,32 @@ class UserController extends GetxController {
       profileLoading.value = true;
       final user = await userRepository.fetchUserDetails();
       this.user.value = user;
+      await autoUpdateEmail();
     } catch(_) {
       user.value = UserModel.empty();
     } finally {
       profileLoading.value = false;
+    }
+  }
+
+  Future<void> autoUpdateEmail() async {
+    final authUser = AuthenticationRepository.instance.authUser;
+    if (authUser == null) return;
+
+    try {
+      await authUser.reload();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-token-expired' || e.code == 'requires-recent-login') {
+        return;
+      }
+    }
+
+    if (!authUser.emailVerified) return;
+
+    if (authUser.email != user.value.email) {
+      await userRepository.updateSingleField({
+        'Email': authUser.email,
+      });
     }
   }
 
@@ -48,6 +71,7 @@ class UserController extends GetxController {
           position: 'Armador',
           countryCode: 'BR',
           isVerified: false,
+          birthDate: '',
         );
 
         await UserRepository.instance.saveUserRecord(user, userCredentials);

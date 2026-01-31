@@ -11,8 +11,16 @@ class CreateForm extends StatelessWidget {
     required this.label,
     required this.hintText,
     required this.validateEmpty,
+    required this.controller,
     this.maxLines = 1,
-    this.maxLength, required this.controller,
+    this.maxLength, 
+    this.suffixIcon,
+    this.keyboardType = TextInputType.text, 
+    this.prefixIcon,
+    this.readOnly = false,
+    this.onTap,
+    this.obscureText = false,
+    this.onChanged,
   });
   final String label;
   final String hintText;
@@ -20,6 +28,12 @@ class CreateForm extends StatelessWidget {
   final int maxLines;
   final int? maxLength;
   final TextEditingController controller;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final TextInputType keyboardType;
+  final bool readOnly, obscureText;
+  final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +45,20 @@ class CreateForm extends StatelessWidget {
         ),
         const SizedBox(height: CbSizes.md),
         FocusedTextField(
+          onChanged: onChanged,
+          obscureText: obscureText,
+          onTap: onTap,
+          keyboardType: keyboardType,
           controller: controller,
           maxLength: maxLength,
           hintText: hintText,
+          suffixIcon: suffixIcon,
+          prefixIcon: prefixIcon,
           validator: (value) =>
               CbValidator.validateEmptyText(validateEmpty, value),
           contentPadding: const EdgeInsets.all(15),
           maxLines: maxLines,
+          readOnly: readOnly,
         ),
       ],
     );

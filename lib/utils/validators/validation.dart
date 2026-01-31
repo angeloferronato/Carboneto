@@ -41,8 +41,8 @@ class CbValidator {
     }
 
     // Check for minimum password length
-    if (value.length < 6) {
-      return 'A senha deve conter pelo menos 6 caracteres';
+    if (value.length < 8) {
+      return 'A senha deve conter pelo menos 8 caracteres';
     }
 
     // Check for uppercase letters
@@ -61,6 +61,26 @@ class CbValidator {
     }
 
     return null;
+  }
+
+  static bool validateLength(String? value) {
+    if (value == null) return false; 
+    return value.length >= 8;
+  }
+
+  static bool validateUpperCase(String? value) {
+    if (value == null) return false; 
+    return value.contains(RegExp(r'[A-Z]'));
+  }
+
+  static bool validateNumber(String? value) {
+    if (value == null) return false; 
+    return value.contains(RegExp(r'[0-9]'));
+  }
+
+  static bool validateSpecialCharacters(String? value) {
+    if (value == null) return false; 
+    return value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
   }
 
   static String? validatePhoneNumber(String? value) {

@@ -17,7 +17,7 @@ class CategoriesController extends GetxController {
     'Outros'
   ].obs;
 
-  final RxnString selectedCategory = RxnString();
+  final RxString selectedCategory = 'For you'.obs;
 
   void selectCategory(String category) {
     selectedCategory.value = category;

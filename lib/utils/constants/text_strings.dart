@@ -48,11 +48,10 @@ class CbTexts {
 
   // New Password Texts
   static const String newPasswordTitle = 'Nova Senha';
-  static const String passwordRequirement1 = 'Mínimo de  8 caracteres';
-  static const String passwordRequirement2 =
-      'Mínimo de um número (0–9) ou símbolo';
-  static const String passwordRequirement3 =
-      'Minúscula (a-z) e maiúscula (A-Z)';
+  static const String passwordRequirement1 = 'Mínimo de 8 caracteres';
+  static const String passwordRequirement2 = 'Mínimo de um número (0–9)';
+  static const String passwordRequirement3 = 'Mínimo de um caractere especial';
+  static const String passwordRequirement4 = 'Mínimo de uma letra maiúscula (A-Z)';
 
   // Home Training Texts
   static const String trainingHomeTitleExample = 'Alternância de Mãos';

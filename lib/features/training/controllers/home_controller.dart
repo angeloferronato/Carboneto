@@ -8,7 +8,7 @@ class HomeController extends GetxController {
   static HomeController get instance => Get.find();
 
   final TrainingRepository repository = Get.put(TrainingRepository());
-  final CategoriesController categoriesController = Get.put(CategoriesController());
+  final CategoriesController categoriesController = Get.put(CategoriesController(), tag: 'home');
 
   // Estados
   final isLoading = true.obs;

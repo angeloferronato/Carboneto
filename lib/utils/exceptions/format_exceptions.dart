@@ -18,17 +18,17 @@ class CbFormatException implements Exception {
   factory CbFormatException.fromCode(String code) {
     switch (code) {
       case 'invalid-email-format':
-        return const CbFormatException('The email address format is invalid. Please enter a valid email.');
-      case 'invalid-phone-number-format':
-        return const CbFormatException('The provided phone number format is invalid. Please enter a valid number.');
-      case 'invalid-date-format':
-        return const CbFormatException('The date format is invalid. Please enter a valid date.');
-      case 'invalid-url-format':
-        return const CbFormatException('The URL format is invalid. Please enter a valid URL.');
-      case 'invalid-credit-card-format':
-        return const CbFormatException('The credit card format is invalid. Please enter a valid credit card number.');
-      case 'invalid-numeric-format':
-        return const CbFormatException('The input should be a valid numeric format.');
+      return const CbFormatException('O formato do endereço de e-mail é inválido. Digite um e-mail válido.',);
+    case 'invalid-phone-number-format':
+      return const CbFormatException('O formato do número de telefone informado é inválido. Digite um número válido.',);
+    case 'invalid-date-format':
+      return const CbFormatException('O formato da data é inválido. Informe uma data válida.',);
+    case 'invalid-url-format':
+      return const CbFormatException('O formato da URL é inválido. Informe uma URL válida.',);
+    case 'invalid-credit-card-format':
+      return const CbFormatException('O formato do cartão de crédito é inválido. Informe um número de cartão válido.',);
+    case 'invalid-numeric-format':
+      return const CbFormatException('O valor informado deve estar em um formato numérico válido.',);
     // Add more cases as needed...
       default:
         return const CbFormatException();

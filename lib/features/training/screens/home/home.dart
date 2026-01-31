@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       shrinkWrap: true,
       children: [
         TopLogo(),
-        CategoriesBar(),
+        CategoriesBar(controllerTag: 'home',),
         HomeShimmer(),
       ],
     );
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TopLogo(),
-          CategoriesBar(),
+          CategoriesBar(controllerTag: 'home',),
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: Text(
@@ -110,7 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
       return ListView(
         children: [
           TopLogo(),
-          CategoriesBar(),
+          
+          CategoriesBar(controllerTag: 'home',),
           const SizedBox(height: 16),
 
           ...sections.entries.map((entry) {

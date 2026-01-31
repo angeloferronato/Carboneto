@@ -1,3 +1,4 @@
+import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/onboarding.dart';
 import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
@@ -20,6 +21,7 @@ class AuthenticationRepository extends GetxController {
 
   final _auth = FirebaseAuth.instance;
   final deviceStorage = GetStorage();
+  final userRepository = Get.put(UserRepository());
 
   User? get authUser => _auth.currentUser;
 
@@ -28,6 +30,10 @@ class AuthenticationRepository extends GetxController {
     FlutterNativeSplash.remove();
     screenRedirect();
   }
+
+  bool get isLoggedAsGoogle => authUser!.providerData.any((p) => p.providerId == 'google.com');
+  bool get isLoggedOnlyAsGoogle => authUser!.providerData.any((p) => p.providerId == 'google.com') && authUser!.providerData.length == 1;
+  bool get isLoggedAsPassword => authUser!.providerData.any((p) => p.providerId == 'password');
 
   // Funtion to show Relevant Screen
   screenRedirect() async {
@@ -53,15 +59,8 @@ class AuthenticationRepository extends GetxController {
   /// [Email Authentication] - REGISTER
   Future<UserCredential> registerWithEmailAndPassword(String email, String password, String username) async {
     try {
-      final usernameDoc = await FirebaseFirestore.instance
-        .collection('usernames')
-        .doc(username)
-        .get();
-
-      if (usernameDoc.exists) {
-        throw Exception('Nome de usuário já está em uso');
-      }
-
+      if (await userRepository.usernameExists(username)) throw Exception('Nome de usuário já está em uso');
+      
       // Cria o usuário no Firebase Auth
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       await _auth.currentUser?.reload();
@@ -79,6 +78,7 @@ class AuthenticationRepository extends GetxController {
       throw 'Algo deu errado. Por favor tente novamente $e';
     }
   }
+
 
   /// [Email Verification] - Email Verification
   Future<void> sendEmailVerification() async {
@@ -118,7 +118,6 @@ class AuthenticationRepository extends GetxController {
   Future<void> loginWithEmailAndPassword(String userOrEmail, String password) async {
     try {
       String email = userOrEmail;
-
       // Verifica se é um e-mail (contém '@'), senão procura o username
       if (!userOrEmail.contains('@')) {
         final query = await FirebaseFirestore.instance
@@ -136,8 +135,61 @@ class AuthenticationRepository extends GetxController {
       }
 
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-
       Get.to(() => HomeMenu());
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
+    }
+  }
+
+  /// [Re-authenticate with Credential] - NEW PASSWORD 
+  Future<void> reAuthWithEmailAndPassword(String email, String currentPassword) async {
+    try {
+      final cred = EmailAuthProvider.credential(email: email, password: currentPassword);
+
+      await authUser!.reauthenticateWithCredential(cred);
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
+    }
+  }
+
+  /// [Verify before update email] - NEW PASSWORD 
+  Future<void> verifyBeforeUpdateEmail(String newEmail) async {
+    try {
+
+      await authUser!.verifyBeforeUpdateEmail(newEmail);
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
+    }
+  }
+
+  /// [Update user password] - NEW PASSWORD 
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await authUser!.updatePassword(newPassword);
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {
@@ -184,12 +236,41 @@ class AuthenticationRepository extends GetxController {
 
   }
 
-  /// [LogoutUser] - Valid for any authentication
+  /// [Logout User] - Valid for any authentication
   Future<void> logout() async {
     try {
       await GoogleSignIn().signOut();
       await _auth.signOut();
       Get.offAll(() => LoginScreen());
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente $e';
+    }
+  }
+
+  Future<void> reauthenticateAndDeleteWithGoogle() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return;
+      final googleSignIn = GoogleSignIn();
+
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) return;
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await user.reauthenticateWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {

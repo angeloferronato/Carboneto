@@ -113,8 +113,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         Obx(
                           () {
                             if (userController.profileLoading.value) {
-                              return CbShimmerEffects(width: 200, height: 60);
-                              
+                              return CbShimmerEffects(width: 200, height: 60);                        
                             } else {
                               return FocusedTextField(
                                 controller: editProfileController.nameController,
@@ -124,9 +123,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 maxLength: 30,
                               );
                             }
-                          }  
-                           
-                          
+                          } 
                         ),
                       ],
                     ),
@@ -144,7 +141,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         Obx(
                           () {
-                            if (userController.profileLoading.value ) {
+                            if (userController.profileLoading.value) {
                               return CbShimmerEffects(width: double.infinity, height: 60);
                             } else {
                               return FocusedTextField(

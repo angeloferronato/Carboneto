@@ -167,6 +167,7 @@ class CategoryScreen extends StatelessWidget {
               return SizedBox(
                 height: 250,
                 child: ResultWidget(
+                  trainingId: training['id'],
                   level: training['level'],
                   imageThumbnail: training['imageThumbnail'],
                   trainer: training['trainer'],

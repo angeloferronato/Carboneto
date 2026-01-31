@@ -5,6 +5,7 @@ import 'package:carboneto/features/create/controllers/upload_image_controller.da
 import 'package:carboneto/features/create/screens/create_training/add_training/add_training_screen.dart';
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
+import 'package:carboneto/features/create/screens/create_training/widgets/difficulty_level_selector.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/selected_exercises.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/form_label.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/number_dropdown.dart';
@@ -133,6 +134,19 @@ class CreateTraining extends StatelessWidget {
                         const FormLabel(label: 'N° de pessoas necessárias'),
                         const NumberDropdown(controllerTag: CbTexts.trainingControllerTag,), // Assuming custom widget for number selection
                       ],
+                    ),
+                    const SizedBox(height: CbSizes.md),
+
+                    Align(
+                      alignment: AlignmentGeometry.topLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const FormLabel(label: 'Nível de Dificuldade'),
+                          const SizedBox(height: CbSizes.md),
+                          const DifficultyLevelSelector(width: double.infinity,), // Assuming custom widget for number selection
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 40),
             

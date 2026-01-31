@@ -12,7 +12,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIcon,
     this.actions,
     this.leadingOnPressed,
-    this.centerTitle = false, // <-- ADICIONE ESTA PROPRIEDADE
+    this.centerTitle = false, 
   });
 
   final Widget? title;
@@ -20,7 +20,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? leadingIcon;
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
-  final bool centerTitle; // <-- DECLARE A PROPRIEDADE AQUI
+  final bool centerTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,11 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         automaticallyImplyLeading: false,
         leading: showBackArrow ? IconButton(
-          onPressed: () => Get.back(),
+          onPressed: () => {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop()
+            },
+          }, 
           icon: Icon(Iconsax.arrow_left),
         ) : leadingIcon != null ? IconButton(
           onPressed: leadingOnPressed,
@@ -37,7 +41,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
         ) : null,
         actions: actions,
         title: title,
-        centerTitle: centerTitle, // <-- PASSE A PROPRIEDADE PARA O AppBar INTERNO
+        centerTitle: centerTitle, 
       ),
     );
   }

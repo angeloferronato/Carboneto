@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
+import 'package:carboneto/features/create/controllers/difficulty_level_selector_controller.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/features/create/controllers/number_dropdown_controller.dart';
 import 'package:carboneto/features/create/controllers/tag_controller.dart';
@@ -36,6 +37,7 @@ class CreateTrainingController extends GetxController {
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final HomeMenuController homeMenuController = Get.put(HomeMenuController());
   final UserRepository userRepository = Get.put(UserRepository());
+  final DifficultyLevelSelectorController difficultyLevelSelectorController = Get.put(DifficultyLevelSelectorController());
 
   Future<void> createTraining() async {
     try {
@@ -58,6 +60,26 @@ class CreateTrainingController extends GetxController {
         return;
       }
 
+      if (exercisesController.selectedIndexes.isEmpty) {
+        CbLoaders.warningSnackBar(
+          title: 'Selecione os Exercícios',
+          message: 'Para criar um treino, você deve escolher pelo menos um exercício.',
+        );
+        CbFullScreenLoader.stopLoading();
+        return;
+      }
+
+      if (difficultyLevelSelectorController.dropDownValue == difficultyLevelSelectorController.dropDownList.first) {
+        CbLoaders.warningSnackBar(
+          title: 'Selecione uma Dificuldade',
+          message: 'Para criar um treino, você deve escolher um nível de dificuldade.',
+        );
+        CbFullScreenLoader.stopLoading();
+        return;
+      }
+
+
+
       final imageUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''));
 
       final exercisesList = <ExerciseModel>[];
@@ -65,6 +87,11 @@ class CreateTrainingController extends GetxController {
         if (exercisesController.selectedIndexes.contains(i)) {
           exercisesList.add(exercisesController.exercises[i]);
         }
+      }
+
+      int duration = 0;
+      for (var exercise in exercisesList) {
+        duration += exercise.duration;
       }
 
       const uuid = Uuid();
@@ -75,11 +102,11 @@ class CreateTrainingController extends GetxController {
         description: description.text.trim(), 
         exercises: exercisesList,
         id: customId, 
-        level: DifficultyLevels.pro, 
+        level: TrainingModel.parseStringToLevel(difficultyLevelSelectorController.dropDownValue.toLowerCase().trim()), 
         people: numberDropdownController.selectedValue.value == '+7' ? 7 : int.parse(numberDropdownController.selectedValue.value), 
         thumbnail: imageUrl ?? '', 
         title: title.text.trim(),
-        duration: exercisesList.length * 5,
+        duration: duration,
         creator: CreatorModel(
           name: userController.user.value.name, 
           isVerified: userController.user.value.isVerified, 

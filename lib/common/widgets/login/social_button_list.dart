@@ -20,7 +20,7 @@ class SocialButtonList extends StatelessWidget {
     return Column(
       children: [
         CbSocialButton(
-          socialIcon: AssetImage(CbImages.google),
+          socialIcon: CbImages.google,
           socialText: CbTexts.loginWithGoogle,
           onTap: () => controller.googleSignIn()
         ),

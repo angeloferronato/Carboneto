@@ -7,36 +7,35 @@ class CbPlatformException implements Exception {
   String get message {
     switch (code) {
       case 'INVALID_LOGIN_CREDENTIALS':
-        return 'Invalid login credentials. Please double-check your information.';
+        return 'Credenciais de login inválidas. Verifique suas informações.';
       case 'too-many-requests':
-        return 'Too many requests. Please try again later.';
+        return 'Muitas tentativas em pouco tempo. Tente novamente mais tarde.';
       case 'invalid-argument':
-        return 'Invalid argument provided to the authentication method.';
+        return 'Argumento inválido fornecido ao método de autenticação.';
       case 'invalid-password':
-        return 'Incorrect password. Please try again.';
+        return 'Senha incorreta. Tente novamente.';
       case 'invalid-phone-number':
-        return 'The provided phone number is invalid.';
+        return 'O número de telefone informado é inválido.';
       case 'operation-not-allowed':
-        return 'The sign-in provider is disabled for your Firebase project.';
+        return 'O provedor de login está desativado neste projeto Firebase.';
       case 'session-cookie-expired':
-        return 'The Firebase session cookie has expired. Please sign in again.';
+        return 'A sessão do Firebase expirou. Faça login novamente.';
       case 'uid-already-exists':
-        return 'The provided user ID is already in use by another user.';
+        return 'O ID de usuário informado já está em uso.';
       case 'sign_in_failed':
-        return 'Sign-in failed. Please try again.';
+        return 'Falha ao fazer login. Tente novamente.';
       case 'network-request-failed':
-        return 'Network request failed. Please check your internet connection.';
+        return 'Falha na conexão. Verifique sua internet.';
       case 'internal-error':
-        return 'Internal error. Please try again later.';
+        return 'Erro interno. Tente novamente mais tarde.';
       case 'invalid-verification-code':
-        return 'Invalid verification code. Please enter a valid code.';
+        return 'Código de verificação inválido. Digite um código válido.';
       case 'invalid-verification-id':
-        return 'Invalid verification ID. Please request a new verification code.';
+        return 'ID de verificação inválido. Solicite um novo código.';
       case 'quota-exceeded':
-        return 'Quota exceeded. Please try again later.';
-    // Add more cases as needed...
+        return 'Limite excedido. Tente novamente mais tarde.';
       default:
-        return 'An unexpected platform error occurred. Please try again.';
+        return 'Ocorreu um erro inesperado na plataforma. Tente novamente.';
     }
   }
 }

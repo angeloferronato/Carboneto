@@ -2,14 +2,14 @@ import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ExerciseModel {
-  String description, title, video, id, thumb;
+  String description, title, video, id, thumb, type;
   int repetitions, duration;
   String authorId;
   List<dynamic>? categories;
   CreatorModel creator;
   
 
-  ExerciseModel({required this.description, required this.title, required this.repetitions, required this.video, required this.id, required this.duration, required this.authorId, required this.categories, required this.thumb, required this.creator});
+  ExerciseModel({required this.description, required this.title, required this.repetitions, required this.video, required this.id, required this.duration, required this.authorId, required this.categories, required this.thumb, required this.creator, required this.type});
 
 factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
   final data = snapshot.data();
@@ -27,6 +27,7 @@ factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapsh
     categories: data['Categories'] as List<dynamic>? ?? List.empty(),
     thumb: data['Thumbnail'] as String? ?? '',
     creator: CreatorModel.fromMap(Map<String, dynamic>.from(data['Creator'])),
+    type: data['Type'] as String ? ?? '',
   );
 }
 
@@ -41,6 +42,8 @@ factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapsh
       'AuthorID': authorId,
       'Categories': categories, 
       'Thumbnail': thumb,
+      'Type': type,
+      'Creator': creator.toMap(),
     };
   }
 
@@ -55,6 +58,7 @@ factory ExerciseModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapsh
     categories: List.empty(),
     thumb: '', 
     creator: CreatorModel.empty(),
+    type: '',
   );
 
 }

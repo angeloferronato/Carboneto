@@ -57,7 +57,7 @@ class CreateExerciseScreen extends StatelessWidget {
                   validateEmpty: 'Título',
                   maxLength: 80,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: CbSizes.md),
                 CreateForm(
                   controller: createExerciseController.description,
                   label: 'Descrição',
@@ -67,6 +67,36 @@ class CreateExerciseScreen extends StatelessWidget {
                   maxLines: 5,
                   maxLength: 400,
                 ),
+                const SizedBox(height: CbSizes.md),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  spacing: 20,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: CreateForm(
+                        controller: createExerciseController.repetitions,
+                        label: 'Repetições',
+                        hintText: 'Ex: 5',
+                        validateEmpty: 'Número de Repetições',
+                        maxLength: 2,
+                        keyboardType: TextInputType.numberWithOptions(),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: CreateForm(
+                        controller: createExerciseController.duration,
+                        label: 'Duração',
+                        hintText: 'Ex: 7',
+                        validateEmpty: 'Duração',
+                        maxLength: 2,
+                        keyboardType: TextInputType.numberWithOptions(),
+                      ),
+                    ),
+                  ],
+                ),
+                
                 
                 const SizedBox(height: 20),
                 const FormLabel(label: 'Adicionar Tags'),

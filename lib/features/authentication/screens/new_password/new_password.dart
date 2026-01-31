@@ -32,7 +32,7 @@ class NewPasswordScreen extends StatelessWidget {
               SizedBox(
                 height: CbSizes.spaceBtwSections,
               ),
-              ProgressBar(),
+              ProgressBar(progress: 0.0, valueColor: Colors.transparent,),
               SizedBox(
                 height: CbSizes.spaceBtwSections * 1,
               ),

@@ -1,10 +1,18 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/common/widgets/result/progress_indicator.dart';
+import 'package:carboneto/features/library/models/history_model.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 
 class HistoryTraining extends StatelessWidget {
-  const HistoryTraining({super.key});
+
+  final TrainingHistoryModel training;
+
+  const HistoryTraining({
+    super.key,
+    required this.training,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +25,14 @@ class HistoryTraining extends StatelessWidget {
         children: [
           Stack(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  CbImages.trainingImageExample,
-                  fit: BoxFit.cover,
-                  width: 165,
-                  height: 100,
-                ),
+              CbRoundedImage(
+                borderRadius: 12,
+                isNetworkImage: true,
+                imageUrl: training.thumbnail,
+                fit: BoxFit.cover,
+                width: 165,
+                height: 100,
+                backgroundColor: Colors.black,
               ),
 
               // Timer no canto inferior direito
@@ -35,16 +43,12 @@ class HistoryTraining extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text(
-                    '40:00',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: CbProgressIndicator(
+                    progress: training.trainingProgress,
+                    status: training.status,
                   ),
                 ),
               ),
@@ -57,7 +61,7 @@ class HistoryTraining extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Stephen Curry Preseason Workout',
+                  training.title,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -74,16 +78,21 @@ class HistoryTraining extends StatelessWidget {
           Row(
             children: [
               CbRoundedImage(
-                imageUrl: CbImages.trainerExample,
+                imageUrl: training.authorPicture,
                 width: 15,
                 height: 15,
                 fit: BoxFit.cover,
+                isNetworkImage: true,
               ),
               SizedBox(
                 width: 5,
               ),
               Text(
-                'Stephen Curry',
+                training.author,
+                style: TextStyle(
+                  color: CbColors.grey,
+                  fontSize: 11,
+                ),
                 overflow: TextOverflow.ellipsis,
               )
             ],
@@ -92,4 +101,6 @@ class HistoryTraining extends StatelessWidget {
       ),
     );
   }
+  
 }
+
