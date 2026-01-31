@@ -1,186 +1,153 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/result/result_widget.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
+import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
 import 'package:carboneto/features/explore/screens/widgets/gradient_title.dart';
-import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
-import 'package:carboneto/utils/constants/enums.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CategoryScreen extends StatelessWidget {
-  CategoryScreen({super.key, required this.title});
-  final String? title;
-
-  // DATA DE TESTE:
-  final List<Map<String, dynamic>> trainings = [
-    {
-      'level': DifficultyLevels.rookie,
-      'title': 'Beginner Handles with Jamal Crawford',
-      'trainer': 'Jamal Crawford',
-      'description': 'Dribles básicos e controle de bola',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.thumbnailTrainingExample,
-      'duration': '30:00',
-    },
-    {
-      'level': DifficultyLevels.pro,
-      'title': 'Pick and Roll Mastery with Chris Paul',
-      'trainer': 'Chris Paul',
-      'description': 'Leitura de jogo e criação de jogadas',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.trainerExample,
-      'duration': '45:00',
-    },
-    {
-      'level': DifficultyLevels.elite,
-      'title': 'Kyrie Irving Finishing Moves',
-      'trainer': 'Kyrie Irving',
-      'description': 'Finalizações criativas e reversas',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.trainingImageExample,
-      'duration': '50:00',
-    },
-    {
-      'level': DifficultyLevels.elite,
-      'title': 'Stephen Curry Precision Shooting Workout',
-      'trainer': 'Stephen Curry',
-      'description': 'Arremesso, Forma do Arremesso',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.thumbnailTrainingExample,
-      'duration': '40:00',
-    },
-    {
-      'level': DifficultyLevels.elite,
-      'title': 'LeBron James Strength & Conditioning',
-      'trainer': 'LeBron James',
-      'description': 'Treino físico e explosão muscular',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.trainerExample,
-      'duration': '60:00',
-    },
-    {
-      'level': DifficultyLevels.elite,
-      'title': 'Damian Lillard Clutch Shooting Drills',
-      'trainer': 'Damian Lillard',
-      'description': 'Treino de arremessos decisivos e movimento sem bola',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.trainingImageExample,
-      'duration': '42:00',
-    },
-    {
-      'level': DifficultyLevels.pro,
-      'title': 'Zion Williamson Explosive Power Workout',
-      'trainer': 'Zion Williamson',
-      'description': 'Pliometria e força explosiva',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.thumbnailTrainingExample,
-      'duration': '55:00',
-    },
-    {
-      'level': DifficultyLevels.rookie,
-      'title': 'Fundamentals with Manu Ginobili',
-      'trainer': 'Manu Ginobili',
-      'description': 'Passe, leitura e movimentação básica',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.trainerExample,
-      'duration': '35:00',
-    },
-    {
-      'level': DifficultyLevels.pro,
-      'title': 'Paul George Defensive Footwork',
-      'trainer': 'Paul George',
-      'description': 'Trabalho de pés e posicionamento defensivo',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.trainingImageExample,
-      'duration': '48:00',
-    },
-    {
-      'level': DifficultyLevels.elite,
-      'title': 'Giannis Antetokounmpo Full-Court Domination',
-      'trainer': 'Giannis Antetokounmpo',
-      'description': 'Transição, explosão e ataque em velocidade',
-      'trainerImage': CbImages.trainerExample,
-      'imageThumbnail': CbImages.thumbnailTrainingExample,
-      'duration': '58:00',
-    },
-  ];
+  const CategoryScreen({super.key, required this.title});
   
+  final String title;
+
   @override
   Widget build(BuildContext context) {
+    final explorerController = Get.find<ExploreController>();
+    // Busca apenas se necessário (usa cache se já buscou antes)
+    explorerController.fetchTrainingsByCategory(title);
 
     return Scaffold(
       appBar: CbAppBar(
         title: GradientTitle(title: title),
         showBackArrow: true,
       ),
-      body: ListView(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-              child: CbSectionHeading(
-                title: 'Mais Populares',
-                onPressed: () {},
-                showButton: false,
-              )),
-          SizedBox(
-            height: 30,
-          ),
-          SizedBox(
-            height: 250,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: 10,
-              padding: EdgeInsets.only(left: CbSizes.md),
-              itemBuilder: (_, index) {
-                return HomeTrainingWidget(
-                  training: TrainingModel.empty(),
-                  onTap: () => Get.to(() => TrainingDetailsScreen(training: TrainingModel.empty(),)),
-                );
-              },
-              scrollDirection: Axis.horizontal,
-            ),
-          ),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-              child: CbSectionHeading(
-                title: 'Todos os Treinamentos',
-                onPressed: () {},
-                showButton: false,
-              )),
-          SizedBox(
-            height: 30,
-          ),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: trainings.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 20),
-            itemBuilder: (context, index) {
-              final training = trainings[index];
-              return SizedBox(
-                height: 250,
-                child: ResultWidget(
-                  trainingId: training['id'],
-                  level: training['level'],
-                  imageThumbnail: training['imageThumbnail'],
-                  trainer: training['trainer'],
-                  description: training['description'],
-                  trainerImage: training['trainerImage'],
-                  title: training['title'],
-                  duration: training['duration'],
+      body: Obx(() {
+        // Loading state
+        if (explorerController.isLoadingTrainings.value && 
+            explorerController.categoryTrainings.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        // Empty state
+        if (explorerController.categoryTrainings.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.search_off,
+                  size: 64,
+                  color: Colors.grey,
                 ),
-              );
-            },
+                const SizedBox(height: 16),
+                Text(
+                  'Nenhum treino encontrado\npara "$title"',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final allTrainings = explorerController.categoryTrainings;
+        final popularTrainings = allTrainings.length > 5 
+            ? allTrainings.take(5).toList() 
+            : allTrainings;
+
+        return RefreshIndicator(
+          onRefresh: () => explorerController.fetchTrainingsByCategory(
+            title,
+            forceRefresh: true,
           ),
-        ],
-      ),
+          child: ListView(
+            children: [
+              const SizedBox(height: 20),
+              
+              // Seção "Mais Populares" - só mostra se tiver mais de 5 treinos
+              if (allTrainings.length > 5) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                  child: CbSectionHeading(
+                    title: 'Mais Populares',
+                    onPressed: () {},
+                    showButton: false,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  height: 250,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: popularTrainings.length,
+                    padding: const EdgeInsets.only(left: CbSizes.md),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (_, index) {
+                      final training = popularTrainings[index];
+                      return HomeTrainingWidget(
+                        training: training,
+                        onTap: () => Get.to(
+                          () => TrainingDetailsScreen(training: training),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 30),
+              ],
+              
+              // Seção "Todos os Treinamentos"
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                child: CbSectionHeading(
+                  title: 'Todos os Treinamentos',
+                  onPressed: () {},
+                  showButton: false,
+                ),
+              ),
+              const SizedBox(height: 20),
+              
+              // Lista de todos os treinos
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: allTrainings.length,
+                  itemBuilder: (_, index) {
+                    final training = allTrainings[index];
+                    return ResultWidget(
+                      trainingId: training.id,
+                      title: training.title,
+                      trainer: training.creator.name,
+                      trainerImage: training.creator.profilePicture,
+                      imageThumbnail: training.thumbnail,
+                      description: training.description,
+                      duration: training.duration ?? 0,
+                      level: training.level,
+                      peopleNeeded: training.people,
+                      isVerified: training.creator.isVerified,
+                      onTap: () => Get.to(
+                        () => TrainingDetailsScreen(training: training),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

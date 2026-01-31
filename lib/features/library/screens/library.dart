@@ -1,5 +1,6 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/buttons/see_all_btn.dart';
+import 'package:carboneto/common/widgets/dropdown/dropdown.dart';
 import 'package:carboneto/features/library/controllers/history_controller.dart';
 import 'package:carboneto/features/library/screens/all_trainings_screen/all_trainings.dart';
 import 'package:carboneto/features/library/screens/history_screen/history.dart';
@@ -56,17 +57,11 @@ class LibraryScreen extends StatelessWidget {
               title: 'Sua Lista de Treinos',
               icon: Icons.list,
               itemBuilder: (context, index) => CreatedTraining(),
-              actionBtn: SortSelector(
-                label: 'Recentes',
-                onTap: () {},
-              ),
               showActionBtn: true,
+                actionBtn: SeeAllBtn(
+                  onPressed: () => Get.to(() => AllTrainingsScreen()),
+              ),
               itemCount: 6,
-            ),
-            HighlightBtn(
-              textValue: 'Ver todos',
-              onPressedEdit: () => Get.to(() => AllTrainingsScreen()),
-              labelColor: CbColors.primary,
             ),
           ],
         ),

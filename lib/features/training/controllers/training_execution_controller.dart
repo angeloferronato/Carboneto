@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
+import 'package:carboneto/data/repositories/training/training_repository.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/home_menu.dart';
@@ -14,6 +15,11 @@ import 'package:get/get.dart';
 class TrainingExecutionController extends GetxController
     with WidgetsBindingObserver {
   static TrainingExecutionController get instance => Get.find();
+
+  final TrainingRepository repo = TrainingRepository.instance;
+
+  late final String uid;
+  late final String historyId;
 
   late final DocumentReference trainingProgressRef;
   late final DocumentReference trainingHistoryRef;
@@ -34,28 +40,22 @@ class TrainingExecutionController extends GetxController
   Future<void> onInit() async {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
+    final userController = Get.put(UserController());
+    uid = userController.user.value.id;
 
-    final uid = AuthenticationRepository.instance.authUser!.uid;
-
-    trainingProgressRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('trainingProgress')
-        .doc(training.id);
-
-    trainingHistoryRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('trainingHistory')
-        .doc(_historyId());
+    historyId = _historyId();
 
     activeExercise.value = training.exercises[0];
     duration = Duration(minutes: training.duration ?? 0).obs;
     trainingRelativeDuration =
         Duration(minutes: activeExercise.value.duration).obs;
 
-    _createOrResumeProgress();
-    _createOrUpdateHistory();
+    await _createOrResumeProgress();
+    await repo.createOrUpdateTrainingHistory(
+      uid: uid,
+      historyId: historyId,
+      training: training,
+    );
 
     executeTraining();
   }
@@ -167,62 +167,72 @@ class TrainingExecutionController extends GetxController
   }
 
   Future<void> _createOrResumeProgress() async {
-    final snapshot = await trainingProgressRef.get();
+    final snapshot = await repo.getTrainingProgress(uid, training.id);
 
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
-      activeIndexTraining.value = data['currentExerciseIndex'] ?? 0;
-      duration.value = Duration(seconds: data['trainingRemainingTime'] ?? 0);
 
-      final stats = data['trainingStats'];
-      if (stats != null &&
-          stats['perExercise'] != null &&
-          stats['perExercise'][activeIndexTraining.value.toString()] != null) {
-        final current =
-            stats['perExercise'][activeIndexTraining.value.toString()];
-        if (current['type'] == 'time') {
-          trainingRelativeDuration.value =
-              Duration(seconds: current['remaining']);
-        }
+      activeIndexTraining.value = data['CurrentExerciseIndex'] ?? 0;
+      duration.value = Duration(seconds: data['TrainingRemainingTime'] ?? 0);
+
+      final stats = data['TrainingStats'];
+      final current =
+          stats?['PerExercise']?[activeIndexTraining.value.toString()];
+
+      if (current != null && current['Type'] == 'time') {
+        trainingRelativeDuration.value =
+            Duration(seconds: current['Remaining']);
       }
+
       return;
     }
 
-    await trainingProgressRef.set({
-      'trainingId': training.id,
-      'title': training.title,
-      'thumbnail': training.thumbnail,
-      'authorId': training.authorId,
-      'author': training.creator.name,
-      'authorPicture': training.creator.profilePicture,
-      'categories': training.categories,
-      'level': training.level.name,
-      'trainingRemainingTime': duration.value.inSeconds,
-      'trainingDuration': training.duration! * 60,
-      'status': 'in_progress',
-      'startedAt': FieldValue.serverTimestamp(),
-      'lastUpdatedAt': FieldValue.serverTimestamp(),
-      'currentExerciseIndex': 0,
-      'trainingProgress': 0,
-      'totalExercises': training.exercises.length,
-      'trainingStats': buildExerciseProgress(),
-    });
+    await repo.createTrainingProgress(
+      uid: uid,
+      training: training,
+      remainingTime: duration.value.inSeconds,
+      trainingStats: buildExerciseProgress(),
+    );
   }
 
-  Future<void> _createOrUpdateHistory() async {
-    await trainingHistoryRef.set({
-      'trainingId': training.id,
-      'title': training.title,
-      'thumbnail': training.thumbnail,
-      'authorId': training.authorId,
-      'author': training.creator.name,
-      'authorPicture': training.creator.profilePicture,
-      'startedAt': FieldValue.serverTimestamp(),
-      'status': 'in_progress',
-      'level': training.level.name,
-      'trainingProgress': 0,
-      'searchKeywords': [],
-    }, SetOptions(merge: true));
+  Future<void> saveProgress({bool completed = false}) async {
+    final totalExercises = training.exercises.length;
+
+    double progress = activeIndexTraining.value == 0
+        ? (1 - (duration.value.inSeconds / (training.duration! * 60))) * 100
+        : (activeIndexTraining.value / totalExercises) * 100;
+
+    if (completed) progress = 100;
+
+    final data = {
+      'TrainingRemainingTime': duration.value.inSeconds,
+      'CurrentExerciseIndex': activeIndexTraining.value,
+      'TrainingProgress': progress.round(),
+      'Status': completed ? 'completed' : 'in_progress',
+      'LastUpdatedAt': FieldValue.serverTimestamp(),
+      'TrainingStats': buildExerciseProgress(),
+    };
+
+    await repo.updateTrainingProgress(
+      uid: uid,
+      trainingId: training.id,
+      data: data,
+    );
+
+    await repo.updateTrainingHistory(
+      uid: uid,
+      historyId: historyId,
+      data: {
+        'TrainingProgress': progress.round(),
+        'Status': completed ? 'completed' : 'in_progress',
+        'SessionEndedAt': FieldValue.serverTimestamp(),
+        'TrainingStats': buildExerciseProgress(),
+      },
+    );
+
+    if (completed) {
+      await repo.deleteTrainingProgress(uid, training.id);
+    }
   }
 
   Map<String, dynamic> buildExerciseProgress() {
@@ -233,86 +243,40 @@ class TrainingExecutionController extends GetxController
       final exercise = training.exercises[i];
 
       if (exercise.type == 'time') {
-        if (trainingType == '') trainingType = 'time';
+        if (trainingType.isEmpty) trainingType = 'time';
 
-        final totalSeconds = exercise.duration * 60;
-        int remainingSeconds;
-
-        if (i < activeIndexTraining.value) {
-          remainingSeconds = 0;
-        } else if (i == activeIndexTraining.value) {
-          remainingSeconds = trainingRelativeDuration.value.inSeconds;
-        } else {
-          remainingSeconds = totalSeconds;
-        }
+        final total = exercise.duration * 60;
+        final remaining = i < activeIndexTraining.value
+            ? 0
+            : i == activeIndexTraining.value
+                ? trainingRelativeDuration.value.inSeconds
+                : total;
 
         perExercise[i.toString()] = {
-          "type": "time",
-          "total": totalSeconds,
-          "remaining": remainingSeconds,
+          "Type": "time",
+          "Total": total,
+          "Remaining": remaining,
+          "Done": 0,
         };
       }
 
       if (exercise.type == 'reps') {
-        final totalReps = exercise.repetitions;
-        int done;
-
-        if (trainingType == '') trainingType = 'reps';
+        if (trainingType.isEmpty) trainingType = 'reps';
         if (trainingType == 'time') trainingType = 'mixed';
 
-        if (i < activeIndexTraining.value) {
-          done = totalReps;
-        } else {
-          done = 0;
-        }
-
         perExercise[i.toString()] = {
-          "type": "reps",
-          "total": totalReps,
-          "done": done,
+          "Type": "reps",
+          "Total": exercise.repetitions,
+          "Done": i < activeIndexTraining.value ? exercise.repetitions : 0,
+          "Remaining": 0,
         };
       }
     }
 
     return {
-      "trainingType": trainingType,
-      "trainingDuration": training.duration! * 60,
-      "perExercise": perExercise,
+      "TrainingType": trainingType,
+      "TrainingDuration": training.duration! * 60,
+      "PerExercise": perExercise,
     };
-  }
-
-  Future<void> saveProgress({bool completed = false}) async {
-    final totalExercises = training.exercises.length;
-    double progress;
-    if (totalExercises == 1) {
-      progress =
-          (1 - (duration.value.inSeconds / (training.duration! * 60))) * 100;
-    } else {
-      progress = (activeIndexTraining.value / totalExercises) * 100;
-    }
-
-    if (completed) progress = 100;
-
-    final data = {
-      'trainingRemainingTime': duration.value.inSeconds,
-      'currentExerciseIndex': activeIndexTraining.value,
-      'trainingProgress': progress.round(),
-      'status': completed ? 'completed' : 'in_progress',
-      'lastUpdatedAt': FieldValue.serverTimestamp(),
-      'trainingStats': buildExerciseProgress(),
-    };
-
-    await trainingProgressRef.update(data);
-
-    await trainingHistoryRef.update({
-      'trainingProgress': progress.round(),
-      'status': completed ? 'completed' : 'in_progress',
-      'sessionEndedAt': FieldValue.serverTimestamp(),
-      'trainingStats': buildExerciseProgress(),
-    });
-
-    if (completed) {
-      await trainingProgressRef.delete();
-    }
   }
 }

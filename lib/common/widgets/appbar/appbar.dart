@@ -1,4 +1,3 @@
-import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/device/device_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,20 +27,30 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: AppBar(
         automaticallyImplyLeading: false,
-        leading: showBackArrow ? IconButton(
-          onPressed: () => {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop()
-            },
-          }, 
-          icon: Icon(Iconsax.arrow_left),
-        ) : leadingIcon != null ? IconButton(
-          onPressed: leadingOnPressed,
-          icon: Icon(leadingIcon),
-        ) : null,
+        leading: showBackArrow
+            ? IconButton(
+                onPressed: () {
+                  try {
+                    if (Get.isSnackbarOpen) {
+                      Get.closeAllSnackbars();
+                    }
+                    Get.back();
+                  } catch (e) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                icon: Icon(Iconsax.arrow_left),
+              )
+            : leadingIcon != null
+                ? IconButton(
+                    onPressed: leadingOnPressed,
+                    icon: Icon(leadingIcon),
+                  )
+                : null,
         actions: actions,
         title: title,
-        centerTitle: centerTitle, 
+        centerTitle:
+            centerTitle,
       ),
     );
   }
