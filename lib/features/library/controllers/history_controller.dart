@@ -32,7 +32,6 @@ class HistoryController extends GetxController {
     Get.to(HistoryScreen());
   }
 
-
   void setShowTrainingBy(String value) {
     showTrainingBy.value = value;
   }

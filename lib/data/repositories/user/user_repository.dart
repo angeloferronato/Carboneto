@@ -59,10 +59,10 @@ class UserRepository extends GetxController {
 
   Future<UserModel> searchUser(String id) async {
     try {
-      final query = await _db.collection('users').where('Id', isEqualTo: id).get();
+      final docs = await _db.collection('users').doc(id).get();
 
-      if (query.docs.isNotEmpty) {
-        final user = UserModel.fromSnapshot(query.docs[0]);
+      if (docs.exists) {
+        final user = UserModel.fromSnapshot(docs);
         
         return user;
       } else {

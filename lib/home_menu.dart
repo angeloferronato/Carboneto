@@ -4,6 +4,7 @@ import 'package:carboneto/common/widgets/navigation_bar/navigation_destination.d
 import 'package:carboneto/features/create/screens/create_training/create_training.dart';
 import 'package:carboneto/features/explore/screens/search/search.dart';
 import 'package:carboneto/features/library/screens/library.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/profile.dart';
 import 'package:carboneto/features/training/screens/home/home.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -84,6 +85,6 @@ class HomeMenuController extends GetxController {
     SearchScreen(),
     CreateTraining(),
     LibraryScreen(),
-    ProfileScreen(),
+    ProfileScreen(userId: UserController.instance.user.value.id,),
   ];
 }

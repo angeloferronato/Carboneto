@@ -1,23 +1,26 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
-import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
+import 'package:carboneto/features/personalization/controllers/profile_base_controller.dart/profile_base_controller.dart';
+import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/confirm_banner_upload_screen.dart';
 import 'package:carboneto/features/settings/settings.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 
 class BannerWithPicture extends StatelessWidget {
-  const BannerWithPicture(
-      {super.key, required this.profileImg, required this.bannerImg});
-  final String profileImg;
-  final String bannerImg;
+  const BannerWithPicture({super.key, required this.userId,});
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
-    final userController = Get.put(UserController());
+    final EditProfileController editProfileController = Get.put(EditProfileController());
+    final profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
     final screenWidth = MediaQuery.of(context).size.width;
     final bannerHeight = screenWidth * 0.6;
     final avatarRadius = screenWidth * 0.21;
@@ -36,12 +39,16 @@ class BannerWithPicture extends StatelessWidget {
             ).createShader(rect);
           },
           blendMode: BlendMode.dstIn,
-          child: Image.asset(
-            bannerImg,
-            width: double.infinity,
-            height: bannerHeight,
-            fit: BoxFit.cover,
-          ),
+          child: Obx(
+            () => CbRoundedImage(
+              imageUrl: profileBaseController.profileLoading || profileBaseController.user.value.banner.isEmpty ? CbImages.bannerDefault : profileBaseController.user.value.banner,
+              isNetworkImage: profileBaseController.user.value.banner.isNotEmpty,
+              width: double.infinity,
+              height: bannerHeight,
+              fit: BoxFit.cover,
+            ),
+          )
+            
         ),
         Positioned(
           bottom: -avatarRadius / 2,
@@ -52,10 +59,10 @@ class BannerWithPicture extends StatelessWidget {
               color: CbColors.primary,
             ),
             child: Obx(
-              () => !userController.profileLoading.value
-                  ? (userController.user.value.profilePicture != ''
+              () => !profileBaseController.profileLoading
+                  ? (profileBaseController.user.value.profilePicture != ''
                       ? CbRoundedImage(
-                          imageUrl: userController.user.value.profilePicture,
+                          imageUrl: profileBaseController.user.value.profilePicture,
                           isNetworkImage: true,
                           borderRadius: avatarRadius,
                           width: 180,
@@ -75,13 +82,43 @@ class BannerWithPicture extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          top: 40,
-          right: 16,
-          child: IconButton(
-            icon: Icon(CupertinoIcons.settings,
-                color: Colors.white, size: screenWidth * 0.07),
-            onPressed: () => Get.to(SettingsScreen()),
+
+        Obx(
+          () => profileBaseController.isAuthUser 
+          ? Positioned(
+            top: 40,
+            right: 16,
+            child: IconButton(
+              icon: Icon(
+                CupertinoIcons.settings,
+                color: Colors.white, size: screenWidth * 0.07
+              ),
+              onPressed: () => Get.to(SettingsScreen()),
+            ),
+          )
+          : SizedBox(),
+        ),
+
+        Obx(
+          () => profileBaseController.isAuthUser 
+          ? Positioned(
+            top: 40,
+            left: 16,
+            child: IconButton(
+              icon: Icon(
+                Icons.camera_alt_rounded,
+                color: Colors.white, size: screenWidth * 0.06
+              ),
+              onPressed: () => editProfileController.sendToConfirmScreen(ConfirmBannerUploadScreen()),
+            ),
+          )
+          : Positioned(
+            top: 40,
+            left: CbSizes.sm,
+            child: IconButton(
+              onPressed: () => Get.back(), 
+              icon: Icon(Iconsax.arrow_left, color: CbColors.white,)
+            ),
           ),
         ),
       ],

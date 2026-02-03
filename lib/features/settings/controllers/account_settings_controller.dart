@@ -29,6 +29,11 @@ class AccountSettingsController extends GetxController {
     newPasswordController.addListener(() {
       newPassword.value = newPasswordController.text;
     });
+    ever(userController.profileLoading, (value) {
+      if (!value) {
+        addPreExistingDataToFields();
+      }
+    });
     super.onInit();
   }
 
@@ -72,6 +77,8 @@ class AccountSettingsController extends GetxController {
         countryCode: userController.user.value.countryCode,
         isVerified: user.isVerified,
         birthDate: birthDate.text.trim(),
+        isPrivate: user.isPrivate, 
+        banner: user.banner,
       );
 
       userRepository.updateUserDetails(updatedUser);

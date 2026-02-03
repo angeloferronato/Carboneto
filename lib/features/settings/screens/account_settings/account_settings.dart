@@ -6,7 +6,6 @@ import 'package:carboneto/features/personalization/screens/profile/widgets/highl
 import 'package:carboneto/features/settings/controllers/account_settings_controller.dart';
 import 'package:carboneto/features/settings/screens/account_settings/change_email/change_email.dart';
 import 'package:carboneto/features/settings/screens/account_settings/change_password/change_password.dart';
-import 'package:carboneto/features/settings/screens/delete_account/delete_account.dart';
 import 'package:carboneto/features/settings/screens/delete_account/show_delete_options.dart';
 import 'package:carboneto/features/settings/screens/widgets/settings_item.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -62,6 +61,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                   Obx(
                     () => controller.userController.profileLoading.value 
                       ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CbShimmerEffects(width: 200, height: 30),
                           SizedBox(height: 12,),

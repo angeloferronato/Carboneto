@@ -6,6 +6,8 @@ import 'package:carboneto/features/authentication/screens/signup/widgets/positio
 import 'package:carboneto/features/authentication/screens/signup/widgets/terms_text.dart';
 import 'package:carboneto/features/personalization/controllers/date_picker/date_picker_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/country_selector.dart';
+import 'package:carboneto/features/settings/screens/widgets/settings_item.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/validators/validation.dart';
@@ -83,11 +85,27 @@ class _SignUpFormState extends State<SignUpForm> {
               SizedBox(height: CbSizes.spaceBtwInputFields),
 
               FocusedTextField(
-                hintText: '24 de agosto de 2008',
+                hintText: 'Data de Nascimento',
                 controller: controller.birthDate,
                 readOnly: true,
                 prefixIcon: Icon(Icons.cake_rounded),
                 onTap: () => datePickerController.showDatePickerAction(controller.birthDate),
+              ),
+              SizedBox(height: CbSizes.spaceBtwInputFields),
+
+              SettingsItem(
+                title: 'Perfil privado', 
+                subtitle: 'Quando ativado, apenas pessoas autorizadas poderão ver seu perfil.', 
+                onTap: null,
+                showErrorMessage: false,
+                trailing: Obx(
+                  () => Switch(
+                    value: controller.isPrivate.value,
+                    onChanged: (value) => controller.isPrivate.value = value,
+                    activeThumbColor: CbColors.white,
+                    activeTrackColor: CbColors.primary,
+                  ),
+                ),
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
               

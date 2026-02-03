@@ -8,7 +8,7 @@ class SettingsItem extends StatelessWidget {
   final String subtitle;
   final VoidCallback? onTap;
   final Widget? trailing;
-  final bool? hideIcon;
+  final bool? hideIcon, showErrorMessage;
   final String? errorMessage, errorTitle;
 
   const SettingsItem({
@@ -20,19 +20,21 @@ class SettingsItem extends StatelessWidget {
     this.hideIcon = false, 
     this.errorMessage, 
     this.errorTitle,
+    this.showErrorMessage = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isEnabled = !(onTap == null);
+    final isEnabled = !(onTap == null && showErrorMessage!);
     return MediaQuery.removePadding(
       removeLeft: true,
       removeRight: true,
       context: context,
       child: InkWell(
+        highlightColor: onTap == null ? Colors.transparent : null,
+        splashColor: onTap == null ? Colors.transparent : null,
         borderRadius: BorderRadius.circular(CbSizes.sm),
-        // splashFactory: InkRipple.splashFactory,
-        onTap: onTap ?? () =>  CbLoaders.warningSnackBar(title: errorTitle ?? 'Aviso', message: errorMessage ?? 'Essa ação não é permitida ao seu tipo de vínculo.'),
+        onTap: onTap ?? () => showErrorMessage! ? CbLoaders.warningSnackBar(title: errorTitle ?? 'Aviso', message: errorMessage ?? 'Essa ação não é permitida ao seu tipo de vínculo.') : null,
         child: Row(
           children: [
             // Textos

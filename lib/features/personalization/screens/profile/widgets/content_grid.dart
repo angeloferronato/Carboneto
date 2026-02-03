@@ -1,6 +1,5 @@
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
-import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/content_grid_profile_shimmer.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/treino_card.dart';
@@ -8,15 +7,16 @@ import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 
 class ContentGrid extends StatelessWidget {
-  const ContentGrid({super.key});
+  const ContentGrid({super.key, required this.userId});
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
-    final TrainingController trainingController = Get.put(TrainingController());
-    final UserController userController = Get.put(UserController());
+    final TrainingController trainingController = Get.put(TrainingController(userId: userId), tag: userId);
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -33,11 +33,13 @@ class ContentGrid extends StatelessWidget {
 
           Obx(
             () {
-              if (trainingController.isLoading.value || userController.profileLoading.value) {
+              if (trainingController.isLoading.value || trainingController.profileBaseController.profileLoading) {
                 return ContentGridProfileShimmer();
               }
 
               final list = trainingController.trainingsList;
+              final isAuthUser = trainingController.profileBaseController.isAuthUser;
+              final text = isAuthUser ? 'Você' : 'Este usuário';
               if (list.isEmpty) {
                 return Center(
                   child: Column(
@@ -47,24 +49,25 @@ class ContentGrid extends StatelessWidget {
                       ),
                       IconButton(
                         icon: Icon(
-                          Icons.add,
+                          isAuthUser ? Icons.add : Iconsax.activity1,
                           size: 70,
                           color: CbColors.buttonSecondary,
                         ), 
-                        onPressed: () {
+                        onPressed: isAuthUser
+                        ? () {
                           Get.offAll(HomeMenu());
                           final controller = Get.put(HomeMenuController());
                           controller.selectedIndex.value = 2;
-                        },
+                        }
+                        : () {}
                       ),
                       const SizedBox(height: 10),
                       Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
                         child: Column(
                           children: [
                             Text(
-                              'Você ainda não possui treinos criados.',
+                              '$text ainda não possui treinos criados.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 15,
@@ -75,7 +78,8 @@ class ContentGrid extends StatelessWidget {
                             const SizedBox(
                               height: 10,
                             ),
-                            Padding(
+                            isAuthUser
+                            ? Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
                                 'Crie um novo treino para começar a organizar suas sessões de basquete.',
@@ -86,7 +90,8 @@ class ContentGrid extends StatelessWidget {
                                   fontWeight: FontWeight.w300,
                                 ),
                               ),
-                            ),
+                            )
+                            : SizedBox(),
                           ],
                         ),
                       ),

@@ -12,6 +12,8 @@ class UserModel {
   final bool isVerified;
   final List<dynamic>? userTrainings;
   final String? birthDate;
+  final bool isPrivate;
+  final String banner;
 
   UserModel({
     required this.id,
@@ -25,6 +27,8 @@ class UserModel {
     required this.isVerified,
     required this.userTrainings, 
     required this.birthDate,
+    required this.isPrivate, 
+    required this.banner,
   });
 
   static List<String> nameParts(fullName) => fullName.split(" ");
@@ -51,7 +55,9 @@ class UserModel {
     countryCode: "",
     isVerified: false, 
     userTrainings: [], 
-    birthDate: '',
+    birthDate: '', 
+    isPrivate: false, 
+    banner: '',
   );
 
   // Convert model to JSON structure for storing data in Firebase.
@@ -68,6 +74,8 @@ class UserModel {
       'IsVerified': isVerified,
       'UserTrainings': userTrainings,
       'BirthDate': birthDate,
+      'IsPrivate': isPrivate,
+      'Banner': banner,
     };
   }
 
@@ -83,9 +91,11 @@ class UserModel {
       description: data['Description'] ?? '',
       position: data['Position'] ?? '',
       countryCode: data['CountryCode'] ?? '',
-      isVerified: data['IsVerified'] ?? '', 
+      isVerified: data['IsVerified'] ?? false, 
       userTrainings: data['UserTrainings'] ?? [], 
-      birthDate: data['BirthDate'] ?? '',
+      birthDate: data['BirthDate'] ?? '', 
+      isPrivate: data['IsPrivate'] ?? false, 
+      banner: data['Banner'] ?? '',
     );
   }
 }

@@ -27,7 +27,7 @@ class SignupController extends GetxController {
   final TextEditingController description = TextEditingController();
   final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
   final positionSelectorController = Get.put(PositionSelectorController());
-  
+  final RxBool isPrivate = false.obs;
 
   void signup() async {
     try {
@@ -89,6 +89,8 @@ class SignupController extends GetxController {
         isVerified: false,
         userTrainings: [],
         birthDate: birthDate.text.trim(),
+        isPrivate: isPrivate.value, 
+        banner: '',
       );
 
       final userRepository = Get.put(UserRepository());

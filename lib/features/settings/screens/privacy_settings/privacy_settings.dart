@@ -1,11 +1,17 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/features/settings/controllers/privacy_settings_controller.dart';
 import 'package:carboneto/features/settings/screens/widgets/settings_item.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PrivacySettings extends StatelessWidget {
-  const PrivacySettings({super.key});
+  PrivacySettings({super.key});
+  
+  final controller = Get.put(PrivacySettingsController());
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,37 +29,45 @@ class PrivacySettings extends StatelessWidget {
       body: MediaQuery.removePadding(
         context: context,
         removeBottom: true,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 20,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 10,
+        child: Obx(
+          () => !UserController.instance.profileLoading.value || !controller.isLoading.value
+            ? SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 20,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Obx(
+                      () => SettingsItem(
+                        title: 'Perfil privado', 
+                        subtitle: 'Quando ativado, apenas pessoas autorizadas poderão ver seu perfil.', 
+                        onTap: () => controller.showConfirmMessage(),
+                        trailing: Switch(
+                          value: controller.isPrivate.value,
+                          onChanged: (value) => controller.showConfirmMessage(),
+                          activeThumbColor: CbColors.white,
+                          activeTrackColor: CbColors.primary,
+                        ),
+                      ),
+                    ),
+                    SettingsItem(
+                      title: 'Política de privacidade', 
+                      subtitle: 'Saiba como seus dados são coletados, usados e protegidos.', 
+                      onTap: () => {},
+                    )
+                  ],
                 ),
-                SettingsItem(
-                  title: 'Perfil privado', 
-                  subtitle: 'Quando ativado, apenas pessoas autorizadas poderão ver seu perfil.', 
-                  onTap: () => {},
-                  trailing: Switch(
-                    value: true,
-                    onChanged: (value) {},
-                    activeThumbColor: CbColors.white,
-                    activeTrackColor: CbColors.primary,
-                  ),
-                ),
-                SettingsItem(
-                  title: 'Política de privacidade', 
-                  subtitle: 'Saiba como seus dados são coletados, usados e protegidos.', 
-                  onTap: () => {},
-                )
-              ],
-            ),
-          ),
+              ),
+            )
+            : Center(
+              child: CircularProgressIndicator(color: CbColors.primary,),
+            )
         ),
       ),
     );

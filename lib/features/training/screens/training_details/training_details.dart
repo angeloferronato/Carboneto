@@ -3,11 +3,13 @@ import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/chips/tip_chip_training.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
-import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/features/personalization/screens/profile/profile.dart';
+import 'package:carboneto/features/training/controllers/training_details_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_shimmer.dart';
+import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -26,12 +28,13 @@ class TrainingDetailsScreen extends StatefulWidget {
 }
 
 class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
-  final trainingController = Get.put(TrainingController());
+  late TrainingDetailsController trainingDetailsController;
   TrainingModel training = TrainingModel.empty();
 
   @override
   void initState() {
     super.initState();
+    trainingDetailsController = Get.put(TrainingDetailsController());
     training = widget.training;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -40,7 +43,7 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
   }
 
   Future<void> _fetchExercises(TrainingModel training) async {
-    final updatedTraining = await trainingController.fetchExercises(training);
+    final updatedTraining = await trainingDetailsController.fetchExercises(training);
     setState(() {
       this.training = updatedTraining;
     });
@@ -59,7 +62,7 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
           isCreatorTraining ? 
           IconButton(
             icon: Icon(Icons.more_vert_outlined),
-            onPressed: () => trainingController.showTrainingUserOptions(training)
+            onPressed: () => trainingDetailsController.showTrainingUserOptions(training)
           ) : SizedBox(),
         ],
       ),
@@ -186,6 +189,53 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
                   const SizedBox(
                     height: CbSizes.spaceBtwItems,
                   ),
+                  GestureDetector(
+                    onTap: UserController.instance.user.value.id == training.authorId 
+                    ? () {
+                      Get.offAll(HomeMenu());
+                      final homeMenuController = Get.put(HomeMenuController());
+                      homeMenuController.selectedIndex.value = 4; 
+                    }
+                    : () => Get.to(ProfileScreen(userId: training.authorId,)),
+                    child: Row(
+                      children: [
+                        CbRoundedImage(
+                          imageUrl: training.creator.profilePicture.isNotEmpty ? training.creator.profilePicture : CbImages.userDefault,
+                          width: 28,
+                          height: 28,
+                          fit: BoxFit.cover,
+                          isNetworkImage: training.creator.profilePicture.isNotEmpty,
+                        ),
+                        SizedBox(
+                          width: CbSizes.sm,
+                        ),
+                        Text(
+                          training.creator.name,
+                          style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            fontSize: 14,
+                            color:
+                            isDarkMode ? CbColors.grey : CbColors.dark
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          textAlign: TextAlign.start,
+                        ),
+                        SizedBox(
+                          width: CbSizes.xs,
+                        ),
+                        
+                        training.creator.isVerified ? Icon(
+                          Iconsax.verify5,
+                          color: CbColors.primary,
+                          size: 16,
+                        ) : SizedBox(),
+                    
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: CbSizes.spaceBtwItems,
+                  ),
                   SizedBox(
                     height: 25,
                     child: ListView(
@@ -247,7 +297,7 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
                     height: CbSizes.spaceBtwItems,
                   ),
 
-                  Obx(() => !trainingController.isLoading.value ? Column(
+                  Obx(() => !trainingDetailsController.isLoading.value ? Column(
                     children: List.generate(training.exercises.length, (index) {
                       String twoDigits(int n) => n.toString().padLeft(2, '0');
                       final timeExecution = Duration(minutes: training.exercises[index].duration);
@@ -281,22 +331,7 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
         child: SizedBox(
           height: 60,
           child: ElevatedButton(
-            onPressed: () => Get.defaultDialog(
-              titlePadding: const EdgeInsets.only(top: CbSizes.lg),
-              contentPadding: EdgeInsets.all(CbSizes.lg),
-              title: 'Você deseja continuar?',
-              middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
-              confirm: ElevatedButton(
-                onPressed: () => trainingController.startTraining(training),
-                style: ElevatedButton.styleFrom(backgroundColor: CbColors.primary, side: BorderSide(color: CbColors.primary)),
-                child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
-              ),
-              cancel: OutlinedButton(
-                onPressed: () => Navigator.of(Get.overlayContext!).pop(), 
-                child: Text('Não'),
-              ),
-              backgroundColor: CbColors.dark
-            ),
+            onPressed: () => trainingDetailsController.showStartTrainingOptions(training),
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),

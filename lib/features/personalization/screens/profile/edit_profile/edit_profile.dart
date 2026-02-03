@@ -4,6 +4,7 @@ import 'package:carboneto/features/authentication/controllers/position_selector/
 import 'package:carboneto/features/authentication/screens/signup/widgets/position_selector.dart';
 import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/confirm_photo_upload_screen.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/country_selector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -83,7 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         child: IconButton(
                           iconSize: 16,
-                          onPressed: () => editProfileController.sendToConfirmScreen(), 
+                          onPressed: () => editProfileController.sendToConfirmScreen(ConfirmPhotoUploadScreen()), 
                           icon: Icon(Icons.camera_alt, size: 20,),
                           color: CbColors.light,
                         ),

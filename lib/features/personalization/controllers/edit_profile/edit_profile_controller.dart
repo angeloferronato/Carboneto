@@ -5,7 +5,6 @@ import 'package:carboneto/features/authentication/controllers/position_selector/
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
-import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/confirm_photo_upload_screen.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
@@ -67,7 +66,9 @@ class EditProfileController extends GetxController {
         position: positionSelectorController.dropDownValue, 
         countryCode: countryCode.value != '' ?  countryCode.value : user.countryCode,
         isVerified: user.isVerified,
-        birthDate: user.birthDate
+        birthDate: user.birthDate,
+        isPrivate: user.isPrivate, 
+        banner: user.banner,
       );
 
       userRepository.updateUserDetails(updatedUser);
@@ -99,7 +100,7 @@ class EditProfileController extends GetxController {
 
       final newUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''));
       
-      if (userController.user.value.profilePicture.isNotEmpty && await TrainingRepository.instance.imageExists('Images/${userController.user.value.profilePicture}')) {
+      if (userController.user.value.profilePicture.isNotEmpty && await TrainingRepository.instance.imageExists(userController.user.value.profilePicture)) {
         await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.profilePicture);
       }
 
@@ -120,9 +121,42 @@ class EditProfileController extends GetxController {
     }
   }
 
-  Future<void> sendToConfirmScreen() async {
+  Future<void> uploadBannerToFirebase() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos atualizando sua foto de perfil...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog('Estamos atualizando seu banner...', CbImages.loadingAnimation);
+
+      // Check internet connectivity
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        return;
+      }
+
+      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''), folder: 'Banners');
+      
+      if (userController.user.value.banner.isNotEmpty && await TrainingRepository.instance.imageExists(userController.user.value.banner)) {
+        await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.banner);
+      }
+
+      await userRepository.updateSingleField({'Banner': newUrl});
+      
+      await userController.fetchUserDetails();
+
+      CbLoaders.successSnackBar(title: 'Sucesso!', message: 'Seu banner foi atualizado com sucesso!');
+      CbFullScreenLoader.stopLoading();
+
+      Get.offAll(() => HomeMenu());
+      final homeMenuController = Get.put(HomeMenuController());
+      homeMenuController.selectedIndex.value = 4;
+
+    } catch (e) {
+      CbFullScreenLoader.stopLoading();
+      CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
+    }
+  }
+
+  Future<void> sendToConfirmScreen(Widget screen) async {
+    try {
+      CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações', CbImages.loadingAnimation);
 
       // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -138,7 +172,7 @@ class EditProfileController extends GetxController {
       }
 
       CbFullScreenLoader.stopLoading();
-      Get.to(() => ConfirmPhotoUploadScreen());
+      Get.to(() => screen);
 
     } catch (e) {
       CbFullScreenLoader.stopLoading();

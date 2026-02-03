@@ -229,8 +229,7 @@ class TrainingRepository extends GetxController {
           final singleTraining = TrainingModel.fromSnapshot(training);
           debugPrint(singleTraining.textLevel);
 
-          final UserModel user =
-              await userRepository.searchUser(singleTraining.authorId);
+          final UserModel user = await userRepository.searchUser(singleTraining.authorId);
           singleTraining.user = user;
           listTrainings.add(singleTraining);
         }
