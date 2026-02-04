@@ -1,7 +1,6 @@
-import 'package:carboneto/common/widgets/result/result_widget.dart';
 import 'package:carboneto/features/library/models/history_model.dart';
+import 'package:carboneto/features/library/screens/history_screen/widgets/history_result.dart';
 import 'package:carboneto/features/library/services/history_formatter.dart';
-import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:flutter/material.dart';
 
 class HistoryTimeline extends StatelessWidget {
@@ -32,17 +31,8 @@ class HistoryTimeline extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ...dayItems.map(
-              (t) => ResultWidget(
-                duration: t.trainingDuration,
-                imageThumbnail: t.thumbnail,
-                level: TrainingModel.parseStringToLevel(t.level),
-                title: t.title,
-                trainer: t.creator.name,
-                trainerImage: t.creator.profilePicture,
-                trainingProgress: t.trainingProgress,
-                trainingStatus: t.status,
-                historyResult: true,
-                trainingId: t.trainingId,
+              (t) => HistoryResult(
+                historyTraining: t,
               ),
             ),
           ],

@@ -16,6 +16,20 @@ class CreatorModel {
       isVerified: map['IsVerified'] ?? false,
     );
   }
+  factory CreatorModel.fromJson(Map<String, dynamic> json) {
+    return CreatorModel(
+      name: json['Name'] ?? '',
+      profilePicture: json['ProfilePicture'] ?? '',
+      isVerified: json['IsVerified'] ?? false,
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'Name': name,
+      'ProfilePicture': profilePicture,
+      'IsVerified': isVerified,
+    };
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,7 +41,7 @@ class CreatorModel {
 
   factory CreatorModel.empty() {
     return CreatorModel(
-      name: '', 
+      name: '',
       isVerified: false,
       profilePicture: '',
     );

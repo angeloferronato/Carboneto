@@ -1,5 +1,6 @@
 import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
+import 'package:carboneto/common/widgets/level/level_widget.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
@@ -152,84 +153,4 @@ class HomeTrainingWidget extends StatelessWidget {
   }
 }
 
-class LevelWidget extends StatelessWidget {
-  const LevelWidget({
-    super.key,
-    required this.level,
-    this.size = 7,
-  });
-  final DifficultyLevels level;
-  final double size;
 
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
-    String difficultyTitle = '';
-    Color difficultyBorder = Colors.transparent;
-    Color difficultyColor = Colors.transparent;
-    Color difficultyColorTxt = Colors.transparent;
-    int levelValue = 1;
-
-    switch (level) {
-      case DifficultyLevels.rookie:
-        difficultyTitle = 'ROOKIE';
-        difficultyColor = Colors.lightBlueAccent;
-        difficultyColorTxt = difficultyColor;
-        break;
-      case DifficultyLevels.allstar:
-        difficultyTitle = 'ALL-STAR';
-        difficultyColor = const Color.fromARGB(255, 255, 98, 0);
-        difficultyColorTxt = difficultyColor;
-        levelValue = 3;
-        break;
-      case DifficultyLevels.pro:
-        difficultyTitle = 'PRO';
-        difficultyColor = const Color.fromARGB(255, 0, 102, 255);
-        difficultyColorTxt = difficultyColor;
-        levelValue = 2;
-        break;
-      case DifficultyLevels.elite:
-        difficultyTitle = 'ELITE';
-        difficultyBorder = isDarkMode ? Colors.amber : Colors.amber.shade900;
-        difficultyColor = CbColors.dark;
-        difficultyColorTxt = Colors.amber;
-        levelValue = 3;
-        break;
-    }
-
-    return Row(
-      spacing: 7,
-      children: [
-        Text(
-          difficultyTitle,
-          style: TextStyle(
-              letterSpacing: 1.5, fontSize: size, color: difficultyColorTxt),
-        ),
-        Row(
-          spacing: 2,
-          children: [
-            ...(List.generate(
-                  levelValue,
-                  (i) => CbRoundedContainer(
-                    width: size,
-                    height: size,
-                    border: Border.all(color: (difficultyBorder)),
-                    backgroundColor: difficultyColor,
-                  ),
-                ) +
-                List.generate(
-                  3 - levelValue,
-                  (i) => CbRoundedContainer(
-                    width: size,
-                    height: size,
-                    border: Border.all(color: difficultyBorder.withAlpha(150)),
-                    backgroundColor: difficultyColor.withAlpha(150),
-                  ),
-                )),
-          ],
-        ),
-      ],
-    );
-  }
-}

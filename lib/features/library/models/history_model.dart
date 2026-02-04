@@ -1,4 +1,4 @@
-import 'package:carboneto/features/training/models/training/training_model.dart';
+import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TrainingHistoryModel {
@@ -66,7 +66,6 @@ class TrainingHistoryModel {
           .toList(),
     );
   }
-  
 
   Map<String, dynamic> toJson() {
     return {
@@ -78,9 +77,8 @@ class TrainingHistoryModel {
       'Creator': creator.toJson(),
       'Level': level,
       'StartedAt': Timestamp.fromDate(startedAt),
-      'SessionEndedAt': sessionEndedAt != null
-          ? Timestamp.fromDate(sessionEndedAt!)
-          : null,
+      'SessionEndedAt':
+          sessionEndedAt != null ? Timestamp.fromDate(sessionEndedAt!) : null,
       'Status': status,
       'TrainingProgress': trainingProgress,
       'SearchKeywords': searchKeywords,
@@ -162,33 +160,5 @@ class ExerciseProgress {
     if (type == 'time') return remaining == 0;
     if (type == 'reps') return done >= total;
     return false;
-  }
-}
-
-class CreatorModel {
-  final String name;
-  final String profilePicture;
-  final bool isVerified;
-
-  CreatorModel({
-    required this.name,
-    required this.profilePicture,
-    required this.isVerified,
-  });
-
-  factory CreatorModel.fromJson(Map<String, dynamic> json) {
-    return CreatorModel(
-      name: json['Name'] ?? '',
-      profilePicture: json['ProfilePicture'] ?? '',
-      isVerified: json['IsVerified'] ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'Name': name,
-      'ProfilePicture': profilePicture,
-      'IsVerified': isVerified,
-    };
   }
 }

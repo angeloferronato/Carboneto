@@ -6,6 +6,7 @@ class CbColors {
   static const Color secondary = Color(0xFFFFE24B);
   static const Color accent = Color(0xFFb0c7ff);
   static const Color inputBG = Color(0xFF2A2A2A);
+  static const Color inputBorder = Color(0x1AFFFFFF);
 
   // Text colors
   static const Color textPrimary = Color(0xFF333333);
@@ -26,7 +27,6 @@ class CbColors {
   static const Color buttonSecondary = Color(0xFF6C757D);
   static const Color buttonDisabled = Color(0xFFC4C4C4);
   static const Color buttonChipTraining = Color(0xFFDA0303);
-
 
   // Border colors
   static const Color borderPrimary = Color(0xFFD9D9D9);

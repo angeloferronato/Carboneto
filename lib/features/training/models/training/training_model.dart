@@ -1,6 +1,7 @@
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/features/training/models/training_stats/training_stats.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ class TrainingModel {
   final List<String> categories;
   final String description;
   final int? duration;
+  TrainingStats stats;
   List<String>? exercisesId;
   List<ExerciseModel> exercises;
   final String id;
@@ -20,12 +22,31 @@ class TrainingModel {
   final String title;
   UserModel? user;
   final CreatorModel creator;
+  final Timestamp? postedAt;
+  int get likesCount => stats.likes;
+  int get viewsCount => stats.views;
+  int get startsCount => stats.starts;
+  int get completesCount => stats.completes;
+  int get savesCount => stats.saves;
 
   TrainingModel({
-    required this.authorId, required this.categories, required this.description, this.duration, this.exercisesId,
-    required this.exercises, required this.id, required this.level, required this.people, required this.thumbnail, required this.title,
-    this.user, this.textLevel, required this.creator
-  });
+    required this.authorId, 
+    required this.categories, 
+    required this.description, 
+    this.duration, 
+    this.exercisesId,
+    required this.exercises, 
+    required this.id, 
+    required this.level, 
+    required this.people, 
+    required this.thumbnail, 
+    required this.title,
+    this.user, 
+    this.textLevel, 
+    required this.creator,
+    this.postedAt,
+    TrainingStats? stats,
+  }) : stats = stats ?? TrainingStats.empty();
 
   static DifficultyLevels parseStringToLevel(String data) {
     final DifficultyLevels level;
@@ -81,10 +102,12 @@ class TrainingModel {
       textLevel: data['Level'].toString().capitalize, 
       exercisesId: List<String>.from(data['Exercises'] ?? []),
       creator: CreatorModel.fromMap(Map<String, dynamic>.from(data['Creator'] ?? {})),
+      postedAt: data['PostedAt'] as Timestamp?,
+      stats: data['Stats'] != null 
+          ? TrainingStats.fromJson(data['Stats'] as Map<String, dynamic>)
+          : TrainingStats.empty(),
     );
   }
-
-
 
   factory TrainingModel.fromJson(Map<String, dynamic> json) {
     return TrainingModel(
@@ -100,6 +123,10 @@ class TrainingModel {
       title: json['Title'], 
       exercisesId: [],
       creator: CreatorModel.fromMap(Map<String, dynamic>.from(json['Creator'] ?? {})),
+      postedAt: json['PostedAt'] as Timestamp?,
+      stats: json['Stats'] != null 
+        ? TrainingStats.fromJson(Map<String, dynamic>.from(json['Stats']))
+        : TrainingStats.empty(),
     );
   }
 
@@ -116,6 +143,8 @@ class TrainingModel {
       'Thumbnail': thumbnail,
       'Title': title,
       'Creator': creator.toMap(),
+      'Stats': stats.toJson(),
+      'PostedAt': FieldValue.serverTimestamp(), // Firebase server timestamp
     };
   }
 
@@ -131,5 +160,7 @@ class TrainingModel {
     thumbnail: '', 
     title: '',
     creator: CreatorModel.empty(),
+    postedAt: null,
+    stats: TrainingStats.empty(),
   );
 }

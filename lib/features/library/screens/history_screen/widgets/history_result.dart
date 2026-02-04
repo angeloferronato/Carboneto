@@ -1,25 +1,27 @@
 import 'package:carboneto/common/widgets/level/level_widget.dart';
 import 'package:carboneto/common/widgets/result/result_creator_info.dart';
 import 'package:carboneto/common/widgets/result/result_main.dart';
+import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:carboneto/common/widgets/user/user_picture.dart';
 import 'package:carboneto/features/library/controllers/history_controller.dart';
+import 'package:carboneto/features/library/models/history_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
-import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:carboneto/common/widgets/result/progress_indicator.dart';
 import 'package:get/get.dart';
 
-class ResultWidget extends StatelessWidget {
-  ResultWidget({
+class HistoryResult extends StatelessWidget {
+  HistoryResult({
     super.key,
-    required this.training,
+    required this.historyTraining,
     this.views,
   });
 
-  final TrainingModel training;
+  final TrainingHistoryModel historyTraining;
   final int? views;
 
   final historyController = Get.put(HistoryController());
@@ -27,14 +29,26 @@ class ResultWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {},
+      onTap: () async {
+        final trainingHandle =
+            await historyController.handleTrainingHistoryDetails(historyTraining.trainingId);
+
+        if (trainingHandle == null) {
+          Get.snackbar('Erro', 'Treino não encontrado');
+          return;
+        }
+
+        Get.to(() => TrainingDetailsScreen(training: trainingHandle));
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
-          ResultMain(imageThumbnail: training.thumbnail, views: views,),
-          
+          // Imagem do treino com views e menu
+          ResultMain(
+              imageThumbnail: historyTraining.thumbnail),
+
           const SizedBox(height: CbSizes.xs * 2.5),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,13 +57,13 @@ class ResultWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     UserPicture(
-                      userPicture: training.creator.profilePicture,
+                      userPicture: historyTraining.creator.profilePicture,
                       size: 23,
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        training.title,
+                        historyTraining.title,
                         style: Theme.of(context)
                             .textTheme
                             .labelLarge!
@@ -62,13 +76,17 @@ class ResultWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
+
+              // Level widget
               LevelWidget(
-                level: training.level,
+                level: TrainingModel.parseStringToLevel(historyTraining.level),
                 size: 8,
               ),
             ],
           ),
+
           const SizedBox(height: 4),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,13 +94,16 @@ class ResultWidget extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
+                    // Nome do treinador - removed Flexible wrapper
                     ResultCreatorInfo(
-                      creator: training.creator,
+                      creator: historyTraining.creator,
                     ),
+
                     const SizedBox(width: 6),
+                    // Changed from Flexible to Expanded to give more space
                     Expanded(
                       child: Text(
-                        '${CbHelperFunctions.formatSeconds(training.duration!)} min • ${CbHelperFunctions.formatTimestamp(Timestamp.fromDate(DateTime.utc(2026, 1, 30, 13, 00, 00)))} • ${training.categories.toString().replaceAll('[', '').replaceAll(']', '')}',
+                        '${CbHelperFunctions.formatSeconds(historyTraining.trainingDuration)} min',
                         style: const TextStyle(fontSize: 10),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -91,27 +112,13 @@ class ResultWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.groups,
-                    size: 17.5,
-                    color: CbColors.primary,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    training.people.toString(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: CbColors.primary,
-                    ),
-                  ),
-                ],
+              CbProgressIndicator(
+                progress: historyTraining.trainingProgress,
+                status: historyTraining.status,
               ),
             ],
           ),
+
           const SizedBox(height: 20),
         ],
       ),

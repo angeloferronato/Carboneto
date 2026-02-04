@@ -1,12 +1,15 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/searchinput/search_input.dart';
 import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
 import 'package:carboneto/features/explore/screens/search/widgets/explore_all_container.dart';
 import 'package:carboneto/features/explore/screens/search/widgets/trainings_container.dart';
+import 'package:carboneto/features/explore/screens/search_result/search_result.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -40,10 +43,18 @@ class SearchScreen extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                  child: SearchInput(
-                    placeholder: 'O que você quer treinar?',
-                    controller: TextEditingController(),
-                  ),
+                  child: FocusedTextField(
+                  controller: TextEditingController(),
+                  paddingH: 0,
+                  hintText: 'O que você quer treinar?',
+                  prefixIcon: IconButton(
+                    onPressed: () => Get.to(SearchResultScreen()), 
+                    icon: Icon(
+                      Iconsax.search_normal_1, size: 20
+                    ),
+                  ) 
+                  
+                ),
                 ),
                 
                 const SizedBox(
