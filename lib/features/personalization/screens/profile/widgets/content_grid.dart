@@ -37,8 +37,57 @@ class ContentGrid extends StatelessWidget {
                 return ContentGridProfileShimmer();
               }
 
-              final list = trainingController.trainingsList;
               final isAuthUser = trainingController.profileBaseController.isAuthUser;
+              if (trainingController.profileBaseController.user.value.isPrivate && !isAuthUser) {
+                return Center(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 40,),
+
+                      IconButton(
+                        iconSize: 70,
+                        onPressed: () {}, 
+                        icon: Icon(Iconsax.lock_circle, color: CbColors.buttonSecondary,),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Essa conta é privada.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: CbColors.buttonSecondary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                'Siga este usuário para poder ver os treinos e exercícios criados por ele.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: CbColors.buttonSecondary,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              
+
+              final list = trainingController.trainingsList;
               final text = isAuthUser ? 'Você' : 'Este usuário';
               if (list.isEmpty) {
                 return Center(

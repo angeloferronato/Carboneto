@@ -3,12 +3,17 @@ import 'package:carboneto/features/personalization/controllers/profile_base_cont
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/edit_profile.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/banner_picture.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/content_grid.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/followers_and_following.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_info.dart';
+import 'package:carboneto/features/settings/controllers/follow_controller.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -25,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileBaseController(userId: widget.userId), tag: widget.userId);
+    final followController = Get.put(FollowController(currentUserId: controller.userController.user.value.id, targetUserId: widget.userId), tag: '${controller.userController.user.value.id}${widget.userId}');
     return Scaffold(
       body: Padding(
         padding: CbSpacingStyle.paddingWithAppBarHeight * 0,
@@ -76,9 +82,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              // FollowersAndFollowing(),
+              Obx(() => FollowersAndFollowing(followers: controller.user.value.followersCount ?? 0, following: controller.user.value.followingCount ?? 0, position: controller.user.value.position,)),
               SizedBox(
-                height: 10,
+                height: CbSizes.xl,
               ),
               Obx(
                 () => controller.isAuthUser
@@ -86,7 +92,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   textValue: 'Editar Perfil',
                   onPressedEdit: () => Get.to(() => EditProfileScreen()),
                 )
-                : HighlightBtn(textValue: 'Seguir', onPressedEdit: () {}),
+                : Obx(
+                  () => followController.isFollowing.value
+                    ? HighlightBtn(textValue: 'Seguindo', icon: Icon(Icons.check),onPressedEdit: () => followController.toggleFollower()) 
+                    : ElevatedButton(
+                      onPressed: () => followController.toggleFollower(),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ), 
+                      child: Text('Seguir', style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: CbColors.white,
+                        fontSize: CbSizes.md,
+                        fontWeight: FontWeight.w800,
+                      ),),
+                    ),
+                )
               ),
               SizedBox(
                 height: 40,

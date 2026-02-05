@@ -1,6 +1,7 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
+import 'package:carboneto/features/personalization/models/user_search_model.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';
 import 'package:carboneto/utils/exceptions/format_exceptions.dart';
@@ -39,11 +40,12 @@ class UserRepository extends GetxController {
   }
 
   /// Function to save user data to Firestore
-  Future<void> saveUserRecord(UserModel userModel, UserCredential userCredential) async {
+  Future<void> saveUserRecord(UserModel userModel, UserCredential userCredential, UserSearchModel userSearch) async {
     try {
       await userCredential.user!.updateDisplayName(userModel.name);
 
       await _db.collection('users').doc(userModel.id).set(userModel.toJson(), SetOptions(merge: true));
+      await _db.collection('userSearch').doc(userSearch.id).set(userSearch.toJson(), SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {
@@ -184,6 +186,7 @@ class UserRepository extends GetxController {
   Future<void> deleteUserInfo() async {
     try {
       await _db.collection('users').doc(UserController.instance.user.value.id).delete();
+      await _db.collection('userSearch').doc(UserController.instance.user.value.id).delete();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch(e) {
@@ -212,5 +215,56 @@ class UserRepository extends GetxController {
       return null;
     }
   }
+
+  Future<void> toggleFollowUser(bool isAdd, String currentUserId, String targetUserId) async {
+    try {
+      if (currentUserId == targetUserId) return;
+
+      final batch = _db.batch();
+      final currentUserFollowingRef = _db.collection('users').doc(currentUserId).collection('following').doc(targetUserId);
+      final targetUserFollowersRef = _db.collection('users').doc(targetUserId).collection('followers').doc(currentUserId);
+
+      if (isAdd) {
+        final data = {
+          'CreatedAt': FieldValue.serverTimestamp(),
+        };
+
+        batch.set(currentUserFollowingRef, data, SetOptions(merge: true));
+        batch.set(targetUserFollowersRef, data, SetOptions(merge: true));
+      } else {
+        batch.delete(currentUserFollowingRef);
+        batch.delete(targetUserFollowersRef);
+      }
+
+      await batch.commit();
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+  Future<bool> isFollowing(String currentUserId, String targetUserId) async {
+    try {
+      final userDocs = await _db.collection('users').doc(currentUserId).collection('following').doc(targetUserId).get();
+      return userDocs.exists;
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch(e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch(_) {
+      throw CbFormatException();
+    } on PlatformException catch(e) {
+      throw CbPlatformException(e.code).message;
+    } catch(e) {
+      throw 'Algo deu errado. Por favor tente novamente';
+    }
+  } 
 }
 

@@ -1,4 +1,5 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
+import 'package:carboneto/common/widgets/level/level_widget.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';

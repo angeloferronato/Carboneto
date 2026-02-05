@@ -7,23 +7,30 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-async function changeAuthorIdField() {
-    const exercisesSnap = await db.collection('allExercises').get();
+async function addUserSearch() {
+    const usersSnap = await db.collection('users').get();
 
     let batch = db.batch();
     let operationCount = 0;
 
-    for (const exerciseDoc of exercisesSnap.docs) {
-        const exercise = exerciseDoc.data();
+    for (const userDoc of usersSnap.docs) {
+        const user = userDoc.data();
 
-        const oldAuthorId = exercise.AuthorId ?? '';
 
-        if (exercise.AuthorId) {
-            batch.update(exerciseDoc.ref, {
-                AuthorID: oldAuthorId,
-                AuthorId: admin.firestore.FieldValue.delete(),
-            })
-        }
+        batch.set(admin.firestore().collection('userSearch').doc(user.Id),
+            {
+                Username: user.Username,
+                UsernameLower: user.Username.toLowerCase(),
+                Name: user.Name,
+                NameLower: user.Name.toLowerCase(),
+                ProfilePicture: user.ProfilePicture,
+                CreatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            },
+            {
+                merge: true,
+            }
+        )
+        
 
         operationCount++;
 
@@ -39,7 +46,7 @@ async function changeAuthorIdField() {
     }
 }
 
-changeAuthorIdField()
+addUserSearch()
     .then(() => process.exit(0))
     .catch((error) => {
         console.log(error);

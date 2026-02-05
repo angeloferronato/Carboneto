@@ -12,14 +12,12 @@ import 'package:carboneto/features/training/models/exercise/exercise_model.dart'
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';

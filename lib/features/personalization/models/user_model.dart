@@ -14,6 +14,9 @@ class UserModel {
   final String? birthDate;
   final bool isPrivate;
   final String banner;
+  final int? followersCount;
+  final int? followingCount;
+
 
   UserModel({
     required this.id,
@@ -28,7 +31,9 @@ class UserModel {
     required this.userTrainings, 
     required this.birthDate,
     required this.isPrivate, 
-    required this.banner,
+    required this.banner, 
+    this.followersCount, 
+    this.followingCount,
   });
 
   static List<String> nameParts(fullName) => fullName.split(" ");
@@ -57,7 +62,9 @@ class UserModel {
     userTrainings: [], 
     birthDate: '', 
     isPrivate: false, 
-    banner: '',
+    banner: '', 
+    followersCount: 0, 
+    followingCount: 0,
   );
 
   // Convert model to JSON structure for storing data in Firebase.
@@ -96,6 +103,8 @@ class UserModel {
       birthDate: data['BirthDate'] ?? '', 
       isPrivate: data['IsPrivate'] ?? false, 
       banner: data['Banner'] ?? '',
+      followersCount: data['FollowersCount'] ?? 0,
+      followingCount: data['FollowingCount'] ?? 0
     );
   }
 }

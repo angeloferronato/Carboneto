@@ -1,6 +1,7 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
+import 'package:carboneto/features/personalization/models/user_search_model.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -76,7 +77,16 @@ class UserController extends GetxController {
           banner: '',
         );
 
-        await UserRepository.instance.saveUserRecord(user, userCredentials);
+        final userSearch = UserSearchModel(
+          id: userCredentials.user!.uid, 
+          username: username, 
+          usernameLower: username.toLowerCase(), 
+          name: userCredentials.user!.displayName ?? '', 
+          nameLower: userCredentials.user!.displayName!.toLowerCase(), 
+          profilePicture: userCredentials.user!.photoURL ?? '',
+        );
+
+        await UserRepository.instance.saveUserRecord(user, userCredentials, userSearch);
 
       }
     } catch(e) {

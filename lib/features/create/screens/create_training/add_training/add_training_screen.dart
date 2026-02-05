@@ -52,7 +52,7 @@ class AddTrainingScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, bottom: 8),
-                  child: CategoriesBar(controllerTag: 'exercises',),
+                  child: CategoriesBar(controllerTag: '',),
                 ),
                 ExercisesList(),
               ],

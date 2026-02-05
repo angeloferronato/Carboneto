@@ -17,6 +17,7 @@ class CategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final explorerController = Get.find<ExploreController>();
+    
     // Busca apenas se necessário (usa cache se já buscou antes)
     explorerController.fetchTrainingsByCategory(title);
 
@@ -126,19 +127,7 @@ class CategoryScreen extends StatelessWidget {
                   itemBuilder: (_, index) {
                     final training = allTrainings[index];
                     return ResultWidget(
-                      trainingId: training.id,
-                      title: training.title,
-                      trainer: training.creator.name,
-                      trainerImage: training.creator.profilePicture,
-                      imageThumbnail: training.thumbnail,
-                      description: training.description,
-                      duration: training.duration ?? 0,
-                      level: training.level,
-                      peopleNeeded: training.people,
-                      isVerified: training.creator.isVerified,
-                      onTap: () => Get.to(
-                        () => TrainingDetailsScreen(training: training),
-                      ),
+                      training: training,
                     );
                   },
                 ),

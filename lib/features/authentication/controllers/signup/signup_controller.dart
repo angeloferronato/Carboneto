@@ -4,10 +4,12 @@ import 'package:carboneto/features/authentication/controllers/position_selector/
 import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
 import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
+import 'package:carboneto/features/personalization/models/user_search_model.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -93,8 +95,17 @@ class SignupController extends GetxController {
         banner: '',
       );
 
+      final userSearch = UserSearchModel(
+        id: userCredential.user!.uid, 
+        username: username.text.trim(), 
+        usernameLower: username.text.trim().toLowerCase(), 
+        name: name.text.trim(), 
+        nameLower: name.text.toLowerCase(),
+        profilePicture: '', 
+      );
+
       final userRepository = Get.put(UserRepository());
-      await userRepository.saveUserRecord(newUser, userCredential);
+      await userRepository.saveUserRecord(newUser, userCredential, userSearch);
 
       // Remove Loader
       CbFullScreenLoader.stopLoading();

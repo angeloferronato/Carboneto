@@ -6,8 +6,10 @@ class HighlightBtn extends StatelessWidget {
     required this.textValue,
     required this.onPressedEdit,
     this.labelColor = Colors.white,
-    this.labelWeight = FontWeight.w800,
+    this.labelWeight = FontWeight.w800, 
+    this.icon,
   });
+  final Widget? icon;
   final String textValue;
   final Color labelColor;
   final VoidCallback? onPressedEdit;
@@ -26,10 +28,20 @@ class HighlightBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(25),
         ),
       ),
-      child: Text(
-        textValue,
-        style: TextStyle(
-            fontSize: 15, fontWeight: labelWeight, color: labelColor),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            textValue,
+            style: TextStyle(fontSize: 15, fontWeight: labelWeight, color: labelColor),
+          ),
+          if (icon != null) Row(
+            children: [
+              SizedBox(width: 4,),
+              icon ?? SizedBox(),
+            ],
+          ),
+        ],
       )
     );
   }

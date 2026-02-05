@@ -1,4 +1,7 @@
 class CbImages {
+    // Icons
+  static const String clockIcon = "assets/images/training/clock_icon.png";
+  static const String likesIcon = "assets/images/training/likes_icon.png";
   // -- Videos
   static const String videoExample =
       "assets/videos/arch_bounce_with_two_hands_over_head_between_legs.mp4";

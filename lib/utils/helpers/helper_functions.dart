@@ -1,8 +1,56 @@
+import 'package:carboneto/utils/constants/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 
 class CbHelperFunctions {
+  static Map<String, dynamic> parseLevelStyle(
+      BuildContext context, DifficultyLevels level) {
+    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
+    Color difficultyBorder = Colors.transparent;
+    Color difficultyColor = Colors.transparent;
+    Color difficultyColorTxt = Colors.transparent;
+    String difficultyTitle = '';
+    int levelValue = 1;
+
+    switch (level) {
+      case DifficultyLevels.rookie:
+        difficultyTitle = 'ROOKIE';
+        difficultyColor = Colors.lightBlueAccent;
+        difficultyColorTxt = CbColors.white;
+        break;
+      case DifficultyLevels.allstar:
+        difficultyTitle = 'ALL-STAR';
+        difficultyColor = const Color.fromARGB(255, 255, 98, 0);
+        difficultyColorTxt = CbColors.white;
+        levelValue = 3;
+        break;
+      case DifficultyLevels.pro:
+        difficultyTitle = 'PRO';
+        difficultyColor = const Color.fromARGB(255, 0, 75, 238);
+        difficultyColorTxt = CbColors.white;
+        levelValue = 2;
+        break;
+      case DifficultyLevels.elite:
+        difficultyTitle = 'ELITE';
+        difficultyBorder = isDarkMode ? Colors.amber : Colors.amber.shade900;
+        difficultyColor = const Color.fromARGB(255, 25, 33, 38);
+        difficultyColorTxt = Colors.amber;
+        levelValue = 3;
+        break;
+    }
+
+    return {
+      'difficultyTitle': difficultyTitle,
+      'difficultyColor': difficultyColor,
+      'difficultyColorTxt': difficultyColorTxt,
+      'difficultyBorder': difficultyBorder,
+      'levelValue': levelValue,
+    };
+  }
+
   static Color? getColor(String value) {
     /// Define your product specific colors here and it will match the attribute colors and show specific 🟠🟡🟢🔵🟣🟤
 
@@ -47,8 +95,17 @@ class CbHelperFunctions {
 
   static String formatSeconds(int seconds) {
     final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
-    final secs = (seconds % 60).toString().padLeft(2, '0');
-    return '$minutes:$secs';
+    return minutes;
+  }
+
+  static String formatViews(int? viewCount) {
+    if (viewCount == null) return '0';
+    if (viewCount >= 1000000) {
+      return '${(viewCount / 1000000).toStringAsFixed(1)}M';
+    } else if (viewCount >= 1000) {
+      return '${(viewCount / 1000).toStringAsFixed(1)}K';
+    }
+    return viewCount.toString();
   }
 
   static void showAlert(String title, String message) {
@@ -100,8 +157,37 @@ class CbHelperFunctions {
     return MediaQuery.of(Get.context!).size.width;
   }
 
-  static String getFormattedDate(DateTime date, {String format = 'dd MMM yyyy'}) {
+  static String getFormattedDate(DateTime date,
+      {String format = 'dd MMM yyyy'}) {
     return DateFormat(format).format(date);
+  }
+
+  static String formatTimestamp(Timestamp timestamp) {
+    final now = DateTime.now();
+    final date = timestamp.toDate();
+    final diff = now.difference(date);
+
+    if (diff.inSeconds < 60) {
+      return 'há alguns segundos';
+    } else if (diff.inMinutes < 60) {
+      final m = diff.inMinutes;
+      return '$m minuto${m > 1 ? 's' : ''} atrás';
+    } else if (diff.inHours < 24) {
+      final h = diff.inHours;
+      return '$h hora${h > 1 ? 's' : ''} atrás';
+    } else if (diff.inDays < 7) {
+      final d = diff.inDays;
+      return '$d dia${d > 1 ? 's' : ''} atrás';
+    } else if (diff.inDays < 30) {
+      final w = (diff.inDays / 7).floor();
+      return '$w semana${w > 1 ? 's' : ''} atrás';
+    } else if (diff.inDays < 365) {
+      final mo = (diff.inDays / 30).floor();
+      return '$mo ${mo > 1 ? 'meses' : 'mês'} atrás';
+    } else {
+      final y = (diff.inDays / 365).floor();
+      return '$y ano${y > 1 ? 's' : ''} atrás';
+    }
   }
 
   static List<T> removeDuplicates<T>(List<T> list) {
@@ -111,7 +197,8 @@ class CbHelperFunctions {
   static List<Widget> wrapWidgets(List<Widget> widgets, int rowSize) {
     final wrappedList = <Widget>[];
     for (var i = 0; i < widgets.length; i += rowSize) {
-      final rowChildren = widgets.sublist(i, i + rowSize > widgets.length ? widgets.length : i + rowSize);
+      final rowChildren = widgets.sublist(
+          i, i + rowSize > widgets.length ? widgets.length : i + rowSize);
       wrappedList.add(Row(children: rowChildren));
     }
     return wrappedList;

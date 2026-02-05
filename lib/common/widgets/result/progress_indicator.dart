@@ -18,7 +18,7 @@ class CbProgressIndicator extends StatelessWidget {
         Text(
           isCompleted ? 'CONCLUÍDO':'${progress.toString()}%',
           style: TextStyle(
-            color: isCompleted ? CbColors.success : Colors.cyan,
+            color: isCompleted ? CbColors.success : CbColors.warning,
             fontWeight: isCompleted? FontWeight.w500: FontWeight.w800,
             fontSize: 9,
             letterSpacing: 2,
@@ -34,7 +34,7 @@ class CbProgressIndicator extends StatelessWidget {
               child: Icon(
                     Iconsax.activity,
                     size: 14,
-                    color: Colors.cyan,
+                    color: CbColors.warning,
                   ),
             ),
       ],
