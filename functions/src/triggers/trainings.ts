@@ -18,7 +18,7 @@ export const syncCreatorInTrainings = onDocumentUpdated(
 
     const hasRelevantChange = relevantFields.some(
         (field) => before[field] !== after[field]
-    );
+    );  
 
     if (!hasRelevantChange) return null;
 

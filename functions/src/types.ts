@@ -3,3 +3,10 @@ export interface Creator {
     ProfilePicture: string,
     IsVerified: boolean,
 }
+
+export interface UserData {
+    Name: string;
+    ProfilePicture: string;
+    Username: string;
+    [key: string]: any;
+}
