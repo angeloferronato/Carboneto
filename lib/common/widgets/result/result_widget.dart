@@ -32,7 +32,7 @@ class ResultWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           
-          ResultMain(imageThumbnail: training.thumbnail, views: views,),
+          ResultMain(training: training),
           
           const SizedBox(height: CbSizes.xs * 2.5),
           Row(

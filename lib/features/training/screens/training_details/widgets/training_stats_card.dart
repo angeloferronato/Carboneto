@@ -1,10 +1,11 @@
 import 'dart:ui';
-
+import 'package:carboneto/features/training/controllers/training_details_controller.dart'; // Importe o controller
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Importe o GetX
 
 class TrainingStatsCard extends StatelessWidget {
   const TrainingStatsCard({
@@ -18,6 +19,8 @@ class TrainingStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<TrainingDetailsController>();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
       child: BackdropFilter(
@@ -45,11 +48,13 @@ class TrainingStatsCard extends StatelessWidget {
                 color: CbColors.white.withValues(alpha: 0.8),
               ),
               const SizedBox(width: CbSizes.spaceBtwItems),
-              _StatItem(
+              
+
+              Obx(() => _StatItem(
                 icon: CbImages.likesIcon,
-                value: training.likesCount.toString(),
+                value: controller.likesCount.value.toString(),
                 label: 'Curtidas',
-              ),
+              )),
             ],
           ),
         ),
@@ -77,6 +82,7 @@ class _StatItem extends StatelessWidget {
         const SizedBox(width: CbSizes.spaceBtwItems),
         Column(
           children: [
+            // Como o valor muda, o Obx pai vai reconstruir este Text
             Text(value,
                 style:
                     const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),

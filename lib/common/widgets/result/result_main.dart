@@ -1,22 +1,25 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
+import 'package:carboneto/features/training/controllers/training_details_controller.dart';
+import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ResultMain extends StatelessWidget {
-  const ResultMain({
+  ResultMain({
     super.key,
-    required this.imageThumbnail,
+    required this.training,
     this.hideOptions = false,
-    this.views,
     this.height = 200,
     this.homeWidget = false,
   });
 
-  final String imageThumbnail;
-  final int? views;
+  final TrainingModel training;
   final double height;
   final bool hideOptions, homeWidget;
+  final controller = Get.put(TrainingDetailsController());
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +30,21 @@ class ResultMain extends StatelessWidget {
       child: Stack(
         children: [
           CbRoundedImage(
-            imageUrl: imageThumbnail,
+            imageUrl: training.thumbnail,
             isNetworkImage: true,
             height: height,
             fit: BoxFit.cover,
-            width: homeWidget ? 245 :CbHelperFunctions.screenWidth() - 40,
+            width: homeWidget ? 245 : CbHelperFunctions.screenWidth() - 40,
             backgroundColor: Colors.transparent,
           ),
           // Views counter - top left
-          if (views != null)
             Positioned(
               top: 12,
               left: 12,
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: homeWidget ? 5: 8,
-                  vertical: homeWidget ? 2: 4,
+                  horizontal: homeWidget ? 5 : 8,
+                  vertical: homeWidget ? 2 : 4,
                 ),
                 decoration: BoxDecoration(
                   color: CbColors.primary,
@@ -53,15 +55,15 @@ class ResultMain extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.remove_red_eye,
-                      size: homeWidget? 10: 14,
+                      size: homeWidget ? 10 : 14,
                       color: Colors.white,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      CbHelperFunctions.formatViews(views),
+                      CbHelperFunctions.formatViews(training.viewsCount),
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: homeWidget? 10: 12,
+                        fontSize: homeWidget ? 10 : 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -94,14 +96,14 @@ class ResultMain extends StatelessWidget {
                                   // Add share logic
                                 },
                               ),
-                              ListTile(
-                                leading: const Icon(Icons.bookmark_border),
-                                title: const Text('Salvar'),
+                              Obx(() => ListTile(
+                                leading: controller.isSaved.value ? Icon(Icons.bookmark_sharp) : Icon(Icons.bookmark_border),
+                                title: controller.isSaved.value ? Text('Salvo') : Text('Salvar'),
                                 onTap: () {
-                                  Navigator.pop(context);
-                                  // Add save logic
+                                  controller.toggleSave(training);
                                 },
-                              ),
+                              ))
+                              ,
                               ListTile(
                                 leading: const Icon(Icons.report_outlined),
                                 title: const Text('Reportar'),

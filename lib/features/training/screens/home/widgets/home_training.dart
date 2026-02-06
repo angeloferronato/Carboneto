@@ -37,10 +37,9 @@ class HomeTrainingWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ResultMain(
-              imageThumbnail: training.thumbnail,
+              training: training,
               height: 135,
               hideOptions: true,
-              views: training.viewsCount,
               homeWidget: true,
             ),
             const SizedBox(

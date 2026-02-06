@@ -44,8 +44,8 @@ class HistoryResult extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Imagem do treino com views e menu
-          ResultMain(
-              imageThumbnail: historyTraining.thumbnail),
+          // ResultMain(
+          //     training: historyTraining.thumbnail),
 
           const SizedBox(height: CbSizes.xs * 2.5),
 

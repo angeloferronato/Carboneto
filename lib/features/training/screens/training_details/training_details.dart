@@ -6,6 +6,7 @@ import 'package:carboneto/features/training/models/training/training_model.dart'
 import 'package:carboneto/features/training/screens/training_details/widgets/training_exercises_list.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_info_section.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_stats_card.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,8 @@ class TrainingDetailsScreen extends StatefulWidget {
   State<TrainingDetailsScreen> createState() => _TrainingDetailsScreenState();
 }
 
-class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> with WidgetsBindingObserver {
+class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
+    with WidgetsBindingObserver {
   late TrainingDetailsController trainingDetailsController;
   TrainingModel training = TrainingModel.empty();
 
@@ -33,7 +35,9 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> with Widg
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchExercises(training);
-      // Start view tracking after screen is built
+
+      trainingDetailsController.initializeStats(training);
+
       trainingDetailsController.startViewTracking(training);
     });
   }
@@ -47,11 +51,11 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> with Widg
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
       trainingDetailsController.stopViewTracking();
-    } 
-    else if (state == AppLifecycleState.resumed && 
-             !trainingDetailsController.hasViewBeenCounted.value) {
+    } else if (state == AppLifecycleState.resumed &&
+        !trainingDetailsController.hasViewBeenCounted.value) {
       trainingDetailsController.startViewTracking(training);
     }
   }
@@ -73,42 +77,48 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> with Widg
         showBackArrow: true,
         actions: [LikeButton(training: training)],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                ResultMain(
-                  imageThumbnail: training.thumbnail,
-                  views: training.viewsCount,
-                  height: 250,
-                ),
-                Positioned(
-                  bottom: -30,
-                  child: TrainingStatsCard(
+      body: Obx(() {
+        if (trainingDetailsController.isLoadingStats.value) {
+          return const Center(
+            child: CircularProgressIndicator(color: CbColors.primary),
+          );
+        }
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  ResultMain(
                     training: training,
-                    isDarkMode: isDarkMode,
+                    height: 250,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: CbSizes.spaceBtwSections * 1.8,
-            ),
-            TrainingInfoSection(
-              training: training,
-              isDarkMode: isDarkMode,
-            ),
-            const SizedBox(height: CbSizes.spaceBtwItems),
-            TrainingExercisesList(training: training),
-            const SizedBox(
-              height: 100,
-            ),
-          ],
-        ),
-      ),
+                  Positioned(
+                    bottom: -30,
+                    child: TrainingStatsCard(
+                      training: training,
+                      isDarkMode: isDarkMode,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: CbSizes.spaceBtwSections * 1.8,
+              ),
+              TrainingInfoSection(
+                training: training,
+                isDarkMode: isDarkMode,
+              ),
+              const SizedBox(height: CbSizes.spaceBtwItems),
+              TrainingExercisesList(training: training),
+              const SizedBox(
+                height: 100,
+              ),
+            ],
+          ),
+        );
+      }),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(
             left: CbSizes.lg, right: CbSizes.lg, bottom: CbSizes.lg),

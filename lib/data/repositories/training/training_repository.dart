@@ -575,4 +575,122 @@ class TrainingRepository extends GetxController {
       debugPrint('Error cleaning up view tracking: $e');
     }
   }
+
+  Future<Map<String, bool>> checkInteractionStatus({
+    required String trainingId,
+    required String userId,
+  }) async {
+    if (userId.isEmpty || trainingId.isEmpty) {
+      return {'isLiked': false, 'isSaved': false};
+    }
+
+    try {
+      final db = FirebaseFirestore.instance;
+
+      final likeRef =
+          db.collection('trainingLikes').doc('${userId}_$trainingId');
+
+      final saveRef = db
+          .collection('users')
+          .doc(userId)
+          .collection('savedTrainings')
+          .doc(trainingId);
+
+      final results = await Future.wait([likeRef.get(), saveRef.get()]);
+
+      return {
+        'isLiked': results[0].exists,
+        'isSaved': results[1].exists,
+      };
+    } catch (e) {
+      return {'isLiked': false, 'isSaved': false};
+    }
+  }
+
+  // 2. Alternar Like
+  Future<void> toggleTrainingLike({
+    required String trainingId,
+    required String userId,
+  }) async {
+
+    if (userId.isEmpty) throw "Erro: Usuário não identificado";
+
+    try {
+      final db = FirebaseFirestore.instance;
+
+      final likeDocRef =
+          db.collection('trainingLikes').doc('${userId}_$trainingId');
+      final trainingRef = db.collection('allTrainings').doc(trainingId);
+
+      await db.runTransaction((transaction) async {
+        final likeDoc = await transaction.get(likeDocRef);
+
+        if (likeDoc.exists) {
+          transaction.delete(likeDocRef);
+          transaction.update(trainingRef, {
+            'Stats.likes': FieldValue.increment(-1),
+          });
+        } else {
+          transaction.set(likeDocRef, {
+            'UserId': userId,
+            'TrainingId': trainingId,
+            'LikedAt': FieldValue.serverTimestamp(),
+          });
+          transaction.update(trainingRef, {
+            'Stats.likes': FieldValue.increment(1),
+          });
+        }
+      });
+    } catch (e) {
+      debugPrint("ERRO NO FIREBASE LIKE: $e");
+      throw 'Erro ao curtir treino: $e';
+    }
+  }
+
+  Future<void> toggleTrainingSave({
+    required String trainingId,
+    required String userId,
+    required TrainingModel trainingData,
+  }) async {
+
+    if (userId.isEmpty) throw "Erro: Usuário não identificado";
+
+    try {
+      final db = FirebaseFirestore.instance;
+
+      final savedDocRef = db
+          .collection('users')
+          .doc(userId)
+          .collection('savedTrainings')
+          .doc(trainingId);
+
+      final trainingRef = db.collection('allTrainings').doc(trainingId);
+
+      await db.runTransaction((transaction) async {
+        final savedDoc = await transaction.get(savedDocRef);
+
+        if (savedDoc.exists) {
+          transaction.delete(savedDocRef);
+          transaction.update(trainingRef, {
+            'Stats.saves': FieldValue.increment(-1),
+          });
+        } else {
+          transaction.set(savedDocRef, {
+            'TrainingId': trainingId,
+            'Title': trainingData.title,
+            'Thumbnail': trainingData.thumbnail,
+            'CreatorName': trainingData.creator.name,
+            'CreatorIsVerified': trainingData.creator.isVerified,
+            'SavedAt': FieldValue.serverTimestamp(),
+          });
+          transaction.update(trainingRef, {
+            'Stats.saves': FieldValue.increment(1),
+          });
+        }
+      });
+    } catch (e) {
+      debugPrint("ERRO NO FIREBASE SAVE: $e");
+      throw 'Erro ao salvar treino: $e';
+    }
+  }
 }
