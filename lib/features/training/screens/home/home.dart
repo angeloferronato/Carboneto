@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(CbSizes.md),
+          padding: const EdgeInsets.only(left: CbSizes.md, top: CbSizes.md, bottom: CbSizes.md),
           child: Obx(() {
             if (controller.isLoading.value) {
               return _buildLoading();
@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildSectionHeader(title),
         const SizedBox(height: 12),
         SizedBox(
-          height: 235,
+          height: 265,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: trainings.length,
@@ -158,9 +158,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CbSectionHeading(title: title, onPressed: () {
-          controller.openCategory(title);
-        })
+        Padding(
+          padding: const EdgeInsets.only(right: CbSizes.md),
+          child: CbSectionHeading(title: title, onPressed: () {
+            controller.openCategory(title);
+          }),
+        )
       ],
     );
   }

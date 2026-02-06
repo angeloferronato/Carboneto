@@ -11,7 +11,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingIcon,
     this.actions,
     this.leadingOnPressed,
-    this.centerTitle = false, 
+    this.centerTitle = false,
   });
 
   final Widget? title;
@@ -31,12 +31,13 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
             ? IconButton(
                 onPressed: () {
                   try {
-                    if (Get.isSnackbarOpen) {
-                      Get.closeAllSnackbars();
+                    if (Get.key.currentState?.canPop() ?? false) {
+                      Get.back();
+                    } else {
+                      Navigator.of(context).maybePop();
                     }
-                    Get.back();
-                  } catch (e) {
-                    Navigator.of(context).pop();
+                  } catch (_) {
+                    Navigator.of(context).maybePop();
                   }
                 },
                 icon: Icon(Iconsax.arrow_left),
@@ -49,8 +50,7 @@ class CbAppBar extends StatelessWidget implements PreferredSizeWidget {
                 : null,
         actions: actions,
         title: title,
-        centerTitle:
-            centerTitle,
+        centerTitle: centerTitle,
       ),
     );
   }

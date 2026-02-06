@@ -20,19 +20,40 @@ class TrainingDetailsScreen extends StatefulWidget {
   State<TrainingDetailsScreen> createState() => _TrainingDetailsScreenState();
 }
 
-class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> {
+class _TrainingDetailsScreenState extends State<TrainingDetailsScreen> with WidgetsBindingObserver {
   late TrainingDetailsController trainingDetailsController;
   TrainingModel training = TrainingModel.empty();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     trainingDetailsController = Get.put(TrainingDetailsController());
     training = widget.training;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchExercises(training);
+      // Start view tracking after screen is built
+      trainingDetailsController.startViewTracking(training);
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    trainingDetailsController.stopViewTracking();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      trainingDetailsController.stopViewTracking();
+    } 
+    else if (state == AppLifecycleState.resumed && 
+             !trainingDetailsController.hasViewBeenCounted.value) {
+      trainingDetailsController.startViewTracking(training);
+    }
   }
 
   Future<void> _fetchExercises(TrainingModel training) async {

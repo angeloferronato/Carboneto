@@ -57,7 +57,7 @@ class TrainingInfoSection extends StatelessWidget {
               ),
               const SizedBox(width: 5),
               Text(
-                'Postado ${CbHelperFunctions.formatTimestamp(training.postedAt!)}',
+                'há ${CbHelperFunctions.formatTimestamp(training.postedAt!)}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w300,
                   fontSize: 11,

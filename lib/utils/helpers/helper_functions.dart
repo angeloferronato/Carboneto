@@ -51,6 +51,31 @@ class CbHelperFunctions {
     };
   }
 
+  static String formatDuration(int totalSeconds) {
+    if (totalSeconds < 60) {
+      return '$totalSeconds s';
+    }
+
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    final seconds = totalSeconds % 60;
+
+    // Only minutes (less than 1 hour)
+    if (hours == 0) {
+      if (seconds == 0) {
+        return '$minutes min';
+      }
+      return '$minutes:${seconds.toString().padLeft(2, '0')} min';
+    }
+
+    // Hours
+    if (minutes == 0) {
+      return '$hours h';
+    }
+
+    return '${hours}h ${minutes}min';
+  }
+
   static Color? getColor(String value) {
     /// Define your product specific colors here and it will match the attribute colors and show specific 🟠🟡🟢🔵🟣🟤
 

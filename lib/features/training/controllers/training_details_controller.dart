@@ -1,5 +1,7 @@
 import 'package:carboneto/data/repositories/exercises/exercise_repository.dart';
+import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/features/create/controllers/create_training_controller.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -10,13 +12,73 @@ import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:async';
 
 class TrainingDetailsController extends GetxController {
   static TrainingDetailsController get instance => Get.find();
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
   final CreateTrainingController createTrainingController = Get.put(CreateTrainingController());
+  final TrainingRepository trainingRepository = Get.put(TrainingRepository());
+  final UserController userController = Get.put(UserController());
 
   final RxBool isLoading = false.obs;
+  final RxBool hasViewBeenCounted = false.obs;
+  
+  Timer? _viewTimer;
+  int _secondsOnScreen = 0;
+  static const int viewThresholdSeconds = 20;
+
+  @override
+  void onClose() {
+    _viewTimer?.cancel();
+    super.onClose();
+  }
+
+  void startViewTracking(TrainingModel training) {
+    _secondsOnScreen = 0;
+    hasViewBeenCounted.value = false;
+    
+    _viewTimer?.cancel();
+
+    _viewTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _secondsOnScreen++;
+      
+      // GRAVA VIEW DEPOIS DE 20 SEG
+      if (_secondsOnScreen >= viewThresholdSeconds && !hasViewBeenCounted.value) {
+        _recordView(training);
+        timer.cancel();
+      }
+    });
+  }
+
+  void stopViewTracking() {
+    _viewTimer?.cancel();
+    _secondsOnScreen = 0;
+  }
+
+  Future<void> _recordView(TrainingModel training) async {
+    if (hasViewBeenCounted.value) return;
+    
+    try {
+      final uid = userController.user.value.id;
+      final canCount = await trainingRepository.canCountView(
+        trainingId: training.id,
+        userId: uid,
+      );
+      
+      if (canCount) {
+        await trainingRepository.recordTrainingView(
+          trainingId: training.id,
+          userId: uid,
+        );
+        hasViewBeenCounted.value = true;
+      } else {
+        debugPrint('View not counted - cooldown period not elapsed');
+      }
+    } catch (e) {
+      debugPrint('Error recording view: $e');
+    }
+  }
 
   Future<TrainingModel> fetchExercises(TrainingModel training) async {
     isLoading.value = true;
@@ -26,6 +88,8 @@ class TrainingDetailsController extends GetxController {
   }
 
   void showTrainingUserOptions(TrainingModel training) {
+    stopViewTracking();
+    
     showModalBottomSheet(
       context: Get.context!,
       shape: RoundedRectangleBorder(
@@ -56,10 +120,16 @@ class TrainingDetailsController extends GetxController {
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      if (!hasViewBeenCounted.value) {
+        startViewTracking(training);
+      }
+    });
   }
 
   Future<dynamic> showStartTrainingOptions(TrainingModel training) {
+    stopViewTracking();
+    
     return Get.defaultDialog(
       titlePadding: const EdgeInsets.only(top: CbSizes.lg),
       contentPadding: EdgeInsets.all(CbSizes.lg),
@@ -71,7 +141,12 @@ class TrainingDetailsController extends GetxController {
         child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
       ),
       cancel: OutlinedButton(
-        onPressed: () => Navigator.of(Get.overlayContext!).pop(), 
+        onPressed: () {
+          Navigator.of(Get.overlayContext!).pop();
+          if (!hasViewBeenCounted.value) {
+            startViewTracking(training);
+          }
+        }, 
         child: Text('Não'),
       ),
       backgroundColor: CbColors.dark
@@ -82,7 +157,6 @@ class TrainingDetailsController extends GetxController {
     try {
       CbFullScreenLoader.openLoadingDialog('Estamos iniciando seu treino...', CbImages.loadingAnimation);
 
-      // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         CbLoaders.errorSnackBar(title: 'Sem conexão de internet!', message: 'Sem internet não é possível iniciar seu treino.');
@@ -90,10 +164,25 @@ class TrainingDetailsController extends GetxController {
         return;
       }
 
+      // VIEW PRA QUANDO INICIA O TREINO (SE JÁ NÃO INICIOU NESSA SESSÃO)
+      if (!hasViewBeenCounted.value) {
+        final uid = userController.user.value.id;
+        final canCount = await trainingRepository.canCountView(
+          trainingId: training.id,
+          userId: uid,
+        );
+        
+        if (canCount) {
+          await trainingRepository.recordTrainingView(
+            trainingId: training.id,
+            userId: uid,
+          );
+          hasViewBeenCounted.value = true;
+        }
+      }
+
       CbFullScreenLoader.stopLoading();
 
-      // To do: Make a function to store the training id in the history.
-      // To do: Pass all the trainings to allTrainings.
       Get.to(TrainingExecution(training: training));  
 
     } catch (e){

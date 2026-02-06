@@ -229,7 +229,8 @@ class TrainingRepository extends GetxController {
           final singleTraining = TrainingModel.fromSnapshot(training);
           debugPrint(singleTraining.textLevel);
 
-          final UserModel user = await userRepository.searchUser(singleTraining.authorId);
+          final UserModel user =
+              await userRepository.searchUser(singleTraining.authorId);
           singleTraining.user = user;
           listTrainings.add(singleTraining);
         }
@@ -468,6 +469,110 @@ class TrainingRepository extends GetxController {
       throw CbPlatformException(e.code).message;
     } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+  Future<bool> canCountView({
+    required String trainingId,
+    required String userId,
+  }) async {
+    try {
+      final viewTrackingRef = _db
+          .collection('users')
+          .doc(userId)
+          .collection('viewTracking')
+          .doc(trainingId);
+
+      final viewDoc = await viewTrackingRef.get();
+
+      // PRIMEIRA VEZ
+      if (!viewDoc.exists) {
+        return true;
+      }
+
+      final data = viewDoc.data() as Map<String, dynamic>;
+      final lastViewTimestamp = data['LastViewedAt'] as Timestamp?;
+
+      if (lastViewTimestamp == null) {
+        return true;
+      }
+
+      final lastViewTime = lastViewTimestamp.toDate();
+      final now = DateTime.now();
+      final timeSinceLastView = now.difference(lastViewTime).inMinutes;
+
+      return timeSinceLastView >= 30;
+    } catch (e) {
+      debugPrint('Error checking view eligibility: $e');
+      return true;
+    }
+  }
+
+  Future<void> recordTrainingView({
+    required String trainingId,
+    required String userId,
+  }) async {
+    try {
+      final batch = _db.batch();
+
+      final trainingRef = _db.collection('allTrainings').doc(trainingId);
+
+      final viewTrackingRef = _db
+          .collection('users')
+          .doc(userId)
+          .collection('viewTracking')
+          .doc(trainingId);
+
+      batch.set(
+          viewTrackingRef,
+          {
+            'TrainingId': trainingId,
+            'LastViewedAt': FieldValue.serverTimestamp(),
+            'TotalViews': FieldValue.increment(1),
+          },
+          SetOptions(merge: true));
+
+      batch.update(trainingRef, {
+        'Stats.views': FieldValue.increment(1),
+      });
+
+      await batch.commit();
+    } on FirebaseAuthException catch (e) {
+      throw CbFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw CbFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw CbFormatException();
+    } on PlatformException catch (e) {
+      throw CbPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Erro ao registrar visualização: $e';
+    }
+  }
+
+  Future<void> cleanupOldViewTracking({
+    required String userId,
+    int daysOld = 5,
+  }) async {
+    try {
+      final cutoffDate = DateTime.now().subtract(Duration(days: daysOld));
+      final cutoffTimestamp = Timestamp.fromDate(cutoffDate);
+
+      final oldViews = await _db
+          .collection('users')
+          .doc(userId)
+          .collection('viewTracking')
+          .where('LastViewedAt', isLessThan: cutoffTimestamp)
+          .get();
+
+      final batch = _db.batch();
+      for (var doc in oldViews.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+    } catch (e) {
+      debugPrint('Error cleaning up view tracking: $e');
     }
   }
 }
