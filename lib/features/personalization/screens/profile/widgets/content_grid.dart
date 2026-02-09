@@ -98,7 +98,7 @@ class ContentGrid extends StatelessWidget {
                       ),
                       IconButton(
                         icon: Icon(
-                          isAuthUser ? Icons.add : Iconsax.activity1,
+                          isAuthUser ? Icons.add : Iconsax.activity,
                           size: 70,
                           color: CbColors.buttonSecondary,
                         ), 

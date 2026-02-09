@@ -1,6 +1,8 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
+import 'package:carboneto/features/personalization/controllers/follow_search_controller/follow_search_controller.dart';
 import 'package:carboneto/features/personalization/controllers/profile_base_controller.dart/profile_base_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/edit_profile.dart';
+import 'package:carboneto/features/personalization/screens/profile/search_user_profile/search_user_profile.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/banner_picture.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/content_grid.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/followers_and_following.dart';
@@ -8,13 +10,11 @@ import 'package:carboneto/features/personalization/screens/profile/widgets/highl
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_info.dart';
 import 'package:carboneto/features/settings/controllers/follow_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
-
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.userId});
@@ -82,7 +82,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(
                 height: 20,
               ),
-              Obx(() => FollowersAndFollowing(followers: controller.user.value.followersCount ?? 0, following: controller.user.value.followingCount ?? 0, position: controller.user.value.position,)),
+              Obx(() => FollowersAndFollowing(
+                followersOnTap: () => Get.to(SearchUserProfile(userId: widget.userId), binding: BindingsBuilder((){ Get.put(FollowSearchController(initialFollowMode: FollowMode.followers, userId: widget.userId), tag: widget.userId); })),
+                followingOnTap: () => Get.to(SearchUserProfile(userId: widget.userId), binding: BindingsBuilder((){ Get.put(FollowSearchController(initialFollowMode: FollowMode.following, userId: widget.userId), tag: widget.userId); })),
+                followers: controller.followersId.length, 
+                following: controller.followingId.length, 
+                position: controller.user.value.position,
+              )),
               SizedBox(
                 height: CbSizes.xl,
               ),

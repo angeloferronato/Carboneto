@@ -68,7 +68,7 @@ class PrivacySettingsController extends GetxController{
         onPressed: () => changeProfilePrivacy(),
         style: ElevatedButton.styleFrom(
           backgroundColor: CbColors.primary,
-        ),
+        ),  
         child: const Padding(
           padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
           child: Text('Sim'),

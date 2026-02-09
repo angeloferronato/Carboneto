@@ -6,8 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 
 class CbHelperFunctions {
-  static Map<String, dynamic> parseLevelStyle(
-      BuildContext context, DifficultyLevels level) {
+  static Map<String, dynamic> parseLevelStyle(BuildContext context, DifficultyLevels level) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
     Color difficultyBorder = Colors.transparent;
     Color difficultyColor = Colors.transparent;
@@ -227,5 +226,35 @@ class CbHelperFunctions {
       wrappedList.add(Row(children: rowChildren));
     }
     return wrappedList;
+  }
+
+  static String formatCountFollowType(int followNumber) {
+    final stringNumber = followNumber.toString();
+    if (followNumber < 1000) {
+      return followNumber.toString();
+    } else if (followNumber < 10000) {
+      return '${stringNumber[0]},${stringNumber.substring(1)}';
+    } else if (followNumber < 100000) {
+      return '${stringNumber.substring(0, 2)}.${stringNumber[2]}K';
+    } else if (followNumber < 1000000) {
+      return '${stringNumber.substring(0, 3)}K';
+    } else if (followNumber < 10000000) {
+      return'${stringNumber[0]}.${stringNumber[1]}M';
+    } else {
+      return '${stringNumber.substring(0, 2)}M';
+    }
+  }
+
+  static List<List<T>> chunkList<T>(List<T> list, int chunkSize) {
+    final chunks = <List<T>>[];
+    for (var i = 0; i < list.length; i += chunkSize) {
+      chunks.add(
+        list.sublist(
+          i,
+          i + chunkSize > list.length ? list.length : i + chunkSize
+        )
+      );
+    }
+    return chunks;
   }
 }

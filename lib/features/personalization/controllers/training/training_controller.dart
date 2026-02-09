@@ -20,7 +20,6 @@ class TrainingController extends GetxController {
     profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
     super.onInit();
     ever(profileBaseController.user, (user) {
-      print('${user.id.isNotEmpty} + ${trainingsList.isEmpty} + ${!isLoading.value}');
       if (user.id.isNotEmpty && trainingsList.isEmpty && !isLoading.value) {
         fetchAllTrainings();
       }

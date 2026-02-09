@@ -18,7 +18,6 @@ class FollowController extends GetxController {
 
   Future<void> toggleFollower() async {
     try {
-
       // Verifica se é para adicionar o usuário.
       final isFollowing = await userRepository.isFollowing(currentUserId, targetUserId);
       await userRepository.toggleFollowUser(!isFollowing, currentUserId, targetUserId);
@@ -27,4 +26,5 @@ class FollowController extends GetxController {
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
     }
   }
+  
 }

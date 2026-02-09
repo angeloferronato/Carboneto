@@ -13,7 +13,7 @@ class PrimaryText extends StatelessWidget {
       textValue,
       style: TextStyle(
         color: CbColors.white,
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w400,
       ),
     );
