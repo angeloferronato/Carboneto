@@ -1,60 +1,186 @@
-import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/features/library/screens/all_trainings_screen/widgets/training_card.dart';
+import 'package:carboneto/common/widgets/buttons/sort_btn.dart';
+import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
+import 'package:carboneto/features/library/controllers/all_trainings_controller.dart';
+import 'package:carboneto/features/library/screens/widgets/created_training.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/home_menu.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class AllTrainingsScreen extends StatelessWidget {
   const AllTrainingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
+    final controller = Get.put(AllTrainingsController());
+
     return Scaffold(
-      appBar: CbAppBar(
-        title: Text(
-          'Seus Treinos',
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-            fontSize: 25,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        showBackArrow: true,
-      ),
-
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            // GRID
-            SizedBox(height: 20,),
-            GridView.builder(
-              physics: const NeverScrollableScrollPhysics(), 
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 5,
-                childAspectRatio: 0.62,
+      body: CustomScrollView(
+        controller: controller.scrollController,
+        slivers: [
+          SliverAppBar(
+            pinned: false,
+            floating: false,
+            snap: false,
+            titleSpacing: 0,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            title: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 20,
               ),
-              itemCount: 12,
-              itemBuilder: (_, index) => const TrainingCard(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      controller.resetToDefaults(); // Limpa filtros ao voltar
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(Icons.arrow_back),
+                  ),
+                  Text(
+                    'Meus Treinos',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(width: 20),
+                  const Icon(
+                    Iconsax.search_normal_1,
+                    size: 20,
+                  )
+                ],
+              ),
             ),
+          ),
 
-            HighlightBtn(textValue: '+ Novo Treino', onPressedEdit: () {
-              Get.offAll(HomeMenu());
-              final controller = Get.put(HomeMenuController());
-              controller.selectedIndex.value = 2;
-            }, labelColor: CbColors.primary,),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10, left: 15),
+              child: CategoriesBar(
+                controllerTag: 'library_filter',
+                hideFilterBtn: true,
+                customCategories: const [
+                  'Todos',
+                  'Salvos',
+                  'Curtidos',
+                  'Arremesso',
+                  'Atleticismo',
+                  'Defesa',
+                  'Controle de Bola',
+                  'Finalização',
+                  'QI de Basquete',
+                  'Outros'
+                ],
+                onSelect: (category) {
+                  controller.setCategory(category);
+                },
+              ),
+            ),
+          ),
 
-            const SizedBox(height: 30),
-          ],
-        ),
+          const SliverToBoxAdapter(child: SizedBox(height: 15)),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Obx(() => SortButton(
+                    text: controller.selectedFilter.value,
+                    onTap: () => controller.showFilterModal(isDarkMode),
+                  )),
+            ),
+          ),
+
+          SliverPadding(
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
+            sliver: Obx(() {
+              if (controller.isLoading.value) {
+                return const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                      child: CircularProgressIndicator(color: CbColors.primary),
+                    ),
+                  ),
+                );
+              }
+
+              if (controller.trainings.isEmpty) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50, left: 40, right: 40),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          const Icon(Iconsax.folder_open, size: 50, color: Colors.grey),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Nenhum treino encontrado nesta categoria.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,                            
+                                fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              return SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final training = controller.trainings[index];
+                    return CreatedTraining(
+                      key: ValueKey(training.id), 
+                      training: training,
+                    );
+                  },
+                  childCount: controller.trainings.length,
+                ),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 7,
+                  mainAxisSpacing: 15,
+                  mainAxisExtent: 190,
+                ),
+              );
+            }),
+          ),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  HighlightBtn(
+                    textValue: '+ Novo Treino',
+                    labelColor: CbColors.primary,
+                    onPressedEdit: () {
+                      Get.offAll(() => const HomeMenu());
+                      final homeController = Get.put(HomeMenuController());
+                      homeController.selectedIndex.value = 2; 
+                    },
+                  ),
+                  const SizedBox(height: 50), // Espaço extra no fim
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-
-

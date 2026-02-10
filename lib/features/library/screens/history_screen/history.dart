@@ -8,66 +8,69 @@ import 'package:flutter/material.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:get/get.dart';
 
-class HistoryScreen extends StatelessWidget {
-  HistoryScreen({super.key});
-
-  final HistoryController controller = Get.find<HistoryController>();
-  final ScrollController scroll = ScrollController();
+class HistoryScreen extends GetView<HistoryController> {
+  const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    scroll.addListener(() {
-      if (scroll.position.pixels >= scroll.position.maxScrollExtent - 300) {
-        controller.fetchMore();
-      }
-    });
-
     return Scaffold(
       appBar: CbAppBar(
         title: Text(
           'Histórico',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-            fontSize: 25,
-            fontWeight: FontWeight.w700,
-          ),
+                fontSize: 25,
+                fontWeight: FontWeight.w700,
+              ),
         ),
         showBackArrow: true,
       ),
-      body: Obx(() {
-        final history = controller.history;
-        final TextEditingController searchCtrl = TextEditingController();
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            SearchInput(
+              placeholder: 'Pesquisar no histórico',
+              controller: controller.searchController, 
+            ),
+            const SizedBox(height: 16),
+            
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoadingHistory.value && controller.history.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-          child: ListView(
-            controller: scroll,
-            children: [
-              const SizedBox(height: 16),
-              SearchInput(
-                placeholder: 'Pesquisar no histórico',
-                controller: searchCtrl,
-              ),
-              const SizedBox(height: 16),
-              if (history.isNotEmpty)
-                HistoryTimeline(items: history)
-              else
-                Column(
+                if (controller.history.isEmpty) {
+                  return Column(
+                    children: const [
+                      SizedBox(height: 100),
+                      EmptyData(),
+                    ],
+                  );
+                }
+
+                return ListView(
+                  controller: controller.scrollController, 
+                  physics: const AlwaysScrollableScrollPhysics(),
                   children: [
-                    SizedBox(
-                      height: 100,
-                    ),
-                    EmptyData(),
+                    HistoryTimeline(items: controller.history),
+                    
+                    // Loading de Paginação (Bottom)
+                    if (controller.isLoadingMore.value)
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      
+                    const SizedBox(height: 20),
                   ],
-                ),
-              if (controller.isLoadingMore.value)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-            ],
-          ),
-        );
-      }),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

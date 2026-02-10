@@ -7,12 +7,14 @@ class CbTipChipTraining extends StatelessWidget {
     super.key,
     this.color = CbColors.primary, // Default blue
     this.textColor = CbColors.white,
+    this.justShowLevel = false,
     required this.text,
   });
 
   final Color color;
   final Color textColor;
   final String text;
+  final bool justShowLevel;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +38,18 @@ class CbTipChipTraining extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(CbSizes.lg),
       ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: textColor,
-              fontWeight: FontWeight.w700,
-              fontSize: 11,
-            ),
-      ),
+      child: Text(justShowLevel? text.toUpperCase(): text,
+          style: justShowLevel
+              ? TextStyle(
+                  letterSpacing: 1.5,
+                  fontSize: 8,
+                  fontWeight: FontWeight.w900,
+                  color: isElite ? Colors.amber : textColor)
+              : Theme.of(context).textTheme.labelLarge!.copyWith(
+                    color: textColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  )),
     );
   }
 

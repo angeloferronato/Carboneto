@@ -4,21 +4,22 @@ import 'package:carboneto/features/library/models/history_model.dart';
 
 class HistoryRepository {
   final _firestore = FirebaseFirestore.instance;
-  
-  String get uid => AuthenticationRepository.instance.authUser!.uid;
-  
-  CollectionReference get _historyCollection => _firestore
-      .collection('users')
-      .doc(uid)
-      .collection('trainingHistory');
 
-  Future<List<TrainingHistoryModel>> fetchRecent({int limit = 6}) async {
-    final query = await _historyCollection
+  String get uid => AuthenticationRepository.instance.authUser!.uid;
+
+  CollectionReference get _historyCollection =>
+      _firestore.collection('users').doc(uid).collection('trainingHistory');
+
+  Stream<List<TrainingHistoryModel>> streamRecent({int limit = 6}) {
+    return _historyCollection
         .orderBy('SessionEndedAt', descending: true)
         .limit(limit)
-        .get();
-    
-    return query.docs.map((e) => TrainingHistoryModel.fromDoc(e)).toList();
+        .snapshots() 
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => TrainingHistoryModel.fromDoc(doc))
+          .toList();
+    });
   }
 
   Future<HistoryPage> fetchInitial({int pageSize = 6}) async {
@@ -27,7 +28,8 @@ class HistoryRepository {
         .limit(pageSize)
         .get();
 
-    final items = query.docs.map((e) => TrainingHistoryModel.fromDoc(e)).toList();
+    final items =
+        query.docs.map((e) => TrainingHistoryModel.fromDoc(e)).toList();
     final lastDoc = query.docs.isNotEmpty ? query.docs.last : null;
     final hasMore = query.docs.length >= pageSize;
 
@@ -48,7 +50,8 @@ class HistoryRepository {
         .limit(pageSize)
         .get();
 
-    final items = query.docs.map((e) => TrainingHistoryModel.fromDoc(e)).toList();
+    final items =
+        query.docs.map((e) => TrainingHistoryModel.fromDoc(e)).toList();
     final newLastDoc = query.docs.isNotEmpty ? query.docs.last : null;
     final hasMore = query.docs.length >= pageSize;
 

@@ -5,6 +5,7 @@ import 'package:carboneto/common/widgets/user/user_picture.dart';
 import 'package:carboneto/features/library/controllers/history_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
+import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
@@ -17,23 +18,26 @@ class ResultWidget extends StatelessWidget {
     super.key,
     required this.training,
     this.views,
+    this.homeWidget = false,
   });
 
   final TrainingModel training;
   final int? views;
+  final bool homeWidget;
 
   final historyController = Get.put(HistoryController());
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {},
+      onTap: () => Get.to(TrainingDetailsScreen(training: training)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
-          ResultMain(training: training),
-          
+          ResultMain(
+            training: training,
+            hideOptions: homeWidget? true: false,
+          ),
           const SizedBox(height: CbSizes.xs * 2.5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +86,7 @@ class ResultWidget extends StatelessWidget {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        '${CbHelperFunctions.formatSeconds(training.duration!)} min • ${CbHelperFunctions.formatTimestamp(Timestamp.fromDate(DateTime.utc(2026, 1, 30, 13, 00, 00)))} • ${training.categories.toString().replaceAll('[', '').replaceAll(']', '')}',
+                        '${CbHelperFunctions.formatDuration(training.duration! * 60)} • ${CbHelperFunctions.formatTimestamp(training.postedAt!)} • ${training.categories.toString().replaceAll('[', '').replaceAll(']', '')}',
                         style: const TextStyle(fontSize: 10),
                         overflow: TextOverflow.ellipsis,
                       ),

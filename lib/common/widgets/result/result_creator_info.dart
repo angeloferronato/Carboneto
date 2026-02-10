@@ -6,25 +6,31 @@ import 'package:iconsax/iconsax.dart';
 
 class ResultCreatorInfo extends StatelessWidget {
   const ResultCreatorInfo(
-      {super.key, required this.creator, this.showUserPicture = false, this.userPictureSize = 23, this.textSize = 10});
+      {super.key, required this.creator, this.showUserPicture = false, this.userPictureSize = 23, this.textSize = 10, this.justProfileInfo = false});
 
   final double userPictureSize, textSize;
-  final bool showUserPicture;
+  final bool showUserPicture, justProfileInfo;
   final CreatorModel creator;
 
   @override
   Widget build(BuildContext context) {
+    
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      // mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         showUserPicture ?
-          UserPicture(
-            userPicture: creator.profilePicture,
-            size: userPictureSize,
+          Row(
+            children: [
+              UserPicture(
+                userPicture: creator.profilePicture,
+                size: userPictureSize,
+              ),
+              SizedBox(width: 6,)
+            ],
           )
           : SizedBox(),
-        const SizedBox(width: 6),
         Text(
           creator.name,
           style: TextStyle(fontSize: textSize, fontWeight: FontWeight.w300),
@@ -38,7 +44,7 @@ class ResultCreatorInfo extends StatelessWidget {
                 color: CbColors.primary,
                 size: 10,
               )
-            : Text(
+            : justProfileInfo ? SizedBox() : Text(
                 '•',
                 style: TextStyle(fontSize: textSize),
               )

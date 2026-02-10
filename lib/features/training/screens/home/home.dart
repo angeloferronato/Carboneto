@@ -1,4 +1,5 @@
 import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
+import 'package:carboneto/common/widgets/result/result_widget.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
@@ -14,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen ({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,21 +29,25 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return _buildLoading();
-          }
-        
-          if (controller.error.value != null) {
-            return _buildError(controller.error.value!);
-          }
-        
-          if (controller.isGridMode.value) {
-            return _buildGridMode();
-          }
-        
-          return _buildSectionsMode();
-        }),
+        child: Padding(
+          padding: const EdgeInsets.only(
+              left: CbSizes.md, bottom: CbSizes.md),
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return _buildLoading();
+            }
+
+            if (controller.error.value != null) {
+              return _buildError(controller.error.value!);
+            }
+
+            if (controller.isGridMode.value) {
+              return _buildSingleListMode();
+            }
+
+            return _buildSectionsMode();
+          }),
+        ),
       ),
     );
   }
@@ -52,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
       shrinkWrap: true,
       children: [
         TopLogo(),
-        CategoriesBar(controllerTag: 'home',),
+        CategoriesBar(
+          controllerTag: 'home',
+        ),
         HomeShimmer(),
       ],
     );
@@ -64,43 +71,78 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildGridMode() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TopLogo(),
-          CategoriesBar(controllerTag: 'home',),
-          Padding(
-            padding: const EdgeInsets.only(top: 16, left: CbSizes.md),
+  Widget _buildSingleListMode() {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(child: TopLogo()),
+        SliverToBoxAdapter(child: CategoriesBar(controllerTag: 'home')),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Text(
               controller.currentTitle.value,
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 22),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium!
+                  .copyWith(fontSize: 22),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: CbSizes.md),
-            child: CbGridLayout(
-              mainAxisExtent: 235,
-              itemCount: controller.visibleTrainings.length,
-              itemBuilder: (_, index) {
-                final training = controller.visibleTrainings[index];
-                return HomeTrainingWidget(
-                  paddingRight: 0,
-                  borderRadius: 15,
-                  onTap: () {
-                    Get.to(() => TrainingDetailsScreen(training: training));
-                  }, 
-                  training: training,
-                );
-              },
-            ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(right: CbSizes.md),
+                child: ResultWidget(
+                  training: controller.visibleTrainings[index],
+                  homeWidget: true,
+                ),
+              );
+            },
+            childCount: controller.visibleTrainings.length,
           ),
-          
-        ],
-      ),
+        ),
+      ],
     );
   }
+
+  // Widget _buildGridMode() {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         TopLogo(),
+  //         CategoriesBar(controllerTag: 'home',),
+  //         Padding(
+  //           padding: const EdgeInsets.only(top: 16, left: CbSizes.md),
+  //           child: Text(
+  //             controller.currentTitle.value,
+  //             style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 22),
+  //           ),
+  //         ),
+  //         Container(
+  //           margin: const EdgeInsets.symmetric(horizontal: CbSizes.md),
+  //           child: CbGridLayout(
+  //             mainAxisExtent: 235,
+  //             itemCount: controller.visibleTrainings.length,
+  //             itemBuilder: (_, index) {
+  //               final training = controller.visibleTrainings[index];
+  //               return HomeTrainingWidget(
+  //                 paddingRight: 0,
+  //                 borderRadius: 15,
+  //                 onTap: () {
+  //                   Get.to(() => TrainingDetailsScreen(training: training));
+  //                 },
+  //                 training: training,
+  //               );
+  //             },
+  //           ),
+  //         ),
+
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildSectionsMode() {
     return Obx(() {
@@ -109,10 +151,10 @@ class _HomeScreenState extends State<HomeScreen> {
       return ListView(
         children: [
           TopLogo(),
-          
-          CategoriesBar(controllerTag: 'home',),
+          CategoriesBar(
+            controllerTag: 'home',
+          ),
           const SizedBox(height: 16),
-
           ...sections.entries.map((entry) {
             final category = entry.key;
             final trainings = entry.value;
@@ -132,8 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         _buildSectionHeader(title),
         const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.only(left: CbSizes.md),
+        SizedBox(
           height: 265,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -159,10 +200,12 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: CbSizes.md),
-          child: CbSectionHeading(title: title, onPressed: () {
-            controller.openCategory(title);
-          }),
+          padding: const EdgeInsets.only(right: CbSizes.md),
+          child: CbSectionHeading(
+              title: title,
+              onPressed: () {
+                controller.openCategory(title);
+              }),
         )
       ],
     );

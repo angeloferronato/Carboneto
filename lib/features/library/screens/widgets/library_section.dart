@@ -3,7 +3,6 @@ import 'package:carboneto/features/library/screens/widgets/section_main.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
-
 class LibrarySection extends StatelessWidget {
   const LibrarySection({
     super.key,
@@ -12,6 +11,7 @@ class LibrarySection extends StatelessWidget {
     this.actionBtn,
     this.showActionBtn = false,
     this.itemCount = 5,
+    required this.emptyData,
     required this.itemBuilder,
   });
   final String title;
@@ -19,6 +19,7 @@ class LibrarySection extends StatelessWidget {
   final dynamic actionBtn;
   final bool showActionBtn;
   final int itemCount;
+  final EmptyData emptyData;
   final Widget Function(BuildContext context, int index) itemBuilder;
 
   @override
@@ -34,17 +35,27 @@ class LibrarySection extends StatelessWidget {
         SizedBox(
           height: 15,
         ),
-        if (itemCount == 0) EmptyData()
-        else SizedBox(
-          height: 200, // define a height for horizontal list
-          child: ListView.separated(
-            padding: EdgeInsets.only(left: CbSizes.defaultSpace),
-            scrollDirection: Axis.horizontal,
-            itemCount: itemCount, // however many trainings you want
-            itemBuilder:  itemBuilder,
-            separatorBuilder: (context, index) => const SizedBox(width: 10), 
+        if (itemCount == 0)
+          emptyData
+        else
+          SizedBox(
+            height: 200,
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                overscroll: false,
+              ),
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: CbSizes.defaultSpace),
+                scrollDirection: Axis.horizontal,
+                physics:
+                    const ClampingScrollPhysics(),
+                itemCount: itemCount,
+                itemBuilder: itemBuilder,
+                separatorBuilder: (context, index) => const SizedBox(width: 7),
+              ),
+            ),
           ),
-        ),
       ],
     );
   }

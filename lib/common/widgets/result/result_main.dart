@@ -2,6 +2,7 @@ import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/training/controllers/training_details_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,7 +35,7 @@ class ResultMain extends StatelessWidget {
             isNetworkImage: true,
             height: height,
             fit: BoxFit.cover,
-            width: homeWidget ? 245 : CbHelperFunctions.screenWidth() - 40,
+            width: homeWidget ? 245 : CbHelperFunctions.screenWidth() - CbSizes.md,
             backgroundColor: Colors.transparent,
           ),
           // Views counter - top left
@@ -129,3 +130,6 @@ class ResultMain extends StatelessWidget {
     );
   }
 }
+
+
+

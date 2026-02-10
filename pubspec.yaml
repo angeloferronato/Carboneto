@@ -50,6 +50,7 @@ dependencies:
   # State Management
   get: ^4.7.3
   get_storage: ^2.1.1
+  rxdart: ^0.28.0
 
   # Product Specific
   readmore: ^3.0.0

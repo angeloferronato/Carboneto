@@ -7,13 +7,16 @@ class EmptyData extends StatelessWidget {
   const EmptyData(
       {super.key,
       this.icon = Icons.history,
+      this.iconSize = 70,
       this.screen = 2,
       this.mainLabel = 'Você ainda não começou nenhum treino',
-      this.secondaryLabel = 'Inicie um novo treino para comecar a sua jornada de evolução.'});
+      this.secondaryLabel =
+          'Inicie um novo treino para comecar a sua jornada de evolução.'});
 
   final String mainLabel, secondaryLabel;
   final IconData icon;
   final int screen;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class EmptyData extends StatelessWidget {
         IconButton(
           icon: Icon(
             icon,
-            size: 70,
+            size: iconSize,
             color: CbColors.buttonSecondary,
           ),
           onPressed: () {

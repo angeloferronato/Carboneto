@@ -15,21 +15,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
-import 'package:get/get_connect/http/src/utils/utils.dart';
-
 class TrainingDetailsController extends GetxController {
   static TrainingDetailsController get instance => Get.find();
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
-  final CreateTrainingController createTrainingController = Get.put(CreateTrainingController());
+  final CreateTrainingController createTrainingController =
+      Get.put(CreateTrainingController());
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final UserController userController = Get.put(UserController());
-
-
 
   final isLoadingStats = true.obs;
 
   void initializeStats(TrainingModel training) async {
-    isLoadingStats.value = true; 
+    isLoadingStats.value = true;
 
     likesCount.value = training.stats.likes;
     savesCount.value = training.stats.saves;
@@ -182,7 +179,8 @@ class TrainingDetailsController extends GetxController {
 
   Future<TrainingModel> fetchExercises(TrainingModel training) async {
     isLoading.value = true;
-    training.exercises = await exerciseRepository.fetchSpecificExerciseDetails(training.exercisesId ?? []);
+    training.exercises = await exerciseRepository
+        .fetchSpecificExerciseDetails(training.exercisesId ?? []);
     isLoading.value = false;
     return training;
   }
@@ -215,7 +213,8 @@ class TrainingDetailsController extends GetxController {
                   'Deletar',
                   style: TextStyle(color: Colors.red),
                 ),
-                onTap: () => createTrainingController.showCancelDeleteTrainingMessage(training),
+                onTap: () => createTrainingController
+                    .showCancelDeleteTrainingMessage(training),
               ),
             ],
           ),
@@ -228,7 +227,8 @@ class TrainingDetailsController extends GetxController {
     });
   }
 
-  Future<dynamic> showStartTrainingOptions(TrainingModel training, bool isDarkMode) {
+  Future<dynamic> showStartTrainingOptions(
+      TrainingModel training, bool isDarkMode) {
     stopViewTracking();
 
     return Get.defaultDialog(
@@ -260,7 +260,8 @@ class TrainingDetailsController extends GetxController {
 
   Future<void> startTraining(TrainingModel training) async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos iniciando seu treino...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos iniciando seu treino...', CbImages.loadingAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {

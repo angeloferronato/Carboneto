@@ -35,6 +35,7 @@ class CbHelperFunctions {
       case DifficultyLevels.elite:
         difficultyTitle = 'ELITE';
         difficultyBorder = isDarkMode ? Colors.amber : Colors.amber.shade900;
+        difficultyColor = const Color.fromARGB(255, 25, 33, 38);
         difficultyColorTxt = Colors.amber;
         levelValue = 3;
         break;

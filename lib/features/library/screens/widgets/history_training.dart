@@ -1,11 +1,11 @@
 import 'package:carboneto/common/widgets/buttons/menu_itens.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/result/progress_indicator.dart';
+import 'package:carboneto/common/widgets/result/result_creator_info.dart';
 import 'package:carboneto/features/library/controllers/history_controller.dart';
 import 'package:carboneto/features/library/models/history_model.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +21,7 @@ class HistoryTraining extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = CbHelperFunctions.isDarkMode(context);
+    final isCompleted = training.status == 'completed';
     return SizedBox(
       width: 165,
       child: Column(
@@ -32,7 +32,8 @@ class HistoryTraining extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () async {
-                  final trainingHandle = await historyController.handleTrainingHistoryDetails(training.trainingId);
+                  final trainingHandle = await historyController
+                      .handleTrainingHistoryDetails(training.trainingId);
 
                   if (trainingHandle == null) {
                     Get.snackbar('Erro', 'Treino não encontrado');
@@ -41,7 +42,6 @@ class HistoryTraining extends StatelessWidget {
 
                   Get.to(() => TrainingDetailsScreen(training: trainingHandle));
                 },
-
                 child: CbRoundedImage(
                   borderRadius: 12,
                   isNetworkImage: true,
@@ -56,14 +56,16 @@ class HistoryTraining extends StatelessWidget {
                 right: 5,
                 bottom: 8,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
+                    color: isCompleted ? CbColors.success.withValues(alpha: 0.8) : const Color.fromARGB(171, 167, 0, 245),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: CbProgressIndicator(
                     progress: training.trainingProgress,
                     status: training.status,
+                    hasBg: true,
                   ),
                 ),
               ),
@@ -81,7 +83,7 @@ class HistoryTraining extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: const TextStyle(
-                      height: 1.0,
+                      height: 1.5,
                     ),
                   ),
                 ),
@@ -104,28 +106,11 @@ class HistoryTraining extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Row(
-            children: [
-              CbRoundedImage(
-                imageUrl: training.creator.profilePicture,
-                width: 15,
-                height: 15,
-                fit: BoxFit.cover,
-                isNetworkImage: true,
-              ),
-              const SizedBox(width: 5),
-              Expanded(
-                child: Text(
-                  training.creator.name,
-                  style: TextStyle(
-                    color: isDarkMode ? CbColors.grey : CbColors.darkerGrey,
-                    fontSize: 11,
-                    height: 1.0,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+          ResultCreatorInfo(
+            creator: training.creator,
+            showUserPicture: true,
+            userPictureSize: 18,
+            justProfileInfo: true,
           ),
         ],
       ),

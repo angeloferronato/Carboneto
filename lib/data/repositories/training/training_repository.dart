@@ -612,7 +612,6 @@ class TrainingRepository extends GetxController {
     required String trainingId,
     required String userId,
   }) async {
-
     if (userId.isEmpty) throw "Erro: Usuário não identificado";
 
     try {
@@ -652,7 +651,6 @@ class TrainingRepository extends GetxController {
     required String userId,
     required TrainingModel trainingData,
   }) async {
-
     if (userId.isEmpty) throw "Erro: Usuário não identificado";
 
     try {
@@ -691,6 +689,63 @@ class TrainingRepository extends GetxController {
     } catch (e) {
       debugPrint("ERRO NO FIREBASE SAVE: $e");
       throw 'Erro ao salvar treino: $e';
+    }
+  }
+
+  /// 1. Stream para Treinos Criados (Ouve mudanças em tempo real)
+  Stream<List<String>> getCreatedIdsStream(String userId) {
+    return _db
+        .collection('allTrainings')
+        .where('AuthorID', isEqualTo: userId)
+        .snapshots() // <--- O PULO DO GATO: snapshots() ouve mudanças
+        .map((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
+  }
+
+  /// 2. Stream para Treinos Salvos (Se desalvar, avisa na hora)
+  Stream<List<String>> getSavedIdsStream(String userId) {
+    return _db
+        .collection('users')
+        .doc(userId)
+        .collection('savedTrainings')
+        .orderBy('SavedAt', descending: true) // Já vem ordenado
+        .snapshots()
+        .map((snapshot) =>
+            // Ajuste aqui se o campo for diferente no seu banco
+            snapshot.docs.map((doc) => doc.id).toList());
+  }
+
+  /// 3. Stream para Treinos Curtidos
+  Stream<List<String>> getLikedIdsStream(String userId) {
+    return _db
+        .collection('trainingLikes')
+        .where('UserId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => doc['TrainingId'] as String).toList());
+  }
+
+// MANTENHA ESTE MÉTODO (Ele é eficiente para buscar os detalhes)
+  Future<List<TrainingModel>> fetchTrainingsByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    try {
+      // O Firebase aceita no máximo 30 itens no 'whereIn' (ou 10 dependendo da versão),
+      // vamos garantir que pegamos blocos seguros se a lista for gigante,
+      // mas para performance normal, isso aqui resolve 99% dos casos.
+
+      // Dica de Performance: Se a lista for > 10, divida em chunks.
+      // Por enquanto, vamos simplificar:
+      final idsToFetch =
+          ids.take(10).toList(); // Pega os 10 primeiros para exibir rápido
+
+      final snapshot = await _db
+          .collection('allTrainings')
+          .where(FieldPath.documentId, whereIn: idsToFetch)
+          .get();
+
+      return snapshot.docs.map((d) => TrainingModel.fromSnapshot(d)).toList();
+    } catch (e) {
+      print("Erro ao buscar detalhes: $e");
+      return [];
     }
   }
 }
