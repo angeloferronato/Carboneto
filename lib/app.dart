@@ -6,15 +6,18 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get_storage/get_storage.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  App({super.key});
+
+  final GetStorage getStorage = GetStorage();
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       initialBinding: GeneralBindings(),
-      themeMode: ThemeMode.dark,
+      themeMode: getStorage.read('isDarkMode') ?? true ? ThemeMode.dark : ThemeMode.light,
       darkTheme: CbAppTheme.darkTheme,
       supportedLocales: const [
         Locale('en'),

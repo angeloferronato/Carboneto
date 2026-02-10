@@ -1,5 +1,6 @@
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,7 @@ class SettingsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEnabled = !(onTap == null && showErrorMessage!);
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return MediaQuery.removePadding(
       removeLeft: true,
       removeRight: true,
@@ -47,7 +49,9 @@ class SettingsItem extends StatelessWidget {
                       Text(
                         title,
                         style: TextStyle(
-                          color: isEnabled ? Colors.white : CbColors.darkGrey,
+                          color: isDarkMode 
+                          ? (isEnabled ? Colors.white : CbColors.darkGrey)
+                          : (isEnabled ? CbColors.dark : CbColors.darkGrey),
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
@@ -56,7 +60,9 @@ class SettingsItem extends StatelessWidget {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          color: isEnabled ? Colors.grey.shade400 : CbColors.darkerGrey,
+                          color: isDarkMode
+                          ? (isEnabled ? Colors.grey.shade400 : CbColors.darkerGrey)
+                          : (isEnabled ? CbColors.darkerGrey : CbColors.grey),
                           fontSize: 13,
                         ),
                       ),
@@ -71,7 +77,9 @@ class SettingsItem extends StatelessWidget {
               trailing ??
                 Icon(
                   Icons.chevron_right,
-                  color: isEnabled ? Colors.grey.shade500 : CbColors.darkerGrey, 
+                  color: isDarkMode 
+                    ? (isEnabled ? Colors.grey.shade500 : CbColors.darkerGrey)
+                    : (isEnabled ? CbColors.darkerGrey : CbColors.darkGrey)
                 ),
           ],
         ),

@@ -1,8 +1,9 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/level/level_widget.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
-import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
+import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,6 +17,7 @@ class TreinoCard extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final cardWidth = (screenWidth - 40 - 20) / 3;
     final imageHeight = cardWidth * 1.2;
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
 
     return GestureDetector(
       onTap: () => Get.to(TrainingDetailsScreen(training: training)),
@@ -39,7 +41,7 @@ class TreinoCard extends StatelessWidget {
               child: Text(
                 training.title,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: isDarkMode ? Colors.white : CbColors.dark,
                   fontWeight: FontWeight.w300,
                   fontSize: cardWidth * 0.12,
                 ),

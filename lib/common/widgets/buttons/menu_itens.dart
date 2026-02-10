@@ -1,4 +1,5 @@
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class CbThreeDotMenu extends StatelessWidget {
@@ -15,6 +16,7 @@ class CbThreeDotMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return SizedBox(
       width: iconSize + 8,
       height: iconSize + 8,
@@ -22,7 +24,7 @@ class CbThreeDotMenu extends StatelessWidget {
         icon: Icon(
           Icons.more_vert,
           size: iconSize,
-          color: iconColor ?? Colors.white,
+          color: iconColor ?? (isDarkMode ? Colors.white : CbColors.darkerGrey),
         ),
         padding: EdgeInsets.zero,
         iconSize: iconSize,
@@ -30,7 +32,7 @@ class CbThreeDotMenu extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        color: CbColors.dark,
+        color: isDarkMode ? CbColors.dark : CbColors.lightGrey,
         elevation: 8,
         offset: const Offset(-10, 25),
         itemBuilder: (context) => menuItems
@@ -47,14 +49,14 @@ class CbThreeDotMenu extends StatelessWidget {
                       Icon(
                         entry.value.icon,
                         size: 18,
-                        color: entry.value.iconColor ?? Colors.white70,
+                        color: entry.value.iconColor ?? (isDarkMode ? Colors.white70 : CbColors.darkerGrey),
                       ),
                       const SizedBox(width: 12),
                     ],
                     Text(
                       entry.value.title,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: isDarkMode ? Colors.white : CbColors.dark,
                         fontSize: 14,
                       ),
                     ),

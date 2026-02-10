@@ -2,6 +2,7 @@ import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/features/create/controllers/tag_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -12,10 +13,10 @@ class TagSearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     final controller = Get.put(TagController(), tag: tag);
 
     return Scaffold(
-      backgroundColor: CbColors.dark,
       appBar: const CbAppBar(
         title: Text(
           'Adicionar Tags',
@@ -35,10 +36,6 @@ class TagSearchScreen extends StatelessWidget {
               controller: controller.queryController,
               hintText: "Pesquisar tag...",
               onChanged: (value) => controller.searchQuery.value = value,
-              onSubmitted: (value) {
-                // textCtrl.clear();
-                // controller.searchQuery.value = '';
-              },
               suffixIcon: IconButton(
                 onPressed: () {
                   controller.queryController.clear();
@@ -53,7 +50,6 @@ class TagSearchScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // 🔹 Reactive list of tags
             Expanded(
               child: Obx(() {
                 final results = controller.filteredTags;
@@ -87,7 +83,6 @@ class TagSearchScreen extends StatelessWidget {
                               ),
                             ),
 
-                            // 🔹 Tag tile
                             Container(
                               margin: const EdgeInsets.only(left: 10),
                               child: ListTile(
@@ -101,9 +96,9 @@ class TagSearchScreen extends StatelessWidget {
                                     fontSize: 18,
                                     fontFamily: 'Plus Jakarta Sans',
                                     fontWeight: FontWeight.w500,
-                                    color: isSelected
-                                        ? CbColors.primary
-                                        : Colors.white,
+                                    color: isDarkMode 
+                                    ? (isSelected ? CbColors.primary : Colors.white)
+                                    : (isSelected ? const Color.fromARGB(255, 15, 80, 221) : CbColors.dark)
                                   ),
                                 ),
                               ),

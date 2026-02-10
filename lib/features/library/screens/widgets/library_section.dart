@@ -34,19 +34,17 @@ class LibrarySection extends StatelessWidget {
         SizedBox(
           height: 15,
         ),
-        if (itemCount == 0)
-          EmptyData()
+        if (itemCount == 0) EmptyData()
         else SizedBox(
-            height: 200, // define a height for horizontal list
-            child: ListView.separated(
-              padding: EdgeInsets.only(left: CbSizes.defaultSpace),
-              scrollDirection: Axis.horizontal,
-              itemCount: itemCount, // however many trainings you want
-              itemBuilder:  itemBuilder,
-              separatorBuilder: (context, index) =>
-                  const SizedBox(width: 10), // 👈 spacing between cards
-            ),
+          height: 200, // define a height for horizontal list
+          child: ListView.separated(
+            padding: EdgeInsets.only(left: CbSizes.defaultSpace),
+            scrollDirection: Axis.horizontal,
+            itemCount: itemCount, // however many trainings you want
+            itemBuilder:  itemBuilder,
+            separatorBuilder: (context, index) => const SizedBox(width: 10), 
           ),
+        ),
       ],
     );
   }

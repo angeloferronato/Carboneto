@@ -1,4 +1,5 @@
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class CbPrimaryBtn extends StatelessWidget {
@@ -25,13 +26,14 @@ class CbPrimaryBtn extends StatelessWidget {
         ),
         elevation: 3,
         disabledBackgroundColor: CbColors.primary.withValues(alpha: 0.5)
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+          fontSize: fontSize,
+          color: CbColors.white
         ),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            fontSize: fontSize,
-          ),
-        ),
+      ),
     );
   }
 }

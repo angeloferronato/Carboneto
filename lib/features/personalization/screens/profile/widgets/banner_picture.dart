@@ -6,6 +6,7 @@ import 'package:carboneto/features/settings/settings.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class BannerWithPicture extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EditProfileController editProfileController = Get.put(EditProfileController());
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     final profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
     final screenWidth = MediaQuery.of(context).size.width;
     final bannerHeight = screenWidth * 0.6;
@@ -35,7 +37,7 @@ class BannerWithPicture extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [Colors.black, Colors.transparent],
-              stops: [0.1, 0.9],
+              stops: isDarkMode ? [0.1, 0.9] : [0.1, 1.0],
             ).createShader(rect);
           },
           blendMode: BlendMode.dstIn,

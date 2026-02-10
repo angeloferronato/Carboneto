@@ -1,3 +1,4 @@
+import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/authentication/controllers/position_selector/position_selector_controller.dart';
@@ -9,6 +10,7 @@ import 'package:carboneto/features/personalization/screens/profile/edit_profile/
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:carboneto/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
@@ -39,17 +41,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final editProfileController = Get.put(EditProfileController());
     positionSelectorController.dropDownValue = userController.user.value.position;
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          "Editar Perfil",
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),
-        ),
+      appBar: CbAppBar(
+        showBackArrow: true,
+        title: Text('Editar Perfil', style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 22),),
         centerTitle: true,
       ),
       body: Padding(
@@ -164,8 +158,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         Text(
                           'Posição Favorita',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w800),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
                         ),
                         SizedBox(
                           height: 8,
@@ -178,8 +171,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ElevatedButton(
                       onPressed: () => editProfileController.updateUserDetails(),
                       style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 17),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
+                        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 17),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))
+                      ),
                       child: Text(
                         'Salvar Alterações',
                         style: TextStyle(fontWeight: FontWeight.w800),

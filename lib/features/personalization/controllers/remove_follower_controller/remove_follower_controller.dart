@@ -37,12 +37,7 @@ class RemoveFollowerController extends GetxController {
       profileBaseController.followersId.remove(followerId);
       controller.followersCache.value = controller.followersCache.where((user) => user.id != followerId).toList();
       controller.followersResults.value = controller.followersResults.where((user) => user.id != followerId).toList();
-      await controller.profileBaseController.fetchInitial();
-      if (profileBaseController.isAuthUser) {
-        await profileBaseController.userController.fetchUserDetails();
-      } else {
-        await profileBaseController.profileSearchController.fetchUserDetails();
-      }
+      await controller.profileBaseController.refreshUserData();
       controller.followersOffSet.value--;
       controller.loadFollowersPage();
       CbLoaders.customToast(message: 'Seguidor removido.');

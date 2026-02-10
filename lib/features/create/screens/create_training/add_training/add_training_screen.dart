@@ -16,23 +16,18 @@ class AddTrainingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final exercisesController = Get.put(ExercisesController());
-
     return Scaffold(
-      backgroundColor: CbColors.dark,
       appBar: CbAppBar(
         title: Text(
           'Adicionar Exercício',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Plus Jakarta Sans',
-          ),
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 22)
         ),
         showBackArrow: true,
         actions: [
           IconButton(
             onPressed: () => Get.to(() => const CreateExerciseScreen()), 
-            icon: Icon(Icons.add, color: CbColors.primary, size: 30,),)
+            icon: Icon(Icons.add, color: CbColors.primary, size: 30,),
+          )
         ],
       ),
       body: SafeArea(
@@ -51,7 +46,7 @@ class AddTrainingScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 15, bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: CategoriesBar(controllerTag: '',),
                 ),
                 ExercisesList(),

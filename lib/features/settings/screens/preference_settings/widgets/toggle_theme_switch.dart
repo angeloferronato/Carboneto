@@ -30,12 +30,11 @@ class ThemeToggleSwitch extends StatelessWidget {
           children: [
             // Ícone
             Align(
-              alignment:
-                  isDarkTheme ? Alignment.centerLeft: Alignment.centerRight,
+              alignment: isDarkTheme ? Alignment.centerLeft: Alignment.centerRight,
               child: Icon(
                 isDarkTheme
-                    ? Icons.nightlight_round
-                    : Icons.wb_sunny,
+                  ? Icons.nightlight_round
+                  : Icons.wb_sunny,
                 color: Colors.white,
                 size: 14,
               ),
@@ -45,8 +44,7 @@ class ThemeToggleSwitch extends StatelessWidget {
             AnimatedAlign(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeInOut,
-              alignment:
-                  isDarkTheme ? Alignment.centerRight:Alignment.centerLeft,
+              alignment: isDarkTheme ? Alignment.centerRight:Alignment.centerLeft,
               child: Container(
                 width: 22,
                 height: 22,

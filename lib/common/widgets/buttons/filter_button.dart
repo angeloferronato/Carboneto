@@ -1,5 +1,7 @@
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class FilterButton extends StatelessWidget {
@@ -10,10 +12,10 @@ class FilterButton extends StatelessWidget {
 
   final Function(Map<String, dynamic>)? onFilterApplied;
 
+  
   void _showFilterModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: CbColors.dark,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -26,6 +28,7 @@ class FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = CbHelperFunctions.isDarkMode(context); 
     return InkWell(
       borderRadius: BorderRadius.circular(25),
       onTap: () => _showFilterModal(context),
@@ -33,16 +36,16 @@ class FilterButton extends StatelessWidget {
         height: 40,
         width: 47,
         decoration: BoxDecoration(
-          color: CbColors.dark,
+          color: isDarkMode ? CbColors.dark : CbColors.grey,
           borderRadius: BorderRadius.circular(25),
           border: Border.all(
-            color: CbColors.white.withValues(alpha: 0.1),
+            color: isDarkMode ? CbColors.white.withValues(alpha: 0.1) : CbColors.dark.withValues(alpha: 0.05),
             width: 1.2,
           ),
         ),
-        child: const Icon(
+        child: Icon(
           Icons.tune_rounded,
-          color: Colors.white,
+          color: isDarkMode ? CbColors.white : CbColors.dark,
           size: 26,
         ),
       ),
@@ -129,12 +132,13 @@ class _FilterModalContentState extends State<FilterModalContent> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = CbHelperFunctions.isDarkMode(context); 
     return Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SingleChildScrollView(
-            child: Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SingleChildScrollView(
+        child: Container(
           padding: const EdgeInsets.only(right: 20, left: 20, bottom: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -144,17 +148,16 @@ class _FilterModalContentState extends State<FilterModalContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Filtros',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                      fontWeight: FontWeight.bold
+                    )
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: isDarkMode ? Colors.white : CbColors.darkerGrey),
                   ),
                 ],
               ),
@@ -169,6 +172,7 @@ class _FilterModalContentState extends State<FilterModalContent> {
                 children: difficultyOptions.map((option) {
                   final isSelected = selectedDifficulty == option['value'];
                   return _buildFilterChip(
+                    isDarkMode: isDarkMode,
                     label: option['label'],
                     icon: option['icon'],
                     isSelected: isSelected,
@@ -190,19 +194,15 @@ class _FilterModalContentState extends State<FilterModalContent> {
 
               Text(
                 '${durationRange.start.round()} min – ${durationRange.end.round()} min',
-                style: const TextStyle(color: Colors.white70),
+                style: TextStyle(color: isDarkMode ? Colors.white70 : CbColors.darkerGrey),
               ),
 
               SliderTheme(
                 data: SliderTheme.of(context).copyWith(
                   valueIndicatorColor: CbColors.primary, // bubble bg
-                  valueIndicatorTextStyle: const TextStyle(
-                      color: Colors.white, // NUMBER color
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Plus Jakarta Sans'),
+                  valueIndicatorTextStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
                   activeTrackColor: CbColors.primary,
-                  inactiveTrackColor: CbColors.white.withValues(alpha: 0.2),
+                  inactiveTrackColor: isDarkMode ? CbColors.white.withValues(alpha: 0.2) : CbColors.darkGrey,
                   thumbColor: CbColors.primary,
                   overlayColor: CbColors.primary.withValues(alpha: 0.2),
                 ),
@@ -234,6 +234,7 @@ class _FilterModalContentState extends State<FilterModalContent> {
                 children: peopleOptions.map((option) {
                   final isSelected = selectedPeopleCount == option['value'];
                   return _buildFilterChip(
+                    isDarkMode: isDarkMode,
                     label: option['label'],
                     icon: option['icon'],
                     isSelected: isSelected,
@@ -257,6 +258,7 @@ class _FilterModalContentState extends State<FilterModalContent> {
                 children: orderOptions.map((option) {
                   final isSelected = selectedOrder == option['value'];
                   return _buildFilterChip(
+                    isDarkMode: isDarkMode,
                     label: option['label'],
                     icon: option['icon'],
                     isSelected: isSelected,
@@ -273,17 +275,17 @@ class _FilterModalContentState extends State<FilterModalContent> {
               // Verified Only Toggle
               Container(
                 decoration: BoxDecoration(
-                  color: CbColors.white.withValues(alpha: 0.05),
+                  color: isDarkMode ? CbColors.white.withValues(alpha: 0.05) : CbColors.grey,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: SwitchListTile(
-                  title: const Row(
+                  title: Row(
                     children: [
                       Icon(Iconsax.verify5, size: 20, color: CbColors.primary),
                       SizedBox(width: 8),
                       Text(
                         'Apenas Verificados',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: isDarkMode ? Colors.white : CbColors.dark),
                       ),
                     ],
                   ),
@@ -306,19 +308,16 @@ class _FilterModalContentState extends State<FilterModalContent> {
                       onPressed: _clearFilters,
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
-                          color: CbColors.white.withValues(alpha: 0.2),
+                          color: isDarkMode ? CbColors.white.withValues(alpha: 0.2) : CbColors.darkGrey,
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Limpar',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Plus Jakarta Sans',
-                            fontSize: 15),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 15)
                       ),
                     ),
                   ),
@@ -349,16 +348,19 @@ class _FilterModalContentState extends State<FilterModalContent> {
               const SizedBox(height: 20),
             ],
           ),
-        )));
+        )
+      )
+    );
   }
 
   Widget _buildSectionTitle(String title) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(Get.context!);
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: Colors.white,
+        color: isDarkMode ? CbColors.white : CbColors.dark,
       ),
     );
   }
@@ -368,6 +370,7 @@ class _FilterModalContentState extends State<FilterModalContent> {
     required IconData icon,
     required bool isSelected,
     required VoidCallback onTap,
+    required bool isDarkMode,
   }) {
     return InkWell(
       onTap: onTap,
@@ -375,9 +378,9 @@ class _FilterModalContentState extends State<FilterModalContent> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected
-              ? CbColors.primary
-              : CbColors.white.withValues(alpha: 0.05),
+          color: isDarkMode 
+          ? (isSelected ? CbColors.primary : CbColors.white.withValues(alpha: 0.05))
+          : (isSelected ? CbColors.primary : CbColors.grey),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
@@ -392,14 +395,18 @@ class _FilterModalContentState extends State<FilterModalContent> {
             Icon(
               icon,
               size: 18,
-              color: isSelected ? Colors.white : Colors.white70,
+              color: isDarkMode 
+              ? (isSelected ? Colors.white : Colors.white70)
+              : (isSelected ? CbColors.white : CbColors.darkerGrey)
             ),
             const SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
                 fontSize: 14,
-                color: isSelected ? Colors.white : Colors.white70,
+                color: isDarkMode 
+                  ? (isSelected ? Colors.white : Colors.white70)
+                  : (isSelected ? CbColors.white : CbColors.darkerGrey),
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:carboneto/common/widgets/custom_shapes/containers/rounded_countainer.dart';
 import 'package:carboneto/features/training/controllers/training_execution_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
@@ -129,7 +128,7 @@ class _TrainingExecutionState extends State<TrainingExecution> {
                       return Material(
                         elevation: 15,
                         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                        color: const Color.fromARGB(255, 46, 46, 46),
+                        color: isDarkTheme ? const Color.fromARGB(255, 46, 46, 46) : CbColors.grey,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: ListView(
@@ -214,7 +213,7 @@ class _TrainingExecutionState extends State<TrainingExecution> {
                 borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
                 color: isDarkTheme
                     ? Color.fromARGB(183, 53, 53, 53)
-                    : Color.fromARGB(153, 170, 155, 155),
+                    : Color.fromARGB(153, 194, 194, 194),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

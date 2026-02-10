@@ -23,14 +23,13 @@ class HistoryScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      backgroundColor: CbColors.dark,
       appBar: CbAppBar(
         title: Text(
           'Histórico',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
-              ),
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         showBackArrow: true,
       ),

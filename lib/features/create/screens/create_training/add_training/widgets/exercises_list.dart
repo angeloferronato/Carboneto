@@ -2,6 +2,7 @@ import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart'; 
@@ -14,6 +15,7 @@ class ExercisesList extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Expanded(
       child: Obx(() {
         final exercises = controller.filteredExercises;
@@ -69,7 +71,7 @@ class ExercisesList extends StatelessWidget {
                                   height: 90,
                                   decoration: BoxDecoration(
                                     color: isSelected ? CbColors.primary : CbColors.dark,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
                                 ),
                                 
@@ -80,7 +82,7 @@ class ExercisesList extends StatelessWidget {
                                     border: Border.all(
                                       color: isSelected
                                           ? CbColors.primary.withValues(alpha: 0.4)
-                                          : CbColors.dark,
+                                          : Colors.transparent,
                                       width: 1.5,
                                     ),
                                     boxShadow: [
@@ -135,8 +137,8 @@ class ExercisesList extends StatelessWidget {
                                                     maxLines: 1, 
                                                     overflow: TextOverflow.ellipsis, 
                                                     exercise.creator.name,
-                                                    style: const TextStyle(
-                                                      color: Colors.white70,
+                                                    style: TextStyle(
+                                                      color: isDarkMode ? Colors.white70 : CbColors.darkerGrey,
                                                       fontSize: 10,
                                                       fontWeight: FontWeight.w500,
                                                     ),
@@ -153,7 +155,7 @@ class ExercisesList extends StatelessWidget {
                                               Text(
                                                 '$categoriesText · ${exercise.duration} min',
                                                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                                  color: Colors.white.withValues(alpha: 0.6),
+                                                  color: isDarkMode ? Colors.white70 : CbColors.darkerGrey,
                                                   fontSize: 10,
                                                 )
                                               ),

@@ -7,7 +7,6 @@ import 'package:carboneto/features/create/screens/create_training/widgets/create
 import 'package:carboneto/features/create/screens/create_training/widgets/form_label.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/number_dropdown.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/tag_selector.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,15 +21,10 @@ class CreateExerciseScreen extends StatelessWidget {
     final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.exerciseControllerTag);
     final createExerciseController = Get.put(CreateExerciseController());
     return Scaffold(
-      backgroundColor: CbColors.dark,
       appBar: CbAppBar(
         title: Text(
           'Criar Exercício',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Plus Jakarta Sans',
-          ),
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 22),
         ),
         showBackArrow: true,
       ),

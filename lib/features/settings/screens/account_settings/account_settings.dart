@@ -37,7 +37,7 @@ class _AccountSettingsState extends State<AccountSettings> {
       appBar: CbAppBar(
         title: Text(
           'Informações da conta',
-          style: Theme.of(context).textTheme.headlineSmall!.apply(color: CbColors.white),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
       ),

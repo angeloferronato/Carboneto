@@ -4,6 +4,7 @@ import 'package:carboneto/features/settings/screens/help_settings/widgets/faq_se
 import 'package:carboneto/features/settings/screens/widgets/settings_item.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -15,15 +16,13 @@ class HelpSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       extendBody: true,
       appBar: CbAppBar(
         title: Text(
           'Ajuda e contato',
-          style: Theme.of(context)
-              .textTheme
-              .headlineSmall!
-              .apply(color: CbColors.white),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
       ),
@@ -32,11 +31,10 @@ class HelpSettings extends StatelessWidget {
         removeBottom: true,
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+            padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               spacing: 20,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
@@ -44,35 +42,33 @@ class HelpSettings extends StatelessWidget {
                 ),
                 FaqSection(),
                 SettingsItem(
-                  title: 'Sua opinião faz a diferença!', 
+                  title: 'Sua opinião faz a diferença!',
+                  onTap: () => {}, 
                   subtitle: 'Avalie o Carboneto na Play Store e ajude outros atletas a conhecerem o app.',
-                  trailing: IconButton(
-                    onPressed: () => {}, 
-                    icon: Icon(
-                      Iconsax.star,
-                      color: CbColors.white,
-                    ),
+                  trailing: Icon(
+                    Iconsax.star,
+                    color: isDarkMode ? CbColors.white : CbColors.darkerGrey,
                   ),
                 ),
                 SettingsItem(
                   title: 'Siga o nosso Instagram', 
                   subtitle: 'Nosso Instagram é dedicado à divulgação de novidades, atualizações e conteúdos do projeto.',
-                  trailing: IconButton(
-                    onPressed: () => settings.openInstagram(), 
-                    icon: Icon(
-                      Iconsax.instagram,
-                      color: CbColors.white,
-                    ),
+                  trailing: Icon(
+                    Iconsax.instagram,
+                    color: isDarkMode ? CbColors.white : CbColors.darkerGrey,
                   ),
+                  onTap: () => settings.openInstagram(),
                 ),
                 SettingsItem(
                   title: 'Email', 
                   subtitle: 'carboneto@gmail.com',
                   hideIcon: true,
+                  showErrorMessage: false,
                 ),
                 SettingsItem(
                   title: 'Termos e condições', 
                   subtitle: 'Os Termos e Condições definem como o Carboneto pode ser utilizado.',
+                  showErrorMessage: false,
                 ),
               ],
             ),

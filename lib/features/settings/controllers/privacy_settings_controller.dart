@@ -6,6 +6,7 @@ import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
@@ -59,6 +60,7 @@ class PrivacySettingsController extends GetxController{
   }
 
   void showConfirmMessage() async {
+    final isDarkMode = CbHelperFunctions.isDarkMode(Get.context!);
     Get.defaultDialog(
       titlePadding: const EdgeInsets.only(top: CbSizes.lg),
       contentPadding: EdgeInsets.all(CbSizes.lg),
@@ -78,7 +80,7 @@ class PrivacySettingsController extends GetxController{
         onPressed: () => Navigator.of(Get.overlayContext!).pop(),
         child: Text('Não'),
       ),
-      backgroundColor: CbColors.dark
+      backgroundColor: isDarkMode ? CbColors.dark : CbColors.white
     );
   }
 }

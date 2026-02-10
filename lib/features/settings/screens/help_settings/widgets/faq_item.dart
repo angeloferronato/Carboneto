@@ -1,6 +1,6 @@
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-
 
 class FaqItem extends StatelessWidget {
   final String question;
@@ -14,6 +14,7 @@ class FaqItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: ExpansionTile(
@@ -27,15 +28,15 @@ class FaqItem extends StatelessWidget {
         ),
         title: Text(
           question,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: CbColors.white,
+            color: isDarkMode ? CbColors.white : CbColors.dark,
           ),
         ),
         children: [
           Text(
             answer,
-            style: const TextStyle(color: CbColors.darkGrey),
+            style: TextStyle(color: isDarkMode ? CbColors.darkGrey : CbColors.darkerGrey),
           ),
         ],
       ),

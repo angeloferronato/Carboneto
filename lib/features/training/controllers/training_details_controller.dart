@@ -20,8 +20,7 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 class TrainingDetailsController extends GetxController {
   static TrainingDetailsController get instance => Get.find();
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
-  final CreateTrainingController createTrainingController =
-      Get.put(CreateTrainingController());
+  final CreateTrainingController createTrainingController = Get.put(CreateTrainingController());
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final UserController userController = Get.put(UserController());
 
@@ -183,8 +182,7 @@ class TrainingDetailsController extends GetxController {
 
   Future<TrainingModel> fetchExercises(TrainingModel training) async {
     isLoading.value = true;
-    training.exercises = await exerciseRepository
-        .fetchSpecificExerciseDetails(training.exercisesId ?? []);
+    training.exercises = await exerciseRepository.fetchSpecificExerciseDetails(training.exercisesId ?? []);
     isLoading.value = false;
     return training;
   }
@@ -217,8 +215,7 @@ class TrainingDetailsController extends GetxController {
                   'Deletar',
                   style: TextStyle(color: Colors.red),
                 ),
-                onTap: () => createTrainingController
-                    .showCancelDeleteTrainingMessage(training),
+                onTap: () => createTrainingController.showCancelDeleteTrainingMessage(training),
               ),
             ],
           ),
@@ -231,39 +228,39 @@ class TrainingDetailsController extends GetxController {
     });
   }
 
-  Future<dynamic> showStartTrainingOptions(TrainingModel training) {
+  Future<dynamic> showStartTrainingOptions(TrainingModel training, bool isDarkMode) {
     stopViewTracking();
 
     return Get.defaultDialog(
-        titlePadding: const EdgeInsets.only(top: CbSizes.lg),
-        contentPadding: EdgeInsets.all(CbSizes.lg),
-        title: 'Você deseja continuar?',
-        middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
-        confirm: ElevatedButton(
-            onPressed: () => startTraining(training),
-            style: ElevatedButton.styleFrom(
-                backgroundColor: CbColors.primary,
-                side: BorderSide(color: CbColors.primary)),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
-              child: Text('Sim'),
-            )),
-        cancel: OutlinedButton(
-          onPressed: () {
-            Navigator.of(Get.overlayContext!).pop();
-            if (!hasViewBeenCounted.value) {
-              startViewTracking(training);
-            }
-          },
-          child: Text('Não'),
-        ),
-        backgroundColor: CbColors.dark);
+      titlePadding: const EdgeInsets.only(top: CbSizes.lg),
+      contentPadding: EdgeInsets.all(CbSizes.lg),
+      title: 'Você deseja continuar?',
+      middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
+      confirm: ElevatedButton(
+          onPressed: () => startTraining(training),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: CbColors.primary,
+              side: BorderSide(color: CbColors.primary)),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
+            child: Text('Sim'),
+          )),
+      cancel: OutlinedButton(
+        onPressed: () {
+          Navigator.of(Get.overlayContext!).pop();
+          if (!hasViewBeenCounted.value) {
+            startViewTracking(training);
+          }
+        },
+        child: Text('Não'),
+      ),
+      backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
+    );
   }
 
   Future<void> startTraining(TrainingModel training) async {
     try {
-      CbFullScreenLoader.openLoadingDialog(
-          'Estamos iniciando seu treino...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog('Estamos iniciando seu treino...', CbImages.loadingAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {

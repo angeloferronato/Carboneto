@@ -86,7 +86,6 @@ class ContentGrid extends StatelessWidget {
                 );
               }
               
-
               final list = trainingController.trainingsList;
               final text = isAuthUser ? 'Você' : 'Este usuário';
               if (list.isEmpty) {

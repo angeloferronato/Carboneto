@@ -15,6 +15,7 @@ import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,6 +27,7 @@ class CreateTraining extends StatelessWidget {
     final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.trainingControllerTag);
     final controller = Get.put(CreateTrainingController()); 
     final exercisesController = Get.put(ExercisesController());
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: CbAppBar(
         title: const Text(
@@ -52,8 +54,7 @@ class CreateTraining extends StatelessWidget {
                   uploadImageController: uploadImageController,
                   onSelectFiles: uploadImageController.pickSingleFile,
                   label: 'Upload thumbnail',
-                  description:
-                      'Selecione um arquivo de imagem para a capa do treino.',
+                  description: 'Selecione um arquivo de imagem para a capa do treino.',
                 ),
                 const SizedBox(height: 20),
             
@@ -96,17 +97,17 @@ class CreateTraining extends StatelessWidget {
                             Image(
                               image: AssetImage(CbImages.basket),
                               width: 70,
+                              color: isDarkMode ? CbColors.grey : CbColors.darkerGrey,
                             ),
                             const SizedBox(height: 10),
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 50, vertical: 0),
+                              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 0),
                               child: Text(
                                 'Adicione um exercicio para começar seu treinamento',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: CbColors.darkGrey,
+                                  color: isDarkMode ? CbColors.darkGrey : CbColors.darkerGrey,
                                   fontWeight: FontWeight.w300,
                                 ),
                               ),

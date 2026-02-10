@@ -16,7 +16,7 @@ class ShowDeleteOptions extends StatelessWidget {
     final controller = Get.put(DeleteAccountController());
     return Scaffold(
       appBar: CbAppBar(
-        title: Text('Opções de exclusão de conta', style: Theme.of(context).textTheme.headlineSmall!.apply(color: CbColors.white)),
+        title: Text('Opções de exclusão de conta', style: Theme.of(context).textTheme.headlineSmall),
         showBackArrow: true,
       ),
       body: SingleChildScrollView(

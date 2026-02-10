@@ -25,9 +25,7 @@ class _SelectedExercisesState extends State<SelectedExercises> {
         children: [
           for (int i = 0; i < exercisesController.selectedIndexes.length; i++) 
             ExerciseSelectionPreviewItem(
-              key: ValueKey(
-                exercisesController.exercises[exercisesController.selectedIndexes[i]].id,
-              ), 
+              key: ValueKey(exercisesController.exercises[exercisesController.selectedIndexes[i]].id,), 
               exercise: exercisesController.exercises[exercisesController.selectedIndexes[i]], 
               index: exercisesController.selectedIndexes[i]
             ),

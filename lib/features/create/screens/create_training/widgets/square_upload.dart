@@ -5,6 +5,7 @@ import 'package:carboneto/features/create/controllers/upload_image_controller.da
 import 'package:carboneto/features/training/screens/training_execution/widgets/video_player.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,16 +29,18 @@ class SquareUploadWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Obx(
       () => uploadImageController.selectedFile.value == null && uploadImageController.selectedVideo.value == null ? Center(
         child: Container(
           height: 250,
           decoration: BoxDecoration(
-              border: Border.all(
-                color: CbColors.darkGrey,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(20)),
+            border: Border.all(
+              color: CbColors.darkGrey,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(20)
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -47,7 +50,7 @@ class SquareUploadWidget extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: CbColors.inputBG,
+                  color: isDarkMode ? CbColors.inputBG : CbColors.lightGrey,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -65,7 +68,7 @@ class SquareUploadWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: CbColors.lightGrey,
+                  color: isDarkMode ? CbColors.lightGrey : CbColors.darkerGrey,
                 ),
               ),
               const SizedBox(height: 8),
@@ -79,7 +82,7 @@ class SquareUploadWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 11,
-                    color: CbColors.lightGrey,
+                    color: isDarkMode ? CbColors.lightGrey : CbColors.darkerGrey,
                   ),
                 ),
               ),

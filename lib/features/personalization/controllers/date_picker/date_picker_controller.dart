@@ -1,4 +1,5 @@
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ class DatePickerController extends GetxController {
   static DatePickerController get instance => Get.find();
 
   Future<void> showDatePickerAction(TextEditingController controller) async {
+    final isDarkMode = CbHelperFunctions.isDarkMode(Get.context!);
     showDialog(
       context: Get.context!,
       builder: (context) {
@@ -38,9 +40,9 @@ class DatePickerController extends GetxController {
                 selectionMode: DateRangePickerSelectionMode.single,
                 maxDate: DateTime.now(),
                 minDate: DateTime(1900),
-                backgroundColor: CbColors.dark,
+                backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
                 headerStyle: DateRangePickerHeaderStyle(
-                  backgroundColor: CbColors.dark,
+                  backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
                   textAlign: TextAlign.center,
                   textStyle: const TextStyle(
                     fontSize: 18,

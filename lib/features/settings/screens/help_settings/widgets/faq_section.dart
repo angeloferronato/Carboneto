@@ -15,10 +15,7 @@ class FaqSection extends StatelessWidget {
           children: [
             Text(
               'Perguntas frequentes',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .apply(color: CbColors.white),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             SizedBox(width: 10,),
             Icon(Icons.help_outline_outlined)
@@ -27,23 +24,19 @@ class FaqSection extends StatelessWidget {
         const SizedBox(height: 12),
         FaqItem(
           question: 'Posso repetir um treino já realizado?',
-          answer:
-              'Sim. Todos os treinos ficam salvos no histórico e podem ser iniciados novamente a qualquer momento.',
+          answer: 'Sim. Todos os treinos ficam salvos no histórico e podem ser iniciados novamente a qualquer momento.',
         ),
         FaqItem(
           question: 'Posso criar meus próprios treinos?',
-          answer:
-              'Sim. Você pode criar treinos personalizados de acordo com seus objetivos e salvá-los para usar sempre que quiser.',
+          answer: 'Sim. Você pode criar treinos personalizados de acordo com seus objetivos e salvá-los para usar sempre que quiser.',
         ),
         FaqItem(
           question: 'Posso usar o app em mais de um dispositivo?',
-          answer:
-              'Sim. Ao fazer login na sua conta, seus treinos e progresso são sincronizados entre dispositivos.',
+          answer: 'Sim. Ao fazer login na sua conta, seus treinos e progresso são sincronizados entre dispositivos.',
         ),
         FaqItem(
           question: 'Preciso de internet para usar?',
-          answer:
-              'Algumas funcionalidades exigem conexão com a internet, como vídeos e sincronização.',
+          answer: 'Algumas funcionalidades exigem conexão com a internet, como vídeos e sincronização.',
         ),
       ],
     );

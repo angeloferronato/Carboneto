@@ -127,7 +127,7 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
           height: 60,
           child: ElevatedButton(
             onPressed: () =>
-                trainingDetailsController.showStartTrainingOptions(training),
+                trainingDetailsController.showStartTrainingOptions(training, isDarkMode),
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),

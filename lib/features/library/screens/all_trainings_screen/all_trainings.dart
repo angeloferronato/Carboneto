@@ -12,7 +12,6 @@ class AllTrainingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CbColors.dark,
       appBar: CbAppBar(
         title: Text(
           'Seus Treinos',

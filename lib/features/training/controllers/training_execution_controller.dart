@@ -126,29 +126,30 @@ class TrainingExecutionController extends GetxController
         Duration(minutes: activeExercise.value.duration);
   }
 
-  void showCancelMessage() {
+  void showCancelMessage(bool isDarkMode) {
     Get.defaultDialog(
-        titlePadding: const EdgeInsets.only(top: CbSizes.lg),
-        contentPadding: EdgeInsets.all(CbSizes.lg),
-        title: 'Você deseja finalizar o treino?',
-        middleText: 'Assim que você sair, o treino será cancelado.',
-        confirm: ElevatedButton(
-            onPressed: () async {
-              saveProgress();
-              Get.offAll(HomeMenu());
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: CbColors.error,
-                side: BorderSide(color: CbColors.error)),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
-              child: Text('Sim'),
-            )),
-        cancel: OutlinedButton(
-          onPressed: () => Navigator.of(Get.overlayContext!).pop(),
-          child: Text('Não'),
-        ),
-        backgroundColor: CbColors.dark);
+      titlePadding: const EdgeInsets.only(top: CbSizes.lg),
+      contentPadding: EdgeInsets.all(CbSizes.lg),
+      title: 'Você deseja finalizar o treino?',
+      middleText: 'Assim que você sair, o treino será cancelado.',
+      confirm: ElevatedButton(
+          onPressed: () async {
+            saveProgress();
+            Get.offAll(HomeMenu());
+          },
+          style: ElevatedButton.styleFrom(
+              backgroundColor: CbColors.error,
+              side: BorderSide(color: CbColors.error)),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
+            child: Text('Sim'),
+          )),
+      cancel: OutlinedButton(
+        onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+        child: Text('Não'),
+      ),
+      backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
+    );
   }
 
   void toggleSheet() {

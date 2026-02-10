@@ -31,7 +31,7 @@ class TrainingStatsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
             color: isDarkMode
                 ? const Color.fromARGB(68, 121, 121, 121)
-                : const Color.fromARGB(255, 48, 48, 48),
+                : const Color.fromARGB(187, 218, 214, 214),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

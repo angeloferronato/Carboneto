@@ -45,4 +45,14 @@ class ProfileBaseController extends GetxController {
         ? userController.profileLoading.value
         : profileSearchController.profileLoading.value;
   }
+
+  Future<void> refreshUserData() async {
+    if (isAuthUser) {
+      await userController.fetchUserDetails();
+    } else {
+      await profileSearchController.fetchUserDetails();
+    }
+    syncUser();
+    await fetchInitial();
+  }
 }

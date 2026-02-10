@@ -17,10 +17,11 @@ class LevelWidget extends StatelessWidget {
     final levelStyle = CbHelperFunctions.parseLevelStyle(context, level);
     int value = levelStyle['levelValue'] as int;
     bool isElite = false;
+
     if (level.name == 'elite') {
       isElite = true;
     }
-    const int maxLevel = 3; // Changed from 3 to 4 to support ELITE level
+    const int maxLevel = 3;
 
     return Row(
       spacing: 7,
@@ -28,16 +29,18 @@ class LevelWidget extends StatelessWidget {
         Text(
           levelStyle['difficultyTitle'],
           style: TextStyle(
-              letterSpacing: 1.5,
-              fontSize: size,
-              color: isElite
-                  ? Colors.amber
-                  : levelStyle['difficultyColor']),
+            letterSpacing: 1.5,
+            fontSize: size,
+            color: isElite
+                ? Colors.amber
+                : levelStyle['difficultyColor']
+          ),
         ),
         Row(
           spacing: 2,
           children: [
-            ...(List.generate(
+            ...(
+                List.generate(
                   value,
                   (i) => CbRoundedContainer(
                     width: size,
@@ -51,12 +54,11 @@ class LevelWidget extends StatelessWidget {
                   (i) => CbRoundedContainer(
                     width: size,
                     height: size,
-                    border: Border.all(
-                        color: levelStyle['difficultyBorder'].withAlpha(150)),
-                    backgroundColor:
-                        levelStyle['difficultyColor'].withAlpha(150),
+                    border: Border.all(color: levelStyle['difficultyBorder']),
+                    backgroundColor: levelStyle['difficultyColor'].withAlpha(150),
                   ),
-                )),
+                )
+              ),
           ],
         ),
       ],

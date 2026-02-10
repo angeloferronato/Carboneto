@@ -18,11 +18,8 @@ class PrivacySettings extends StatelessWidget {
       extendBody: true,
       appBar: CbAppBar(
         title: Text(
-          'Privacidade e social',
-          style: Theme.of(context)
-              .textTheme
-              .headlineSmall!
-              .apply(color: CbColors.white),
+          'Privacidade e social', 
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
       ),

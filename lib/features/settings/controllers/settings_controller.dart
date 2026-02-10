@@ -1,4 +1,6 @@
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -89,39 +91,32 @@ class SettingsController extends GetxController {
     await loadCacheSize();
   }
 
-  
-
   // Pergunta pro usuario se quer limpar msm e chama a funcao de limpar
   Future<void> confirmClearCache(BuildContext context) async {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     Get.defaultDialog(
+      titlePadding: const EdgeInsets.only(top: CbSizes.lg),
+      contentPadding: EdgeInsets.all(CbSizes.lg),
       title: 'Limpar cache',
-      titlePadding: EdgeInsets.symmetric(vertical: 20),
-      content: const Text(
-        'Isso remove apenas arquivos temporários e não apaga seus treinos ou progresso.',
+      middleText: 'Isso remove apenas arquivos temporários e não apaga seus treinos ou progresso.',
+      confirm: ElevatedButton(
+        onPressed: () async {
+          Get.back();
+          await clearAppCache();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: CbColors.primary,
+        ),  
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
+          child: Text('Limpar'),
+        )
       ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 20),
-      actions: [
-        TextButton(
-          onPressed: () => Get.back(),
-          child: const Text(
-            'Cancelar',
-            style: TextStyle(color: CbColors.grey),
-          ),
-        ),
-        TextButton(
-          onPressed: () async {
-            Get.back();
-            await clearAppCache();
-          },
-          child: const Text(
-            'Limpar',
-            style: TextStyle(
-              color: CbColors.info,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ],
+      cancel: OutlinedButton(
+        onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+        child: Text('Cancelar'),
+      ),
+      backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
     );
   }
 

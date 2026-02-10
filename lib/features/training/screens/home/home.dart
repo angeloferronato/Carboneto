@@ -24,29 +24,25 @@ class _HomeScreenState extends State<HomeScreen> {
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final UserRepository userRepository = Get.put(UserRepository());
   final HomeController controller = Get.put(HomeController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: CbSizes.md, top: CbSizes.md, bottom: CbSizes.md),
-          child: Obx(() {
-            if (controller.isLoading.value) {
-              return _buildLoading();
-            }
-          
-            if (controller.error.value != null) {
-              return _buildError(controller.error.value!);
-            }
-          
-            if (controller.isGridMode.value) {
-              return _buildGridMode();
-            }
-          
-            return _buildSectionsMode();
-          }),
-        ),
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return _buildLoading();
+          }
+        
+          if (controller.error.value != null) {
+            return _buildError(controller.error.value!);
+          }
+        
+          if (controller.isGridMode.value) {
+            return _buildGridMode();
+          }
+        
+          return _buildSectionsMode();
+        }),
       ),
     );
   }
@@ -76,26 +72,29 @@ class _HomeScreenState extends State<HomeScreen> {
           TopLogo(),
           CategoriesBar(controllerTag: 'home',),
           Padding(
-            padding: const EdgeInsets.only(top: 16),
+            padding: const EdgeInsets.only(top: 16, left: CbSizes.md),
             child: Text(
               controller.currentTitle.value,
               style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 22),
             ),
           ),
-          CbGridLayout(
-            mainAxisExtent: 235,
-            itemCount: controller.visibleTrainings.length,
-            itemBuilder: (_, index) {
-              final training = controller.visibleTrainings[index];
-              return HomeTrainingWidget(
-                paddingRight: 0,
-                borderRadius: 15,
-                onTap: () {
-                  Get.to(() => TrainingDetailsScreen(training: training));
-                }, 
-                training: training,
-              );
-            },
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: CbSizes.md),
+            child: CbGridLayout(
+              mainAxisExtent: 235,
+              itemCount: controller.visibleTrainings.length,
+              itemBuilder: (_, index) {
+                final training = controller.visibleTrainings[index];
+                return HomeTrainingWidget(
+                  paddingRight: 0,
+                  borderRadius: 15,
+                  onTap: () {
+                    Get.to(() => TrainingDetailsScreen(training: training));
+                  }, 
+                  training: training,
+                );
+              },
+            ),
           ),
           
         ],
@@ -133,7 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         _buildSectionHeader(title),
         const SizedBox(height: 12),
-        SizedBox(
+        Container(
+          padding: const EdgeInsets.only(left: CbSizes.md),
           height: 265,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
-          padding: const EdgeInsets.only(right: CbSizes.md),
+          padding: const EdgeInsets.symmetric(horizontal: CbSizes.md),
           child: CbSectionHeading(title: title, onPressed: () {
             controller.openCategory(title);
           }),

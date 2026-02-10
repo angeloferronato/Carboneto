@@ -36,8 +36,7 @@ class TrainingTagsRow extends StatelessWidget {
               padding: const EdgeInsets.only(right: CbSizes.sm),
               child: CbTipChipTraining(
                 text: category,
-                textColor:
-                    isDarkMode ? CbColors.white : CbColors.dark,
+                textColor: CbColors.white,
               ),
             ),
           )

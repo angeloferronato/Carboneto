@@ -32,14 +32,16 @@ class TagSelector extends StatelessWidget {
                   label: Text(
                     tag,
                     style: TextStyle(
-                      color: (isDarkTheme
+                      color: (
+                        isDarkTheme
                           ? CbColors.white
-                          : CbColors.black),
+                          : CbColors.black
+                      ),
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Plus Jakarta Sans'
                     ),
                   ),
-                  backgroundColor: CbColors.dark,
+                  backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
                   shape: StadiumBorder(
                     side: BorderSide(color: CbColors.primary),
                   ),

@@ -16,7 +16,7 @@ class DeleteAccount extends StatelessWidget {
     final controller = Get.put(DeleteAccountController());
     return Scaffold(
       appBar: CbAppBar(
-        title: Text('Excluir Conta', style: Theme.of(context).textTheme.headlineSmall!.apply(color: CbColors.white)),
+        title: Text('Excluir Conta', style: Theme.of(context).textTheme.headlineSmall),
         showBackArrow: true,
       ),
       body: SingleChildScrollView(

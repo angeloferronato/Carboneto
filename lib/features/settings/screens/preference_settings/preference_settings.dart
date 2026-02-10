@@ -1,7 +1,6 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/features/settings/screens/preference_settings/widgets/toggle_theme_switch.dart';
 import 'package:carboneto/features/settings/screens/widgets/settings_item.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +11,7 @@ class PreferenceSettings extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       appBar: CbAppBar(
-        title: Text(
-          'Preferências',
-          style: Theme.of(context)
-              .textTheme
-              .headlineSmall!
-              .apply(color: CbColors.white),
+        title: Text('Preferências', style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
       ),
@@ -26,8 +20,7 @@ class PreferenceSettings extends StatelessWidget {
         removeBottom: true,
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+            padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 20,

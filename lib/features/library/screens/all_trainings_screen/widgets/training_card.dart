@@ -1,5 +1,6 @@
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 
@@ -8,6 +9,7 @@ class TrainingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Column(
       spacing: 4,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +47,7 @@ class TrainingCard extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: CbColors.buttonDisabled,
+            color: isDarkMode ? CbColors.buttonDisabled : CbColors.darkerGrey,
             fontSize: 10,
             fontWeight: FontWeight.w300,
           ),

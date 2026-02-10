@@ -1,5 +1,6 @@
 import 'package:carboneto/features/create/controllers/number_dropdown_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -13,6 +14,7 @@ class NumberDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(NumberDropdownController(), tag: controllerTag);
 
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Obx(() {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -25,12 +27,11 @@ class NumberDropdown extends StatelessWidget {
             value: controller.selectedValue.value,
             isDense: true,
             isExpanded: false,
-            dropdownColor: CbColors.dark,
+            dropdownColor: isDarkMode ? CbColors.dark : CbColors.white,
             borderRadius: BorderRadius.circular(20),
             icon: const SizedBox.shrink(), // remove ícone padrão
-            
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: isDarkMode ? Colors.white : CbColors.dark,
               fontSize: 16,
               fontWeight: FontWeight.w600,
               fontFamily: 'Plus Jakarta Sans',
@@ -70,11 +71,11 @@ class NumberDropdown extends StatelessWidget {
                 value: value,
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0), // 👈 menor padding vertical
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: Text(
                       value.toString(),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: isDarkMode ? Colors.white : CbColors.dark,),
                     ),
                   ),
                 ),

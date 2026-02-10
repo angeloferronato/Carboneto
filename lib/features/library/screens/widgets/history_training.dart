@@ -5,6 +5,7 @@ import 'package:carboneto/features/library/controllers/history_controller.dart';
 import 'package:carboneto/features/library/models/history_model.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,9 +19,9 @@ class HistoryTraining extends StatelessWidget {
 
   final historyController = Get.put(HistoryController());
 
-
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return SizedBox(
       width: 165,
       child: Column(
@@ -31,8 +32,7 @@ class HistoryTraining extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () async {
-                  final trainingHandle =
-                      await historyController.handleTrainingHistoryDetails(training.trainingId);
+                  final trainingHandle = await historyController.handleTrainingHistoryDetails(training.trainingId);
 
                   if (trainingHandle == null) {
                     Get.snackbar('Erro', 'Treino não encontrado');
@@ -56,8 +56,7 @@ class HistoryTraining extends StatelessWidget {
                 right: 5,
                 bottom: 8,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(6),
@@ -118,8 +117,8 @@ class HistoryTraining extends StatelessWidget {
               Expanded(
                 child: Text(
                   training.creator.name,
-                  style: const TextStyle(
-                    color: CbColors.grey,
+                  style: TextStyle(
+                    color: isDarkMode ? CbColors.grey : CbColors.darkerGrey,
                     fontSize: 11,
                     height: 1.0,
                   ),

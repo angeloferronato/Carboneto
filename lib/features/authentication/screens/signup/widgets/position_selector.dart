@@ -1,7 +1,7 @@
 import 'package:carboneto/features/authentication/controllers/position_selector/position_selector_controller.dart';
-import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +17,7 @@ class PositionSelector extends StatefulWidget {
 class _PositionSelectorState extends State<PositionSelector> {
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     final controller = Get.put(PositionSelectorController());
     return Container(
       width: widget.width,
@@ -31,7 +32,7 @@ class _PositionSelectorState extends State<PositionSelector> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           padding: const EdgeInsets.only(left: CbSizes.md),
-          dropdownColor: CbColors.dark,
+          dropdownColor: isDarkMode ? CbColors.dark : CbColors.white,
           value: controller.dropDownList.contains(controller.dropDownValue) ? controller.dropDownValue : controller.dropDownList.first,
           hint: Text('Selecione uma opção', style: Theme.of(context).textTheme.bodyMedium,),
           items: controller.dropDownList.map((String value) {
