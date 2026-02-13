@@ -9,34 +9,20 @@ admin.initializeApp({
 const db = admin.firestore();
 
 async function addUserSearch() {
-    const usersSnap = await db.collection('users').get();
+    const exercisesSnap = await db.collection('allExercises').where('AuthorID', '==', 'admin').get();
 
     let batch = db.batch();
-    let operationCount = 0;
+    
 
-    for (const userDoc of usersSnap.docs) {
-        const user = userDoc.data();
+    for (const trainingDoc of trainingsSnap.docs) {
+        const training = trainingDoc.data();
 
-        if (user.Id !== 'nFykWztnGsdVWuhrdiH1aA9TAF32') {
-            batch.set(admin.firestore().collection('users').doc(user.Id).collection('following').doc('nFykWztnGsdVWuhrdiH1aA9TAF32'),
+        if (training.AuthorID == 'admin') {
+            batch.update(admin.firestore().collection('allExercises').where('Author'),
                 {
-                    CreatedAt: FieldValue.serverTimestamp(),
+                    AuthorID: '2RZob7cJyNXJpSNn7eJpxkxHPhx2',
                 },
-                {
-                    merge: true,
-                }
             )
-
-            batch.set(admin.firestore().collection('users').doc('nFykWztnGsdVWuhrdiH1aA9TAF32').collection('followers').doc(user.Id),
-                {
-                    CreatedAt: FieldValue.serverTimestamp(),
-                },
-                {
-                    merge: true,
-                }
-            )
-            
-
             operationCount++;
 
             if (operationCount == 500) {
@@ -44,14 +30,18 @@ async function addUserSearch() {
                 batch = db.batch();
                 operationCount = 0;
             }
-        }
-
-        
+        }   
     }
 
-    if (operationCount > 0) {
-        await batch.commit();
-    }
+
+    exercisesSnap.forEach(
+        (doc) => batch.update(doc.ref, {
+            AuthorID: '2RZob7cJyNXJpSNn7eJpxkxHPhx2',
+        })
+    )
+    await batch.commit();
+
+    
 }
 
 addUserSearch()

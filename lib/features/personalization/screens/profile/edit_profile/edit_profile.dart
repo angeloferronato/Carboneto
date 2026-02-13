@@ -8,9 +8,9 @@ import 'package:carboneto/features/personalization/controllers/user_controller/u
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/confirm_photo_upload_screen.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/country_selector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:carboneto/utils/validators/validation.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,16 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  late final UserController userController;
+  late final PositionSelectorController positionSelectorController;
+  late final EditProfileController editProfileController;
+
+
   @override
   void initState() {
-    final editProfileController = Get.put(EditProfileController());
+    userController = Get.put(UserController());
+    positionSelectorController = Get.put(PositionSelectorController());
+    editProfileController = Get.put(EditProfileController());
     editProfileController.nameController.text = UserController.instance.user.value.name;
     editProfileController.descriptionController.text = UserController.instance.user.value.description;
     super.initState();
@@ -36,9 +43,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final avatarRadius = screenWidth * 0.21;
-    final userController = Get.put(UserController());
-    final positionSelectorController = Get.put(PositionSelectorController());
-    final editProfileController = Get.put(EditProfileController());
     positionSelectorController.dropDownValue = userController.user.value.position;
     return Scaffold(
       appBar: CbAppBar(
@@ -78,7 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         child: IconButton(
                           iconSize: 16,
-                          onPressed: () => editProfileController.sendToConfirmScreen(ConfirmPhotoUploadScreen()), 
+                          onPressed: () => editProfileController.sendToConfirmScreen(ConfirmPhotoUploadScreen(), UploadImageFormat.square), 
                           icon: Icon(Icons.camera_alt, size: 20,),
                           color: CbColors.light,
                         ),

@@ -1,4 +1,6 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/app.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +15,16 @@ void main() async {
   // Firebase Initialization
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,).then(
     (FirebaseApp value) => Get.put(AuthenticationRepository())
+  );
+
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: kDebugMode 
+      ? AndroidProvider.debug
+      : AndroidProvider.playIntegrity,
+
+    appleProvider: kDebugMode
+      ? AppleProvider.debug
+      : AppleProvider.appAttest
   );
 
   // Keeps the splash screen while initializes

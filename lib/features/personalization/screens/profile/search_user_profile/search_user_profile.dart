@@ -17,6 +17,7 @@ class SearchUserProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     final ProfileBaseController profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
     final FollowSearchController followSearchController = Get.put(FollowSearchController(userId: userId), tag: userId);
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(profileBaseController.user.value.username, style: Theme.of(context).textTheme.headlineSmall,),
@@ -29,7 +30,7 @@ class SearchUserProfile extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: CbSizes.sm),
                 indicatorWeight: 2,
                 indicatorColor: CbColors.primary,
-                labelColor: CbColors.white,
+                labelColor: isDarkMode ? CbColors.white : CbColors.darkerGrey,
                 unselectedLabelColor: CbColors.darkGrey,
                 splashFactory: NoSplash.splashFactory,
                 tabs: [

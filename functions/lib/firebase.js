@@ -38,5 +38,9 @@ const admin = __importStar(require("firebase-admin"));
 if (!admin.apps.length) {
     admin.initializeApp();
 }
-exports.db = admin.firestore();
+const db = admin.firestore();
+exports.db = db;
+db.settings({
+    ignoreUndefinedProperties: true,
+});
 //# sourceMappingURL=firebase.js.map

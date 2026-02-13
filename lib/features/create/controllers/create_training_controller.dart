@@ -76,9 +76,8 @@ class CreateTrainingController extends GetxController {
         return;
       }
 
-
-
-      final imageUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''));
+      final imageFile = await uploadImageController.compressImage(uploadImageController.selectedFile.value!); 
+      final imageUrl = await TrainingRepository.instance.uploadImageToFirebase(imageFile ?? File(''));
 
       final exercisesList = <ExerciseModel>[];
       for (var i=0; i < exercisesController.selectedIndexes.length; i++) {

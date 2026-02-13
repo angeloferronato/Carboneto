@@ -1,3 +1,4 @@
 import * as admin from 'firebase-admin';
-export declare const db: admin.firestore.Firestore;
+declare const db: admin.firestore.Firestore;
+export { db };
 //# sourceMappingURL=firebase.d.ts.map

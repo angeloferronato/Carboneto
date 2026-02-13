@@ -46,11 +46,9 @@ class CreateExerciseController extends GetxController {
 
     if (thumbPath == null) return "";
 
-
     final thumbFile = File(thumbPath);
 
-    final thumbUrl =
-        await TrainingRepository.instance.uploadImageToFirebase(thumbFile, folder: "Exercises Thumbnails");
+    final thumbUrl = await TrainingRepository.instance.uploadImageToFirebase(thumbFile, folder: "Exercises Thumbnails");
 
     return thumbUrl ?? "";
   }
@@ -87,9 +85,9 @@ class CreateExerciseController extends GetxController {
         return;
       }
 
-      final videoFile = uploadImageController.selectedVideo.value!;
-      final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(videoFile);
-      final thumbUrl = await generateThumbFromVideo(videoFile);
+      final videoFile = await uploadImageController.compressVideo(uploadImageController.selectedVideo.value!);
+      final thumbUrl = await generateThumbFromVideo(uploadImageController.selectedVideo.value!);
+      final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(videoFile ?? File(''));
 
       const uuid = Uuid();
       String customId = uuid.v4().substring(0, 10);

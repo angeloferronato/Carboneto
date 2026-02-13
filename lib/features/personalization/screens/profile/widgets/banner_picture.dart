@@ -4,6 +4,7 @@ import 'package:carboneto/features/personalization/controllers/profile_base_cont
 import 'package:carboneto/features/personalization/screens/profile/edit_profile/widgets/confirm_banner_upload_screen.dart';
 import 'package:carboneto/features/settings/settings.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
@@ -43,8 +44,8 @@ class BannerWithPicture extends StatelessWidget {
           blendMode: BlendMode.dstIn,
           child: Obx(
             () => CbRoundedImage(
-              imageUrl: profileBaseController.profileLoading || profileBaseController.user.value.banner.isEmpty ? CbImages.bannerDefault : profileBaseController.user.value.banner,
-              isNetworkImage: profileBaseController.user.value.banner.isNotEmpty,
+              imageUrl: !(profileBaseController.profileLoading) && profileBaseController.user.value.banner.isNotEmpty ? profileBaseController.user.value.banner : CbImages.bannerDefault ,
+              isNetworkImage: profileBaseController.user.value.banner.isNotEmpty && !(profileBaseController.profileLoading),
               width: double.infinity,
               height: bannerHeight,
               fit: BoxFit.cover,
@@ -111,7 +112,7 @@ class BannerWithPicture extends StatelessWidget {
                 Icons.camera_alt_rounded,
                 color: Colors.white, size: screenWidth * 0.06
               ),
-              onPressed: () => editProfileController.sendToConfirmScreen(ConfirmBannerUploadScreen()),
+              onPressed: () => editProfileController.sendToConfirmScreen(ConfirmBannerUploadScreen(), UploadImageFormat.banner),
             ),
           )
           : Positioned(

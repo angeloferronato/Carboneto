@@ -7,7 +7,6 @@ import 'package:carboneto/features/settings/screens/preference_settings/preferen
 import 'package:carboneto/features/settings/screens/privacy_settings/privacy_settings.dart';
 import 'package:carboneto/features/settings/screens/widgets/settings_menu_tile.dart';
 import 'package:carboneto/features/settings/screens/widgets/user_profile_tile.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,7 +23,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: CbAppBar(
         title: Text(
           'Configurações',
-          style: Theme.of(context).textTheme.headlineSmall!.apply(color: CbColors.white),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
       ),

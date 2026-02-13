@@ -15,59 +15,38 @@ async function addCreatorToExercises() {
     return;
   }
 
-  // 🔥 Cache de usuários (evita leituras repetidas)
-  const userCache = new Map();
-
+  let batch = db.batch();
   let updated = 0;
-  let skipped = 0;
 
   for (const exerciseDoc of exercisesSnap.docs) {
     const exercise = exerciseDoc.data();
 
-    // 🧯 Já tem Creator
-    if (exercise.Creator) {
-      skipped++;
-      continue;
+    let keywords = [...exercise.Categories];
+    keywords.push(...[exercise.Creator.Name, exercise.Title]);
+
+
+    const searchExercise = {
+      Title: exercise.Title,
+      TitleLower: exercise.Title.toLowerCase(),
+      Creator: {
+        Name: exercise.Creator.Name,
+        ProfilePicture: exercise.Creator.ProfilePicture,
+        IsVerified: exercise.Creator.IsVerified,
+      },
+      Categories: exercise.Categories,
+      Duration: exercise.Duration ?? 0,
+      Repetitions: exercise.Repetitions ?? 0,
+      Keywords: keywords,
+      AuthorID: exercise.AuthorID,
+      Thumbnail: exercise.Thumbnail,
     }
 
-    // ❌ Sem autor
-    if (!exercise.AuthorID) {
-      skipped++;
-      continue;
-    }
+    batch.set(db.collection('exercisesSearch').doc(exerciseDoc.id), searchExercise, {merge: true});
 
-    let userData;
-
-    // ⚡ Cache
-    if (userCache.has(exercise.AuthorID)) {
-      userData = userCache.get(exercise.AuthorID);
-    } else {
-      const userSnap = await db
-        .collection("users")
-        .doc(exercise.AuthorID)
-        .get();
-
-      if (!userSnap.exists) {
-        skipped++;
-        continue;
-      }
-
-      userData = userSnap.data();
-      userCache.set(exercise.AuthorID, userData);
-    }
-
-    const creator = {
-      IsVerified: userData.IsVerified ?? false,
-      Name: userData.Name ?? "",
-      ProfilePicture: userData.ProfilePicture ?? "",
-    };
-
-    await exerciseDoc.ref.update({ Creator: creator });
     updated++;
-  }
+  };
 
-  console.log(`✅ Creator criado em ${updated} exercícios.`);
-  console.log(`⏭️ Exercícios ignorados: ${skipped}`);
+  await batch.commit();
 }
 
 addCreatorToExercises()

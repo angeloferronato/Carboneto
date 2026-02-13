@@ -19,12 +19,18 @@ class ExercisesController extends GetxController {
   final Rx<String> searchQuery = ''.obs;
   final TextEditingController searchQueryController = TextEditingController();
   final CategoriesController categoriesController = Get.put(CategoriesController(), tag: 'exercises');
+  late final Worker? searchDebounce;
 
   DocumentSnapshot? lastDoc;
 
   @override
   void onInit() {
     fetchAllExercises(true);
+    searchDebounce = debounce(
+      searchQuery, 
+      (_) => {},
+      time: Duration(milliseconds: 350)
+    );
     super.onInit();
   }
 

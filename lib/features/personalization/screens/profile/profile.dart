@@ -8,6 +8,7 @@ import 'package:carboneto/features/personalization/screens/profile/widgets/follo
 import 'package:carboneto/features/personalization/screens/profile/widgets/followers_and_following_shimmer.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_info.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/toggle_follow_button.dart';
 import 'package:carboneto/features/settings/controllers/follow_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
@@ -31,7 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileBaseController(userId: widget.userId), tag: widget.userId);
-    final followController = Get.put(FollowController(currentUserId: controller.userController.user.value.id, targetUserId: widget.userId), tag: '${controller.userController.user.value.id}${widget.userId}');
+    
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       body: RefreshIndicator(
@@ -102,30 +103,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: CbSizes.xl,
                   ),
                   Obx(
-                    () => controller.isAuthUser
-                    ? HighlightBtn(
-                      textValue: 'Editar Perfil',
-                      labelColor: isDarkMode ? CbColors.white : CbColors.dark,
-                      onPressedEdit: () => Get.to(() => EditProfileScreen()),
-                    )
-                    : Obx(
-                      () => followController.isFollowing.value
-                        ? HighlightBtn(textValue: 'Seguindo', icon: Icon(Icons.check),onPressedEdit: () => followController.toggleFollower()) 
-                        : ElevatedButton(
-                          onPressed: () => followController.toggleFollower(),
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                          ), 
-                          child: Text('Seguir', style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: CbColors.white,
-                            fontSize: CbSizes.md,
-                            fontWeight: FontWeight.w800,
-                          ),),
-                        ),
-                    )
+                    () => controller.profileLoading
+                    ? CbShimmerEffects(width: 150, height: 40, radius: 100,)
+                    : (
+                      controller.isAuthUser
+                        ? HighlightBtn(
+                          textValue: 'Editar Perfil',
+                          labelColor: isDarkMode ? CbColors.white : CbColors.dark,
+                          onPressedEdit: () => Get.to(() => EditProfileScreen()),
+                        )
+                        : ToggleFollowButton(currentUserId: controller.userController.user.value.id, targetUserId: widget.userId,)
+                      )
                   ),
                   SizedBox(
                     height: 40,
@@ -143,6 +131,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
+
 
 
 

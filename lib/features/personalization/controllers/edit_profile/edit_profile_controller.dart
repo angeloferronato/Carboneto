@@ -6,6 +6,7 @@ import 'package:carboneto/features/create/controllers/upload_image_controller.da
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/home_menu.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
@@ -98,8 +99,9 @@ class EditProfileController extends GetxController {
         return;
       }
 
-      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''));
-      
+      final compressedImage = await uploadImageController.compressImage(uploadImageController.selectedFile.value!, reduceSize: true);
+      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(compressedImage ?? File(''));
+
       if (userController.user.value.profilePicture.isNotEmpty && await TrainingRepository.instance.imageExists(userController.user.value.profilePicture)) {
         await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.profilePicture);
       }
@@ -131,7 +133,8 @@ class EditProfileController extends GetxController {
         return;
       }
 
-      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(uploadImageController.selectedFile.value ?? File(''), folder: 'Banners');
+      final compressedImage = await uploadImageController.compressImage(uploadImageController.selectedFile.value!);
+      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(compressedImage ?? File(''), folder: 'Banners');
       
       if (userController.user.value.banner.isNotEmpty && await TrainingRepository.instance.imageExists(userController.user.value.banner)) {
         await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.banner);
@@ -154,7 +157,7 @@ class EditProfileController extends GetxController {
     }
   }
 
-  Future<void> sendToConfirmScreen(Widget screen) async {
+  Future<void> sendToConfirmScreen(Widget screen, UploadImageFormat format) async {
     try {
       CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações', CbImages.loadingAnimation);
 
@@ -164,10 +167,9 @@ class EditProfileController extends GetxController {
         return;
       }
 
-      await uploadImageController.pickSingleFile();
+      await uploadImageController.pickSingleFile(format: format);
       if (uploadImageController.selectedFile.value == null) {
         CbFullScreenLoader.stopLoading();
-        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve selecionar uma imagem para continuar');
         return;
       }
 

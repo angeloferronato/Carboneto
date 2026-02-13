@@ -1,6 +1,5 @@
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
-import 'package:carboneto/features/personalization/controllers/follow_search_controller/follow_search_controller.dart';
 import 'package:carboneto/features/personalization/controllers/remove_follower_controller/remove_follower_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_search_model.dart';
@@ -11,6 +10,7 @@ import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,8 +26,8 @@ class UserSearchTile extends StatelessWidget {
   final currentUser = UserController.instance.user.value;
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     final FollowController followController = Get.put(FollowController(currentUserId: currentUser.id, targetUserId: user.id), tag: '${currentUser.id}${user.id}');
-    final FollowSearchController followSearchController = Get.put(FollowSearchController(userId: currentUser.id), tag: currentUser.id);
     final RemoveFollowerController removeFollowerController = Get.put(RemoveFollowerController(userId: currentUser.id), tag: currentUser.id);
     return InkWell(
       onTap: currentUser.id == user.id 
@@ -94,7 +94,10 @@ class UserSearchTile extends StatelessWidget {
                 ),
               ),
             ),
-            if (isUserFollow) IconButton(onPressed: () => removeFollowerController.showConfirmDeleteFollowerMessage(user), icon: Icon(Icons.clear_rounded, color: CbColors.grey,))
+            if (isUserFollow) IconButton(
+              onPressed: () => removeFollowerController.showConfirmDeleteFollowerMessage(user), 
+              icon: Icon(Icons.clear_rounded, color: isDarkMode ? CbColors.grey : CbColors.darkerGrey)
+            )
           ],
         ),
       ),

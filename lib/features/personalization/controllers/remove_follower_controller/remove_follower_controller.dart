@@ -5,6 +5,7 @@ import 'package:carboneto/features/personalization/controllers/user_controller/u
 import 'package:carboneto/features/personalization/models/user_search_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class RemoveFollowerController extends GetxController {
   }
 
   void showConfirmDeleteFollowerMessage(UserSearchModel user) async {
+    final isDarkMode = CbHelperFunctions.isDarkMode(Get.context!);
     Get.defaultDialog(
       titlePadding: const EdgeInsets.only(top: CbSizes.lg, left: CbSizes.md, right: CbSizes.md),
       contentPadding: EdgeInsets.all(CbSizes.lg),
@@ -69,7 +71,7 @@ class RemoveFollowerController extends GetxController {
         onPressed: () => Navigator.of(Get.overlayContext!).pop(),
         child: Text('Não'),
       ),
-      backgroundColor: CbColors.dark
+      backgroundColor: isDarkMode ? CbColors.dark : CbColors.white
     );
   }
 }

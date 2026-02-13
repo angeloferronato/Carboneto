@@ -4,4 +4,10 @@ if (!admin.apps.length) {
     admin.initializeApp();
 }
 
-export const db = admin.firestore();
+const db = admin.firestore();
+
+db.settings({
+  ignoreUndefinedProperties: true,
+});
+
+export { db }

@@ -12,6 +12,7 @@ import 'package:carboneto/features/create/screens/create_training/widgets/number
 import 'package:carboneto/features/create/screens/create_training/widgets/square_upload.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/tag_selector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
@@ -52,7 +53,7 @@ class CreateTraining extends StatelessWidget {
                 // Upload thumbnail
                 SquareUploadWidget(
                   uploadImageController: uploadImageController,
-                  onSelectFiles: uploadImageController.pickSingleFile,
+                  onSelectFiles: () => uploadImageController.pickSingleFile(),
                   label: 'Upload thumbnail',
                   description: 'Selecione um arquivo de imagem para a capa do treino.',
                 ),

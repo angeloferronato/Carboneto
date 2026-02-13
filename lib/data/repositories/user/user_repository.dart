@@ -289,7 +289,7 @@ class UserRepository extends GetxController {
     } on PlatformException catch(e) {
       throw CbPlatformException(e.code).message;
     } catch(e) {
-      throw 'Algo deu errado. Por favor tente novamente';
+      throw 'Algo deu errado. Por favor tente novamente $e';
     }
   } 
 

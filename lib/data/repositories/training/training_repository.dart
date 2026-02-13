@@ -409,7 +409,7 @@ class TrainingRepository extends GetxController {
 
   Future<bool> imageExists(String imagePath) async {
     try {
-      final ref = FirebaseStorage.instance.ref(imagePath);
+      final ref = FirebaseStorage.instance.refFromURL(imagePath);
       await ref.getDownloadURL();
       return true;
     } catch (_) {
