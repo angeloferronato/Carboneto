@@ -35,6 +35,8 @@ dependencies:
   uuid: ^4.5.2
   syncfusion_flutter_charts: ^32.1.25
   syncfusion_flutter_datepicker: ^32.1.25
+  meilisearch: ^0.18.0
+  flutter_dotenv: ^6.0.0
 
   # Videos / images
   chewie: ^1.12.1
@@ -112,6 +114,7 @@ flutter:
     - assets/images/explore/finalizacao/    
     - assets/images/explore/arremesso/
     - assets/videos/
+    - .env
 
 
 

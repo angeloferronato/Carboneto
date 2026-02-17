@@ -1,52 +1,72 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('./private_key_firebase.json');
-const { FieldPath, FieldValue } = require('firebase-admin/firestore');
+const { MeiliSearch } = require("meilisearch");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
 
-const db = admin.firestore();
+const meiliClient = new MeiliSearch({
+    host: 'https://shared-meredith-carboneto-2c512dda.koyeb.app',
+    apiKey: 'EDWxYEAJrvPoHIR-gHJSNS3-p6J80XASaechuGNXYIo',
+});
 
-async function addUserSearch() {
-    const exercisesSnap = await db.collection('allExercises').where('AuthorID', '==', 'admin').get();
+// Função auxiliar para esperar 1 segundo no loop
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    let batch = db.batch();
-    
+async function popularExerciciosAntigos () {
+    try {
+        const db = admin.firestore();
+        const snapshot = await db.collection('allTrainings').get();
 
-    for (const trainingDoc of trainingsSnap.docs) {
-        const training = trainingDoc.data();
+        const documentosParaMeilisearch = [];
 
-        if (training.AuthorID == 'admin') {
-            batch.update(admin.firestore().collection('allExercises').where('Author'),
-                {
-                    AuthorID: '2RZob7cJyNXJpSNn7eJpxkxHPhx2',
-                },
-            )
-            operationCount++;
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            documentosParaMeilisearch.push({
+                id: data.Id,
+                ...data
+            });
+        });
 
-            if (operationCount == 500) {
-                await batch.commit();
-                batch = db.batch();
-                operationCount = 0;
+        if (documentosParaMeilisearch.length === 0) {
+            console.log("Nenhum exercício encontrado no Firestore para importar.");
+            return;
+        }
+
+        const index = meiliClient.index('trainings_index');
+        
+        console.log(`Enviando ${documentosParaMeilisearch.length} exercícios para a fila...`);
+        
+        // 1. Envia os documentos
+        const task = await index.addDocuments(documentosParaMeilisearch, { primaryKey: 'id' });
+        console.log(`Tarefa criada (ID: ${task.taskUid}). Consultando o servidor...`);
+
+        // 2. Loop universal para verificar o status da tarefa
+        let taskResult;
+        while (true) {
+            // Busca o status atual da tarefa no Meilisearch
+            taskResult = await meiliClient.tasks.getTask(task.taskUid);
+            
+            // Se o status for diferente de 'enqueued' (na fila) ou 'processing' (processando), significa que acabou.
+            if (taskResult.status !== 'enqueued' && taskResult.status !== 'processing') {
+                break;
             }
-        }   
+            
+            // Espera 1 segundo antes de perguntar ao servidor de novo
+            await sleep(1000);
+        }
+
+        // 3. Verifica o resultado final
+        if (taskResult.status === 'succeeded') {
+            console.log(`✅ Sucesso! Os documentos foram indexados.`);
+        } else {
+            console.error(`❌ Falha na indexação pelo Meilisearch:`, JSON.stringify(taskResult.error, null, 2));
+        }
+
+    } catch (error) {
+        console.error("[ERRO FATAL NO SCRIPT]", error);
     }
+};
 
-
-    exercisesSnap.forEach(
-        (doc) => batch.update(doc.ref, {
-            AuthorID: '2RZob7cJyNXJpSNn7eJpxkxHPhx2',
-        })
-    )
-    await batch.commit();
-
-    
-}
-
-addUserSearch()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.log(error);
-        process.exit(1);
-    });
+popularExerciciosAntigos();

@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 /// This class contains all the App Text in String formats.
 class CbTexts {
   // -- GLOBAL Texts
@@ -72,4 +74,7 @@ class CbTexts {
 
   static const String exerciseControllerTag = 'exercise';
   static const String trainingControllerTag = 'training';
+
+  static final String meiliHost = dotenv.env['MEILI_HOST']!;
+  static final String meilISearchKey = dotenv.env['MEILI_SEARCH_KEY']!;
 }

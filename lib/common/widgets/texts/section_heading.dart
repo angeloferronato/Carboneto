@@ -1,8 +1,5 @@
 import 'package:carboneto/common/widgets/buttons/see_all_btn.dart';
-import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 class CbSectionHeading extends StatelessWidget {
   const CbSectionHeading({
@@ -23,7 +20,6 @@ class CbSectionHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Column(
       children: [
         Row(

@@ -21,21 +21,25 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 class CreateExerciseController extends GetxController {
   static CreateExerciseController get instance => Get.find();
+  
+  // Repositories
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
+
+  // General Controllers
   final ExercisesController exercisesController = Get.put(ExercisesController());
   final UserController userController = Get.put(UserController());
   final TagController tagController = Get.put(TagController(), tag: CbTexts.exerciseControllerTag);
-  final GlobalKey<FormState> createExerciseFormKey = GlobalKey<FormState>();
-  final TextEditingController title = TextEditingController(); 
-  final TextEditingController description = TextEditingController(); 
-  final TextEditingController repetitions = TextEditingController(); 
-  final TextEditingController duration = TextEditingController(); 
   final NumberDropdownController numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.exerciseControllerTag);
   final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.exerciseControllerTag);
-  
+
+  // Exercise Info Controllers
+  final TextEditingController title = TextEditingController(); 
+  final TextEditingController description = TextEditingController(); 
+  final Rx<double> durationValue = 5.0.obs;
+  final Rx<double> repetiotionsValue = 3.0.obs;
+  final GlobalKey<FormState> createExerciseFormKey = GlobalKey<FormState>();
 
   Future<String> generateThumbFromVideo(File video) async {
-
     final thumbPath = await VideoThumbnail.thumbnailFile(
       video: video.path,
       imageFormat: ImageFormat.PNG,
@@ -47,7 +51,6 @@ class CreateExerciseController extends GetxController {
     if (thumbPath == null) return "";
 
     final thumbFile = File(thumbPath);
-
     final thumbUrl = await TrainingRepository.instance.uploadImageToFirebase(thumbFile, folder: "Exercises Thumbnails");
 
     return thumbUrl ?? "";
@@ -73,18 +76,6 @@ class CreateExerciseController extends GetxController {
         return;
       }
 
-      if (!repetitions.text.isNumericOnly || repetitions.text == "0") {
-        CbFullScreenLoader.stopLoading();
-        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve colocar um número de repeticões que condiz com a realidade.');
-        return;
-      }
-
-      if (!duration.text.isNumericOnly || duration.text == "0") {
-        CbFullScreenLoader.stopLoading();
-        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve colocar uma duração que condiz com a realidade.');
-        return;
-      }
-
       final videoFile = await uploadImageController.compressVideo(uploadImageController.selectedVideo.value!);
       final thumbUrl = await generateThumbFromVideo(uploadImageController.selectedVideo.value!);
       final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(videoFile ?? File(''));
@@ -95,10 +86,10 @@ class CreateExerciseController extends GetxController {
       final newExercise = ExerciseModel(
         description: description.text.trim(), 
         title: title.text.trim(), 
-        repetitions: int.parse(repetitions.text.trim()),
         video: videoUrl ?? '', 
         id: customId, 
-        duration: int.parse(duration.text.trim()), 
+        repetitions: repetiotionsValue.value.toInt(),
+        duration: durationValue.value.toInt(), 
         authorId: userController.user.value.id, 
         categories: tagController.selectedTags, 
         type: 'time',
@@ -122,5 +113,13 @@ class CreateExerciseController extends GetxController {
       CbLoaders.errorSnackBar(title: e.toString());
       CbFullScreenLoader.stopLoading();
     }
+  }
+
+  void onDurationChanged(value) {
+    durationValue.value = value;
+  }
+
+  void onRepetiotionsChanged(value) {
+    repetiotionsValue.value = value;
   }
 }

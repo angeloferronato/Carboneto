@@ -1,6 +1,8 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/create/controllers/create_exercise_controller.dart';
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
+import 'package:carboneto/features/create/screens/create_training/create_exercise/widgets/cb_slider_create.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/square_upload.dart';
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
@@ -55,44 +57,37 @@ class CreateExerciseScreen extends StatelessWidget {
                 CreateForm(
                   controller: createExerciseController.description,
                   label: 'Descrição',
-                  hintText:
-                      'Drible até a cesta e faça bandeja invertida, impulsionando-se com o pé oposto, girando o corpo e lançando a bola com a mesma mão do lado da cesta. Repita do outro lado, alternando mãos e pés.',
+                  hintText: 'Drible até a cesta e faça bandeja invertida, impulsionando-se com o pé oposto, girando o corpo e lançando a bola com a mesma mão do lado da cesta. Repita do outro lado, alternando mãos e pés.',
                   validateEmpty: 'Descrição do treino',
                   maxLines: 5,
                   maxLength: 400,
                 ),
                 const SizedBox(height: CbSizes.md),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  spacing: 20,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: CreateForm(
-                        controller: createExerciseController.repetitions,
-                        label: 'Repetições',
-                        hintText: 'Ex: 5',
-                        validateEmpty: 'Número de Repetições',
-                        maxLength: 2,
-                        keyboardType: TextInputType.numberWithOptions(),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: CreateForm(
-                        controller: createExerciseController.duration,
-                        label: 'Duração',
-                        hintText: 'Ex: 7',
-                        validateEmpty: 'Duração',
-                        maxLength: 2,
-                        keyboardType: TextInputType.numberWithOptions(),
-                      ),
-                    ),
-                  ],
+
+                Obx(
+                  () => CbSliderDefault(
+                    sliderValue: createExerciseController.durationValue.value, 
+                    min: 1, 
+                    max: 30, 
+                    divisions: 29, 
+                    sliderHeader: 'Duração - ${createExerciseController.durationValue.value.round()} min', 
+                    sliderLabel: ' ${createExerciseController.durationValue.value.round()} min ',
+                    onChanged: createExerciseController.onDurationChanged, 
+                  ),
                 ),
-                
-                
-                const SizedBox(height: 20),
+
+                Obx(
+                  () => CbSliderDefault(
+                    sliderValue: createExerciseController.repetiotionsValue.value, 
+                    min: 1, 
+                    max: 10, 
+                    divisions: 9, 
+                    sliderHeader: 'Repetições - ${createExerciseController.repetiotionsValue.value.round()}', 
+                    sliderLabel: ' ${createExerciseController.repetiotionsValue.value.round()} ',
+                    onChanged: createExerciseController.onRepetiotionsChanged, 
+                  ),
+                ),
+
                 const FormLabel(label: 'Adicionar Tags'),
                 const SizedBox(height: 10),
                 TagSelector(controllerTag: CbTexts.exerciseControllerTag,),
@@ -118,6 +113,8 @@ class CreateExerciseScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+
+                SizedBox(height: CbSizes.lg,)
               ],
             ),
           ),
@@ -126,4 +123,6 @@ class CreateExerciseScreen extends StatelessWidget {
     );
   }
 }
+
+
 

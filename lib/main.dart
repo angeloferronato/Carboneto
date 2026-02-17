@@ -30,6 +30,8 @@ void main() async {
   // Keeps the splash screen while initializes
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  //await dotenv.load(fileName: '.env');
+
   // Initialize the local storage
   await GetStorage.init();
 
