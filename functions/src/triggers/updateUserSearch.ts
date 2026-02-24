@@ -11,7 +11,7 @@ export const syncSearchUser = onDocumentUpdated(
 
         if (!before || !after) return null;
 
-        const relevantFields = ['Name', 'ProfilePicture', 'Username'];
+        const relevantFields = ['Name', 'ProfilePicture', 'Username', 'IsPrivate'];
 
         const hasRelevantChange = relevantFields.some(
             (field) => before[field] != after[field],
@@ -25,6 +25,7 @@ export const syncSearchUser = onDocumentUpdated(
             ProfilePicture: after.ProfilePicture,
             Username: after.Username,
             UsernameLower: after.Username.toLowerCase(),
+            IsPrivate: after.IsPrivate,
         }, { merge: true })
 
         return null;

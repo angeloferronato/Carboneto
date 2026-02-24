@@ -1,3 +1,5 @@
+import 'package:carboneto/data/repositories/follow/follow_repository.dart';
+// ignore: unused_import
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/controllers/profile_search_controller/profile_search_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
@@ -13,7 +15,8 @@ class ProfileBaseController extends GetxController {
   late UserController userController;
   late ProfileSearchController profileSearchController;
   final Rx<UserModel> user = UserModel.empty().obs;
-  final UserRepository userRepository = Get.put(UserRepository());
+  final RxBool isLoading = false.obs;
+  final FollowRepository followRepository = Get.put(FollowRepository());
   final RxList<String> followersId = <String>[].obs;
   final RxList<String> followingId = <String>[].obs;
 
@@ -27,7 +30,9 @@ class ProfileBaseController extends GetxController {
   }
 
   Future<void> fetchInitial() async {
-    final result = await userRepository.loadRelations(userId);
+    isLoading.value = true;
+    final result = await followRepository.loadRelations(userId);
+    isLoading.value = false;
     followersId.value = result[0];
     followingId.value = result[1];
   }
@@ -47,6 +52,7 @@ class ProfileBaseController extends GetxController {
   }
 
   Future<void> refreshUserData() async {
+    isLoading.value = true;
     if (isAuthUser) {
       await userController.fetchUserDetails();
     } else {
@@ -54,5 +60,6 @@ class ProfileBaseController extends GetxController {
     }
     syncUser();
     await fetchInitial();
+    isLoading.value = false;
   }
 }

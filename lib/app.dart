@@ -18,6 +18,7 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       initialBinding: GeneralBindings(),
       themeMode: getStorage.read('isDarkMode') ?? true ? ThemeMode.dark : ThemeMode.light,
+      theme: CbAppTheme.lightTheme,
       darkTheme: CbAppTheme.darkTheme,
       supportedLocales: const [
         Locale('en'),
@@ -29,7 +30,6 @@ class App extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: CbAppTheme.lightTheme,
       debugShowCheckedModeBanner: true,
       home: const Scaffold(
         backgroundColor: CbColors.primary,

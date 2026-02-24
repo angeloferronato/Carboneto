@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserSearchModel {
   String id, username, usernameLower, name, nameLower, profilePicture;
+  bool isPrivate;
   DateTime? createdAt;
 
   UserSearchModel({
@@ -12,6 +13,7 @@ class UserSearchModel {
     required this.nameLower,
     required this.profilePicture,
     this.createdAt,
+    required this.isPrivate,
   }); 
 
   static UserSearchModel empty() => UserSearchModel(
@@ -22,6 +24,7 @@ class UserSearchModel {
     nameLower: '',
     profilePicture: '', 
     createdAt: DateTime.now(), 
+    isPrivate: true,
   );
 
   Map<String, dynamic> toJson() {
@@ -32,6 +35,7 @@ class UserSearchModel {
       'ProfilePicture': profilePicture,
       'UsernameLower': usernameLower,
       'CreatedAt': FieldValue.serverTimestamp(),
+      'IsPrivate': isPrivate
     };
   }
 
@@ -45,6 +49,7 @@ class UserSearchModel {
       name: data['Name'] ?? '', 
       profilePicture: data['ProfilePicture'] ?? '', 
       createdAt: (data['CreatedAt'] as Timestamp?)?.toDate(),
+      isPrivate: data['IsPrivate'] ?? false,
     );
   }
 }

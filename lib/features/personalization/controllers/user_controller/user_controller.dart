@@ -84,6 +84,7 @@ class UserController extends GetxController {
           name: userCredentials.user!.displayName ?? '', 
           nameLower: userCredentials.user!.displayName!.toLowerCase(), 
           profilePicture: userCredentials.user!.photoURL ?? '',
+          isPrivate: false,
         );
 
         await UserRepository.instance.saveUserRecord(user, userCredentials, userSearch);

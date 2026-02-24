@@ -12,7 +12,6 @@ class HomeController extends GetxController {
 
   // Estados
   final isLoading = true.obs;
-  final error = RxnString();
 
   // Dados
   final allTrainings = <TrainingModel>[].obs;
@@ -46,7 +45,6 @@ class HomeController extends GetxController {
 
       isLoading.value = false;
     } catch (e) {
-      error.value = e.toString();
       isLoading.value = false;
     }
   }
@@ -87,7 +85,7 @@ class HomeController extends GetxController {
   void applyFilter() {
     final selected = categoriesController.selectedCategory.value;
 
-    if (selected == null || selected == 'For you') {
+    if (selected == 'For you') {
       isGridMode.value = false;
       currentTitle.value = '';
       return;

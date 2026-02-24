@@ -47,8 +47,7 @@ class TrainingExecutionController extends GetxController
 
     activeExercise.value = training.exercises[0];
     duration = Duration(minutes: training.duration ?? 0).obs;
-    trainingRelativeDuration =
-        Duration(minutes: activeExercise.value.duration).obs;
+    trainingRelativeDuration = Duration(minutes: activeExercise.value.duration).obs;
 
     await _createOrResumeProgress();
 
@@ -122,8 +121,7 @@ class TrainingExecutionController extends GetxController
       Get.offAll(HomeMenu());
     }
     activeExercise.value = training.exercises[activeIndexTraining.value];
-    trainingRelativeDuration.value =
-        Duration(minutes: activeExercise.value.duration);
+    trainingRelativeDuration.value = Duration(minutes: activeExercise.value.duration);
   }
 
   void showCancelMessage(bool isDarkMode) {
@@ -133,17 +131,18 @@ class TrainingExecutionController extends GetxController
       title: 'Você deseja finalizar o treino?',
       middleText: 'Assim que você sair, o treino será cancelado.',
       confirm: ElevatedButton(
-          onPressed: () async {
-            saveProgress();
-            Get.offAll(HomeMenu());
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: CbColors.error,
-              side: BorderSide(color: CbColors.error)),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
-            child: Text('Sim'),
-          )),
+        onPressed: () async {
+          saveProgress();
+          Get.offAll(HomeMenu());
+        },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: CbColors.error,
+            side: BorderSide(color: CbColors.error)),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
+          child: Text('Sim'),
+        )
+      ),
       cancel: OutlinedButton(
         onPressed: () => Navigator.of(Get.overlayContext!).pop(),
         child: Text('Não'),
@@ -155,6 +154,8 @@ class TrainingExecutionController extends GetxController
   void toggleSheet() {
     isSheetVisible.value = !isSheetVisible.value;
   }
+
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
 
   void stopAllTimers() {
     totalTimer?.cancel();

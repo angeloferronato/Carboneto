@@ -7,3 +7,5 @@ enum DataSourceType { asset, network, file, contentUri}
 enum FollowMode { followers, following }
 
 enum UploadImageFormat { banner, square, normal }
+
+enum NotificationType { followRequest, followAccepted, followNotice, likeTraining }

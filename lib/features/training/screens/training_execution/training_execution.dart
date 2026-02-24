@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:carboneto/features/training/controllers/training_execution_controller.dart';
+import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_execution/widgets/training_execution_action_buttons.dart';
@@ -22,7 +23,6 @@ class TrainingExecution extends StatefulWidget {
 }
 
 class _TrainingExecutionState extends State<TrainingExecution> {
-
   @override 
   void initState() {
     super.initState();
@@ -150,15 +150,16 @@ class _TrainingExecutionState extends State<TrainingExecution> {
                               Obx(
                                 () => controller.activeIndexTraining.value < widget.training.exercises.length - 1 ? Column(
                                   children: List.generate(widget.training.exercises.length, (index) {
-                                    String twoDigits(int n) => n.toString().padLeft(2, '0');
-                                    final timeExecution = Duration(minutes: widget.training.exercises[index].duration);
-                                    final minutes = twoDigits(timeExecution.inMinutes.remainder(60));
+                                    
+                                    final ExerciseModel exercise = widget.training.exercises[index];
+                                    final timeExecution = Duration(minutes: exercise.duration);
+                                    final minutes = controller.twoDigits(timeExecution.inMinutes.remainder(60));
                                     return Padding(
                                       padding: const EdgeInsets.only(bottom: CbSizes.spaceBtwItems, left: CbSizes.defaultSpace, right: CbSizes.defaultSpace),
                                       child: CbTrainingQueueItem(
                                         backgroundColor: const Color.fromARGB(255, 46, 46, 46),
                                         video: widget.training.exercises[index].video,
-                                        image: CbImages.trainingExample,
+                                        image: exercise.thumb,
                                         title: widget.training.exercises[index].title,
                                         duration: '$minutes:00',
                                       ),
@@ -212,8 +213,8 @@ class _TrainingExecutionState extends State<TrainingExecution> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
                 color: isDarkTheme
-                    ? Color.fromARGB(183, 53, 53, 53)
-                    : Color.fromARGB(153, 194, 194, 194),
+                  ? Color.fromARGB(183, 53, 53, 53)
+                  : Color.fromARGB(153, 194, 194, 194),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -222,9 +223,8 @@ class _TrainingExecutionState extends State<TrainingExecution> {
                     flex: 3,
                     child: Obx(
                       () {
-                        String twoDigits(int n) => n.toString().padLeft(2, '0');
-                        final seconds = twoDigits(controller.trainingRelativeDuration.value.inSeconds.remainder(60));
-                        final minutes = twoDigits(controller.trainingRelativeDuration.value.inMinutes.remainder(60));
+                        final seconds = controller.twoDigits(controller.trainingRelativeDuration.value.inSeconds.remainder(60));
+                        final minutes = controller.twoDigits(controller.trainingRelativeDuration.value.inMinutes.remainder(60));
                         return Text(
                           '$minutes:$seconds',
                           style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 32),

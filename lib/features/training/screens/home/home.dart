@@ -1,4 +1,3 @@
-import 'package:carboneto/common/widgets/layouts/grid_layout.dart';
 import 'package:carboneto/common/widgets/result/result_widget.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
@@ -30,21 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(
-              left: CbSizes.md, bottom: CbSizes.md),
+          padding: const EdgeInsets.only(left: CbSizes.md, bottom: CbSizes.md),
           child: Obx(() {
             if (controller.isLoading.value) {
               return _buildLoading();
             }
-
-            if (controller.error.value != null) {
-              return _buildError(controller.error.value!);
-            }
-
+          
             if (controller.isGridMode.value) {
               return _buildSingleListMode();
             }
-
+          
             return _buildSectionsMode();
           }),
         ),
@@ -62,12 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         HomeShimmer(),
       ],
-    );
-  }
-
-  Widget _buildError(String error) {
-    return Center(
-      child: Text("Erro: $error"),
     );
   }
 
@@ -202,10 +190,11 @@ class _HomeScreenState extends State<HomeScreen> {
         Padding(
           padding: const EdgeInsets.only(right: CbSizes.md),
           child: CbSectionHeading(
-              title: title,
-              onPressed: () {
-                controller.openCategory(title);
-              }),
+            title: title,
+            onPressed: () {
+              controller.openCategory(title);
+            }
+          ),
         )
       ],
     );

@@ -9,7 +9,6 @@ import 'package:carboneto/features/personalization/screens/profile/widgets/follo
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_info.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/toggle_follow_button.dart';
-import 'package:carboneto/features/settings/controllers/follow_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -112,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           labelColor: isDarkMode ? CbColors.white : CbColors.dark,
                           onPressedEdit: () => Get.to(() => EditProfileScreen()),
                         )
-                        : ToggleFollowButton(currentUserId: controller.userController.user.value.id, targetUserId: widget.userId,)
+                        : ToggleFollowButton(currentUserId: controller.userController.user.value.id, targetUserId: widget.userId, profileUser: controller.user.value,)
                       )
                   ),
                   SizedBox(

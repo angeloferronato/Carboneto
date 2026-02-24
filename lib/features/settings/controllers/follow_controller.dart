@@ -1,30 +1,82 @@
-import 'package:carboneto/data/repositories/user/user_repository.dart';
-import 'package:carboneto/utils/popups/loaders.dart';
+import 'package:carboneto/data/repositories/follow/follow_repository.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/features/personalization/models/notification_model.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:get/get.dart';
 
 class FollowController extends GetxController {
   static FollowController get instance => Get.find();
-  final UserRepository userRepository = Get.put(UserRepository());
+  final FollowRepository followRepository = Get.put(FollowRepository());
   final String currentUserId, targetUserId;
   final RxBool isFollowing = false.obs;
+  final RxString followRequestId = ''.obs;
+  final RxBool isLoading = false.obs;
 
   FollowController({required this.currentUserId, required this.targetUserId});
 
   @override
   Future<void> onInit() async {
-    isFollowing.value = await userRepository.isFollowing(currentUserId, targetUserId);
+    isLoading.value = true;
+    followRequestId.value = await searchFollowRequestId();
+    isFollowing.value = await followRepository.isFollowing(currentUserId, targetUserId);
+    isLoading.value = false;
     super.onInit();
   }
 
-  Future<void> toggleFollower() async {
-    try {
-      // Verifica se é para adicionar o usuário.
-      final isFollowing = await userRepository.isFollowing(currentUserId, targetUserId);
-      await userRepository.toggleFollowUser(!isFollowing, currentUserId, targetUserId);
-      this.isFollowing.value = !this.isFollowing.value;
-    } catch (e) {
-      CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
-    }
+  Future<void> stopFollowingUser() async {
+    isLoading.value = true;
+    await followRepository.stopFollowingUser(currentUserId, targetUserId);
+    isFollowing.value = false;
+    isLoading.value = false;
+  }
+
+  Future<void> startFollowingUser() async {
+    isLoading.value = true;
+    final fromUser = UserController.instance.user.value;
+    final NotificationModel notification = NotificationModel(
+      type: NotificationType.followNotice, 
+      fromUserId: fromUser.id, 
+      fromUserProfilePicture: fromUser.profilePicture, 
+      fromUserName: fromUser.name, 
+      fromUserUsername: fromUser.username, 
+      isRead: false,
+    );
+    await followRepository.startFollowingUser(currentUserId, targetUserId);
+    await followRepository.sendNotification(notification, targetUserId);
+    isFollowing.value = true;
+    isLoading.value = false;
+  }
+
+  Future<String> searchFollowRequestId() async {
+    isLoading.value = true;
+    final result = await followRepository.followRequestExists(currentUserId, targetUserId);
+    isLoading.value = false;
+    return result ?? '';
+  }
+
+  Future<void> sendFollowRequest() async {
+    // Criar notificaçõa
+    final fromUser = UserController.instance.user.value;
+    final NotificationModel notification = NotificationModel(
+      type: NotificationType.followRequest, 
+      fromUserId: fromUser.id, 
+      fromUserProfilePicture: fromUser.profilePicture, 
+      fromUserName: fromUser.name, 
+      fromUserUsername: fromUser.username, 
+      isRead: false,
+    );
+    
+    isLoading.value = true;
+    await followRepository.sendNotification(notification, targetUserId);
+    followRequestId.value = await searchFollowRequestId();
+    isLoading.value = false;
+  }
+
+  Future<void> cancelFollowRequest() async {
+    isLoading.value = true;
+    await followRepository.deleteNotificationById(followRequestId.value, targetUserId);
+    followRequestId.value = await searchFollowRequestId();
+    isLoading.value = false;
   }
   
 }

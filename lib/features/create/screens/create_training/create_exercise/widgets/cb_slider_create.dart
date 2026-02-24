@@ -37,10 +37,10 @@ class CbSliderDefault extends StatelessWidget {
             valueIndicatorColor: CbColors.primary,
             valueIndicatorTextStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
             activeTrackColor: CbColors.primary,
-            inactiveTrackColor: isDarkMode ? CbColors.white.withValues(alpha: 0.2) : CbColors.darkGrey,
+            inactiveTrackColor: isDarkMode ? CbColors.white.withValues(alpha: 0.2) : CbColors.grey,
             thumbColor: CbColors.primary,
             overlayColor: CbColors.primary.withValues(alpha: 0.2),
-          
+            inactiveTickMarkColor: CbColors.darkGrey
           ),
           child: Slider(
             value: sliderValue, 
@@ -50,6 +50,7 @@ class CbSliderDefault extends StatelessWidget {
             label: sliderLabel,
             divisions: divisions,
             padding: padding,
+            year2023: false,
           ),
         ),
       ],

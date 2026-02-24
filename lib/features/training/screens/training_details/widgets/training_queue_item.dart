@@ -10,13 +10,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:video_player/video_player.dart';
 
 class CbTrainingQueueItem extends StatelessWidget {
-  const CbTrainingQueueItem(
-      {super.key,
-      required this.image,
-      required this.title,
-      required this.duration,
-      required this.video,
-      this.backgroundColor});
+  const CbTrainingQueueItem({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.duration,
+    required this.video,
+    this.backgroundColor,
+    });
 
   final String image, title, duration, video;
   final Color? backgroundColor;
@@ -28,12 +29,12 @@ class CbTrainingQueueItem extends StatelessWidget {
       builder: (context, constraints) {
         return CbRoundedContainer(
           padding: const EdgeInsets.only(
-              top: CbSizes.sm,
-              bottom: CbSizes.sm,
-              left: 10,
-              right: CbSizes.sm),
-          backgroundColor:
-              isDarkMode ? backgroundColor ?? CbColors.inputBG : CbColors.grey,
+            top: CbSizes.sm,
+            bottom: CbSizes.sm,
+            left: 10,
+            right: CbSizes.sm
+          ),
+          backgroundColor: isDarkMode ? backgroundColor ?? CbColors.inputBG : CbColors.grey,
           height: 70,
           width: constraints.maxWidth,
           borderRadius: CbSizes.defaultSpace,

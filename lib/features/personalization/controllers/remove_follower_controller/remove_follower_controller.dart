@@ -1,3 +1,4 @@
+import 'package:carboneto/data/repositories/follow/follow_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/controllers/follow_search_controller/follow_search_controller.dart';
 import 'package:carboneto/features/personalization/controllers/profile_base_controller.dart/profile_base_controller.dart';
@@ -14,35 +15,42 @@ import 'package:get/get.dart';
 class RemoveFollowerController extends GetxController {
   static RemoveFollowerController get instance => Get.find();
 
+  RemoveFollowerController({required this.userId});
   final String userId;
   late final FollowSearchController controller;
   final UserRepository userRepository = Get.put(UserRepository());
+  final FollowRepository followRepository = Get.put(FollowRepository());
   late final ProfileBaseController profileBaseController;
+  final RxBool isLoading = false.obs;
 
   @override
   void onInit() {
+    isLoading.value = true;
     controller = Get.put(FollowSearchController(userId: userId), tag: userId);
     profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
+    isLoading.value = false;
     super.onInit();
   }
-  RemoveFollowerController({required this.userId});
 
   Future<void> removeFollower(String followerId) async {
     try {
+      isLoading.value = true;
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         return;
       }
 
-      await userRepository.deleteFollowUser(UserController.instance.user.value.id, followerId);
+      await followRepository.stopFollowingUser(followerId, UserController.instance.user.value.id);
       profileBaseController.followersId.remove(followerId);
       controller.followersCache.value = controller.followersCache.where((user) => user.id != followerId).toList();
       controller.followersResults.value = controller.followersResults.where((user) => user.id != followerId).toList();
       await controller.profileBaseController.refreshUserData();
       controller.followersOffSet.value--;
-      controller.loadFollowersPage();
+      await controller.loadFollowersPage();
       CbLoaders.customToast(message: 'Seguidor removido.');
+      isLoading.value = false;
     } catch (e) {
+      isLoading.value = false;
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
     }
   }

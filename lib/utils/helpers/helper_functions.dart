@@ -214,6 +214,38 @@ class CbHelperFunctions {
     }
   }
 
+  static String formatNotificationTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) {
+      return '';
+    }
+
+    final now = DateTime.now();
+    final date = timestamp.toDate();
+    final diff = now.difference(date);
+
+    if (diff.inSeconds < 60) {
+      return '${diff.inSeconds + 1}s';
+    } else if (diff.inMinutes < 60) {
+      final m = diff.inMinutes;
+      return '${m}m';
+    } else if (diff.inHours < 24) {
+      final h = diff.inHours;
+      return '${h}h';
+    } else if (diff.inDays < 7) {
+      final d = diff.inDays;
+      return '${d}d';
+    } else if (diff.inDays < 30) {
+      final w = (diff.inDays / 7).floor();
+      return '${w}w';
+    } else if (diff.inDays < 365) {
+      final mo = (diff.inDays / 30).floor();
+      return '${mo}mo';
+    } else {
+      final y = (diff.inDays / 365).floor();
+      return '${y}y';
+    }
+  }
+
   static List<T> removeDuplicates<T>(List<T> list) {
     return list.toSet().toList();
   }

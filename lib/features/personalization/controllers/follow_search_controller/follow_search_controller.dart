@@ -1,4 +1,4 @@
-import 'package:carboneto/data/repositories/user/user_repository.dart';
+import 'package:carboneto/data/repositories/follow/follow_repository.dart';
 import 'package:carboneto/features/personalization/controllers/profile_base_controller.dart/profile_base_controller.dart';
 import 'package:carboneto/features/personalization/models/user_search_model.dart';
 import 'package:carboneto/utils/constants/enums.dart';
@@ -13,7 +13,7 @@ class FollowSearchController extends GetxController with GetSingleTickerProvider
   FollowSearchController({this.initialFollowMode = FollowMode.followers, required this.userId});
 
   // Pre-loaded controllers
-  final UserRepository userRepository = Get.put(UserRepository());
+  final FollowRepository followRepository = Get.put(FollowRepository());
   late final ProfileBaseController profileBaseController;
 
   // Tab correlates
@@ -33,10 +33,6 @@ class FollowSearchController extends GetxController with GetSingleTickerProvider
   final RxList<UserSearchModel> followingCache = <UserSearchModel>[].obs;
   final RxList<UserSearchModel> followingResults = <UserSearchModel>[].obs;
 
-  // Debounces
-  late Worker? _searchDebounceFollowers;
-  late Worker? _searchDebounceFollowing;
-
   // Loading
   final Rx<bool> isLoading = false.obs;
 
@@ -51,13 +47,13 @@ class FollowSearchController extends GetxController with GetSingleTickerProvider
     profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
     followMode.value = initialFollowMode;
     tabIndex.value = followMode.value == FollowMode.followers ? 0 : 1;
-    _searchDebounceFollowers = debounce(
+    debounce(
       searchQueryFollowers, 
       (_) => _performSearch(),
       time: Duration(milliseconds: 350),
     );
 
-    _searchDebounceFollowing = debounce(
+    debounce(
       searchQueryFollowing, 
       (_) => _performSearch(),
       time: Duration(milliseconds: 350)
@@ -95,7 +91,7 @@ class FollowSearchController extends GetxController with GetSingleTickerProvider
     if (ids.isEmpty) return;
 
     isLoading.value = true;
-    final users = await userRepository.loadFollowInitial(orderedIds: ids);
+    final users = await followRepository.loadFollowInitial(orderedIds: ids);
 
     followersCache.addAll(users);
     followersResults.addAll(users);
@@ -109,7 +105,7 @@ class FollowSearchController extends GetxController with GetSingleTickerProvider
     if (ids.isEmpty) return;
 
     isLoading.value = true;
-    final users = await userRepository.loadFollowInitial(orderedIds: ids);
+    final users = await followRepository.loadFollowInitial(orderedIds: ids);
 
     followingCache.addAll(users);
     followingResults.addAll(users);
@@ -141,7 +137,7 @@ class FollowSearchController extends GetxController with GetSingleTickerProvider
 
     final ids = followMode.value == FollowMode.followers ? profileBaseController.followersId : profileBaseController.followingId;
 
-    final users = await userRepository.searchUsersInIds(ids: ids, query: query);
+    final users = await followRepository.searchUsersInIds(ids: ids, query: query);
 
     if (followMode.value == FollowMode.followers) {
       followersResults.assignAll(users);

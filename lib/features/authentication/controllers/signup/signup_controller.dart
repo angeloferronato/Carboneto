@@ -102,6 +102,7 @@ class SignupController extends GetxController {
         name: name.text.trim(), 
         nameLower: name.text.toLowerCase(),
         profilePicture: '', 
+        isPrivate: isPrivate.value
       );
 
       final userRepository = Get.put(UserRepository());

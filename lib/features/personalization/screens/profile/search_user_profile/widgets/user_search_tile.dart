@@ -82,16 +82,50 @@ class UserSearchTile extends StatelessWidget {
               alignment: AlignmentGeometry.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(left: CbSizes.sm),
-                child: user.id == currentUser.id ? SizedBox() :
-                Obx(
-                  () => followController.isFollowing.value 
-                  ? HighlightBtn(textValue: 'Seguindo', onPressedEdit: () => followController.toggleFollower())
-                  : CbPrimaryBtn(
-                    paddingH: 20,
-                    label: 'Seguir', 
-                    onPressed: () => followController.toggleFollower(),
+                child: user.id == currentUser.id ? SizedBox() : Obx(
+                    () => removeFollowerController.isLoading.value || followController.isLoading.value 
+                    ? HighlightBtn(
+                      padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
+                      textValue: '',
+                      icon: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 4.0,
+                          color: CbColors.primary,
+                        )
+                      ),
+                      onPressedEdit: () {}
+                    )
+                    : followController.isFollowing.value
+                      ? HighlightBtn(
+                        textValue: 'Seguindo',  
+                        onPressedEdit: () => followController.stopFollowingUser(),
+                      ) : followController.followRequestId.value.isNotEmpty 
+                        ? HighlightBtn(
+                          textValue: 'Pedido enviado', 
+                          onPressedEdit: () => followController.cancelFollowRequest()
+                        )
+                        : ElevatedButton(
+                          onPressed: () => user.isPrivate
+                            ? followController.sendFollowRequest()
+                            : followController.startFollowingUser(),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ), 
+                          child: Text(
+                            'Seguir', 
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              color: CbColors.white,
+                              fontSize: CbSizes.md,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
                   ),
-                ),
               ),
             ),
             if (isUserFollow) IconButton(

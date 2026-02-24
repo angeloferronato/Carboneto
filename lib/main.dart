@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/app.dart';
 import 'package:firebase_core/firebase_core.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -30,7 +31,7 @@ void main() async {
   // Keeps the splash screen while initializes
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  //await dotenv.load(fileName: '.env');
+  // await dotenv.load(fileName: '.env');
 
   // Initialize the local storage
   await GetStorage.init();
