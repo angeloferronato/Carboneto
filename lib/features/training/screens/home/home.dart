@@ -24,24 +24,44 @@ class _HomeScreenState extends State<HomeScreen> {
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final UserRepository userRepository = Get.put(UserRepository());
   final HomeController controller = Get.put(HomeController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(left: CbSizes.md, bottom: CbSizes.md),
-          child: Obx(() {
-            if (controller.isLoading.value) {
-              return _buildLoading();
-            }
-          
-            if (controller.isGridMode.value) {
-              return _buildSingleListMode();
-            }
-          
-            return _buildSectionsMode();
-          }),
-        ),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              floating: false,
+              pinned: false,
+              snap: false,
+              toolbarHeight: 80,
+              expandedHeight: 80, // add this
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              automaticallyImplyLeading: false,
+              title: const TopLogo(width: 100,),
+              centerTitle: true,
+            ),
+          ];
+        },
+        body: Padding(
+            padding: const EdgeInsets.only(
+              left: CbSizes.md,
+              bottom: CbSizes.md,
+            ),
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return _buildLoading();
+              }
+
+              if (controller.isGridMode.value) {
+                return _buildSingleListMode();
+              }
+
+              return _buildSectionsMode();
+            }),
+          ),
       ),
     );
   }
@@ -50,7 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView(
       shrinkWrap: true,
       children: [
-        TopLogo(),
         CategoriesBar(
           controllerTag: 'home',
         ),
@@ -62,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSingleListMode() {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(child: TopLogo()),
         SliverToBoxAdapter(child: CategoriesBar(controllerTag: 'home')),
         SliverToBoxAdapter(
           child: Padding(
@@ -137,8 +155,8 @@ class _HomeScreenState extends State<HomeScreen> {
       final sections = controller.sections;
 
       return ListView(
+        padding: EdgeInsets.zero,
         children: [
-          TopLogo(),
           CategoriesBar(
             controllerTag: 'home',
           ),
@@ -190,11 +208,10 @@ class _HomeScreenState extends State<HomeScreen> {
         Padding(
           padding: const EdgeInsets.only(right: CbSizes.md),
           child: CbSectionHeading(
-            title: title,
-            onPressed: () {
-              controller.openCategory(title);
-            }
-          ),
+              title: title,
+              onPressed: () {
+                controller.openCategory(title);
+              }),
         )
       ],
     );

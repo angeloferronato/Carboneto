@@ -35,89 +35,63 @@ class ResultMain extends StatelessWidget {
             isNetworkImage: true,
             height: height,
             fit: BoxFit.cover,
-            width: homeWidget ? 245 : CbHelperFunctions.screenWidth() - CbSizes.md,
+            width:
+                homeWidget ? 245 : CbHelperFunctions.screenWidth() - CbSizes.md,
             backgroundColor: Colors.transparent,
           ),
-          // Views counter - top left
-            Positioned(
-              top: 12,
-              left: 12,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: homeWidget ? 5 : 8,
-                  vertical: homeWidget ? 2 : 4,
-                ),
-                decoration: BoxDecoration(
-                  color: CbColors.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.remove_red_eye,
-                      size: homeWidget ? 10 : 14,
+          Positioned(
+            top: 12,
+            left: 12,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: homeWidget ? 5 : 8,
+                vertical: homeWidget ? 2 : 4,
+              ),
+              decoration: BoxDecoration(
+                color: CbColors.primary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.remove_red_eye,
+                    size: homeWidget ? 10 : 14,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    CbHelperFunctions.formatViews(training.viewsCount),
+                    style: TextStyle(
                       color: Colors.white,
+                      fontSize: homeWidget ? 10 : 12,
+                      fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      CbHelperFunctions.formatViews(training.viewsCount),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: homeWidget ? 10 : 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          // Three dots menu - top right
+          ),
           hideOptions
               ? SizedBox()
               : Positioned(
                   top: 8,
                   right: 8,
                   child: GestureDetector(
-                    onTap: () {
-                      // Default behavior - show options menu
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: CbColors.dark,
-                        builder: (context) => Container(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.share),
-                                title: const Text('Compartilhar'),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  // Add share logic
-                                },
-                              ),
-                              Obx(() => ListTile(
-                                leading: controller.isSaved.value ? Icon(Icons.bookmark_sharp) : Icon(Icons.bookmark_border),
-                                title: controller.isSaved.value ? Text('Salvo') : Text('Salvar'),
-                                onTap: () {
-                                  controller.toggleSave(training);
-                                },
-                              ))
-                              ,
-                              ListTile(
-                                leading: const Icon(Icons.report_outlined),
-                                title: const Text('Reportar'),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  // Add report logic
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                    onTap: () => CbBottomSheet.showOptions(
+                      context: context,
+                      onShare: () {},
+                      onReport: () {},
+                      extraItem: Obx(() => ListTile(
+                            leading: controller.isSaved.value
+                                ? Icon(Icons.bookmark_sharp)
+                                : Icon(Icons.bookmark_border),
+                            title: controller.isSaved.value
+                                ? Text('Salvo')
+                                : Text('Salvar'),
+                            onTap: () => controller.toggleSave(training),
+                          )),
+                    ),
                     child: Icon(
                       Icons.more_horiz,
                       color: CbColors.white,
@@ -131,5 +105,43 @@ class ResultMain extends StatelessWidget {
   }
 }
 
-
-
+class CbBottomSheet {
+  static void showOptions({
+    required BuildContext context,
+    VoidCallback? onShare,
+    VoidCallback? onReport,
+    Widget? extraItem,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: CbColors.dark,
+      builder: (context) => Container(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onShare != null)
+              ListTile(
+                leading: const Icon(Icons.share),
+                title: const Text('Compartilhar'),
+                onTap: () {
+                  Navigator.pop(context);
+                  onShare();
+                },
+              ),
+            if (extraItem != null) extraItem,
+            if (onReport != null)
+              ListTile(
+                leading: const Icon(Icons.report_outlined),
+                title: const Text('Reportar'),
+                onTap: () {
+                  Navigator.pop(context);
+                  onReport();
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
+import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercise_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
@@ -163,22 +164,17 @@ class ExercisesList extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      AnimatedContainer(
-                                        duration: const Duration(milliseconds: 250),
-                                        height: 32,
-                                        width: 32,
-                                        decoration: BoxDecoration(
-                                          color: isSelected
-                                              ? CbColors.primary.withValues(alpha: 0.25)
-                                              : CbColors.primary.withValues(alpha: 0.15),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.play_arrow_rounded,
-                                          color: CbColors.primary,
-                                          size: 22,
-                                        ),
-                                      ),
+                                      GestureDetector(
+                                          onTap: () => Get.to(
+                                            () => const ExerciseDetailsScreen(),
+                                            arguments: exercise,
+                                          ),
+                                          child: Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            color: CbColors.primary,
+                                            size: 22,
+                                          ),     
+                                        ) 
                                     ],
                                   ),
                                 ),

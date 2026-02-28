@@ -10,31 +10,50 @@ import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:get/get.dart';
 
 class TopLogo extends StatelessWidget {
-  const TopLogo({super.key, this.width = 90});
+  const TopLogo({
+    super.key,
+    this.width = 90,
+    this.showNotification = true,
+  });
+
   final double width;
+  final bool showNotification;
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = CbHelperFunctions.isDarkMode(context); 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: Image(
-            image: AssetImage(isDarkMode ? CbImages.cbWhiteLogo : CbImages.cbBlueLogo),
-            width: width,
-          ),
-        ),
+    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
 
-        Positioned(
-          right: 30,
-          top: 25,
-          child: IconButton( 
-            onPressed: () => Get.to(() => NotificationsScreen()), 
-            icon: Icon(CupertinoIcons.bell_fill, color: CbColors.white, size: 28,)
+    return SizedBox(
+      height: 90,
+      width: double.infinity, // add this
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Center(
+            child: Image(
+              image: AssetImage(
+                isDarkMode
+                    ? CbImages.cbWhiteLogo
+                    : CbImages.cbBlueLogo,
+              ),
+              width: width,
+            ),
           ),
-        ),
-      ],
+
+          if (showNotification)
+            Positioned(
+              right: 0,
+              child: IconButton(
+                onPressed: () =>
+                    Get.to(() => NotificationsScreen()),
+                icon: const Icon(
+                  CupertinoIcons.bell_fill,
+                  size: 26,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

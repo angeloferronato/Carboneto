@@ -50,9 +50,9 @@ class CbHelperFunctions {
     };
   }
 
-  static String formatDuration(int totalSeconds) {
+  static String formatDuration(int totalSeconds, {bool fullCase = false}){
     if (totalSeconds < 60) {
-      return '$totalSeconds s';
+      return fullCase? '$totalSeconds seg' :  '$totalSeconds s';
     }
 
     final hours = totalSeconds ~/ 3600;
@@ -69,10 +69,10 @@ class CbHelperFunctions {
 
     // Hours
     if (minutes == 0) {
-      return '$hours h';
+      return fullCase? '$hours horas' : '$hours h';
     }
 
-    return '${hours}h ${minutes}min';
+    return fullCase? '${hours}horas ${minutes}min' : '${hours}h ${minutes}min';
   }
 
   static Color? getColor(String value) {

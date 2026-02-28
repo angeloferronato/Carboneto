@@ -17,13 +17,11 @@ class VideoPlayerView extends StatefulWidget {
 
   @override
   VideoPlayerViewState createState() => VideoPlayerViewState();
-
 }
 
 class _VideoPlayerViewState extends State<VideoPlayerView> {
   VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
-  
 
   @override
   void initState() {
@@ -60,7 +58,7 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         videoPlayerController: controller,
         materialProgressColors: ChewieProgressColors(playedColor: CbColors.primary),
         customControls: CupertinoControls(
-          backgroundColor: CbColors.dark,
+          backgroundColor: Colors.black,
           iconColor: CbColors.grey,
         ),
       );
@@ -71,10 +69,8 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     _chewieController?.pause();
     _videoPlayerController?.pause();
     _videoPlayerController?.seekTo(Duration.zero);
-
     _chewieController?.dispose();
     _videoPlayerController?.dispose();
-
     _chewieController = null;
     _videoPlayerController = null;
   }
@@ -86,8 +82,6 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
     super.dispose();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     if (_chewieController != null &&
@@ -95,16 +89,19 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         _videoPlayerController!.value.isInitialized) {
       return AspectRatio(
         aspectRatio: _videoPlayerController!.value.aspectRatio,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50)
-          ),
-          child: Chewie(controller: _chewieController!)
+        child: ColoredBox(
+          color: Colors.black,
+          child: Chewie(controller: _chewieController!),
         ),
       );
     }
 
-    return const Center(child: CircularProgressIndicator());
+    return const ColoredBox(
+      color: Colors.black,
+      child: Center(
+        child: CircularProgressIndicator(color: CbColors.primary),
+      ),
+    );
   }
 }
 

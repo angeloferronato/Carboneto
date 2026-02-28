@@ -37,12 +37,12 @@ class ResultCreatorInfo extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-        const SizedBox(width: 3),
+        SizedBox(width: textSize > 10? 5 : 3),
         creator.isVerified
-            ? const Icon(
+            ? Icon(
                 Iconsax.verify5,
                 color: CbColors.primary,
-                size: 10,
+                size: textSize,
               )
             : justProfileInfo ? SizedBox() : Text(
                 '•',
