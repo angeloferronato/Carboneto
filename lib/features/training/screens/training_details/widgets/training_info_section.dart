@@ -40,20 +40,12 @@ class TrainingInfoSection extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: UserController.instance.user.value.id == training.authorId 
-                    ? () {
-                      Get.offAll(HomeMenu());
-                      final homeMenuController = Get.put(HomeMenuController());
-                      homeMenuController.selectedIndex.value = 4; 
-                    }
-                    : () => Get.to(ProfileScreen(userId: training.authorId,)),
-                child: ResultCreatorInfo(
+              ResultCreatorInfo(
                   creator: training.creator,
+                  creatorId: training.authorId,
                   userPictureSize: 25,
                   textSize: 11,
                   showUserPicture: true,
-                ),
               ),
               const SizedBox(width: 5),
               Text(

@@ -108,6 +108,7 @@ class HistoryTraining extends StatelessWidget {
           const SizedBox(height: 4),
           ResultCreatorInfo(
             creator: training.creator,
+            creatorId: training.authorId,
             showUserPicture: true,
             userPictureSize: 18,
             justProfileInfo: true,

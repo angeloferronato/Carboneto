@@ -128,6 +128,7 @@ class ExerciseDetailsScreen extends StatelessWidget {
                       const SizedBox(height: 15),
                       ResultCreatorInfo(
                         creator: exercise.creator,
+                        creatorId: exercise.authorId,
                         showUserPicture: true,
                         textSize: 13,
                         userPictureSize: 25,

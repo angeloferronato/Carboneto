@@ -9,6 +9,7 @@ import 'package:carboneto/features/library/screens/widgets/history_training.dart
 import 'package:carboneto/features/library/screens/widgets/history_training_shimmer.dart';
 import 'package:carboneto/features/library/screens/widgets/lib_training_shimmer.dart';
 import 'package:carboneto/features/library/screens/widgets/library_section.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,7 @@ class LibraryScreen extends GetView<HistoryController> {
   Widget build(BuildContext context) {
     final historyController = Get.put(HistoryController());
     final allTrainingsController = Get.put(AllTrainingsController());
+    if (!Get.isRegistered<UserController>()) Get.put(UserController());
     return Scaffold(
       appBar: CbAppBar(
         title: Padding(

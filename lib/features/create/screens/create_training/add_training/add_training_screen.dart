@@ -5,6 +5,7 @@ import 'package:carboneto/features/create/screens/create_training/add_training/w
 import 'package:carboneto/features/create/screens/create_training/create_exercise/create_exercise_screen.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercises_list.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -46,7 +47,7 @@ class AddTrainingScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 8, left: CbSizes.md),
                   child: CategoriesBar(controllerTag: '',),
                 ),
                 ExercisesList(),

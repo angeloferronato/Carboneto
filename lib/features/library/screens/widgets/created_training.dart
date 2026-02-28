@@ -103,6 +103,7 @@ class CreatedTraining extends StatelessWidget {
                             )),
                 child: ResultCreatorInfo(
                   creator: training.creator,
+                  creatorId: training.authorId,
                   showUserPicture: true,
                   userPictureSize: 15,
                   justProfileInfo: true,

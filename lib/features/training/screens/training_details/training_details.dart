@@ -25,64 +25,64 @@ class TrainingDetailsScreen extends StatefulWidget {
 
 class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
     with WidgetsBindingObserver {
-  late TrainingDetailsController trainingDetailsController;
-  TrainingModel training = TrainingModel.empty();
+  late final TrainingDetailsController _controller;
+  late TrainingModel training;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    trainingDetailsController = Get.put(TrainingDetailsController());
     training = widget.training;
+    _controller = Get.put(TrainingDetailsController());
+    WidgetsBinding.instance.addObserver(this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchExercises(training);
-
-      trainingDetailsController.initializeStats(training);
-
-      trainingDetailsController.startViewTracking(training);
+      _fetchExercises();
+      _initAndTrack();
     });
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    trainingDetailsController.stopViewTracking();
-    super.dispose();
+  Future<void> _initAndTrack() async {
+    _controller.initializeStats(training);
+    _controller.startViewTracking(training);
+  }
+
+  Future<void> _fetchExercises() async {
+    final updated = await _controller.fetchExercises(training);
+    if (mounted) setState(() => training = updated);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
-      trainingDetailsController.stopViewTracking();
+      _controller.stopViewTracking();
     } else if (state == AppLifecycleState.resumed &&
-        !trainingDetailsController.hasViewBeenCounted.value) {
-      trainingDetailsController.startViewTracking(training);
+        !_controller.hasViewBeenCounted.value) {
+      _controller.startViewTracking(training);
     }
   }
 
-  Future<void> _fetchExercises(TrainingModel training) async {
-    final updatedTraining =
-        await trainingDetailsController.fetchExercises(training);
-    setState(() {
-      this.training = updatedTraining;
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    Get.delete<TrainingDetailsController>(force: true);
+    super.dispose();
   }
 
   @override
-Widget build(BuildContext context) {
-  final isDarkMode = CbHelperFunctions.isDarkMode(context);
-  return Scaffold(
-    body: Obx(() {
-      if (trainingDetailsController.isLoadingStats.value) {
-        return const Center(
-          child: CircularProgressIndicator(color: CbColors.primary),
-        );
-      }
-      return NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
+  Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
+
+    return Scaffold(
+      body: Obx(() {
+        if (_controller.isLoadingStats.value) {
+          return const Center(
+            child: CircularProgressIndicator(color: CbColors.primary),
+          );
+        }
+
+        return NestedScrollView(
+          headerSliverBuilder: (_, __) => [
             SliverAppBar(
               floating: true,
               pinned: false,
@@ -96,7 +96,8 @@ Widget build(BuildContext context) {
                 icon: const Icon(Iconsax.arrow_left),
               ),
               flexibleSpace: Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top),
                 child: Center(
                   child: GestureDetector(
                     onTap: () => Get.offAll(HomeMenu()),
@@ -104,55 +105,55 @@ Widget build(BuildContext context) {
                   ),
                 ),
               ),
-              actions: [
-                LikeButton(training: training)
+              actions: [LikeButton(training: training)],
+            ),
+          ],
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    ResultMain(training: training, height: 250),
+                    Positioned(
+                      bottom: -30,
+                      child: TrainingStatsCard(
+                        training: training,
+                        isDarkMode: isDarkMode,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: CbSizes.spaceBtwSections * 1.8),
+                TrainingInfoSection(
+                    training: training, isDarkMode: isDarkMode),
+                const SizedBox(height: CbSizes.spaceBtwItems),
+                TrainingExercisesList(training: training),
+                const SizedBox(height: 100),
               ],
             ),
-          ];
-        },
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  ResultMain(training: training, height: 250),
-                  Positioned(
-                    bottom: -30,
-                    child: TrainingStatsCard(
-                      training: training,
-                      isDarkMode: isDarkMode,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: CbSizes.spaceBtwSections * 1.8),
-              TrainingInfoSection(training: training, isDarkMode: isDarkMode),
-              const SizedBox(height: CbSizes.spaceBtwItems),
-              TrainingExercisesList(training: training),
-              const SizedBox(height: 100),
-            ],
           ),
-        ),
-      );
-    }),
-    bottomNavigationBar: Container(
-      padding: const EdgeInsets.only(
-          left: CbSizes.lg, right: CbSizes.lg, bottom: CbSizes.lg),
-      decoration: const BoxDecoration(color: Colors.transparent),
-      child: SizedBox(
-        height: 60,
-        child: ElevatedButton(
-          onPressed: () => trainingDetailsController.showStartTrainingOptions(training, isDarkMode),
-          style: ElevatedButton.styleFrom(
+        );
+      }),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.only(
+            left: CbSizes.lg, right: CbSizes.lg, bottom: CbSizes.lg),
+        decoration: const BoxDecoration(color: Colors.transparent),
+        child: SizedBox(
+          height: 60,
+          child: ElevatedButton(
+            onPressed: () =>
+                _controller.showStartTrainingOptions(training, isDarkMode),
+            style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
-              elevation: 20),
-          child: const Text('Começar'),
+              elevation: 20,
+            ),
+            child: const Text('Começar'),
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

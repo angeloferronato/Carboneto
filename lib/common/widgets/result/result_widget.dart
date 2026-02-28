@@ -82,6 +82,7 @@ class ResultWidget extends StatelessWidget {
                   children: [
                     ResultCreatorInfo(
                       creator: training.creator,
+                      creatorId: training.authorId,
                     ),
                     const SizedBox(width: 6),
                     Expanded(

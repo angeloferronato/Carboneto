@@ -101,6 +101,7 @@ class HistoryResult extends StatelessWidget {
                     // Nome do treinador - removed Flexible wrapper
                     ResultCreatorInfo(
                       creator: historyTraining.creator,
+                      creatorId: historyTraining.authorId,
                     ),
 
                     const SizedBox(width: 6),

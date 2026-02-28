@@ -10,136 +10,119 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
 class TrainingDetailsController extends GetxController {
-  static TrainingDetailsController get instance => Get.find();
-  final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
-  final CreateTrainingController createTrainingController =
-      Get.put(CreateTrainingController());
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final UserController userController = Get.put(UserController());
+  final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
+  final CreateTrainingController createTrainingController = Get.put(CreateTrainingController());
 
-  final isLoadingStats = true.obs;
-
-  void initializeStats(TrainingModel training) async {
-    isLoadingStats.value = true;
-
-    likesCount.value = training.stats.likes;
-    savesCount.value = training.stats.saves;
-
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      try {
-        final status = await trainingRepository.checkInteractionStatus(
-            trainingId: training.id, userId: user.uid);
-        isLiked.value = status['isLiked'] ?? false;
-        isSaved.value = status['isSaved'] ?? false;
-      } catch (e) {
-        debugPrint("Erro ao carregar status: $e");
-      }
-    }
-
-    isLoadingStats.value = false;
-  }
-
-  final RxBool isLoading = false.obs;
-  final RxBool hasViewBeenCounted = false.obs;
+  final isLoadingStats = false.obs;
+  final isLoading = false.obs;
+  final hasViewBeenCounted = false.obs;
   final isLiked = false.obs;
   final isSaved = false.obs;
   final likesCount = 0.obs;
   final savesCount = 0.obs;
+  final viewsCount = 0.obs;
 
   Timer? _viewTimer;
   int _secondsOnScreen = 0;
   static const int viewThresholdSeconds = 20;
 
-  void toggleLike(TrainingModel training) async {
-    final user = FirebaseAuth.instance.currentUser;
+  // ─── STATS (fetch once on open) ───────────────────────────────────────────
 
-    final bool originalState = isLiked.value;
-
-    isLiked.value = !originalState;
-
-    if (isLiked.value) {
-      likesCount.value++;
-    } else {
-      likesCount.value--;
-    }
-
-    _syncLikeWithFirebase(training, user!.uid, originalState);
-  }
-
-  Future<void> _syncLikeWithFirebase(
-      TrainingModel training, String userId, bool originalState) async {
+  Future<void> initializeStats(TrainingModel training) async {
+    isLoadingStats.value = true;
     try {
-      await trainingRepository.toggleTrainingLike(
-          trainingId: training.id, userId: userId);
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      // Single fetch — fresh data every time screen opens
+      final doc = await FirebaseFirestore.instance
+          .collection('allTrainings')
+          .doc(training.id)
+          .get();
+
+      final data = doc.data();
+      likesCount.value = (data?['Stats']?['likes'] ?? 0) as int;
+      savesCount.value = (data?['Stats']?['saves'] ?? 0) as int;
+      viewsCount.value = (data?['Stats']?['views'] ?? 0) as int;
+
+      final status = await trainingRepository.checkInteractionStatus(
+        trainingId: training.id,
+        userId: user.uid,
+      );
+      isLiked.value = status['isLiked'] ?? false;
+      isSaved.value = status['isSaved'] ?? false;
     } catch (e) {
-      // ROLLBACK SILENCIOSO (Só reverte se der erro real)
-      isLiked.value = originalState;
-      if (originalState) {
-        likesCount.value++;
-      } else {
-        likesCount.value--;
-      }
-      Get.snackbar('Erro', 'Falha ao sincronizar curtida');
-    }
-  }
-
-  void toggleSave(TrainingModel training) async {
-    final user = FirebaseAuth.instance.currentUser;
-
-    final bool originalState = isSaved.value;
-
-    isSaved.value = !originalState;
-
-    if (isSaved.value) {
-      savesCount.value++;
-    } else {
-      savesCount.value--;
-    }
-
-    _syncSaveWithFirebase(training, user!.uid, originalState);
-  }
-
-  Future<void> _syncSaveWithFirebase(
-      TrainingModel training, String userId, bool originalState) async {
-    try {
-      await trainingRepository.toggleTrainingSave(
-          trainingId: training.id, userId: userId, trainingData: training);
-    } catch (e) {
-      // ROLLBACK SILENCIOSO (Só reverte se der erro real)
-      isSaved.value = originalState;
-      if (originalState) {
-        savesCount.value++;
-      } else {
-        savesCount.value--;
-      }
-      Get.snackbar('Erro', 'Falha ao sincronizar salvamento');
+      debugPrint('Error loading stats: $e');
+    } finally {
+      isLoadingStats.value = false;
     }
   }
 
   @override
   void onClose() {
+    stopViewTracking();
     _viewTimer?.cancel();
     super.onClose();
   }
 
-  void startViewTracking(TrainingModel training) {
-    _secondsOnScreen = 0;
-    hasViewBeenCounted.value = false;
+  // ─── LIKE ─────────────────────────────────────────────────────────────────
 
+  void toggleLike(TrainingModel training) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    isLiked.value = !isLiked.value;
+    likesCount.value += isLiked.value ? 1 : -1;
+
+    trainingRepository
+        .toggleTrainingLike(trainingId: training.id, userId: user.uid)
+        .catchError((e) {
+      isLiked.value = !isLiked.value;
+      likesCount.value += isLiked.value ? 1 : -1;
+      Get.snackbar('Erro', 'Falha ao sincronizar curtida');
+    });
+  }
+
+  // ─── SAVE ─────────────────────────────────────────────────────────────────
+
+  void toggleSave(TrainingModel training) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    isSaved.value = !isSaved.value;
+    savesCount.value += isSaved.value ? 1 : -1;
+
+    trainingRepository
+        .toggleTrainingSave(
+            trainingId: training.id,
+            userId: user.uid,
+            trainingData: training)
+        .catchError((e) {
+      isSaved.value = !isSaved.value;
+      savesCount.value += isSaved.value ? 1 : -1;
+      Get.snackbar('Erro', 'Falha ao sincronizar salvamento');
+    });
+  }
+
+  // ─── VIEW TRACKING ────────────────────────────────────────────────────────
+
+  void startViewTracking(TrainingModel training) {
+    if (hasViewBeenCounted.value) return;
+
+    _secondsOnScreen = 0;
     _viewTimer?.cancel();
 
-    _viewTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _viewTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _secondsOnScreen++;
-
-      // GRAVA VIEW DEPOIS DE 20 SEG
       if (_secondsOnScreen >= viewThresholdSeconds &&
           !hasViewBeenCounted.value) {
         _recordView(training);
@@ -155,27 +138,28 @@ class TrainingDetailsController extends GetxController {
 
   Future<void> _recordView(TrainingModel training) async {
     if (hasViewBeenCounted.value) return;
-
     try {
       final uid = userController.user.value.id;
+      if (uid.isEmpty) return;
+
       final canCount = await trainingRepository.canCountView(
         trainingId: training.id,
         userId: uid,
       );
-
       if (canCount) {
         await trainingRepository.recordTrainingView(
           trainingId: training.id,
           userId: uid,
         );
         hasViewBeenCounted.value = true;
-      } else {
-        debugPrint('View not counted - cooldown period not elapsed');
+        viewsCount.value++; // update locally since no stream
       }
     } catch (e) {
       debugPrint('Error recording view: $e');
     }
   }
+
+  // ─── EXERCISES ───────────────────────────────────────────────────────────
 
   Future<TrainingModel> fetchExercises(TrainingModel training) async {
     isLoading.value = true;
@@ -185,74 +169,64 @@ class TrainingDetailsController extends GetxController {
     return training;
   }
 
+  // ─── DIALOGS ─────────────────────────────────────────────────────────────
+
   void showTrainingUserOptions(TrainingModel training) {
     stopViewTracking();
-
     showModalBottomSheet(
       context: Get.context!,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(
-              left: CbSizes.md, right: CbSizes.md, bottom: CbSizes.md),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(Icons.edit_rounded),
-                title: Text('Editar'),
-                onTap: () {
-                  Get.back();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.delete_rounded, color: Colors.red),
-                title: Text(
-                  'Deletar',
-                  style: TextStyle(color: Colors.red),
-                ),
-                onTap: () => createTrainingController
-                    .showCancelDeleteTrainingMessage(training),
-              ),
-            ],
-          ),
-        );
-      },
+      builder: (context) => Padding(
+        padding: const EdgeInsets.only(
+            left: CbSizes.md, right: CbSizes.md, bottom: CbSizes.md),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit_rounded),
+              title: const Text('Editar'),
+              onTap: () => Get.back(),
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_rounded, color: Colors.red),
+              title: const Text('Deletar', style: TextStyle(color: Colors.red)),
+              onTap: () =>
+                  createTrainingController.showCancelDeleteTrainingMessage(training),
+            ),
+          ],
+        ),
+      ),
     ).whenComplete(() {
-      if (!hasViewBeenCounted.value) {
-        startViewTracking(training);
-      }
+      if (!hasViewBeenCounted.value) startViewTracking(training);
     });
   }
 
   Future<dynamic> showStartTrainingOptions(
       TrainingModel training, bool isDarkMode) {
     stopViewTracking();
-
     return Get.defaultDialog(
       titlePadding: const EdgeInsets.only(top: CbSizes.lg),
-      contentPadding: EdgeInsets.all(CbSizes.lg),
+      contentPadding: const EdgeInsets.all(CbSizes.lg),
       title: 'Você deseja continuar?',
       middleText: 'Temos um treino pronto para você! Deseja iniciá-lo?',
       confirm: ElevatedButton(
-          onPressed: () => startTraining(training),
-          style: ElevatedButton.styleFrom(
-              backgroundColor: CbColors.primary,
-              side: BorderSide(color: CbColors.primary)),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
-            child: Text('Sim'),
-          )),
+        onPressed: () => startTraining(training),
+        style: ElevatedButton.styleFrom(
+            backgroundColor: CbColors.primary,
+            side: const BorderSide(color: CbColors.primary)),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
+          child: Text('Sim'),
+        ),
+      ),
       cancel: OutlinedButton(
         onPressed: () {
           Navigator.of(Get.overlayContext!).pop();
-          if (!hasViewBeenCounted.value) {
-            startViewTracking(training);
-          }
+          if (!hasViewBeenCounted.value) startViewTracking(training);
         },
-        child: Text('Não'),
+        child: const Text('Não'),
       ),
       backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
     );
@@ -272,26 +246,24 @@ class TrainingDetailsController extends GetxController {
         return;
       }
 
-      // VIEW PRA QUANDO INICIA O TREINO (SE JÁ NÃO INICIOU NESSA SESSÃO)
       if (!hasViewBeenCounted.value) {
         final uid = userController.user.value.id;
         final canCount = await trainingRepository.canCountView(
           trainingId: training.id,
           userId: uid,
         );
-
         if (canCount) {
           await trainingRepository.recordTrainingView(
             trainingId: training.id,
             userId: uid,
           );
           hasViewBeenCounted.value = true;
+          viewsCount.value++;
         }
       }
 
       CbFullScreenLoader.stopLoading();
-
-      Get.to(TrainingExecution(training: training));
+      Get.to(() => TrainingExecution(training: training));
     } catch (e) {
       CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());

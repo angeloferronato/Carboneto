@@ -126,10 +126,10 @@ class ExercisesList extends StatelessWidget {
                                                   CbRoundedImage(
                                                     imageUrl: exercise.creator.profilePicture.isNotEmpty ? exercise.creator.profilePicture : CbImages.userDefault,
                                                     isNetworkImage: exercise.creator.profilePicture.isNotEmpty,
-                                                    borderRadius: 8,
+                                                    borderRadius: 12,
                                                     backgroundColor: CbColors.primary,
-                                                    width: 10,
-                                                    height: 10,
+                                                    width: 15,
+                                                    height: 15,
                                                     fit: BoxFit.cover,
                                                   ),
                                                   

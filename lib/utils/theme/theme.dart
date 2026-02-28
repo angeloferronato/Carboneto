@@ -29,6 +29,11 @@ class CbAppTheme {
     elevatedButtonTheme: CbElevatedButtonTheme.lightElevatedButtonTheme,
     outlinedButtonTheme: CbOutlinedButtonTheme.lightOutlinedButtonTheme,
     inputDecorationTheme: CbTextFormFieldTheme.lightInputDecorationTheme,
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: CbColors.primary,
+      selectionColor: CbColors.primary.withValues(alpha: 0.3),
+      selectionHandleColor: CbColors.primary,
+    ),
     navigationBarTheme: CbNavigationBarTheme.lightNavigationBarTheme,
   );
 
@@ -47,6 +52,11 @@ class CbAppTheme {
     elevatedButtonTheme: CbElevatedButtonTheme.darkElevatedButtonTheme,
     outlinedButtonTheme: CbOutlinedButtonTheme.darkOutlinedButtonTheme,
     inputDecorationTheme: CbTextFormFieldTheme.darkInputDecorationTheme,
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: CbColors.primary,
+      selectionColor: CbColors.primary.withValues(alpha: 0.3),
+      selectionHandleColor: CbColors.primary,
+    ),
     navigationBarTheme: CbNavigationBarTheme.darkNavigationBarTheme,
   );
 }

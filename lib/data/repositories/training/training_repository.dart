@@ -724,7 +724,7 @@ class TrainingRepository extends GetxController {
             snapshot.docs.map((doc) => doc['TrainingId'] as String).toList());
   }
 
-// MANTENHA ESTE MÉTODO (Ele é eficiente para buscar os detalhes)
+  // MANTENHA ESTE MÉTODO (Ele é eficiente para buscar os detalhes)
   Future<List<TrainingModel>> fetchTrainingsByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
     try {

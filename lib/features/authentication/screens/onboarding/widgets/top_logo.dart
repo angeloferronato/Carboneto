@@ -1,13 +1,10 @@
-import 'package:carboneto/features/personalization/models/notification_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/notifications_screen.dart';
-import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/enums.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class TopLogo extends StatelessWidget {
   const TopLogo({
@@ -25,7 +22,7 @@ class TopLogo extends StatelessWidget {
 
     return SizedBox(
       height: 90,
-      width: double.infinity, // add this
+      width: double.infinity, 
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -47,8 +44,8 @@ class TopLogo extends StatelessWidget {
                 onPressed: () =>
                     Get.to(() => NotificationsScreen()),
                 icon: const Icon(
-                  CupertinoIcons.bell_fill,
-                  size: 26,
+                  Iconsax.notification5,
+                  size: 28,
                 ),
               ),
             ),

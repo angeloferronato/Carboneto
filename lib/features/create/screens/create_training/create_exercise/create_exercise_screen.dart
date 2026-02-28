@@ -1,7 +1,7 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/create/controllers/create_exercise_controller.dart';
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
+import 'package:carboneto/features/create/screens/create_training/create_exercise/widgets/cb_repetition_picker.dart';
 import 'package:carboneto/features/create/screens/create_training/create_exercise/widgets/cb_slider_create.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/square_upload.dart';
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
@@ -75,18 +75,22 @@ class CreateExerciseScreen extends StatelessWidget {
                     onChanged: createExerciseController.onDurationChanged, 
                   ),
                 ),
-
-                Obx(
-                  () => CbSliderDefault(
-                    sliderValue: createExerciseController.repetiotionsValue.value, 
-                    min: 1, 
-                    max: 10, 
-                    divisions: 9, 
-                    sliderHeader: 'Repetições - ${createExerciseController.repetiotionsValue.value.round()}', 
-                    sliderLabel: ' ${createExerciseController.repetiotionsValue.value.round()} ',
-                    onChanged: createExerciseController.onRepetiotionsChanged, 
-                  ),
-                ),
+                Obx(() => CbRepetitionPicker(
+                  value: createExerciseController.repetiotionsValue.value.round(),
+                  onChanged: (val) => createExerciseController.repetiotionsValue.value = val.toDouble(),
+                )),
+                SizedBox(height: 25,),
+                // Obx(
+                //   () => CbSliderDefault(
+                //     sliderValue: createExerciseController.repetiotionsValue.value, 
+                //     min: 1, 
+                //     max: 10, 
+                //     divisions: 9, 
+                //     sliderHeader: 'Repetições - ${createExerciseController.repetiotionsValue.value.round()}', 
+                //     sliderLabel: ' ${createExerciseController.repetiotionsValue.value.round()} ',
+                //     onChanged: createExerciseController.onRepetiotionsChanged, 
+                //   ),
+                // ),
 
                 const FormLabel(label: 'Adicionar Tags'),
                 const SizedBox(height: 10),
@@ -123,6 +127,4 @@ class CreateExerciseScreen extends StatelessWidget {
     );
   }
 }
-
-
 
