@@ -4,9 +4,11 @@ import 'package:carboneto/common/widgets/result/result_creator_info.dart';
 import 'package:carboneto/common/widgets/result/result_main.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/features/training/screens/training_details/widgets/training_stats_card.dart';
 import 'package:carboneto/features/training/screens/training_execution/widgets/video_player.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
@@ -22,13 +24,12 @@ class ExerciseDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ExercisePreviewController());
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     final size = MediaQuery.of(context).size;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subtitleColor = isDark ? CbColors.buttonDisabled : CbColors.darkerGrey;
+    final subtitleColor =
+        isDark ? CbColors.buttonDisabled : CbColors.darkerGrey;
     final exercise = controller.exercise;
-    final exerciseMainInfo = exercise.type == 'time'
-        ? 'Duração: ${CbHelperFunctions.formatDuration(exercise.duration, fullCase: true)}'
-        : '${exercise.repetitions} repetições';
 
     final double videoWidth = size.width - (CbSizes.md * 2);
 
@@ -49,7 +50,8 @@ class ExerciseDetailsScreen extends StatelessWidget {
                 icon: const Icon(Iconsax.arrow_left),
               ),
               flexibleSpace: Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 child: Center(
                   child: GestureDetector(
                     onTap: () => Get.offAll(HomeMenu()),
@@ -66,7 +68,8 @@ class ExerciseDetailsScreen extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(right: CbSizes.md),
-                    child: const Icon(Icons.more_vert, color: CbColors.white, size: 30),
+                    child: const Icon(Icons.more_vert,
+                        color: CbColors.white, size: 30),
                   ),
                 ),
               ],
@@ -78,42 +81,64 @@ class ExerciseDetailsScreen extends StatelessWidget {
 
           return SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: CbSizes.md),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: ratio == null
-                        ? CbShimmerEffects(
-                            width: videoWidth,
-                            height: videoWidth * (9 / 16),
-                            radius: 16,
-                          )
-                        : ratio < 1.0
-                            ? AspectRatio(
-                                aspectRatio: 9 / 16,
-                                child: VideoPlayerView(
-                                  url: exercise.video,
-                                  dataSourceType: DataSourceType.network,
+                Stack(
+                  alignment: Alignment.center,
+                  clipBehavior: Clip.none,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: ratio == null
+                          ? CbShimmerEffects(
+                              width: videoWidth,
+                              height: 250,
+                              radius: 16,
+                            )
+                          : ratio < 1.0
+                              ? SizedBox(
+                                  width: CbHelperFunctions.screenWidth() -
+                                      CbSizes.md,
+                                  height: 500,
+                                  child: VideoPlayerView(
+                                    url: exercise.video,
+                                    isOverVideo: true,
+                                    dataSourceType: DataSourceType.network,
+                                  ),
+                                )
+                              // horizontal video
+                              : SizedBox(
+                                  width: CbHelperFunctions.screenWidth() -
+                                      CbSizes.md,
+                                  height: 250,
+                                  child: VideoPlayerView(
+                                    url: exercise.video,
+                                    isOverVideo: true,
+                                    dataSourceType: DataSourceType.network,
+                                  ),
                                 ),
-                              )
-                            // horizontal video
-                            : SizedBox(
-                                width: videoWidth,
-                                height: videoWidth * (9 / 16),
-                                child: VideoPlayerView(
-                                  url: exercise.video,
-                                  dataSourceType: DataSourceType.network,
-                                ),
-                              ),
-                  ),
+                    ),
+                    Positioned(
+                      bottom: -45,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: CbStatsCard(
+                          isDarkMode: isDarkMode,
+                          leftIcon: exercise.type == 'reps'? CbImages.repsIcon : CbImages.clockIcon,
+                          leftValue: exercise.type == 'reps'? exercise.repetitions.toString() : CbHelperFunctions.formatDuration(exercise.duration, fullCase: true),
+                          leftLabel: exercise.type == 'reps' ? 'Repetições':'Duração',
+                          rightIcon: CbImages.peopleIcon,
+                          rightLabel: 'Pessoa(s)',
+                          rightValue: exercise.peopleCount.toString(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-
+                const SizedBox(height: 60),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 0, 40),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 20),
@@ -130,8 +155,8 @@ class ExerciseDetailsScreen extends StatelessWidget {
                         creator: exercise.creator,
                         creatorId: exercise.authorId,
                         showUserPicture: true,
-                        textSize: 13,
-                        userPictureSize: 25,
+                        textSize: 14,
+                        userPictureSize: 40,
                         justProfileInfo: true,
                       ),
                       const SizedBox(height: 16),
@@ -139,11 +164,10 @@ class ExerciseDetailsScreen extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            CbTipChipTraining(text: exerciseMainInfo),
-                            const SizedBox(width: CbSizes.sm),
                             ...exercise.categories!.map(
                               (category) => Padding(
-                                padding: const EdgeInsets.only(right: CbSizes.sm),
+                                padding:
+                                    const EdgeInsets.only(right: CbSizes.sm),
                                 child: CbTipChipTraining(
                                   text: category,
                                   textColor: CbColors.white,
@@ -203,7 +227,8 @@ class ExercisePreviewController extends GetxController {
 
   Future<void> _detectOrientation() async {
     try {
-      final fileInfo = await DefaultCacheManager().getSingleFile(exercise.video);
+      final fileInfo =
+          await DefaultCacheManager().getSingleFile(exercise.video);
       final probe = VideoPlayerController.file(File(fileInfo.path));
       await probe.initialize();
       aspectRatio.value = probe.value.aspectRatio;

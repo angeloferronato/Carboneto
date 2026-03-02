@@ -7,6 +7,7 @@ class CbColors {
   static const Color accent = Color(0xFFb0c7ff);
   static const Color inputBG = Color(0xFF2A2A2A);
   static const Color inputBorder = Color(0x1AFFFFFF);
+  static const Color borderBlue = Color(0xFF223142);
 
   // Text colors
   static const Color textPrimary = Color(0xFF333333);

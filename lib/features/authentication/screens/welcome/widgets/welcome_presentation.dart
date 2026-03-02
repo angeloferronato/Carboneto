@@ -1,6 +1,8 @@
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/common/widgets/login/login_header.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
@@ -43,11 +45,11 @@ class WelcomePresentation extends StatelessWidget {
           SizedBox(
             height: CbSizes.buttonHeight * 3.5,
             width: double.infinity,
-            child: ElevatedButton(
+            child: CbPrimaryBtn(
+              label: CbTexts.startNow,
+              borderRadius: 50,
+              fontSize: 15,
               onPressed: () => Get.offAll(HomeMenu()),
-              child: Text(
-                CbTexts.startNow
-              )
             ),
           )
         ],

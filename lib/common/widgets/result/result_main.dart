@@ -6,7 +6,6 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 // result_main.dart
 class ResultMain extends StatelessWidget {
@@ -68,8 +67,8 @@ class ResultMain extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => CbBottomSheet.showOptions(
                   context: context,
-                  onShare: () {},
-                  onReport: () {},
+                  onShare: () {}, //HERE
+                  onReport: () {}, 
                   extraItem: controller != null
                       ? Obx(() => ListTile(
                             leading: Icon(controller.isSaved.value
@@ -93,6 +92,7 @@ class ResultMain extends StatelessWidget {
     );
   }
 }
+
 
 // Extract badge to avoid duplication
 class _ViewsBadge extends StatelessWidget {

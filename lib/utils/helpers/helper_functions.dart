@@ -192,7 +192,7 @@ class CbHelperFunctions {
     final diff = now.difference(date);
 
     if (diff.inSeconds < 60) {
-      return 'há alguns segundos';
+      return 'alguns segundos';
     } else if (diff.inMinutes < 60) {
       final m = diff.inMinutes;
       return '$m minuto${m > 1 ? 's' : ''} atrás';
@@ -212,6 +212,12 @@ class CbHelperFunctions {
       final y = (diff.inDays / 365).floor();
       return '$y ano${y > 1 ? 's' : ''} atrás';
     }
+  }
+
+  static String formatToShowTime(int seconds) {
+    final m = (seconds / 60).floor();
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
   static String formatNotificationTimestamp(Timestamp? timestamp) {

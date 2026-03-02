@@ -66,13 +66,17 @@ class CreateExerciseScreen extends StatelessWidget {
 
                 Obx(
                   () => CbSliderDefault(
-                    sliderValue: createExerciseController.durationValue.value, 
-                    min: 1, 
-                    max: 30, 
-                    divisions: 29, 
-                    sliderHeader: 'Duração - ${createExerciseController.durationValue.value.round()} min', 
-                    sliderLabel: ' ${createExerciseController.durationValue.value.round()} min ',
-                    onChanged: createExerciseController.onDurationChanged, 
+                    sliderValue: createExerciseController.durationValue.value,
+                    min: 0, 
+                    max: 30,
+                    divisions: 30, 
+                    sliderHeader: createExerciseController.durationValue.value.round() == 0
+                        ? 'Duração - Livre'  
+                        : 'Duração - ${createExerciseController.durationValue.value.round()} min',
+                    sliderLabel: createExerciseController.durationValue.value.round() == 0
+                        ? ' Livre '
+                        : ' ${createExerciseController.durationValue.value.round()} min ',
+                    onChanged: createExerciseController.onDurationChanged,
                   ),
                 ),
                 Obx(() => CbRepetitionPicker(

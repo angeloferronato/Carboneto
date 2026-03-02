@@ -7,7 +7,10 @@ import 'package:get/get.dart';
 
 class UserModeSignUp extends StatefulWidget {
   const UserModeSignUp({
-    super.key, required this.selectedModeText, required this.image, this.spaceBtwImage,
+    super.key,
+    required this.selectedModeText,
+    required this.image,
+    this.spaceBtwImage,
   });
 
   final String selectedModeText;
@@ -23,33 +26,33 @@ class _UserModeSignUpState extends State<UserModeSignUp> {
   Widget build(BuildContext context) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
     final SignupController controller = SignupController.instance;
-    
 
     return GestureDetector(
       onTap: () => {
         setState(() {
           controller.changeSelectedAccountType(widget.selectedModeText);
         })
-      },  
+      },
       child: Obx(() {
-        final bool isSelected = controller.selectedAccountType.value == widget.selectedModeText;
+        final bool isSelected =
+            controller.selectedAccountType.value == widget.selectedModeText;
         return Container(
           width: 160,
           height: 150,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(CbSizes.md),
-            border: Border.all(
-              color: CbColors.grey,
+            gradient: const LinearGradient(
+              colors: [
+                Color(0x31467CB8),
+                Color(0x61152E42),
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
             ),
-            boxShadow: isSelected ? [
-              BoxShadow(
-                color: CbColors.primary,
-                spreadRadius: .5,
-                blurRadius: 5,
-                offset: Offset(0, 0),
-              ),
-            ] : [],
-            color: isDarkMode ? CbColors.dark : CbColors.white,
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: isSelected? CbColors.primary : CbColors.borderBlue,
+              width: 1,
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.all(CbSizes.sm),
@@ -60,19 +63,16 @@ class _UserModeSignUpState extends State<UserModeSignUp> {
                   image: AssetImage(widget.image),
                   width: 80,
                 ),
-        
-                SizedBox(height: widget.spaceBtwImage,),
-        
-                Text(
-                  widget.selectedModeText.capitalize!,
-                  style: Theme.of(context).textTheme.bodyMedium
+                SizedBox(
+                  height: widget.spaceBtwImage,
                 ),
+                Text(widget.selectedModeText.capitalize!,
+                    style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
           ),
         );
-        }
-      ),
+      }),
     );
   }
 }

@@ -16,8 +16,8 @@ class SquareUploadWidget extends StatelessWidget {
     super.key,
     required this.onSelectFiles,
     this.label = "",
-    this.description = "", 
-    required this.uploadImageController, 
+    this.description = "",
+    required this.uploadImageController,
     this.fileType = FileType.image,
   });
 
@@ -30,97 +30,119 @@ class SquareUploadWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
-    return Obx(
-      () => uploadImageController.selectedFile.value == null && uploadImageController.selectedVideo.value == null ? Center(
-        child: Container(
-          height: 250,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: CbColors.darkGrey,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(20)
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Upload icon
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: isDarkMode ? CbColors.inputBG : CbColors.lightGrey,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.upload_rounded,
-                  size: 30,
-                  color: CbColors.primary,
-                ),
-              ),
-              const SizedBox(height: 15),
-
-              // Main text
-              Text(
-                // "Upload video",
-                label,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: isDarkMode ? CbColors.lightGrey : CbColors.darkerGrey,
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              // Subtext
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                child:  Text(
-                  // "Selecionar arquivo de video. Tamanho máx 50mb.",
-                  description,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: isDarkMode ? CbColors.lightGrey : CbColors.darkerGrey,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              // Select files button
-              CbPrimaryBtn(label: 'Selecionar', fontSize: 13, onPressed: onSelectFiles)
-            ],
-          ),
-        ),
-      ) : fileType == FileType.image ? Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadiusGeometry.circular(20),
-            child: Image.file(
-              uploadImageController.selectedFile.value ?? File(''),
+    return Obx(() => uploadImageController.selectedFile.value == null &&
+            uploadImageController.selectedVideo.value == null
+        ? Center(
+            child: Container(
               height: 250,
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0x31467CB8),
+                    Color(0x61152E42),
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: CbColors.borderBlue,
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Upload icon
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? CbColors.dark : CbColors.lightGrey,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.upload_rounded,
+                      size: 30,
+                      color: CbColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Main text
+                  Text(
+                    // "Upload video",
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color:
+                          isDarkMode ? CbColors.lightGrey : CbColors.darkerGrey,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Subtext
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: Text(
+                      // "Selecionar arquivo de video. Tamanho máx 50mb.",
+                      description,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDarkMode
+                            ? CbColors.lightGrey
+                            : CbColors.darkerGrey,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  // Select files button
+                  CbPrimaryBtn(
+                      label: 'Selecionar',
+                      fontSize: 13,
+                      onPressed: onSelectFiles)
+                ],
+              ),
             ),
-          ),
-
-          const SizedBox(height: CbSizes.spaceBtwItems,),
-
-          CbPrimaryBtn(label: 'Trocar Imagem', onPressed: onSelectFiles),
-        ],
-      ) : Column(
-        children: [
-          SizedBox(
-            height: 300,
-            width: double.infinity,
-            child: VideoPlayerView(url: uploadImageController.selectedVideo.value!.path, dataSourceType: DataSourceType.file)
-          ),
-          const SizedBox(height: CbSizes.spaceBtwItems,),
-
-          CbPrimaryBtn(label: 'Trocar vídeo', fontSize: 13, onPressed: onSelectFiles)
-        ],
-      )
-    );
-    
+          )
+        : fileType == FileType.image
+            ? Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(20),
+                    child: Image.file(
+                      uploadImageController.selectedFile.value ?? File(''),
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: CbSizes.spaceBtwItems,
+                  ),
+                  CbPrimaryBtn(
+                      label: 'Trocar Imagem', onPressed: onSelectFiles),
+                ],
+              )
+            : Column(
+                children: [
+                  SizedBox(
+                      height: 300,
+                      width: double.infinity,
+                      child: VideoPlayerView(
+                          url: uploadImageController.selectedVideo.value!.path,
+                          dataSourceType: DataSourceType.file)),
+                  const SizedBox(
+                    height: CbSizes.spaceBtwItems,
+                  ),
+                  CbPrimaryBtn(
+                      label: 'Trocar vídeo',
+                      fontSize: 13,
+                      onPressed: onSelectFiles)
+                ],
+              ));
   }
 }

@@ -1,26 +1,36 @@
 import 'dart:ui';
-import 'package:carboneto/features/training/controllers/training_details_controller.dart'; // Importe o controller
-import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Importe o GetX
+import 'package:get/get.dart';
 
-class TrainingStatsCard extends StatelessWidget {
-  const TrainingStatsCard({
+class CbStatsCard extends StatelessWidget {
+  const CbStatsCard({
     super.key,
-    required this.training,
     required this.isDarkMode,
-  });
+    required this.leftIcon,
+    required this.leftValue,
+    required this.leftLabel,
+    required this.rightIcon,
+    required this.rightLabel,
+    this.rightValue,
+    this.rightRxValue,
+  }) : assert(rightValue != null || rightRxValue != null,
+            'Provide rightValue or rightRxValue');
 
-  final TrainingModel training;
   final bool isDarkMode;
+
+  final String leftIcon;
+  final String leftValue;
+  final String leftLabel;
+
+  final String rightIcon;
+  final String rightLabel;
+  final String? rightValue;
+  final RxInt? rightRxValue;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<TrainingDetailsController>();
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
       child: BackdropFilter(
@@ -37,9 +47,9 @@ class TrainingStatsCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               _StatItem(
-                icon: CbImages.clockIcon,
-                value: '${training.duration} min',
-                label: 'Duração',
+                icon: leftIcon,
+                value: leftValue,
+                label: leftLabel,
               ),
               const SizedBox(width: CbSizes.spaceBtwItems),
               Container(
@@ -48,13 +58,17 @@ class TrainingStatsCard extends StatelessWidget {
                 color: CbColors.white.withValues(alpha: 0.8),
               ),
               const SizedBox(width: CbSizes.spaceBtwItems),
-              
-
-              Obx(() => _StatItem(
-                icon: CbImages.likesIcon,
-                value: controller.likesCount.value.toString(),
-                label: 'Curtidas',
-              )),
+              rightRxValue != null
+                  ? Obx(() => _StatItem(
+                        icon: rightIcon,
+                        value: rightRxValue!.value.toString(),
+                        label: rightLabel,
+                      ))
+                  : _StatItem(
+                      icon: rightIcon,
+                      value: rightValue!,
+                      label: rightLabel,
+                    ),
             ],
           ),
         ),
@@ -82,16 +96,18 @@ class _StatItem extends StatelessWidget {
         const SizedBox(width: CbSizes.spaceBtwItems),
         Column(
           children: [
-            // Como o valor muda, o Obx pai vai reconstruir este Text
-            Text(value,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
-            Text(label,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w400, fontSize: 11)),
+            Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+            ),
+            Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 11),
+            ),
           ],
         ),
       ],
     );
   }
 }
+

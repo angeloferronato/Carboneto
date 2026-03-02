@@ -1,3 +1,4 @@
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/common/widgets/like_button/like_button.dart';
 import 'package:carboneto/common/widgets/result/result_main.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
@@ -8,11 +9,13 @@ import 'package:carboneto/features/training/screens/training_details/widgets/tra
 import 'package:carboneto/features/training/screens/training_details/widgets/training_stats_card.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+
 
 class TrainingDetailsScreen extends StatefulWidget {
   const TrainingDetailsScreen({super.key, required this.training});
@@ -96,8 +99,8 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
                 icon: const Icon(Iconsax.arrow_left),
               ),
               flexibleSpace: Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top),
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 child: Center(
                   child: GestureDetector(
                     onTap: () => Get.offAll(HomeMenu()),
@@ -117,17 +120,20 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
                   children: [
                     ResultMain(training: training, height: 250),
                     Positioned(
-                      bottom: -30,
-                      child: TrainingStatsCard(
-                        training: training,
-                        isDarkMode: isDarkMode,
-                      ),
-                    ),
+                        bottom: -30,
+                        child: CbStatsCard(
+                          isDarkMode: isDarkMode,
+                          leftIcon: CbImages.clockIcon,
+                          leftValue: '${training.duration} min',
+                          leftLabel: 'Duração',
+                          rightIcon: CbImages.likesIcon,
+                          rightLabel: 'Curtidas',
+                          rightRxValue: _controller.likesCount,
+                        )),
                   ],
                 ),
                 const SizedBox(height: CbSizes.spaceBtwSections * 1.8),
-                TrainingInfoSection(
-                    training: training, isDarkMode: isDarkMode),
+                TrainingInfoSection(training: training, isDarkMode: isDarkMode),
                 const SizedBox(height: CbSizes.spaceBtwItems),
                 TrainingExercisesList(training: training),
                 const SizedBox(height: 100),
@@ -142,18 +148,13 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
         decoration: const BoxDecoration(color: Colors.transparent),
         child: SizedBox(
           height: 60,
-          child: ElevatedButton(
-            onPressed: () =>
-                _controller.showStartTrainingOptions(training, isDarkMode),
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              elevation: 20,
-            ),
-            child: const Text('Começar'),
-          ),
+          child: CbPrimaryBtn(
+            label: 'Iniciar Treino', 
+            onPressed: () => _controller.showStartTrainingOptions(training, isDarkMode))
         ),
       ),
     );
   }
 }
+
+

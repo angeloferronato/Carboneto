@@ -4,6 +4,7 @@ import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/controllers/home_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final UserRepository userRepository = Get.put(UserRepository());
   final HomeController controller = Get.put(HomeController());
+  final UserController userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
@@ -40,28 +42,30 @@ class _HomeScreenState extends State<HomeScreen> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               automaticallyImplyLeading: false,
-              title: const TopLogo(width: 100,),
+              title: const TopLogo(
+                width: 100,
+              ),
               centerTitle: true,
             ),
           ];
         },
         body: Padding(
-            padding: const EdgeInsets.only(
-              left: CbSizes.md,
-              bottom: CbSizes.md,
-            ),
-            child: Obx(() {
-              if (controller.isLoading.value) {
-                return _buildLoading();
-              }
-
-              if (controller.isGridMode.value) {
-                return _buildSingleListMode();
-              }
-
-              return _buildSectionsMode();
-            }),
+          padding: const EdgeInsets.only(
+            left: CbSizes.md,
+            bottom: CbSizes.md,
           ),
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return _buildLoading();
+            }
+
+            if (controller.isGridMode.value) {
+              return _buildSingleListMode();
+            }
+
+            return _buildSectionsMode();
+          }),
+        ),
       ),
     );
   }
@@ -98,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               return Padding(
-                padding: EdgeInsets.only(right: CbSizes.md),
+                padding: EdgeInsets.only(right: CbSizes.md, bottom: 50),
                 child: ResultWidget(
                   training: controller.visibleTrainings[index],
                   homeWidget: true,
@@ -169,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return _buildSection(category, trainings);
           }),
+          const SizedBox(height: 50),
         ],
       );
     });

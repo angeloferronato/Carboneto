@@ -28,18 +28,24 @@ class CreateTrainingController extends GetxController {
   final TextEditingController title = TextEditingController();
   final TextEditingController description = TextEditingController();
   final GlobalKey<FormState> createTrainingFormKey = GlobalKey<FormState>();
-  final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.trainingControllerTag);
-  final NumberDropdownController numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.trainingControllerTag);
-  final TagController tagController = Get.put(TagController(), tag: CbTexts.trainingControllerTag);
-  final ExercisesController exercisesController = Get.put(ExercisesController());
+  final UploadImageController uploadImageController =
+      Get.put(UploadImageController(), tag: CbTexts.trainingControllerTag);
+  final NumberDropdownController numberDropdownController =
+      Get.put(NumberDropdownController(), tag: CbTexts.trainingControllerTag);
+  final TagController tagController =
+      Get.put(TagController(), tag: CbTexts.trainingControllerTag);
+  final ExercisesController exercisesController =
+      Get.put(ExercisesController());
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final HomeMenuController homeMenuController = Get.put(HomeMenuController());
   final UserRepository userRepository = Get.put(UserRepository());
-  final DifficultyLevelSelectorController difficultyLevelSelectorController = Get.put(DifficultyLevelSelectorController());
+  final DifficultyLevelSelectorController difficultyLevelSelectorController =
+      Get.put(DifficultyLevelSelectorController());
 
   Future<void> createTraining() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos criando seu treino...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos criando seu treino...', CbImages.loadingAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -54,81 +60,93 @@ class CreateTrainingController extends GetxController {
 
       if (uploadImageController.selectedFile.value == null) {
         CbFullScreenLoader.stopLoading();
-        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve selecionar uma imagem para continuar');
+        CbLoaders.warningSnackBar(
+            title: 'Erro',
+            message: 'Você deve selecionar uma imagem para continuar');
         return;
       }
 
       if (exercisesController.selectedIndexes.isEmpty) {
         CbLoaders.warningSnackBar(
           title: 'Selecione os Exercícios',
-          message: 'Para criar um treino, você deve escolher pelo menos um exercício.',
+          message:
+              'Para criar um treino, você deve escolher pelo menos um exercício.',
         );
         CbFullScreenLoader.stopLoading();
         return;
       }
 
-      if (difficultyLevelSelectorController.dropDownValue == difficultyLevelSelectorController.dropDownList.first) {
+      if (difficultyLevelSelectorController.dropDownValue ==
+          difficultyLevelSelectorController.dropDownList.first) {
         CbLoaders.warningSnackBar(
           title: 'Selecione uma Dificuldade',
-          message: 'Para criar um treino, você deve escolher um nível de dificuldade.',
+          message:
+              'Para criar um treino, você deve escolher um nível de dificuldade.',
         );
         CbFullScreenLoader.stopLoading();
         return;
       }
 
-      final imageFile = await uploadImageController.compressImage(uploadImageController.selectedFile.value!); 
-      final imageUrl = await TrainingRepository.instance.uploadImageToFirebase(imageFile ?? File(''));
+      final imageFile = await uploadImageController
+          .compressImage(uploadImageController.selectedFile.value!);
+      final imageUrl = await TrainingRepository.instance
+          .uploadImageToFirebase(imageFile ?? File(''));
 
       final exercisesList = <ExerciseModel>[];
-      for (var i=0; i < exercisesController.selectedIndexes.length; i++) {
-        if (exercisesController.selectedIndexes.contains(i)) {
-          exercisesList.add(exercisesController.exercises[i]);
-        }
+      for (final index in exercisesController.selectedIndexes) {
+        exercisesList.add(exercisesController.exercises[index]);
       }
 
       int duration = 0;
-      for (var exercise in exercisesList) {
+      for (final exercise in exercisesList) {
         duration += exercise.duration;
       }
 
       const uuid = Uuid();
       String customId = uuid.v4().substring(0, 10);
       final newTraining = TrainingModel(
-        authorId: userController.user.value.id, 
-        categories: tagController.selectedTags, 
-        description: description.text.trim(), 
-        exercises: exercisesList,
-        id: customId, 
-        level: TrainingModel.parseStringToLevel(difficultyLevelSelectorController.dropDownValue.toLowerCase().trim()), 
-        people: numberDropdownController.selectedValue.value == '+7' ? 7 : int.parse(numberDropdownController.selectedValue.value), 
-        thumbnail: imageUrl ?? '', 
-        title: title.text.trim(),
-        duration: duration,
-        creator: CreatorModel(
-          name: userController.user.value.name, 
-          isVerified: userController.user.value.isVerified, 
-          profilePicture: userController.user.value.profilePicture,
-        )
-      );
+          authorId: userController.user.value.id,
+          categories: tagController.selectedTags,
+          description: description.text.trim(),
+          exercises: exercisesList,
+          id: customId,
+          level: TrainingModel.parseStringToLevel(
+              difficultyLevelSelectorController.dropDownValue
+                  .toLowerCase()
+                  .trim()),
+          people: numberDropdownController.selectedValue.value == '+7'
+              ? 7
+              : int.parse(numberDropdownController.selectedValue.value),
+          thumbnail: imageUrl ?? '',
+          title: title.text.trim(),
+          duration: duration,
+          creator: CreatorModel(
+            name: userController.user.value.name,
+            isVerified: userController.user.value.isVerified,
+            profilePicture: userController.user.value.profilePicture,
+          ));
 
       userController.user.value.userTrainings!.add(customId);
-      await userRepository.updateSingleField({'UserTrainings': userController.user.value.userTrainings});
+      await userRepository.updateSingleField(
+          {'UserTrainings': userController.user.value.userTrainings});
 
       await trainingRepository.saveTrainingRecord(newTraining);
 
-      CbLoaders.successSnackBar(title: 'Sucesso', message: 'O seu treino foi cadastrado com sucesso!');
+      CbLoaders.successSnackBar(
+          title: 'Sucesso',
+          message: 'O seu treino foi cadastrado com sucesso!');
       CbFullScreenLoader.stopLoading();
       Get.offAll(() => HomeMenu());
-
     } catch (e) {
       CbLoaders.errorSnackBar(title: e.toString());
       CbFullScreenLoader.stopLoading();
     }
   }
-  
+
   Future<void> deleteTraining(TrainingModel training) async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos excluindo seu treino...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos excluindo seu treino...', CbImages.loadingAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -142,7 +160,8 @@ class CreateTrainingController extends GetxController {
 
       await userRepository.updateSingleField({'UserTrainings': userTrainings});
 
-      CbLoaders.successSnackBar(title: 'Sucesso', message: 'O seu treino foi excluído com sucesso!');
+      CbLoaders.successSnackBar(
+          title: 'Sucesso', message: 'O seu treino foi excluído com sucesso!');
       CbFullScreenLoader.stopLoading();
       Get.offAll(HomeMenu());
       homeMenuController.selectedIndex.value = 4;
@@ -154,21 +173,25 @@ class CreateTrainingController extends GetxController {
 
   void showCancelDeleteTrainingMessage(TrainingModel training) {
     Get.defaultDialog(
-      titlePadding: const EdgeInsets.only(top: CbSizes.lg, left: CbSizes.lg, right: CbSizes.lg),
-      contentPadding: EdgeInsets.all(CbSizes.lg),
-      title: 'Você deseja excluir o treino "${training.title}"?',
-      middleText: 'Uma vez concluída essa ação, o treino será excluído para sempre.',
-      confirm: ElevatedButton(
-        onPressed: () => deleteTraining(training),
-        style: ElevatedButton.styleFrom(backgroundColor: CbColors.error, side: BorderSide(color: CbColors.error)),
-        child: const Padding(padding: EdgeInsets.symmetric(horizontal: CbSizes.lg), child: Text('Sim'),)
-      ),
-      cancel: OutlinedButton(
-        onPressed: () => Navigator.of(Get.overlayContext!).pop(), 
-        child: Text('Não'),
-      ),
-      backgroundColor: CbColors.dark
-    );
+        titlePadding: const EdgeInsets.only(
+            top: CbSizes.lg, left: CbSizes.lg, right: CbSizes.lg),
+        contentPadding: EdgeInsets.all(CbSizes.lg),
+        title: 'Você deseja excluir o treino "${training.title}"?',
+        middleText:
+            'Uma vez concluída essa ação, o treino será excluído para sempre.',
+        confirm: ElevatedButton(
+            onPressed: () => deleteTraining(training),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: CbColors.error,
+                side: BorderSide(color: CbColors.error)),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
+              child: Text('Sim'),
+            )),
+        cancel: OutlinedButton(
+          onPressed: () => Navigator.of(Get.overlayContext!).pop(),
+          child: Text('Não'),
+        ),
+        backgroundColor: CbColors.dark);
   }
 }
-

@@ -67,7 +67,7 @@ class CreateTraining extends StatelessWidget {
                   validateEmpty: 'Título do treino',
                   maxLength: 80,
                 ),
-            
+                SizedBox(height: 15,),
                 // Description Form Section
                 CreateForm(
                   controller: controller.description,
@@ -85,12 +85,10 @@ class CreateTraining extends StatelessWidget {
                 TagSelector(controllerTag: CbTexts.trainingControllerTag,), // Tag selector widget
                 const SizedBox(height: 25),
                 const FormLabel(label: 'Exercícios'),
-                // Exercises Section
                 Column(
                   children: [
                     const SizedBox(height: 10),
             
-                    // Display selected exercises
                     Obx(() {
                       if (exercisesController.selectedIndexes.isEmpty) {
                         return Column(
@@ -122,7 +120,6 @@ class CreateTraining extends StatelessWidget {
             
                     const SizedBox(height: 25),
             
-                    // Add Exercise Button
                     CbPrimaryBtn(
                       label: 'Adicionar Exercício',
                       onPressed: () => Get.to(() => const AddTrainingScreen()), // Navigate to Add Training Screen

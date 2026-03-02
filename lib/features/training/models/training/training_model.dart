@@ -70,7 +70,7 @@ class TrainingModel {
     final String level;
     switch (data) {
       case DifficultyLevels.allstar:
-        level = 'allstar';
+        level = 'all-star';
         break;
       case DifficultyLevels.pro:
         level = 'pro';

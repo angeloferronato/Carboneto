@@ -7,6 +7,7 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ExerciseSelectionPreviewItem extends StatefulWidget {
   const ExerciseSelectionPreviewItem({
@@ -58,7 +59,9 @@ class _ExerciseSelectionPreviewItemState extends State<ExerciseSelectionPreviewI
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     textAlign: TextAlign.start,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontSize: 14,
+                    ),
                   ),
                   SizedBox(
                     height: 5,
@@ -66,12 +69,17 @@ class _ExerciseSelectionPreviewItemState extends State<ExerciseSelectionPreviewI
                   Row(
                     children: [
                       Text(
-                        '${widget.exercise.duration} min • ${widget.exercise.creator.name}',
+                        widget.exercise.type == 'reps' ? 
+                        '${widget.exercise.repetitions} reps • ${widget.exercise.creator.name}'
+                        :'${widget.exercise.duration} min • ${widget.exercise.creator.name}',
                         textAlign: TextAlign.start,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: isDarkMode 
                             ? CbColors.buttonDisabled
-                            : CbColors.darkerGrey
+                            : CbColors.darkerGrey,
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -83,7 +91,7 @@ class _ExerciseSelectionPreviewItemState extends State<ExerciseSelectionPreviewI
               onPressed: () {
                 exercisesController.toggleSelection(widget.index);
               },
-              icon: const Icon(Icons.delete, color: Color.fromARGB(255, 233, 48, 48),)
+              icon: const Icon(Icons.close, color: CbColors.primary,)
             )
           ],
         ),

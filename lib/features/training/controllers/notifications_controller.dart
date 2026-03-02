@@ -10,21 +10,38 @@ class NotificationsController extends GetxController {
   final Rx<bool> isLoading = false.obs;
   final RxList<NotificationModel> notificationsList = <NotificationModel>[].obs;
   final FollowRepository followRepository = Get.put(FollowRepository());
-  final currentUser = UserController.instance.user.value;
+
+  late dynamic currentUser;
 
   @override
   void onInit() {
-    bindNotifications(currentUser.id);
+    final userController = Get.isRegistered<UserController>()
+        ? Get.find<UserController>()
+        : Get.put(UserController());
+
+    ever(userController.user, (user) {
+      if (user.id.isNotEmpty && notificationsList.isEmpty) {
+        currentUser = user;
+        bindNotifications(user.id);
+      }
+    });
+
+    if (userController.user.value.id.isNotEmpty) {
+      currentUser = userController.user.value;
+      bindNotifications(currentUser.id);
+    }
+
     super.onInit();
   }
 
-  Future<void> acceptFollowRequest(String notificationId, String targetUserId) async {
+  Future<void> acceptFollowRequest(
+      String notificationId, String targetUserId) async {
     final followAcceptedNotification = NotificationModel(
-      type: NotificationType.followAccepted, 
-      fromUserId: currentUser.id, 
-      fromUserProfilePicture: currentUser.profilePicture, 
-      fromUserName: currentUser.name, 
-      fromUserUsername: currentUser.username, 
+      type: NotificationType.followAccepted,
+      fromUserId: currentUser.id,
+      fromUserProfilePicture: currentUser.profilePicture,
+      fromUserName: currentUser.name,
+      fromUserUsername: currentUser.username,
       isRead: false,
     );
     isLoading.value = true;
@@ -33,19 +50,19 @@ class NotificationsController extends GetxController {
       targetUserId,
       currentUser.id,
     );
-    await followRepository.sendNotification(followAcceptedNotification, targetUserId);
+    await followRepository.sendNotification(
+        followAcceptedNotification, targetUserId);
     isLoading.value = false;
   }
 
   Future<void> rejectFollowRequest(String notificationId) async {
     isLoading.value = true;
-    await followRepository.deleteNotificationById(notificationId, currentUser.id);
+    await followRepository.deleteNotificationById(
+        notificationId, currentUser.id);
     isLoading.value = false;
   }
 
   void bindNotifications(String userId) {
-    notificationsList.bindStream(
-      followRepository.loadNotifications(userId)
-    );
+    notificationsList.bindStream(followRepository.loadNotifications(userId));
   }
 }

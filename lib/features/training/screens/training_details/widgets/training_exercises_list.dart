@@ -4,6 +4,7 @@ import 'package:carboneto/features/training/models/training/training_model.dart'
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_item.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_queue_shimmer.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -44,7 +45,7 @@ class TrainingExercisesList extends GetView<TrainingDetailsController> {
                     video: exercise.video,
                     image: exercise.thumb,
                     title: exercise.title,
-                    duration: '$minutes:00',
+                    duration: exercise.duration == 0? '${exercise.repetitions} reps': CbHelperFunctions.formatToShowTime(exercise.duration*60),
                   ),
                 ));
           }).toList(),

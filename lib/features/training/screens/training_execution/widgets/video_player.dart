@@ -10,10 +10,12 @@ class VideoPlayerView extends StatefulWidget {
     super.key,
     required this.url,
     required this.dataSourceType,
+    this.isOverVideo = false, // ← false by default, true when stats card overlaps
   });
 
   final String url;
   final DataSourceType dataSourceType;
+  final bool isOverVideo;
 
   @override
   VideoPlayerViewState createState() => VideoPlayerViewState();
@@ -56,11 +58,15 @@ class _VideoPlayerViewState extends State<VideoPlayerView> {
         autoInitialize: true,
         autoPlay: true,
         videoPlayerController: controller,
-        materialProgressColors: ChewieProgressColors(playedColor: CbColors.primary),
+        materialProgressColors:
+            ChewieProgressColors(playedColor: CbColors.primary),
         customControls: CupertinoControls(
           backgroundColor: Colors.black,
           iconColor: CbColors.grey,
         ),
+        controlsSafeAreaMinimum: widget.isOverVideo
+            ? const EdgeInsets.only(bottom: 30)
+            : EdgeInsets.zero,
       );
     });
   }

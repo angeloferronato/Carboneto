@@ -17,46 +17,62 @@ class AddTrainingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final exercisesController = Get.put(ExercisesController());
+
     return Scaffold(
-      appBar: CbAppBar(
-        title: Text(
-          'Adicionar Exercício',
-          style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 22)
-        ),
-        showBackArrow: true,
-        actions: [
-          IconButton(
-            onPressed: () => Get.to(() => const CreateExerciseScreen()), 
-            icon: Icon(Icons.add, color: CbColors.primary, size: 30,),
-          )
-        ],
-      ),
       body: SafeArea(
         child: Stack(
           children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: FocusedTextField(
-                    controller: exercisesController.searchQueryController,
-                    hintText: "Pesquisar exercício",
-                    contentPadding: const EdgeInsets.all(14),
-                    prefixIcon: const Icon(Iconsax.search_normal_1, size: 20),
-                    onChanged: (value) => exercisesController.searchQuery.value = value,
+            CustomScrollView(
+              controller: exercisesController.scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: CbAppBar(
+                    title: Text(
+                      'Adicionar Exercício',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(fontSize: 22),
+                    ),
+                    showBackArrow: true,
+                    actions: [
+                      IconButton(
+                        onPressed: () => Get.to(() => const CreateExerciseScreen()),
+                        icon: const Icon(Icons.add, color: CbColors.primary, size: 30),
+                      ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8, left: CbSizes.md),
-                  child: CategoriesBar(controllerTag: '',),
+
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                        child: FocusedTextField(
+                          controller: exercisesController.searchQueryController,
+                          hintText: "Pesquisar exercício",
+                          contentPadding: const EdgeInsets.all(14),
+                          prefixIcon: const Icon(Iconsax.search_normal_1, size: 20),
+                          onChanged: (value) => exercisesController.searchQuery.value = value,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: CbSizes.md),
+                        child: CategoriesBar(controllerTag: ''),
+                      ),
+                    ],
+                  ),
                 ),
-                ExercisesList(),
+
+                const ExercisesList(),
               ],
             ),
 
             Obx(() {
               final selectedCount = exercisesController.intermediateSelectedCount;
-              final showButton = exercisesController.intermediateSelectedCount > 0;
+              final showButton = selectedCount > 0;
 
               return AnimatedSlide(
                 duration: const Duration(milliseconds: 350),
@@ -73,11 +89,11 @@ class AddTrainingScreen extends StatelessWidget {
                         backgroundColor: CbColors.primary,
                         elevation: 6,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25), 
+                          borderRadius: BorderRadius.circular(25),
                         ),
-                        onPressed: () => {
-                          exercisesController.addExercisesToAddTrainingScreen(),
-                          Navigator.of(context).pop()
+                        onPressed: () {
+                          exercisesController.addExercisesToAddTrainingScreen();
+                          Navigator.of(context).pop();
                         },
                         icon: const Icon(Iconsax.add, color: Colors.white),
                         label: Text(

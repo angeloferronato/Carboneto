@@ -12,7 +12,9 @@ class TagSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void openTagSearch() {
-      Get.to(TagSearchScreen(tag: controllerTag,));
+      Get.to(TagSearchScreen(
+        tag: controllerTag,
+      ));
     }
 
     final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
@@ -25,31 +27,54 @@ class TagSelector extends StatelessWidget {
         children: [
           Expanded(
             child: Obx(() => Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: controller.selectedTags.map((tag) {
-                return InputChip(
-                  label: Text(
-                    tag,
-                    style: TextStyle(
-                      color: (
-                        isDarkTheme
-                          ? CbColors.white
-                          : CbColors.black
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: controller.selectedTags.map((tag) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0x31467CB8),
+                            Color(0x61152E42),
+                          ],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: const Color(0xFF223142),
+                          width: 1,
+                        ),
                       ),
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Plus Jakarta Sans'
-                    ),
-                  ),
-                  backgroundColor: isDarkTheme ? CbColors.dark : CbColors.white,
-                  shape: StadiumBorder(
-                    side: BorderSide(color: CbColors.primary),
-                  ),
-                  onDeleted: () => controller.onTagChanged(tag),
-                  deleteIconColor: CbColors.accent,
-                );
-              }).toList(),
-            )),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            tag,
+                            style: TextStyle(
+                              color:
+                                  isDarkTheme ? CbColors.white : CbColors.black,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Plus Jakarta Sans',
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          GestureDetector(
+                            onTap: () => controller.onTagChanged(tag),
+                            child: Icon(
+                              Icons.close,
+                              size: 16,
+                              color: CbColors.accent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                )),
           ),
           IconButton(
             onPressed: openTagSearch,

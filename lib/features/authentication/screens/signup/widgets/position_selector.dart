@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PositionSelector extends StatefulWidget {
-  const PositionSelector ({super.key, this.width});
+  const PositionSelector({super.key, this.width});
 
   final double? width;
 
@@ -23,22 +23,38 @@ class _PositionSelectorState extends State<PositionSelector> {
       width: widget.width,
       padding: const EdgeInsets.symmetric(horizontal: CbSizes.sm),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: CbColors.darkGrey,
-          width: 1.5,
+        gradient: const LinearGradient(
+          colors: [
+            Color(0x31467CB8),
+            Color(0x61152E42),
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(CbSizes.sm),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: CbColors.borderBlue,
+          width: 1,
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           padding: const EdgeInsets.only(left: CbSizes.md),
           dropdownColor: isDarkMode ? CbColors.dark : CbColors.white,
-          value: controller.dropDownList.contains(controller.dropDownValue) ? controller.dropDownValue : controller.dropDownList.first,
-          hint: Text('Selecione uma opção', style: Theme.of(context).textTheme.bodyMedium,),
+          value: controller.dropDownList.contains(controller.dropDownValue)
+              ? controller.dropDownValue
+              : controller.dropDownList.first,
+          hint: Text(
+            'Selecione uma opção',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           items: controller.dropDownList.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
-              child: Text(value, style: Theme.of(context).textTheme.bodyLarge,),
+              child: Text(
+                value,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             );
           }).toList(),
           onChanged: (String? newValue) {

@@ -12,6 +12,7 @@ class UserPicture extends StatelessWidget {
   Widget build(BuildContext context) {
     return CbRoundedImage(
       imageUrl: userPicture.isNotEmpty ? userPicture : CbImages.userDefault,
+      borderRadius: size,
       width: size,
       height: size,
       fit: BoxFit.cover,

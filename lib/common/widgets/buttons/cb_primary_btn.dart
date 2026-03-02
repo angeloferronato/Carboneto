@@ -7,10 +7,10 @@ class CbPrimaryBtn extends StatelessWidget {
     super.key,
     required this.label,
     required this.onPressed,
-    this.fontSize = 14,
+    this.fontSize = 15,
     this.paddingH = 13,
     this.paddingV = 10,
-    this.borderRadius = 20
+    this.borderRadius = 40
   });
   final String label;
   final double fontSize, paddingH, paddingV, borderRadius;

@@ -21,20 +21,24 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 class CreateExerciseController extends GetxController {
   static CreateExerciseController get instance => Get.find();
-  
+
   // Repositories
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
 
   // General Controllers
-  final ExercisesController exercisesController = Get.put(ExercisesController());
+  final ExercisesController exercisesController =
+      Get.put(ExercisesController());
   final UserController userController = Get.put(UserController());
-  final TagController tagController = Get.put(TagController(), tag: CbTexts.exerciseControllerTag);
-  final NumberDropdownController numberDropdownController = Get.put(NumberDropdownController(), tag: CbTexts.exerciseControllerTag);
-  final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.exerciseControllerTag);
+  final TagController tagController =
+      Get.put(TagController(), tag: CbTexts.exerciseControllerTag);
+  final NumberDropdownController numberDropdownController =
+      Get.put(NumberDropdownController(), tag: CbTexts.exerciseControllerTag);
+  final UploadImageController uploadImageController =
+      Get.put(UploadImageController(), tag: CbTexts.exerciseControllerTag);
 
   // Exercise Info Controllers
-  final TextEditingController title = TextEditingController(); 
-  final TextEditingController description = TextEditingController(); 
+  final TextEditingController title = TextEditingController();
+  final TextEditingController description = TextEditingController();
   final Rx<double> durationValue = 5.0.obs;
   final Rx<double> repetiotionsValue = 3.0.obs;
   final GlobalKey<FormState> createExerciseFormKey = GlobalKey<FormState>();
@@ -51,14 +55,16 @@ class CreateExerciseController extends GetxController {
     if (thumbPath == null) return "";
 
     final thumbFile = File(thumbPath);
-    final thumbUrl = await TrainingRepository.instance.uploadImageToFirebase(thumbFile, folder: "Exercises Thumbnails");
+    final thumbUrl = await TrainingRepository.instance
+        .uploadImageToFirebase(thumbFile, folder: "Exercises Thumbnails");
 
     return thumbUrl ?? "";
   }
 
   Future<void> createExercise() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos criando seu exercício...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos criando seu exercício...', CbImages.loadingAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
@@ -67,7 +73,9 @@ class CreateExerciseController extends GetxController {
 
       if (uploadImageController.selectedVideo.value == null) {
         CbFullScreenLoader.stopLoading();
-        CbLoaders.warningSnackBar(title: 'Erro', message: 'Você deve selecionar um vídeo para continuar.');
+        CbLoaders.warningSnackBar(
+            title: 'Erro',
+            message: 'Você deve selecionar um vídeo para continuar.');
         return;
       }
 
@@ -76,39 +84,53 @@ class CreateExerciseController extends GetxController {
         return;
       }
 
-      final videoFile = await uploadImageController.compressVideo(uploadImageController.selectedVideo.value!);
-      final thumbUrl = await generateThumbFromVideo(uploadImageController.selectedVideo.value!);
-      final videoUrl = await TrainingRepository.instance.uploadVideoToFirebase(videoFile ?? File(''));
+      final videoFile = await uploadImageController
+          .compressVideo(uploadImageController.selectedVideo.value!);
+      final thumbUrl = await generateThumbFromVideo(
+          uploadImageController.selectedVideo.value!);
+      final videoUrl = await TrainingRepository.instance
+          .uploadVideoToFirebase(videoFile ?? File(''));
 
       const uuid = Uuid();
       String customId = uuid.v4().substring(0, 10);
 
+      String exerciseType;
+      if (durationValue.value.toInt() == 0) {
+        exerciseType = 'reps';
+      } else if (repetiotionsValue.value.toInt() == 1) {
+        exerciseType = 'time';
+      } else {
+        exerciseType = 'mixed';
+      }
+
       final newExercise = ExerciseModel(
-        description: description.text.trim(), 
-        title: title.text.trim(), 
-        video: videoUrl ?? '', 
-        id: customId, 
+        description: description.text.trim(),
+        title: title.text.trim(),
+        video: videoUrl ?? '',
+        id: customId,
         repetitions: repetiotionsValue.value.toInt(),
-        duration: durationValue.value.toInt(), 
-        authorId: userController.user.value.id, 
-        categories: tagController.selectedTags, 
-        type: 'time',
+        duration: durationValue.value.toInt(),
+        authorId: userController.user.value.id,
+        categories: tagController.selectedTags,
+        type: exerciseType, // ← was hardcoded 'time'
         thumb: thumbUrl.isNotEmpty
             ? thumbUrl
             : 'https://firebasestorage.googleapis.com/v0/b/carboneto-fe55b.firebasestorage.app/o/default-ui-image-placeholder-wireframes-600nw-1037719192.webp?alt=media&token=9e26bdef-6613-4f42-9d49-4fd99332aba8',
+        peopleCount: int.parse(numberDropdownController.selectedValue.value.toString()),
         creator: CreatorModel(
-          name: userController.user.value.name, 
-          profilePicture: userController.user.value.profilePicture, 
+          name: userController.user.value.name,
+          profilePicture: userController.user.value.profilePicture,
           isVerified: userController.user.value.isVerified,
-        )
+        ),
       );
 
       exerciseRepository.saveExerciseRecord(newExercise);
 
-      CbLoaders.successSnackBar(title: 'Sucesso', message: 'O Seu exercício foi cadastrado com sucesso!');
+      CbLoaders.successSnackBar(
+          title: 'Sucesso',
+          message: 'O Seu exercício foi cadastrado com sucesso!');
       CbFullScreenLoader.stopLoading();
       Get.offAll(() => HomeMenu());
-
     } catch (e) {
       CbLoaders.errorSnackBar(title: e.toString());
       CbFullScreenLoader.stopLoading();

@@ -47,7 +47,8 @@ class TrainingExecutionController extends GetxController
 
     activeExercise.value = training.exercises[0];
     duration = Duration(minutes: training.duration ?? 0).obs;
-    trainingRelativeDuration = Duration(minutes: activeExercise.value.duration).obs;
+    trainingRelativeDuration =
+        Duration(minutes: activeExercise.value.duration).obs;
 
     await _createOrResumeProgress();
 
@@ -115,13 +116,14 @@ class TrainingExecutionController extends GetxController
   }
 
   void nextExercise() {
-    activeIndexTraining.value++;
-    if (activeIndexTraining.value == training.exercises.length) {
+    if (activeIndexTraining.value+1 == training.exercises.length) {
       CbLoaders.successSnackBar(title: 'Treino Finalizado');
       Get.offAll(HomeMenu());
     }
+    activeIndexTraining.value++;
     activeExercise.value = training.exercises[activeIndexTraining.value];
-    trainingRelativeDuration.value = Duration(minutes: activeExercise.value.duration);
+    trainingRelativeDuration.value =
+        Duration(minutes: activeExercise.value.duration);
   }
 
   void showCancelMessage(bool isDarkMode) {
@@ -131,18 +133,17 @@ class TrainingExecutionController extends GetxController
       title: 'Você deseja finalizar o treino?',
       middleText: 'Assim que você sair, o treino será cancelado.',
       confirm: ElevatedButton(
-        onPressed: () async {
-          saveProgress();
-          Get.offAll(HomeMenu());
-        },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: CbColors.error,
-            side: BorderSide(color: CbColors.error)),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
-          child: Text('Sim'),
-        )
-      ),
+          onPressed: () async {
+            saveProgress();
+            Get.offAll(HomeMenu());
+          },
+          style: ElevatedButton.styleFrom(
+              backgroundColor: CbColors.error,
+              side: BorderSide(color: CbColors.error)),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: CbSizes.lg),
+            child: Text('Sim'),
+          )),
       cancel: OutlinedButton(
         onPressed: () => Navigator.of(Get.overlayContext!).pop(),
         child: Text('Não'),
@@ -205,7 +206,7 @@ class TrainingExecutionController extends GetxController
         ? (1 - (duration.value.inSeconds / (training.duration! * 60))) * 100
         : (activeIndexTraining.value / totalExercises) * 100;
 
-    if (completed) progress = 100;
+    if (progress == 100 || progress > 100) completed = true;
 
     final data = {
       'TrainingRemainingTime': duration.value.inSeconds,
