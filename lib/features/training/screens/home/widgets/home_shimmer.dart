@@ -1,5 +1,4 @@
 import 'package:carboneto/features/training/screens/home/widgets/home_training_shimmer.dart';
-import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/loading_effects/shimmer_effects.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,3 @@
-import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/personalization/controllers/remove_follower_controller/remove_follower_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';

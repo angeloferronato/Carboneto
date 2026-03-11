@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
+
 class DataSettings extends StatelessWidget {
   DataSettings({super.key});
 
   final SettingsController settings = Get.find<SettingsController>();
+  
 
   @override
   Widget build(BuildContext context) {

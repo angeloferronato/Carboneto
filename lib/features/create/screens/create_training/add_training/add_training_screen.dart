@@ -11,19 +11,18 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 
-class AddTrainingScreen extends StatelessWidget {
+class AddTrainingScreen extends GetView<ExercisesController> {
   const AddTrainingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final exercisesController = Get.put(ExercisesController());
 
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
             CustomScrollView(
-              controller: exercisesController.scrollController,
+              controller: controller.scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverToBoxAdapter(
@@ -51,11 +50,11 @@ class AddTrainingScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                         child: FocusedTextField(
-                          controller: exercisesController.searchQueryController,
+                          controller: controller.searchQueryController,
                           hintText: "Pesquisar exercício",
                           contentPadding: const EdgeInsets.all(14),
                           prefixIcon: const Icon(Iconsax.search_normal_1, size: 20),
-                          onChanged: (value) => exercisesController.searchQuery.value = value,
+                          onChanged: (value) => controller.searchQuery.value = value,
                         ),
                       ),
                       Padding(
@@ -71,7 +70,7 @@ class AddTrainingScreen extends StatelessWidget {
             ),
 
             Obx(() {
-              final selectedCount = exercisesController.intermediateSelectedCount;
+              final selectedCount = controller.intermediateSelectedCount;
               final showButton = selectedCount > 0;
 
               return AnimatedSlide(
@@ -92,7 +91,7 @@ class AddTrainingScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(25),
                         ),
                         onPressed: () {
-                          exercisesController.addExercisesToAddTrainingScreen();
+                          controller.addExercisesToAddTrainingScreen();
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(Iconsax.add, color: Colors.white),

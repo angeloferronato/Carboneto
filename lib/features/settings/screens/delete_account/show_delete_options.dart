@@ -2,7 +2,6 @@ import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/login/social_button.dart';
 import 'package:carboneto/features/settings/controllers/delete_account_controller.dart';
 import 'package:carboneto/features/settings/screens/delete_account/delete_account.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';

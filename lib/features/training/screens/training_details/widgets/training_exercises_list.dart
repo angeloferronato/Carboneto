@@ -30,8 +30,6 @@ class TrainingExercisesList extends GetView<TrainingDetailsController> {
         padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
         child: Column(
           children: training.exercises.map((exercise) {
-            final minutes = exercise.duration.toString().padLeft(2, '0');
-
             return Padding(
                 padding: const EdgeInsets.only(
                   bottom: CbSizes.spaceBtwItems,

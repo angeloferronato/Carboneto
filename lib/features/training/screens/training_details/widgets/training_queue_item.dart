@@ -88,6 +88,8 @@ class CbTrainingQueueItem extends StatelessWidget {
                             width: 370,
                             child: VideoPlayerView(
                               url: video,
+                              showFullscreen: false,
+                              showOptions: false,
                               dataSourceType: DataSourceType.network,
                             ),
                           ),

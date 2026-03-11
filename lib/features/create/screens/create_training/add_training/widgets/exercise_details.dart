@@ -118,7 +118,7 @@ class ExerciseDetailsScreen extends StatelessWidget {
                                 ),
                     ),
                     Positioned(
-                      bottom: -45,
+                      bottom: -65,
                       child: Material(
                         color: Colors.transparent,
                         child: CbStatsCard(
@@ -134,7 +134,7 @@ class ExerciseDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 60),
+                const SizedBox(height: 75),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 0, 40),
                   child: Column(
@@ -193,9 +193,9 @@ class ExerciseDetailsScreen extends StatelessWidget {
                             textAlign: TextAlign.justify,
                             exercise.description,
                             style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(height: 1.6, color: subtitleColor),
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontSize: 12),
                           ),
                         ),
                       ],

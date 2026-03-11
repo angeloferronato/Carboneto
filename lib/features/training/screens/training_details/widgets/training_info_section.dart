@@ -1,14 +1,10 @@
 import 'package:carboneto/common/widgets/result/result_creator_info.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
-import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
-import 'package:carboneto/features/personalization/screens/profile/profile.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_tags_row.dart';
-import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class TrainingInfoSection extends StatelessWidget {
   const TrainingInfoSection({

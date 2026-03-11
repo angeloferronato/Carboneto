@@ -1,6 +1,5 @@
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
-import 'package:carboneto/features/settings/screens/privacy_settings/privacy_settings.dart';
 import 'package:carboneto/features/settings/settings.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';

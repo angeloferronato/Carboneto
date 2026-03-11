@@ -80,11 +80,11 @@ class HomeMenuController extends GetxController {
 
   final Rx<int> selectedIndex = 0.obs;
 
-  final List<Widget> screens = [
+  List<Widget> get screens => [
     HomeScreen(),
     SearchScreen(),
     CreateTraining(),
     LibraryScreen(),
-    ProfileScreen(userId: UserController.instance.user.value.id,),
+    ProfileScreen(userId: UserController.instance.user.value.id),
   ];
 }

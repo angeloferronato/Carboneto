@@ -4,6 +4,13 @@ class CbImages {
   static const String likesIcon = "assets/images/training/likes_icon.png";
   static const String peopleIcon = "assets/images/training/people_icon.png";
   static const String repsIcon = "assets/images/training/reps_icon.png";
+
+  static const String veryEasyIcon = "assets/images/training/very_easy.png";
+  static const String easyIcon = "assets/images/training/easy.png";
+  static const String okIcon = "assets/images/training/ok.png";
+  static const String hardIcon = "assets/images/training/hard.png";
+  static const String veryHardIcon = "assets/images/training/very_hard.png";
+
   // -- Videos
   static const String videoExample =
       "assets/videos/arch_bounce_with_two_hands_over_head_between_legs.mp4";

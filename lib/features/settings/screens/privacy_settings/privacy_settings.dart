@@ -6,10 +6,19 @@ import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PrivacySettings extends StatelessWidget {
   PrivacySettings({super.key});
-  
+
+  Future<void> _openPrivacyPolicy() async {
+    final Uri url = Uri.parse('https://carboneto-web.vercel.app/privacy');
+
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Não foi possível abrir o link');
+    }
+  }
+
   final controller = Get.put(PrivacySettingsController());
   
   @override
@@ -56,7 +65,7 @@ class PrivacySettings extends StatelessWidget {
                     SettingsItem(
                       title: 'Política de privacidade', 
                       subtitle: 'Saiba como seus dados são coletados, usados e protegidos.', 
-                      onTap: () => {},
+                      onTap: _openPrivacyPolicy,
                     )
                   ],
                 ),

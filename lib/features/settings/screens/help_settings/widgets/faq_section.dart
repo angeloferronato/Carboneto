@@ -1,5 +1,4 @@
 import 'package:carboneto/features/settings/screens/help_settings/widgets/faq_item.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class FaqSection extends StatelessWidget {

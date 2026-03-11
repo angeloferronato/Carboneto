@@ -8,11 +8,19 @@ import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HelpSettings extends StatelessWidget {
   HelpSettings({super.key});
   
   final SettingsController settings = Get.find<SettingsController>();
+  Future<void> _openTerms() async {
+    final Uri url = Uri.parse('https://carboneto-web.vercel.app/terms');
+
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Não foi possível abrir o link');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +77,7 @@ class HelpSettings extends StatelessWidget {
                   title: 'Termos e condições', 
                   subtitle: 'Os Termos e Condições definem como o Carboneto pode ser utilizado.',
                   showErrorMessage: false,
+                  onTap: _openTerms,
                 ),
               ],
             ),

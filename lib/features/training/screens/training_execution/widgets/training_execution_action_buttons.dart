@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 
 class TrainingExecutionActionButtons extends StatelessWidget {
   const TrainingExecutionActionButtons({
-    super.key, required this.controller,
+    super.key,
+    required this.controller,
   });
 
   final TrainingExecutionController controller;
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
@@ -22,24 +24,24 @@ class TrainingExecutionActionButtons extends StatelessWidget {
           height: 45,
           borderRadius: 45,
           child: IconButton(
-            onPressed: () => controller.toggleSheet(), 
-            icon: Icon(Icons.table_rows_rounded, color: CbColors.lightGrey,),
+            onPressed: () => controller.toggleSheet(),
+            icon: Icon(Icons.table_rows_rounded, color: CbColors.lightGrey),
           ),
         ),
-        SizedBox(width: CbSizes.spaceBtwItems / 2,),
-    
+        SizedBox(width: CbSizes.spaceBtwItems / 2),
+
         CbRoundedContainer(
           backgroundColor: CbColors.primary,
           width: 45,
           height: 45,
           borderRadius: 45,
           child: IconButton(
-            onPressed: () => controller.nextExercise(), 
-            icon: Icon(Icons.skip_next_rounded, size: 30,  color: CbColors.white,),
+            onPressed: () => controller.showJumpValidation(context, isDarkMode),
+            icon: Icon(Icons.skip_next_rounded, size: 30, color: CbColors.white),
           ),
         ),
-        SizedBox(width: CbSizes.spaceBtwItems / 2,),
-    
+        SizedBox(width: CbSizes.spaceBtwItems / 2),
+
         CbRoundedContainer(
           backgroundColor: CbColors.primary,
           width: 45,
@@ -47,8 +49,8 @@ class TrainingExecutionActionButtons extends StatelessWidget {
           borderRadius: 45,
           child: IconButton(
             splashColor: const Color.fromARGB(255, 21, 68, 171),
-            onPressed: () => controller.showCancelMessage(isDarkMode), 
-            icon: Icon(Icons.close_sharp, size: 30, color: CbColors.white,),
+            onPressed: () => controller.showCancelMessage(isDarkMode),
+            icon: Icon(Icons.close_sharp, size: 30, color: CbColors.white),
           ),
         ),
       ],
