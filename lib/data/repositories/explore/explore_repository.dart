@@ -16,7 +16,7 @@ class ExploreRepository extends GetxController {
 
   Future<List<Map<String, dynamic>>> fetchAllCategories() async {
     try {
-      final snapshot = await _db.collection('Subcategorias').get();
+      final snapshot = await _db.collection('subCategories').get();
 
       if (snapshot.docs.isEmpty) {
         debugPrint('Nenhuma subcategoria encontrada no Firestore.');

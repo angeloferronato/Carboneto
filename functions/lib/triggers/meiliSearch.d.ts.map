@@ -1,1 +1,1 @@
-{"version":3,"file":"meiliSearch.d.ts","sourceRoot":"","sources":["../../src/triggers/meiliSearch.ts"],"names":[],"mappings":"AAiCA,eAAO,MAAM,kBAAkB;;GAAgD,CAAC;AAChF,eAAO,MAAM,kBAAkB;;GAAgD,CAAC"}
+{"version":3,"file":"meiliSearch.d.ts","sourceRoot":"","sources":["../../src/triggers/meiliSearch.ts"],"names":[],"mappings":"AAqCA,eAAO,MAAM,kBAAkB;;GAA6C,CAAC;AAC7E,eAAO,MAAM,kBAAkB;;GAA6C,CAAC;AAC7E,eAAO,MAAM,mBAAmB;;GAA+C,CAAC;AAChF,eAAO,MAAM,cAAc;;GAA+B,CAAC;AAC3D,eAAO,MAAM,sBAAsB;;GAA+C,CAAC"}

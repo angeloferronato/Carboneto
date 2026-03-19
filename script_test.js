@@ -1,57 +1,60 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('./private_key_firebase.json')
+const serviceAccount = require('./private_key_firebase.json');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+// 1. Inicialize o SDK (certifique-se de ter o serviceAccountKey.json)
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+}
 
 const db = admin.firestore();
 
-async function addCreatorToExercises() {
-  const exercisesSnap = await db.collection("allExercises").get();
+async function renameFieldInSubcategories() {
+  const collectionRef = db.collection('allExercises');
+  const snapshot = await collectionRef.get();
 
-  if (exercisesSnap.empty) {
-    console.log("Nenhum exercício encontrado.");
+  if (snapshot.empty) {
+    console.log('Nenhum documento encontrado.');
     return;
   }
 
   let batch = db.batch();
-  let updated = 0;
+  let count = 0;
 
-  for (const exerciseDoc of exercisesSnap.docs) {
-    const exercise = exerciseDoc.data();
+  for (const doc of snapshot.docs) {
+    const data = doc.data();
+    
+    // Verificamos se o campo antigo "ID" existe no documento
+    if (data.hasOwnProperty('ID')) {
+      const valorOriginal = data.ID;
+      const docRef = collectionRef.doc(doc.id);
 
-    let keywords = [...exercise.Categories];
-    keywords.push(...[exercise.Creator.Name, exercise.Title]);
+      // Atualizamos o documento:
+      // 1. Criamos o novo campo "Id" com o valor antigo
+      // 2. Removemos o campo "ID" antigo usando FieldValue.delete()
+      batch.update(docRef, {
+        Id: valorOriginal,
+        ID: admin.firestore.FieldValue.delete()
+      });
 
-
-    const searchExercise = {
-      Title: exercise.Title,
-      TitleLower: exercise.Title.toLowerCase(),
-      Creator: {
-        Name: exercise.Creator.Name,
-        ProfilePicture: exercise.Creator.ProfilePicture,
-        IsVerified: exercise.Creator.IsVerified,
-      },
-      Categories: exercise.Categories,
-      Duration: exercise.Duration ?? 0,
-      Repetitions: exercise.Repetitions ?? 0,
-      Keywords: keywords,
-      AuthorID: exercise.AuthorID,
-      Thumbnail: exercise.Thumbnail,
+      count++;
     }
 
-    batch.set(db.collection('exercisesSearch').doc(exerciseDoc.id), searchExercise, {merge: true});
+    // Limite de 500 operações por batch
+    if (count >= 500) {
+      await batch.commit();
+      batch = db.batch();
+      count = 0;
+    }
+  }
 
-    updated++;
-  };
+  if (count > 0) {
+    await batch.commit();
+  }
 
-  await batch.commit();
+  console.log(`Sucesso: ${count} documentos atualizados (campo ID -> Id).`);
 }
 
-addCreatorToExercises()
-  .then(() => process.exit(0))
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+renameFieldInSubcategories().catch(console.error);

@@ -34,7 +34,7 @@ class ExerciseRepository extends GetxController {
   Future<ExerciseModel> fetchExerciseDetails(String id) async {
     try {
       
-      final query = await _db.collection('allExercises').where('ID', isEqualTo: id).get();
+      final query = await _db.collection('allExercises').where('Id', isEqualTo: id).get();
       
       if (query.docs.isNotEmpty) {
         final exercise = ExerciseModel.fromSnapshot(query.docs[0]);

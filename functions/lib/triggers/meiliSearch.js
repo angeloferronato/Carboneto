@@ -1,29 +1,40 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncMeiliTrainings = exports.syncMeiliExercises = void 0;
+exports.syncMeiliTrainingLikes = exports.syncMeiliUsers = exports.syncMeiliCategories = exports.syncMeiliTrainings = exports.syncMeiliExercises = void 0;
+// meiliSearch.ts
 const firestore_1 = require("firebase-functions/v2/firestore");
 const meilisearch_1 = require("meilisearch");
 const meiliClient = new meilisearch_1.MeiliSearch({
-    host: 'https://shared-meredith-carboneto-2c512dda.koyeb.app/',
-    apiKey: 'EDWxYEAJrvPoHIR-gHJSNS3-p6J80XASaechuGNXYIo',
+    host: 'http://140.238.186.227:7700',
+    apiKey: 'hGFUGI775FAI7TF976TFITUFUTFITtuf78',
 });
 function createSync(collectionName, indexName) {
     return (0, firestore_1.onDocumentWritten)(`${collectionName}/{docId}`, async (event) => {
         const docId = event.params.docId;
         const index = meiliClient.index(indexName);
-        if (!event.data?.after.exists) {
-            await index.deleteDocument(docId);
+        try {
+            if (!event.data?.after.exists) {
+                await index.deleteDocument(docId);
+                return null;
+            }
+            const data = event.data?.after.data();
+            // Adaptando para usar o campo ID que você prefere ou o docId
+            // No Meilisearch, o campo 'id' é obrigatório como chave primária
+            const meiliDoc = {
+                id: docId,
+                ...data,
+            };
+            await index.addDocuments([meiliDoc], { primaryKey: 'id' });
             return null;
         }
-        const data = event.data?.after.data();
-        const meiliDoc = {
-            id: docId,
-            ...data
-        };
-        await index.addDocuments([meiliDoc]);
-        return null;
+        catch (e) {
+            console.error(`Erro na sincronização Meili: ${docId}`, e);
+        }
     });
 }
-exports.syncMeiliExercises = createSync('allExercises', 'exercises_index');
-exports.syncMeiliTrainings = createSync('allTrainings', 'trainings_index');
+exports.syncMeiliExercises = createSync('allExercises', 'allExercises');
+exports.syncMeiliTrainings = createSync('allTrainings', 'allTrainings');
+exports.syncMeiliCategories = createSync('subCategories', 'subCategories');
+exports.syncMeiliUsers = createSync('users', 'users');
+exports.syncMeiliTrainingLikes = createSync('trainingLikes', 'trainingLikes');
 //# sourceMappingURL=meiliSearch.js.map

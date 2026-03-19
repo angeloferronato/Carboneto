@@ -17,7 +17,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "firebase-admin": "^13.6.0",
-    "firebase-functions": "^7.0.5",
+    "firebase-functions": "^7.2.2",
     "meilisearch": "^0.55.0"
   },
   "devDependencies": {
@@ -26,6 +26,7 @@
     "eslint": "^8.57.1",
     "eslint-config-google": "^0.14.0",
     "firebase-functions-test": "^3.4.1",
+    "globals": "^17.4.0",
     "typescript": "^5.9.3"
   },
   "private": true

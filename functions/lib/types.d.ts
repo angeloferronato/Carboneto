@@ -5,6 +5,7 @@ export interface UserData {
     Name: string;
     ProfilePicture: string;
     Username: string;
+    IsPrivate: string;
     [key: string]: any;
 }
 export interface ExerciseData {
