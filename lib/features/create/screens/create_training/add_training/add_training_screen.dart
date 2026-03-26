@@ -10,12 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
+class AddTrainingScreen extends StatelessWidget {
+  const AddTrainingScreen({super.key, this.tag});
 
-class AddTrainingScreen extends GetView<ExercisesController> {
-  const AddTrainingScreen({super.key});
+  final String? tag;
 
   @override
   Widget build(BuildContext context) {
+    final controller = tag != null
+        ? Get.find<ExercisesController>(tag: tag)
+        : Get.find<ExercisesController>();
 
     return Scaffold(
       body: SafeArea(
@@ -37,38 +41,40 @@ class AddTrainingScreen extends GetView<ExercisesController> {
                     showBackArrow: true,
                     actions: [
                       IconButton(
-                        onPressed: () => Get.to(() => const CreateExerciseScreen()),
-                        icon: const Icon(Icons.add, color: CbColors.primary, size: 30),
+                        onPressed: () =>
+                            Get.to(() => const CreateExerciseScreen()),
+                        icon: const Icon(Icons.add,
+                            color: CbColors.primary, size: 30),
                       ),
                     ],
                   ),
                 ),
-
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 15),
                         child: FocusedTextField(
                           controller: controller.searchQueryController,
                           hintText: "Pesquisar exercício",
                           contentPadding: const EdgeInsets.all(14),
-                          prefixIcon: const Icon(Iconsax.search_normal_1, size: 20),
-                          onChanged: (value) => controller.searchQuery.value = value,
+                          prefixIcon:
+                              const Icon(Iconsax.search_normal_1, size: 20),
+                          onChanged: (value) =>
+                              controller.searchQuery.value = value,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: CbSizes.md),
-                        child: CategoriesBar(controllerTag: ''),
+                        child: CategoriesBar(controllerTag: tag ?? ''),
                       ),
                     ],
                   ),
                 ),
-
-                const ExercisesList(),
+                ExercisesList(tag: tag),
               ],
             ),
-
             Obx(() {
               final selectedCount = controller.intermediateSelectedCount;
               final showButton = selectedCount > 0;

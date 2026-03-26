@@ -8,13 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ExerciseItem extends StatelessWidget {
-  const ExerciseItem({super.key, required this.index});
+  const ExerciseItem({super.key, required this.index, this.tag});
 
   final int index;
+  final String? tag;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ExercisesController>();
+    final controller = tag != null
+        ? Get.find<ExercisesController>(tag: tag)
+        : Get.find<ExercisesController>();
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
 
     return Obx(() {
@@ -110,7 +113,9 @@ class ExerciseItem extends StatelessWidget {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color: isDarkMode ? Colors.white70 : CbColors.darkerGrey,
+                                          color: isDarkMode
+                                              ? Colors.white70
+                                              : CbColors.darkerGrey,
                                           fontSize: 10,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -118,16 +123,22 @@ class ExerciseItem extends StatelessWidget {
                                     ),
                                     const SizedBox(width: 6),
                                     if (exercise.creator.isVerified)
-                                      const Icon(Icons.verified, color: CbColors.primary, size: 10),
+                                      const Icon(Icons.verified,
+                                          color: CbColors.primary, size: 10),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   '$categoriesText · ${exercise.duration} min',
-                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: isDarkMode ? Colors.white70 : CbColors.darkerGrey,
-                                    fontSize: 10,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: isDarkMode
+                                            ? Colors.white70
+                                            : CbColors.darkerGrey,
+                                        fontSize: 10,
+                                      ),
                                 ),
                               ],
                             ),

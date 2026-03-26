@@ -5,11 +5,15 @@ import 'package:carboneto/common/widgets/result/empty_data.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercise_item.dart';
 
 class ExercisesList extends StatelessWidget {
-  const ExercisesList({super.key});
+  const ExercisesList({super.key, this.tag});
+
+  final String? tag;
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ExercisesController>();
+    final controller = tag != null
+        ? Get.find<ExercisesController>(tag: tag)
+        : Get.find<ExercisesController>();
 
     return Obx(() {
       if (controller.isLoading.value) {
@@ -40,7 +44,7 @@ class ExercisesList extends StatelessWidget {
                   ));
             }
 
-            return ExerciseItem(index: index);
+            return ExerciseItem(index: index, tag: tag);
           },
           childCount: controller.filteredExercises.length + 1,
         ),

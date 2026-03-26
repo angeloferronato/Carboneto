@@ -7,7 +7,6 @@ import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// result_main.dart
 class ResultMain extends StatelessWidget {
   const ResultMain({
     super.key,
@@ -15,17 +14,16 @@ class ResultMain extends StatelessWidget {
     this.hideOptions = false,
     this.height = 200,
     this.homeWidget = false,
+    this.extraOptions,
   });
 
   final TrainingModel training;
   final double height;
   final bool hideOptions, homeWidget;
+  final List<CbBottomSheetOption>? extraOptions;
 
   @override
   Widget build(BuildContext context) {
-    // Get.find instead of Get.put — reuses the existing instance
-    // If used outside TrainingDetailsScreen (e.g. home feed), controller won't exist,
-    // so we fall back to the static training data
     final controller = Get.isRegistered<TrainingDetailsController>()
         ? Get.find<TrainingDetailsController>()
         : null;
@@ -45,7 +43,6 @@ class ResultMain extends StatelessWidget {
             backgroundColor: Colors.transparent,
           ),
 
-          // Views counter — reactive if controller exists, static fallback
           Positioned(
             top: 12,
             left: 12,
@@ -67,18 +64,11 @@ class ResultMain extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => CbBottomSheet.showOptions(
                   context: context,
-                  onShare: () {}, //HERE
-                  onReport: () {}, 
-                  extraItem: controller != null
-                      ? Obx(() => ListTile(
-                            leading: Icon(controller.isSaved.value
-                                ? Icons.bookmark_sharp
-                                : Icons.bookmark_border),
-                            title: Text(
-                                controller.isSaved.value ? 'Salvo' : 'Salvar'),
-                            onTap: () => controller.toggleSave(training),
-                          ))
-                      : null,
+                  onShare: () {},
+                  onReport: () {},
+                  controller: controller,
+                  training: training,
+                  extraOptions: extraOptions,
                 ),
                 child: const Icon(
                   Icons.more_horiz,
@@ -93,8 +83,6 @@ class ResultMain extends StatelessWidget {
   }
 }
 
-
-// Extract badge to avoid duplication
 class _ViewsBadge extends StatelessWidget {
   const _ViewsBadge({required this.views, required this.homeWidget});
   final int views;
@@ -131,12 +119,26 @@ class _ViewsBadge extends StatelessWidget {
   }
 }
 
+class CbBottomSheetOption {
+  const CbBottomSheetOption({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+}
+
 class CbBottomSheet {
   static void showOptions({
     required BuildContext context,
-    VoidCallback? onShare,
-    VoidCallback? onReport,
-    Widget? extraItem,
+    required VoidCallback onShare,
+    required VoidCallback onReport,
+    TrainingDetailsController? controller,
+    TrainingModel? training,
+    List<CbBottomSheetOption>? extraOptions,
   }) {
     showModalBottomSheet(
       context: context,
@@ -146,25 +148,49 @@ class CbBottomSheet {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (onShare != null)
-              ListTile(
-                leading: const Icon(Icons.share),
-                title: const Text('Compartilhar'),
-                onTap: () {
-                  Navigator.pop(context);
-                  onShare();
-                },
+            // Share
+            ListTile(
+              leading: const Icon(Icons.share),
+              title: const Text('Compartilhar'),
+              onTap: () {
+                Navigator.pop(context);
+                onShare();
+              },
+            ),
+
+            // Save — only when inside TrainingDetailsScreen
+            if (controller != null && training != null)
+              Obx(() => ListTile(
+                    leading: Icon(controller.isSaved.value
+                        ? Icons.bookmark_sharp
+                        : Icons.bookmark_border),
+                    title: Text(
+                        controller.isSaved.value ? 'Salvo' : 'Salvar'),
+                    onTap: () => controller.toggleSave(training),
+                  )),
+
+            // Extra options (e.g. Editar, Excluir)
+            if (extraOptions != null)
+              ...extraOptions.map(
+                (option) => ListTile(
+                  leading: Icon(option.icon),
+                  title: Text(option.label),
+                  onTap: () {
+                    Navigator.pop(context);
+                    option.onTap();
+                  },
+                ),
               ),
-            if (extraItem != null) extraItem,
-            if (onReport != null)
-              ListTile(
-                leading: const Icon(Icons.report_outlined),
-                title: const Text('Reportar'),
-                onTap: () {
-                  Navigator.pop(context);
-                  onReport();
-                },
-              ),
+
+            // Report
+            ListTile(
+              leading: const Icon(Icons.report_outlined),
+              title: const Text('Reportar'),
+              onTap: () {
+                Navigator.pop(context);
+                onReport();
+              },
+            ),
           ],
         ),
       ),

@@ -10,18 +10,21 @@ import 'package:carboneto/features/library/screens/widgets/history_training_shim
 import 'package:carboneto/features/library/screens/widgets/lib_training_shimmer.dart';
 import 'package:carboneto/features/library/screens/widgets/library_section.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class LibraryScreen extends GetView<HistoryController> {
+class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final historyController = Get.put(HistoryController());
     final allTrainingsController = Get.put(AllTrainingsController());
     if (!Get.isRegistered<UserController>()) Get.put(UserController());
+
     return Scaffold(
       appBar: CbAppBar(
         title: Padding(
@@ -36,71 +39,69 @@ class LibraryScreen extends GetView<HistoryController> {
         ),
         showBackArrow: false,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: CbSizes.spaceBtwSections * 1.2,
-            ),
-            Obx(() {
-              if (historyController.isLoadingRecent.value) {
-                return const HistoryShimmerLoading();
-              }
-
-              return LibrarySection(
-                title: 'Histórico',
-                emptyData: EmptyData(),
-                itemCount: historyController.recent.length,
-                icon: Icons.history,
-                showActionBtn: true,
-                actionBtn: SeeAllBtn(
-                  onPressed: () => historyController.openHistoryScreen(),
-                ),
-                itemBuilder: (_, i) =>
-                    HistoryTraining(training: historyController.recent[i]),
-              );
-            }),
-
-            const SizedBox(height: 30),
-
-            Obx(() {
-              if (allTrainingsController.isLoading.value) {
-                return const CreatedTrainingShimmerLoading();
-              }
-
-
-              final items = allTrainingsController.trainings;
-
-
-              return LibrarySection(
-                title: 'Sua Lista de Treinos',
-                icon: Icons.list,
-                emptyData: EmptyData(
-                  icon: Iconsax.folder_open,
-                  iconSize: 60,
-                  mainLabel: 'Sua biblioteca está vazia',
-                  secondaryLabel: 'Adicione conteúdos para começar a organizar tudo em um só lugar.',
-                ),
-                itemCount: items.length > 6 ? 6 : items.length,
-                showActionBtn: true,
-                actionBtn: SeeAllBtn(
-                  onPressed: () {
-
-                    Get.to(() => const AllTrainingsScreen());
-                  },
-                ),
-                itemBuilder: (context, index) => CreatedTraining(
-                  key: ValueKey(items[index].id),
-                  training: items[index],
-                ),
-              );
-            }),
-          ],
+      body: RefreshIndicator(
+        color: CbColors.primary,
+        onRefresh: () async {
+          allTrainingsController.localCache.clear();
+          allTrainingsController.setCategory(
+            allTrainingsController.selectedCategory.value,
+          );
+          await historyController.refreshHistory();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              SizedBox(height: CbSizes.spaceBtwSections * 1.2),
+              Obx(() {
+                if (historyController.isLoadingRecent.value) {
+                  return const HistoryShimmerLoading();
+                }
+                return LibrarySection(
+                  title: 'Histórico',
+                  emptyData: EmptyData(),
+                  itemCount: historyController.recent.length,
+                  icon: Icons.history,
+                  showActionBtn: true,
+                  actionBtn: SeeAllBtn(
+                    onPressed: () => historyController.openHistoryScreen(),
+                  ),
+                  itemBuilder: (_, i) =>
+                      HistoryTraining(training: historyController.recent[i]),
+                );
+              }),
+              const SizedBox(height: 30),
+              Obx(() {
+                if (allTrainingsController.isLoading.value) {
+                  return const CreatedTrainingShimmerLoading();
+                }
+                final items = allTrainingsController.trainings;
+                return LibrarySection(
+                  title: 'Sua Lista de Treinos',
+                  icon: Icons.list,
+                  emptyData: EmptyData(
+                    icon: Iconsax.folder_open,
+                    iconSize: 60,
+                    mainLabel: 'Sua biblioteca está vazia',
+                    secondaryLabel:
+                        'Adicione conteúdos para começar a organizar tudo em um só lugar.',
+                  ),
+                  itemCount: items.length > 6 ? 6 : items.length,
+                  showActionBtn: true,
+                  actionBtn: SeeAllBtn(
+                    onPressed: () => Get.to(() => const AllTrainingsScreen()),
+                  ),
+                  itemBuilder: (context, index) => CreatedTraining(
+                    key: ValueKey(items[index].id),
+                    training: items[index],
+                  ),
+                );
+              }),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
-

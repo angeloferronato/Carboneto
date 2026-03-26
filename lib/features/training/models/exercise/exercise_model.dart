@@ -33,7 +33,7 @@ class ExerciseModel {
       title: data['Title'] as String? ?? '',
       repetitions: (data['Repetitions'] as int?) ?? 0,
       video: data['Video'] as String? ?? '',
-      id: '09575e95-c', // data['Id'] as String? ?? snapshot.id,
+      id: data['Id'] as String? ?? snapshot.id,
       authorId: data['AuthorID'] as String? ?? '',
       categories: data['Categories'] as List<dynamic>? ?? [],
       thumb: data['Thumbnail'] as String? ?? '',

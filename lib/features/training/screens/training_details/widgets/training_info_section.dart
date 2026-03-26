@@ -2,6 +2,8 @@ import 'package:carboneto/common/widgets/result/result_creator_info.dart';
 import 'package:carboneto/common/widgets/texts/section_heading.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/training_tags_row.dart';
+import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -37,13 +39,38 @@ class TrainingInfoSection extends StatelessWidget {
           child: Row(
             children: [
               ResultCreatorInfo(
-                  creator: training.creator,
-                  creatorId: training.authorId,
-                  userPictureSize: 25,
-                  textSize: 11,
-                  showUserPicture: true,
+                creator: training.creator,
+                creatorId: training.authorId,
+                userPictureSize: 25,
+                textSize: 11,
+                showUserPicture: true,
               ),
               const SizedBox(width: 5),
+              if (training.visibility == TrainingVisibility.private)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Privado ',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
+                    ),
+                    Icon(
+                      Icons.lock_outline_rounded,
+                      color: CbColors.textWhite,
+                      size: 12,
+                    ),
+                    Text(
+                      ' • ',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
               Text(
                 'há ${CbHelperFunctions.formatTimestamp(training.postedAt!)}',
                 style: const TextStyle(
@@ -61,10 +88,8 @@ class TrainingInfoSection extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
           child: Text(
             training.description,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(fontSize: 12),
+            style:
+                Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 12),
           ),
         ),
         const SizedBox(height: CbSizes.spaceBtwItems),
@@ -80,4 +105,3 @@ class TrainingInfoSection extends StatelessWidget {
     );
   }
 }
-

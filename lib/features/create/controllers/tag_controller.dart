@@ -1,3 +1,5 @@
+import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -43,9 +45,7 @@ class TagController extends GetxController {
     "Tomade de Decisão",
   ].obs;
 
-  final RxList<String> selectedTags = <String>[
-    "Arremesso de 3 Pontos"
-  ].obs;
+  final RxList<String> selectedTags = <String>["Arremesso de 3 Pontos"].obs;
 
   final RxString searchQuery = ''.obs;
 
@@ -56,7 +56,7 @@ class TagController extends GetxController {
   List<String> get filteredTags {
     final query = searchQuery.value.toLowerCase();
     return allTags.where((t) => t.toLowerCase().contains(query)).toList();
-  }   
+  }
 
   // Functions to handle Tag management
   void onTagChanged(String tag, [bool added = false]) {
@@ -66,8 +66,19 @@ class TagController extends GetxController {
       }
       addTag(tag);
     } else {
-      if (selectedTags.length > 2) {
+      if (selectedTags.length > 1) {
         removeTag(tag);
+      } else {
+        Get.snackbar(
+          'Atenção',
+          'Você deve selecionar no mínimo 1 categoria!',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: CbColors.primary,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+          duration: const Duration(seconds: 3),
+        );
       }
     }
   }
@@ -103,5 +114,6 @@ class ExerciseItem {
   String duration;
   String imageUrl;
 
-  ExerciseItem({required this.title, required this.duration, required this.imageUrl});
+  ExerciseItem(
+      {required this.title, required this.duration, required this.imageUrl});
 }

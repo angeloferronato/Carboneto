@@ -11,6 +11,7 @@ import 'package:carboneto/features/create/screens/create_training/widgets/form_l
 import 'package:carboneto/features/create/screens/create_training/widgets/number_dropdown.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/square_upload.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/tag_selector.dart';
+import 'package:carboneto/features/create/screens/create_training/widgets/training_visibility_sector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -125,9 +126,9 @@ class CreateTraining extends StatelessWidget {
                       onPressed: () => Get.to(() => const AddTrainingScreen()), // Navigate to Add Training Screen
                     ),
                     const SizedBox(height: 30),
-            
-                    // People Needed Section
-                    Row(
+                  ],
+                ),
+                Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const FormLabel(label: 'N° de pessoas necessárias'),
@@ -148,18 +149,23 @@ class CreateTraining extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 40),
-            
+                    const FormLabel(label: 'Visibilidade'),
+                    const SizedBox(height: 10),
+                    TrainingVisibilitySelector(),
+
+                    SizedBox(height: 40,),
+
                     // Upload Button
-                    CbPrimaryBtn(
-                      label: 'Upload',
-                      fontSize: 18,
-                      paddingH: 45,
-                      paddingV: 12,
-                      borderRadius: 30,
-                      onPressed: () => controller.createTraining(),
+                    Center(
+                      child: CbPrimaryBtn(
+                        label: 'Upload',
+                        fontSize: 18,
+                        paddingH: 45,
+                        paddingV: 12,
+                        borderRadius: 30,
+                        onPressed: () => controller.createTraining(),
+                      ),
                     ),
-                  ],
-                ),
               ],
             ),
           ),

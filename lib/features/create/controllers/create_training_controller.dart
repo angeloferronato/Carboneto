@@ -12,6 +12,7 @@ import 'package:carboneto/features/training/models/exercise/exercise_model.dart'
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
@@ -41,6 +42,12 @@ class CreateTrainingController extends GetxController {
   final UserRepository userRepository = Get.put(UserRepository());
   final DifficultyLevelSelectorController difficultyLevelSelectorController =
       Get.put(DifficultyLevelSelectorController());
+    
+  final Rx<TrainingVisibility> visibility = TrainingVisibility.followers.obs;
+
+  void setVisibility(TrainingVisibility value) {
+    visibility.value = value;
+  }
 
   Future<void> createTraining() async {
     try {
@@ -76,8 +83,8 @@ class CreateTrainingController extends GetxController {
         return;
       }
 
-      if (difficultyLevelSelectorController.dropDownValue ==
-          difficultyLevelSelectorController.dropDownList.first) {
+      if (difficultyLevelSelectorController.dropDownValue.value ==
+        difficultyLevelSelectorController.dropDownList.first) {
         CbLoaders.warningSnackBar(
           title: 'Selecione uma Dificuldade',
           message:
@@ -111,15 +118,16 @@ class CreateTrainingController extends GetxController {
           exercises: exercisesList,
           id: customId,
           level: TrainingModel.parseStringToLevel(
-              difficultyLevelSelectorController.dropDownValue
-                  .toLowerCase()
-                  .trim()),
+            difficultyLevelSelectorController.dropDownValue.value
+                .toLowerCase()
+                .trim()),
           people: numberDropdownController.selectedValue.value == '+7'
               ? 7
               : int.parse(numberDropdownController.selectedValue.value),
           thumbnail: imageUrl ?? '',
           title: title.text.trim(),
           duration: duration,
+          visibility: visibility.value,
           creator: CreatorModel(
             name: userController.user.value.name,
             isVerified: userController.user.value.isVerified,

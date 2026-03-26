@@ -4,12 +4,10 @@ import 'package:carboneto/common/widgets/result/result_main.dart';
 import 'package:carboneto/common/widgets/user/user_picture.dart';
 import 'package:carboneto/features/library/controllers/history_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
-import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,11 +17,13 @@ class ResultWidget extends StatelessWidget {
     required this.training,
     this.views,
     this.homeWidget = false,
+    this.customOptions,
   });
 
   final TrainingModel training;
   final int? views;
   final bool homeWidget;
+  final List<CbBottomSheetOption>? customOptions;
 
   final historyController = Get.put(HistoryController());
 
@@ -36,7 +36,8 @@ class ResultWidget extends StatelessWidget {
         children: [
           ResultMain(
             training: training,
-            hideOptions: homeWidget? true: false,
+            hideOptions: homeWidget ? true : false,
+            extraOptions: customOptions,
           ),
           const SizedBox(height: CbSizes.xs * 2.5),
           Row(

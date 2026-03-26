@@ -23,7 +23,7 @@ class AllTrainingsController extends GetxController {
   final selectedCategory = 'Todos'.obs;
 
 
-  final Map<String, TrainingModel> _localCache = {}; 
+  final Map<String, TrainingModel> localCache = {};
   StreamSubscription<List<String>>? _streamSubscription;
 
   final List<String> filterOptions = [
@@ -97,6 +97,8 @@ class AllTrainingsController extends GetxController {
     });
   }
 
+  
+
   Future<void> _handleNewIds(List<String> ids) async {
     if (ids.isEmpty) {
       trainings.clear();
@@ -105,7 +107,7 @@ class AllTrainingsController extends GetxController {
     }
 
     try {
-      final idsToFetch = ids.where((id) => !_localCache.containsKey(id)).toList();
+      final idsToFetch = ids.where((id) => !localCache.containsKey(id)).toList();
 
       if (idsToFetch.isNotEmpty) {
         for (var i = 0; i < idsToFetch.length; i += 10) {
@@ -115,7 +117,7 @@ class AllTrainingsController extends GetxController {
           final fetchedModels = await _repo.fetchTrainingsByIds(chunk);
           
           for (var model in fetchedModels) {
-            _localCache[model.id] = model;
+            localCache[model.id] = model;
           }
         }
       }
@@ -123,8 +125,8 @@ class AllTrainingsController extends GetxController {
       // 3. Monta a lista completa usando o Cache
       List<TrainingModel> finalList = [];
       for (var id in ids) {
-        if (_localCache.containsKey(id)) {
-          finalList.add(_localCache[id]!);
+        if (localCache.containsKey(id)) {
+          finalList.add(localCache[id]!);
         }
       }
 

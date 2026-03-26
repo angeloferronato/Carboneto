@@ -9,14 +9,15 @@ class HighlightBtn extends StatelessWidget {
     this.labelWeight = FontWeight.w800, 
     this.radius = 25,
     this.icon,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    this.fontSize = 15,
   });
   final Widget? icon;
   final String textValue;
   final Color labelColor;
   final VoidCallback? onPressedEdit;
   final FontWeight labelWeight;
-  final double radius;
+  final double radius, fontSize;
   final EdgeInsetsGeometry padding;
 
   @override
@@ -37,7 +38,7 @@ class HighlightBtn extends StatelessWidget {
         children: [
           Text(
             textValue,
-            style: TextStyle(fontSize: 15, fontWeight: labelWeight, color: labelColor),
+            style: TextStyle(fontSize: fontSize, fontWeight: labelWeight, color: labelColor),
           ),
           if (icon != null) Row(
             children: [

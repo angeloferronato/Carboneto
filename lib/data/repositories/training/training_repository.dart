@@ -253,16 +253,20 @@ class TrainingRepository extends GetxController {
 
   Future<ExerciseModel> fetchExerciseDetails(String id) async {
     try {
-      final query =
-          await _db.collection('allExercises').where('ID', isEqualTo: id).get();
+      if (id.trim().isEmpty) {
+        debugPrint('Exercício não encontrado (id vazio)');
+        return ExerciseModel.empty();
+      }
 
-      if (query.docs.isNotEmpty) {
-        final exercise = ExerciseModel.fromSnapshot(query.docs[0]);
-        return exercise;
-      } else {
+      // Exercises are saved using `doc(exerciseModel.id)` in `ExerciseRepository.saveExerciseRecord`.
+      // So the most reliable lookup is by document id, not by a field (which may vary in casing: Id/ID).
+      final doc = await _db.collection('allExercises').doc(id).get();
+      if (!doc.exists) {
         debugPrint("Exercício não encontrado: $id");
         return ExerciseModel.empty();
       }
+
+      return ExerciseModel.fromSnapshot(doc);
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
@@ -417,12 +421,18 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future<void> saveTrainingRecord(TrainingModel trainingModel) async {
+  Future<void> saveTrainingRecord(
+    TrainingModel trainingModel, {
+    bool updatePostedAt = true,
+  }) async {
     try {
       await _db
           .collection('allTrainings')
           .doc(trainingModel.id)
-          .set(trainingModel.toJson(), SetOptions(merge: true));
+          .set(
+            trainingModel.toJson(updatePostedAt: updatePostedAt),
+            SetOptions(merge: true),
+          );
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
@@ -692,7 +702,6 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  /// 1. Stream para Treinos Criados (Ouve mudanças em tempo real)
   Stream<List<String>> getCreatedIdsStream(String userId) {
     return _db
         .collection('allTrainings')
@@ -701,7 +710,6 @@ class TrainingRepository extends GetxController {
         .map((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
   }
 
-  /// 2. Stream para Treinos Salvos (Se desalvar, avisa na hora)
   Stream<List<String>> getSavedIdsStream(String userId) {
     return _db
         .collection('users')
@@ -714,7 +722,6 @@ class TrainingRepository extends GetxController {
             snapshot.docs.map((doc) => doc.id).toList());
   }
 
-  /// 3. Stream para Treinos Curtidos
   Stream<List<String>> getLikedIdsStream(String userId) {
     return _db
         .collection('trainingLikes')

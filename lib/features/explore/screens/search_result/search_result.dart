@@ -12,105 +12,6 @@ import 'package:flutter/material.dart';
 class SearchResultScreen extends StatelessWidget {
   SearchResultScreen({super.key});
 
-  final List<TrainingModel> fakeBasketballTrainings = [
-    TrainingModel(
-      id: 'bb_001',
-      authorId: 'coach_001',
-      title: 'Solo Ball Handling',
-      description:
-          'Improve your dribbling control, speed, and coordination with solo drills.',
-      duration: 1230,
-      categories: ['Basketball', 'Ball Handling'],
-      level: DifficultyLevels.rookie,
-      textLevel: 'Rookie',
-      people: 1,
-      thumbnail: 'https://picsum.photos/400/300?basketball1',
-      exercises: [],
-      exercisesId: [],
-      creator: CreatorModel(
-        name: 'Coach Alex',
-        profilePicture: 'https://i.pravatar.cc/150?img=11',
-        isVerified: true,
-      ),
-    ),
-    TrainingModel(
-      id: 'bb_002',
-      authorId: 'coach_002',
-      title: 'Shooting Fundamentals',
-      description: 'Form shooting, catch & shoot, and consistency drills.',
-      duration: 1245,
-      categories: ['Basketball', 'Shooting'],
-      level: DifficultyLevels.rookie,
-      textLevel: 'Rookie',
-      people: 1,
-      thumbnail: 'https://picsum.photos/400/300?basketball2',
-      exercises: [],
-      exercisesId: [],
-      creator: CreatorModel(
-        name: 'Mike Shooter',
-        profilePicture: 'https://i.pravatar.cc/150?img=12',
-        isVerified: false,
-      ),
-    ),
-    TrainingModel(
-      id: 'bb_003',
-      authorId: 'coach_003',
-      title: '1v1 Offensive Moves',
-      description: 'Learn effective offensive moves for isolation situations.',
-      duration: 1250,
-      categories: ['Basketball', 'Offense'],
-      level: DifficultyLevels.pro,
-      textLevel: 'Pro',
-      people: 2,
-      thumbnail: 'https://picsum.photos/400/300?basketball3',
-      exercises: [],
-      exercisesId: [],
-      creator: CreatorModel(
-        name: 'Jordan Skills',
-        profilePicture: 'https://i.pravatar.cc/150?img=13',
-        isVerified: true,
-      ),
-    ),
-    TrainingModel(
-      id: 'bb_004',
-      authorId: 'coach_004',
-      title: 'Defense & Footwork',
-      description: 'Defensive stance, lateral movement, and reaction drills.',
-      duration: 1240,
-      categories: ['Basketball', 'Defense'],
-      level: DifficultyLevels.pro,
-      textLevel: 'Pro',
-      people: 1,
-      thumbnail: 'https://picsum.photos/400/300?basketball4',
-      exercises: [],
-      exercisesId: [],
-      creator: CreatorModel(
-        name: 'Coach Defense',
-        profilePicture: 'https://i.pravatar.cc/150?img=14',
-        isVerified: false,
-      ),
-    ),
-    TrainingModel(
-      id: 'bb_005',
-      authorId: 'coach_005',
-      title: 'Explosiveness & Vertical Jump',
-      description: 'Plyometric and strength drills to increase jump height.',
-      duration: 1260,
-      categories: ['Basketball', 'Athleticism'],
-      level: DifficultyLevels.elite,
-      textLevel: 'Elite',
-      people: 1,
-      thumbnail: 'https://picsum.photos/400/300?basketball5',
-      exercises: [],
-      exercisesId: [],
-      creator: CreatorModel(
-        name: 'Elite Performance Lab',
-        profilePicture: 'https://i.pravatar.cc/150?img=15',
-        isVerified: true,
-      ),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +19,7 @@ class SearchResultScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            pinned: false, 
+            pinned: false,
             floating: false,
             snap: false,
             automaticallyImplyLeading: false,
@@ -164,7 +65,9 @@ class SearchResultScreen extends StatelessWidget {
               bottom: 10,
             ),
             sliver: SliverToBoxAdapter(
-              child: CategoriesBar(controllerTag: 'For you',),
+              child: CategoriesBar(
+                controllerTag: 'For you',
+              ),
             ),
           ),
 
@@ -176,14 +79,10 @@ class SearchResultScreen extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  final item = fakeBasketballTrainings[index];
 
-                  return ResultWidget(
-                    training: item,
-                    views: 12341,
-                  );
+                  return Container();
                 },
-                childCount: fakeBasketballTrainings.length,
+                childCount: 5,
               ),
             ),
           ),
@@ -197,4 +96,3 @@ class SearchResultScreen extends StatelessWidget {
     );
   }
 }
-

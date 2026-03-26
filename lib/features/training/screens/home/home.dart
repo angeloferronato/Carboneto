@@ -10,7 +10,9 @@ import 'package:carboneto/features/training/models/training/training_model.dart'
 import 'package:carboneto/features/training/screens/home/widgets/home_shimmer.dart';
 import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
 import 'package:carboneto/features/training/screens/training_details/training_details.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,44 +31,49 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              floating: false,
-              pinned: false,
-              snap: false,
-              toolbarHeight: 80,
-              expandedHeight: 80, // add this
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              title: const TopLogo(
-                width: 100,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                floating: false,
+                pinned: false,
+                snap: false,
+                toolbarHeight: 80,
+                expandedHeight: 80, // add this
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                automaticallyImplyLeading: false,
+                title: const TopLogo(
+                  width: 100,
+                ),
+                centerTitle: true,
               ),
-              centerTitle: true,
+            ];
+          },
+          body: RefreshIndicator(
+            onRefresh: controller.refreshHome,
+            backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
+            color: CbColors.primary,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: CbSizes.md,
+                bottom: CbSizes.md,
+              ),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return _buildLoading();
+                }
+
+                if (controller.isGridMode.value) {
+                  return _buildSingleListMode();
+                }
+
+                return _buildSectionsMode();
+              }),
             ),
-          ];
-        },
-        body: Padding(
-          padding: const EdgeInsets.only(
-            left: CbSizes.md,
-            bottom: CbSizes.md,
-          ),
-          child: Obx(() {
-            if (controller.isLoading.value) {
-              return _buildLoading();
-            }
-
-            if (controller.isGridMode.value) {
-              return _buildSingleListMode();
-            }
-
-            return _buildSectionsMode();
-          }),
-        ),
-      ),
+          )),
     );
   }
 

@@ -14,21 +14,33 @@ class ExerciseSelectionPreviewItem extends StatefulWidget {
     super.key,
     required this.exercise,
     required this.index,
+    this.tag,
   });
 
   final ExerciseModel exercise;
   final int index;
+  final String? tag;
 
   @override
-  State<ExerciseSelectionPreviewItem> createState() => _ExerciseSelectionPreviewItemState();
+  State<ExerciseSelectionPreviewItem> createState() =>
+      _ExerciseSelectionPreviewItemState();
 }
 
-class _ExerciseSelectionPreviewItemState extends State<ExerciseSelectionPreviewItem> {
-  final exercisesController = Get.put(ExercisesController());
+class _ExerciseSelectionPreviewItemState
+    extends State<ExerciseSelectionPreviewItem> {
+  late final ExercisesController exercisesController;
+
+  @override
+  void initState() {
+    super.initState();
+    exercisesController = widget.tag != null
+        ? Get.find<ExercisesController>(tag: widget.tag)
+        : Get.find<ExercisesController>();
+  }
 
   @override
   Widget build(BuildContext context) {
-  final isDarkMode = CbHelperFunctions.isDarkMode(context);
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: CbSizes.sm),
       child: CbRoundedContainer(
@@ -60,26 +72,29 @@ class _ExerciseSelectionPreviewItemState extends State<ExerciseSelectionPreviewI
                     maxLines: 2,
                     textAlign: TextAlign.start,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontSize: 14,
-                    ),
+                          fontSize: 14,
+                        ),
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   Row(
                     children: [
-                      Text(
-                        widget.exercise.type == 'reps' ? 
-                        '${widget.exercise.repetitions} reps • ${widget.exercise.creator.name}'
-                        :'${widget.exercise.duration} min • ${widget.exercise.creator.name}',
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: isDarkMode 
-                            ? CbColors.buttonDisabled
-                            : CbColors.darkerGrey,
-                          fontSize: 12,
+                      Expanded(
+                        child: Text(
+                          widget.exercise.type == 'reps'
+                              ? '${widget.exercise.repetitions} reps • ${widget.exercise.creator.name}'
+                              : '${widget.exercise.duration} min • ${widget.exercise.creator.name}',
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: isDarkMode
+                                        ? CbColors.buttonDisabled
+                                        : CbColors.darkerGrey,
+                                    fontSize: 12,
+                                  ),
                         ),
                       ),
                     ],
@@ -88,15 +103,16 @@ class _ExerciseSelectionPreviewItemState extends State<ExerciseSelectionPreviewI
               ),
             ),
             IconButton(
-              onPressed: () {
-                exercisesController.toggleSelection(widget.index);
-              },
-              icon: const Icon(Icons.close, color: CbColors.primary,)
-            )
+                onPressed: () {
+                  exercisesController.toggleSelection(widget.index);
+                },
+                icon: const Icon(
+                  Icons.close,
+                  color: CbColors.primary,
+                ))
           ],
         ),
       ),
     );
-    
   }
 }

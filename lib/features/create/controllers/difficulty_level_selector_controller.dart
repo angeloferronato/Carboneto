@@ -4,5 +4,5 @@ class DifficultyLevelSelectorController extends GetxController {
   static DifficultyLevelSelectorController get instance => Get.find();
 
   List<String> dropDownList = ['Selecione uma opção', 'Rookie', 'All-Star', 'Pro', 'Elite'];
-  String dropDownValue = 'Selecione uma opção';
+  final dropDownValue = 'Selecione uma opção'.obs;
 }

@@ -4,35 +4,55 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SelectedExercises extends StatefulWidget {
-  const SelectedExercises({super.key});
+  const SelectedExercises({super.key, this.tag});
+
+  final String? tag;
 
   @override
   State<SelectedExercises> createState() => _SelectedExercisesState();
 }
 
 class _SelectedExercisesState extends State<SelectedExercises> {
-  final exercisesController = Get.put(ExercisesController());
+  late final ExercisesController exercisesController;
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => ReorderableListView(
+  void initState() {
+    super.initState();
+    exercisesController = widget.tag != null
+        ? Get.find<ExercisesController>(tag: widget.tag)
+        : Get.find<ExercisesController>();
+  }
+
+  @override
+Widget build(BuildContext context) {
+  return Obx(
+    () => ExcludeSemantics(
+      child: ReorderableListView(
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         buildDefaultDragHandles: true,
         onReorder: exercisesController.onReorder,
         proxyDecorator: _proxyDecorator,
         children: [
-          for (int i = 0; i < exercisesController.selectedIndexes.length; i++) 
+          for (int i = 0; i < exercisesController.selectedIndexes.length; i++)
             ExerciseSelectionPreviewItem(
-              key: ValueKey(exercisesController.exercises[exercisesController.selectedIndexes[i]].id,), 
-              exercise: exercisesController.exercises[exercisesController.selectedIndexes[i]], 
-              index: exercisesController.selectedIndexes[i]
+              // `ReorderableListView` requires unique keys for *every* visible row.
+              // If the same exercise id appears twice (e.g. duplicated ids in a training),
+              // using only `exercise.id` will crash with "Multiple widgets used the same GlobalKey".
+              // Include the row position to guarantee uniqueness.
+              key: ValueKey(
+                '${exercisesController.exercises[exercisesController.selectedIndexes[i]].id}__$i',
+              ),
+              exercise:
+                  exercisesController.exercises[exercisesController.selectedIndexes[i]],
+              index: exercisesController.selectedIndexes[i],
+              tag: widget.tag,
             ),
-        ]
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _proxyDecorator(
     Widget child,
@@ -58,6 +78,4 @@ class _SelectedExercisesState extends State<SelectedExercises> {
       },
     );
   }
-
-  
 }
