@@ -1,3 +1,4 @@
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/features/personalization/controllers/remove_follower_controller/remove_follower_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
@@ -48,7 +49,7 @@ class UserSearchTile extends StatelessWidget {
                     width: 50,
                     height: 50,
                     borderRadius: 50,
-                    isNetworkImage: user.profilePicture.isNotEmpty,
+                    isNetworkImage: user.profilePicture!.isNotEmpty,
                     fit: BoxFit.cover,
                   ),
                   const SizedBox(width: CbSizes.md,),
@@ -105,25 +106,14 @@ class UserSearchTile extends StatelessWidget {
                           textValue: 'Pedido enviado', 
                           onPressedEdit: () => followController.cancelFollowRequest()
                         )
-                        : ElevatedButton(
+                        : CbPrimaryBtn(
+                          label: 'Seguir', 
+                          paddingV: 0,
+                          paddingH: 15,
                           onPressed: () => user.isPrivate
                             ? followController.sendFollowRequest()
                             : followController.startFollowingUser(),
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                          ), 
-                          child: Text(
-                            'Seguir', 
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                              color: CbColors.white,
-                              fontSize: CbSizes.md,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
+                        )
                   ),
               ),
             ),

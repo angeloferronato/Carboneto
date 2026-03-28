@@ -157,26 +157,53 @@ class TrainingModel {
   }
 
   factory TrainingModel.fromJson(Map<String, dynamic> json) {
+    // support both capitalized (Firestore) and lowercase (Meilisearch) keys
+    String? getString(String lower, String upper) =>
+        (json[lower] ?? json[upper])?.toString();
+
+    dynamic get(String lower, String upper) => json[lower] ?? json[upper];
+
+    // handle postedAt as Timestamp, Map (_seconds), or String (ISO)
+    Timestamp? parsePostedAt() {
+      final raw = get('postedat', 'PostedAt');
+      if (raw == null) return null;
+      if (raw is Timestamp) return raw;
+      if (raw is Map) {
+        final seconds = raw['_seconds'] ?? raw['seconds'];
+        if (seconds != null) return Timestamp(seconds, 0);
+      }
+      if (raw is String) {
+        final dt = DateTime.tryParse(raw);
+        if (dt != null) return Timestamp.fromDate(dt);
+      }
+      return null;
+    }
+
     return TrainingModel(
-      id: json['Id'],
-      duration: json['Duration'],
-      authorId: json['AuthorID'] ?? '',
-      categories: json["Categories"],
-      description: json["Description"],
-      exercises: json["Exercises"],
-      level: json["Level"],
-      people: json['People'],
-      thumbnail: json['Thumbnail'],
-      title: json['Title'],
-      exercisesId: [],
+      id: getString('id', 'Id') ?? '',
+      duration: (get('duration', 'Duration') as num?)?.toInt(),
+      authorId: getString('authorid', 'AuthorID') ?? '',
+      categories: List<String>.from(get('categories', 'Categories') ?? []),
+      description: getString('description', 'Description') ?? '',
+      exercises: [],
+      exercisesId: List<String>.from(get('exercises', 'Exercises') ?? []),
+      level: parseStringToLevel(
+        (getString('level', 'Level') ?? 'rookie').toLowerCase(),
+      ),
+      people: (get('people', 'People') as num?)?.toInt() ?? 0,
+      thumbnail: getString('thumbnail', 'Thumbnail') ?? '',
+      title: getString('title', 'Title') ?? '',
       creator: CreatorModel.fromMap(
-          Map<String, dynamic>.from(json['Creator'] ?? {})),
-      postedAt: json['PostedAt'] as Timestamp?,
-      stats: json['Stats'] != null
-          ? TrainingStats.fromJson(Map<String, dynamic>.from(json['Stats']))
+        Map<String, dynamic>.from(get('creator', 'Creator') ?? {}),
+      ),
+      postedAt: parsePostedAt(),
+      stats: get('stats', 'Stats') != null
+          ? TrainingStats.fromJson(
+              Map<String, dynamic>.from(get('stats', 'Stats')))
           : TrainingStats.empty(),
       visibility: TrainingVisibility.values.firstWhere(
-        (e) => e.name == (json['Visibility'] ?? 'public'),
+        (e) => e.name == (getString('visibility', 'Visibility') ?? 'public'),
+        orElse: () => TrainingVisibility.public,
       ),
     );
   }

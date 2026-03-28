@@ -19,16 +19,26 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileTab _selectedTab = ProfileTab.treinos;
 
+  late final ProfileBaseController controller;
+
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(
+  void initState() {
+    super.initState();
+
+    controller = Get.put(
       ProfileBaseController(userId: widget.userId),
       tag: widget.userId,
     );
+
     Get.put(
       TrainingController(userId: widget.userId),
       tag: widget.userId,
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
 
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
 

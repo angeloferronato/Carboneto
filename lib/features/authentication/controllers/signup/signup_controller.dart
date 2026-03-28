@@ -95,18 +95,8 @@ class SignupController extends GetxController {
         banner: '',
       );
 
-      final userSearch = UserSearchModel(
-        id: userCredential.user!.uid, 
-        username: username.text.trim(), 
-        usernameLower: username.text.trim().toLowerCase(), 
-        name: name.text.trim(), 
-        nameLower: name.text.toLowerCase(),
-        profilePicture: '', 
-        isPrivate: isPrivate.value
-      );
-
       final userRepository = Get.put(UserRepository());
-      await userRepository.saveUserRecord(newUser, userCredential, userSearch);
+      await userRepository.saveUserRecord(newUser, userCredential);
 
       // Remove Loader
       CbFullScreenLoader.stopLoading();

@@ -56,6 +56,24 @@ class CategoryMapper {
     return tagToMainCategory[tag] ?? fallback;
   }
 
+  /// All unique main categories in display order.
+  static const List<String> mainCategories = [
+    'Arremesso',
+    'Atleticismo',
+    'Controle de Bola',
+    'Defesa',
+    'Finalização',
+    'QI de Basquete',
+  ];
+
+  /// Returns all sub-tags that belong to [main] (excluding the main tag itself).
+  static List<String> subTagsFor(String main) {
+    return tagToMainCategory.entries
+        .where((e) => e.value == main && e.key != main)
+        .map((e) => e.key)
+        .toList();
+  }
+
   /// Recebe várias tags e retorna as categorias principais únicas
   static List<String> mapTagsToMainCategories(List<String> tags) {
     final set = <String>{};

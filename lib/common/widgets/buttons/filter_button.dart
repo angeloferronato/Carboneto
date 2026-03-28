@@ -8,18 +8,24 @@ class FilterButton extends StatelessWidget {
   const FilterButton({
     super.key,
     this.onFilterApplied,
+    this.currentFilters,
   });
 
   final Function(Map<String, dynamic>)? onFilterApplied;
 
+  final Map<String, dynamic>? currentFilters;
+
   void _showFilterModal(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     showModalBottomSheet(
+      backgroundColor: isDarkMode? CbColors.dark : CbColors.light,
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       isScrollControlled: true,
       builder: (context) => FilterModalContent(
+        initialFilters: currentFilters ?? {},
         onFilterApplied: onFilterApplied,
       ),
     );
@@ -28,6 +34,14 @@ class FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
+    final bool hasFilters = currentFilters != null &&
+        currentFilters!.values.any((v) {
+          if (v == null) return false;
+          if (v is bool) return v;
+          if (v is int) return false; // durationMin/Max always present
+          return true;
+        });
+
     return InkWell(
       borderRadius: BorderRadius.circular(25),
       onTap: () => _showFilterModal(context),
@@ -35,23 +49,32 @@ class FilterButton extends StatelessWidget {
         height: 40,
         width: 47,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color(0x31467CB8),
-              Color(0x61152E42),
-            ],
+          gradient: LinearGradient(
+            colors: hasFilters
+                ? [
+                    CbColors.primary.withValues(alpha:0.35),
+                    CbColors.primary.withValues(alpha: 0.15),
+                  ]
+                : const [
+                    Color(0x31467CB8),
+                    Color(0x61152E42),
+                  ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: CbColors.borderBlue,
+            color: hasFilters ? CbColors.primary : CbColors.borderBlue,
             width: 1,
           ),
         ),
         child: Icon(
           Icons.tune_rounded,
-          color: isDarkMode ? CbColors.white : CbColors.dark,
+          color: hasFilters
+              ? CbColors.primary
+              : isDarkMode
+                  ? CbColors.white
+                  : CbColors.dark,
           size: 26,
         ),
       ),
@@ -63,9 +86,11 @@ class FilterModalContent extends StatefulWidget {
   const FilterModalContent({
     super.key,
     this.onFilterApplied,
+    this.initialFilters = const {},
   });
 
   final Function(Map<String, dynamic>)? onFilterApplied;
+  final Map<String, dynamic> initialFilters;
 
   @override
   State<FilterModalContent> createState() => _FilterModalContentState();
@@ -103,15 +128,31 @@ class _FilterModalContentState extends State<FilterModalContent> {
     {
       'label': 'Mais Populares',
       'value': 'popular',
-      'icon': Icons.local_fire_department
+      'icon': Icons.local_fire_department,
     },
     {'label': 'Melhor Avaliados', 'value': 'rating', 'icon': Iconsax.like_1},
     {
       'label': 'Alfabética (A-Z)',
       'value': 'alphabetical',
-      'icon': Iconsax.text
+      'icon': Iconsax.text,
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final f = widget.initialFilters;
+    selectedDifficulty  = f['difficulty'] as String?;
+    selectedPeopleCount = f['peopleCount'] as int?;
+    selectedOrder       = f['order'] as String?;
+    showVerifiedOnly    = (f['verifiedOnly'] as bool?) ?? false;
+
+    final min = f['durationMin'] as int?;
+    final max = f['durationMax'] as int?;
+    if (min != null && max != null) {
+      durationRange = RangeValues(min.toDouble(), max.toDouble());
+    }
+  }
 
   void _applyFilters() {
     final filters = {
@@ -128,11 +169,12 @@ class _FilterModalContentState extends State<FilterModalContent> {
 
   void _clearFilters() {
     setState(() {
-      selectedDifficulty = null;
-      selectedDuration = null;
+      selectedDifficulty  = null;
+      selectedDuration    = null;
       selectedPeopleCount = null;
-      selectedOrder = null;
-      showVerifiedOnly = false;
+      selectedOrder       = null;
+      showVerifiedOnly    = false;
+      durationRange       = const RangeValues(0, 180);
     });
   }
 
@@ -140,11 +182,11 @@ class _FilterModalContentState extends State<FilterModalContent> {
   Widget build(BuildContext context) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SingleChildScrollView(
-            child: Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SingleChildScrollView(
+        child: Container(
           padding: const EdgeInsets.only(right: 20, left: 20, bottom: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -154,21 +196,26 @@ class _FilterModalContentState extends State<FilterModalContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Filtros',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium!
-                          .copyWith(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Filtros',
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(Icons.close,
-                        color: isDarkMode ? Colors.white : CbColors.darkerGrey),
+                    icon: Icon(
+                      Icons.close,
+                      color:
+                          isDarkMode ? Colors.white : CbColors.darkerGrey,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
 
-              // Difficulty Section
+              // Difficulty
               _buildSectionTitle('Nível de Dificuldade'),
               const SizedBox(height: 12),
               Wrap(
@@ -181,31 +228,27 @@ class _FilterModalContentState extends State<FilterModalContent> {
                     label: option['label'],
                     icon: option['icon'],
                     isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        selectedDifficulty =
-                            isSelected ? null : option['value'];
-                      });
-                    },
+                    onTap: () => setState(() {
+                      selectedDifficulty =
+                          isSelected ? null : option['value'] as String;
+                    }),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 24),
 
-              // Duration Section
-              // Duration Slider
+              // Duration slider
               _buildSectionTitle('Duração (minutos)'),
               const SizedBox(height: 8),
-
               Text(
                 '${durationRange.start.round()} min – ${durationRange.end.round()} min',
                 style: TextStyle(
-                    color: isDarkMode ? Colors.white70 : CbColors.darkerGrey),
+                  color: isDarkMode ? Colors.white70 : CbColors.darkerGrey,
+                ),
               ),
-
               SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  valueIndicatorColor: CbColors.primary, // bubble bg
+                  valueIndicatorColor: CbColors.primary,
                   valueIndicatorTextStyle: Theme.of(context)
                       .textTheme
                       .bodyLarge!
@@ -226,17 +269,13 @@ class _FilterModalContentState extends State<FilterModalContent> {
                     '${durationRange.start.round()} min',
                     '${durationRange.end.round()} min',
                   ),
-                  onChanged: (values) {
-                    setState(() {
-                      durationRange = values;
-                    });
-                  },
+                  onChanged: (values) =>
+                      setState(() => durationRange = values),
                 ),
               ),
-
               const SizedBox(height: 24),
 
-              // People Count Section
+              // People count
               _buildSectionTitle('Nº de Pessoas Necessárias'),
               const SizedBox(height: 12),
               Wrap(
@@ -249,18 +288,16 @@ class _FilterModalContentState extends State<FilterModalContent> {
                     label: option['label'],
                     icon: option['icon'],
                     isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        selectedPeopleCount =
-                            isSelected ? null : option['value'];
-                      });
-                    },
+                    onTap: () => setState(() {
+                      selectedPeopleCount =
+                          isSelected ? null : option['value'] as int;
+                    }),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 24),
 
-              // Order Section
+              // Order
               _buildSectionTitle('Ordenar Por'),
               const SizedBox(height: 12),
               Wrap(
@@ -273,17 +310,16 @@ class _FilterModalContentState extends State<FilterModalContent> {
                     label: option['label'],
                     icon: option['icon'],
                     isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        selectedOrder = isSelected ? null : option['value'];
-                      });
-                    },
+                    onTap: () => setState(() {
+                      selectedOrder =
+                          isSelected ? null : option['value'] as String;
+                    }),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 24),
 
-              // Verified Only Toggle
+              // Verified only
               Container(
                 decoration: BoxDecoration(
                   color: isDarkMode
@@ -294,27 +330,27 @@ class _FilterModalContentState extends State<FilterModalContent> {
                 child: SwitchListTile(
                   title: Row(
                     children: [
-                      Icon(Iconsax.verify5, size: 20, color: CbColors.primary),
-                      SizedBox(width: 8),
+                      Icon(Iconsax.verify5,
+                          size: 20, color: CbColors.primary),
+                      const SizedBox(width: 8),
                       Text(
                         'Apenas Verificados',
                         style: TextStyle(
-                            color: isDarkMode ? Colors.white : CbColors.dark),
+                          color:
+                              isDarkMode ? Colors.white : CbColors.dark,
+                        ),
                       ),
                     ],
                   ),
                   value: showVerifiedOnly,
-                  onChanged: (value) {
-                    setState(() {
-                      showVerifiedOnly = value;
-                    });
-                  },
+                  onChanged: (value) =>
+                      setState(() => showVerifiedOnly = value),
                   activeThumbColor: CbColors.primary,
                 ),
               ),
               const SizedBox(height: 24),
 
-              // Action Buttons
+              // Action buttons
               Row(
                 children: [
                   Expanded(
@@ -326,16 +362,19 @@ class _FilterModalContentState extends State<FilterModalContent> {
                               ? CbColors.white.withValues(alpha: 0.2)
                               : CbColors.darkGrey,
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text('Limpar',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 15)),
+                      child: Text(
+                        'Limpar',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(fontSize: 15),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -345,7 +384,8 @@ class _FilterModalContentState extends State<FilterModalContent> {
                       onPressed: _applyFilters,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: CbColors.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -353,10 +393,11 @@ class _FilterModalContentState extends State<FilterModalContent> {
                       child: const Text(
                         'Aplicar Filtros',
                         style: TextStyle(
-                            fontFamily: 'Plus Jakarta Sans',
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15),
+                          fontFamily: 'Plus Jakarta Sans',
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                   ),
@@ -365,7 +406,9 @@ class _FilterModalContentState extends State<FilterModalContent> {
               const SizedBox(height: 20),
             ],
           ),
-        )));
+        ),
+      ),
+    );
   }
 
   Widget _buildSectionTitle(String title) {
@@ -393,36 +436,41 @@ class _FilterModalContentState extends State<FilterModalContent> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isDarkMode
-              ? (isSelected
-                  ? CbColors.primary
-                  : CbColors.white.withValues(alpha: 0.05))
-              : (isSelected ? CbColors.primary : CbColors.grey),
+          gradient: LinearGradient(
+            colors: isSelected
+                ? [
+                    CbColors.primary.withValues(alpha: 0.35),
+                    CbColors.primary.withValues(alpha: 0.15),
+                  ]
+                : const [
+                    Color(0x31467CB8),
+                    Color(0x61152E42),
+                  ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected
-                ? CbColors.primary
-                : CbColors.white.withValues(alpha: 0.1),
+            color: isSelected ? CbColors.primary : CbColors.borderBlue,
             width: 1.5,
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon,
-                size: 18,
-                color: isDarkMode
-                    ? (isSelected ? Colors.white : Colors.white70)
-                    : (isSelected ? CbColors.white : CbColors.darkerGrey)),
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? CbColors.primary : Colors.white70,
+            ),
             const SizedBox(width: 8),
             Text(
               label,
               style: TextStyle(
                 fontSize: 14,
-                color: isDarkMode
-                    ? (isSelected ? Colors.white : Colors.white70)
-                    : (isSelected ? CbColors.white : CbColors.darkerGrey),
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                color: isSelected ? CbColors.primary : Colors.white70,
+                fontWeight:
+                    isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ],

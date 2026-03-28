@@ -83,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         CategoriesBar(
           controllerTag: 'home',
+          hideFilterBtn: true,
         ),
         HomeShimmer(),
       ],
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSingleListMode() {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(child: CategoriesBar(controllerTag: 'home')),
+        SliverToBoxAdapter(child: CategoriesBar(controllerTag: 'home', hideFilterBtn: true,)),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -109,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               return Padding(
-                padding: EdgeInsets.only(right: CbSizes.md, bottom: 50),
+                padding: EdgeInsets.only(right: CbSizes.md),
                 child: ResultWidget(
                   training: controller.visibleTrainings[index],
                   homeWidget: true,
@@ -118,6 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             childCount: controller.visibleTrainings.length,
           ),
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(height: 100,)
         ),
       ],
     );
@@ -170,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           CategoriesBar(
             controllerTag: 'home',
+            hideFilterBtn: true,
           ),
           const SizedBox(height: 16),
           ...sections.entries.map((entry) {

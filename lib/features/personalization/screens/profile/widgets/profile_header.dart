@@ -116,7 +116,7 @@ class ProfileHeader extends StatelessWidget {
                       currentUserId:
                           controller.userController.user.value.id,
                       targetUserId: userId,
-                      profileUser: controller.user.value,
+                      isPrivate: controller.user.value.isPrivate,
                     ),
         ),
         const SizedBox(height: 40),

@@ -77,17 +77,8 @@ class UserController extends GetxController {
           banner: '',
         );
 
-        final userSearch = UserSearchModel(
-          id: userCredentials.user!.uid, 
-          username: username, 
-          usernameLower: username.toLowerCase(), 
-          name: userCredentials.user!.displayName ?? '', 
-          nameLower: userCredentials.user!.displayName!.toLowerCase(), 
-          profilePicture: userCredentials.user!.photoURL ?? '',
-          isPrivate: false,
-        );
 
-        await UserRepository.instance.saveUserRecord(user, userCredentials, userSearch);
+        await UserRepository.instance.saveUserRecord(user, userCredentials);
 
       }
     } catch(e) {

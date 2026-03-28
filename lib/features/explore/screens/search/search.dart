@@ -1,5 +1,4 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/searchinput/search_input.dart';
 import 'package:carboneto/features/explore/controllers/explorer_controller.dart';
 import 'package:carboneto/features/explore/screens/search/widgets/explore_all_container.dart';
@@ -9,13 +8,13 @@ import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final ExploreController controller = Get.put(ExploreController());
+    final TextEditingController searchController = TextEditingController();
 
     return Scaffold(
       extendBody: true,
@@ -29,7 +28,6 @@ class SearchScreen extends StatelessWidget {
         ),
         showBackArrow: false,
       ),
-      
       body: MediaQuery.removePadding(
         context: context,
         removeBottom: true,
@@ -37,30 +35,35 @@ class SearchScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: CbSizes.defaultSpace),
             child: Column(
-
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                  child: FocusedTextField(
-                  controller: TextEditingController(),
-                  paddingH: 0,
-                  hintText: 'O que você quer treinar?',
-                  prefixIcon: IconButton(
-                    onPressed: () => Get.to(SearchResultScreen()), 
-                    icon: Icon(
-                      Iconsax.search_normal_1, size: 20
-                    ),
-                  ) 
-                  
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: CbSizes.defaultSpace),
+                  child: SearchInput(
+                    placeholder: 'O que você quer pesquisar?',
+                    controller: searchController,
+                    paddingV: 15,
+                    paddingH: 15,
+                    iconSize: 25,
+                    onSubmitted: (value) {
+                      final query = value.trim();
+                      if (query.isEmpty) return;
+
+                      Get.to(() => SearchResultScreen(initialQuery: query));
+                    },
+                    onSearchPressed: () {
+                      final query = searchController.text.trim();
+                      if (query.isEmpty) return;
+
+                      Get.to(() => SearchResultScreen(initialQuery: query));
+                    },
+                  ),
                 ),
-                ),
-                
                 const SizedBox(
                   height: CbSizes.spaceBtwItems * 2,
                 ),
-
                 Obx(() {
                   if (controller.isLoading.value) {
                     return const Padding(
@@ -71,21 +74,15 @@ class SearchScreen extends StatelessWidget {
                         ),
                       ),
                     );
-                  }
-
-                  else {
+                  } else {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        
                         TrainingsContainer(controller: controller),
-
                         ExploreAllContainer(controller: controller),
-
                         const SizedBox(
                           height: 150,
                         ),
-
                       ],
                     );
                   }
@@ -98,4 +95,3 @@ class SearchScreen extends StatelessWidget {
     );
   }
 }
-

@@ -13,8 +13,10 @@ class FocusedTextField extends StatelessWidget {
     this.validator,
     this.savedInitialValue,
     this.paddingH = CbSizes.lg * 1.2,
+    this.paddingV = CbSizes.md, // ✅ NEW (vertical padding)
+    this.borderRadius = 16,     // ✅ NEW (radius)
     this.maxLines = 1,
-    this.contentPadding = const EdgeInsets.symmetric(horizontal: CbSizes.lg, vertical: CbSizes.md),
+    this.contentPadding,
     this.onChanged,
     this.onSubmitted,
     this.readOnly = false,
@@ -28,13 +30,20 @@ class FocusedTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
   final bool obscureText;
+
   final double paddingH;
+  final double paddingV;       // ✅ NEW
+  final double borderRadius;   // ✅ NEW
+
   final int? maxLines;
   final String? savedInitialValue;
   final EdgeInsetsGeometry? contentPadding;
+
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
+
   final ValueNotifier<bool> hasErrorNotifier;
+
   final bool readOnly;
   final int? maxLength;
   final TextInputType? keyboardType;
@@ -42,17 +51,24 @@ class FocusedTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final EdgeInsetsGeometry finalPadding =
+        contentPadding ??
+        EdgeInsets.symmetric(
+          horizontal: paddingH,
+          vertical: paddingV,
+        );
+
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color(0x31467CB8), // 467CB8 at 19%
-            Color(0x61152E42), // 152E42 at 38%
+            Color(0x31467CB8),
+            Color(0x61152E42),
           ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(borderRadius), // ✅ dynamic
         border: Border.all(
           color: const Color(0xFF223142),
           width: 1,
@@ -78,13 +94,13 @@ class FocusedTextField extends StatelessWidget {
         obscureText: obscureText,
         decoration: InputDecoration(
           counterText: '',
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          contentPadding: finalPadding, // ✅ dynamic padding
           prefixIcon: prefixIcon,
-          suffixIcon: null, // ← no X button
+          suffixIcon: suffixIcon,
           hintText: hintText,
           hintStyle: Theme.of(context).textTheme.bodyMedium!.apply(
-            color: CbColors.darkGrey,
-          ),
+                color: CbColors.darkGrey,
+              ),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,

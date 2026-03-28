@@ -10,17 +10,32 @@ class CreatorModel {
   });
 
   factory CreatorModel.fromMap(Map<String, dynamic> map) {
+    final dynamic rawName = map['Name'] ?? map['name'];
+    final dynamic rawProfilePicture =
+        map['ProfilePicture'] ?? map['profilePicture'] ?? map['profilepicture'];
+    final dynamic rawIsVerified = map['IsVerified'] ?? map['isVerified'] ?? map['isverified'];
+
     return CreatorModel(
-      name: map['Name'] ?? '',
-      profilePicture: map['ProfilePicture'],
-      isVerified: map['IsVerified'] ?? false,
+      name: rawName?.toString() ?? '',
+      profilePicture: rawProfilePicture?.toString() ?? '',
+      isVerified: rawIsVerified is bool
+          ? rawIsVerified
+          : rawIsVerified?.toString().toLowerCase() == 'true',
     );
   }
   factory CreatorModel.fromJson(Map<String, dynamic> json) {
+    final dynamic rawName = json['Name'] ?? json['name'];
+    final dynamic rawProfilePicture =
+        json['ProfilePicture'] ?? json['profilePicture'] ?? json['profilepicture'];
+    final dynamic rawIsVerified =
+        json['IsVerified'] ?? json['isVerified'] ?? json['isverified'];
+
     return CreatorModel(
-      name: json['Name'] ?? '',
-      profilePicture: json['ProfilePicture'] ?? '',
-      isVerified: json['IsVerified'] ?? false,
+      name: rawName?.toString() ?? '',
+      profilePicture: rawProfilePicture?.toString() ?? '',
+      isVerified: rawIsVerified is bool
+          ? rawIsVerified
+          : rawIsVerified?.toString().toLowerCase() == 'true',
     );
   }
   Map<String, dynamic> toJson() {

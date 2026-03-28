@@ -60,6 +60,25 @@ class ExerciseModel {
     );
   }
 
+  factory ExerciseModel.fromMeili(Map<String, dynamic> data) {
+    return ExerciseModel(
+      id: (data['id'] ?? '').toString(),
+      title: data['title'] as String? ?? '',
+      description: data['description'] as String? ?? '',
+      video: data['video'] as String? ?? '',
+      thumb: data['thumbnail'] as String? ?? '',
+      type: data['type'] as String? ?? '',
+      repetitions: (data['repetitions'] as num?)?.toInt() ?? 0,
+      duration: (data['duration'] as num?)?.toInt() ?? 0,
+      peopleCount: (data['peoplecount'] as num?)?.toInt() ?? 1,
+      authorId: data['authorid'] as String? ?? '',
+      categories: data['categories'] as List<dynamic>? ?? [],
+      creator: CreatorModel.fromMap(
+        Map<String, dynamic>.from(data['creator'] as Map),
+      ),
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'Description': description,

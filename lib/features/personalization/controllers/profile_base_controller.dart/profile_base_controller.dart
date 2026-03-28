@@ -16,12 +16,13 @@ class ProfileBaseController extends GetxController {
   late ProfileSearchController profileSearchController;
   final Rx<UserModel> user = UserModel.empty().obs;
   final RxBool isLoading = false.obs;
-  final FollowRepository followRepository = Get.put(FollowRepository());
+  final FollowRepository followRepository = Get.find();
   final RxList<String> followersId = <String>[].obs;
   final RxList<String> followingId = <String>[].obs;
 
   @override
   void onInit() {
+    super.onInit();
     fetchInitial();
     userController = Get.put(UserController());  
     profileSearchController = Get.put(ProfileSearchController(userId: userId), tag: userId);
