@@ -36,21 +36,21 @@ class HistoryScreen extends GetView<HistoryController> {
               ),
             ),
 
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 16),
-                    SearchInput(
-                      placeholder: 'Pesquisar no histórico',
-                      controller: controller.searchController,
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            ),
+            // SliverToBoxAdapter(
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
+            //     child: Column(
+            //       children: [
+            //         const SizedBox(height: 16),
+            //         SearchInput(
+            //           placeholder: 'Pesquisar no histórico',
+            //           controller: controller.searchController,
+            //         ),
+            //         const SizedBox(height: 16),
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
             if (controller.history.isEmpty)
               const SliverFillRemaining(

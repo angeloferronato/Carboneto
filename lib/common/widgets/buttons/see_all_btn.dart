@@ -11,35 +11,35 @@ class SeeAllBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
-    return TextButton(
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.all(0)
-      ),
-      onPressed: onPressed,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            buttonTitle,
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              buttonTitle,
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: isDarkMode
+                  ? CbColors.grey.withValues(alpha: 0.8)
+                  : CbColors.darkerGrey.withValues(alpha: 0.9), 
+              ),
+            ),
+            SizedBox(width: 5,),
+            Icon(
+              Icons.arrow_forward_ios,
               color: isDarkMode
                 ? CbColors.grey.withValues(alpha: 0.8)
-                : CbColors.darkerGrey.withValues(alpha: 0.9), 
+                : CbColors.darkerGrey.withValues(alpha: 0.9),
+              size: 13,
             ),
-          ),
-          SizedBox(width: 5,),
-          Icon(
-            Icons.arrow_forward_ios,
-            color: isDarkMode
-              ? CbColors.grey.withValues(alpha: 0.8)
-              : CbColors.darkerGrey.withValues(alpha: 0.9),
-            size: 13,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

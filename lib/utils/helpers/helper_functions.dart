@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 
 class CbHelperFunctions {
+  
   static Map<String, dynamic> parseLevelStyle(BuildContext context, DifficultyLevels level) {
     final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
     Color difficultyBorder = Colors.transparent;
@@ -49,6 +50,30 @@ class CbHelperFunctions {
       'levelValue': levelValue,
     };
   }
+
+  static String monthName(int m) {
+    const names = [
+      '',
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro',
+    ];
+    return names[m];
+  }
+
+  static bool isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  static final kDayLetters = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
   static String formatDuration(int totalSeconds, {bool fullCase = false}){
     if (totalSeconds < 60) {

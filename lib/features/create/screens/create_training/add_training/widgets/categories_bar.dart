@@ -1,4 +1,5 @@
 import 'package:carboneto/common/widgets/buttons/filter_button.dart';
+import 'package:carboneto/common/widgets/chips/cb_chip.dart';
 // Importe o controller atualizado
 import 'package:carboneto/features/create/controllers/categories_controller.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
@@ -45,65 +46,11 @@ class CategoriesBar extends StatelessWidget {
 
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: GestureDetector(
-                    onTap: () => controller.selectCategory(category),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        gradient: isSelected
-                            ? null
-                            : const LinearGradient(
-                                colors: [
-                                  Color(0x31467CB8),
-                                  Color(0x61152E42),
-                                ],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                        color: isSelected ? CbColors.primary : null,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.transparent
-                              : const Color(0xFF223142),
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (isSpecial) ...[
-                            Icon(
-                              Icons.auto_awesome,
-                              size: 16,
-                              color: isDarkMode
-                                  ? CbColors.white
-                                  : isSelected
-                                      ? CbColors.white
-                                      : CbColors.dark,
-                            ),
-                            const SizedBox(width: 4),
-                          ],
-                          Text(
-                            category,
-                            style: TextStyle(
-                              color: isDarkMode
-                                  ? (isSelected
-                                      ? Colors.white
-                                      : CbColors.white.withValues(alpha: 0.9))
-                                  : (isSelected
-                                      ? CbColors.white
-                                      : CbColors.dark.withValues(alpha: 0.9)),
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Plus Jakarta Sans',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: CbChip(
+                    label: category, 
+                    isSelected: isSelected, 
+                    onTap: () => controller.selectCategory(category)
+                  )
                 );
               }),
             ],

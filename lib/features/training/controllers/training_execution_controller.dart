@@ -110,7 +110,7 @@ class TrainingExecutionController extends GetxController
 
   void startExerciseTimer() {
     exerciseTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (activeExercise.value.duration == 0) return; 
+      if (activeExercise.value.duration == 0) return;
       minusTime(trainingRelativeDuration);
       if (trainingRelativeDuration.value.inSeconds == 0) {
         isPaused.value = true;
@@ -142,10 +142,10 @@ class TrainingExecutionController extends GetxController
       final stats = buildExerciseProgress();
       final elapsed = (training.duration! * 60) - duration.value.inSeconds;
       Get.offAll(() => TrainingFinishedScreen(
-        training: training,
-        stats: stats,
-        elapsedSeconds: elapsed,
-      ));
+            training: training,
+            stats: stats,
+            elapsedSeconds: elapsed,
+          ));
       return;
     }
     _saveCurrentExerciseState();
@@ -208,7 +208,8 @@ class TrainingExecutionController extends GetxController
         iconColor: Colors.orange,
         iconBg: Colors.orange.withValues(alpha: 0.15),
         title: 'Meta não atingida',
-        message: 'Você fez $done de $total repetições.\nAinda faltam ${total - done} para atingir a meta.',
+        message:
+            'Você fez $done de $total repetições.\nAinda faltam ${total - done} para atingir a meta.',
       );
     } else {
       final remaining = trainingRelativeDuration.value.inSeconds;
@@ -217,8 +218,10 @@ class TrainingExecutionController extends GetxController
         isExerciseCompleted.value = true;
         return;
       }
-      final m = twoDigits(trainingRelativeDuration.value.inMinutes.remainder(60));
-      final s = twoDigits(trainingRelativeDuration.value.inSeconds.remainder(60));
+      final m =
+          twoDigits(trainingRelativeDuration.value.inMinutes.remainder(60));
+      final s =
+          twoDigits(trainingRelativeDuration.value.inSeconds.remainder(60));
       _showJumpSheet(
         context: context,
         isDark: isDark,
@@ -226,7 +229,8 @@ class TrainingExecutionController extends GetxController
         iconColor: Colors.orange,
         iconBg: Colors.orange.withValues(alpha: 0.15),
         title: 'Exercício em andamento',
-        message: 'Ainda restam $m:$s no exercício.\nDeseja avançar mesmo assim?',
+        message:
+            'Ainda restam $m:$s no exercício.\nDeseja avançar mesmo assim?',
       );
     }
   }
@@ -247,18 +251,21 @@ class TrainingExecutionController extends GetxController
       showDragHandle: false,
       useSafeArea: true,
       builder: (sheetCtx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(sheetCtx).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(sheetCtx).viewInsets.bottom),
         child: Container(
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          padding: EdgeInsets.fromLTRB(24, 12, 24, 32 + MediaQuery.of(sheetCtx).viewPadding.bottom),
+          padding: EdgeInsets.fromLTRB(
+              24, 12, 24, 32 + MediaQuery.of(sheetCtx).viewPadding.bottom),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 40, height: 4,
+                width: 40,
+                height: 4,
                 decoration: BoxDecoration(
                   color: Colors.grey.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(10),
@@ -266,8 +273,10 @@ class TrainingExecutionController extends GetxController
               ),
               const SizedBox(height: 24),
               Container(
-                width: 60, height: 60,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: iconBg),
+                width: 60,
+                height: 60,
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: iconBg),
                 child: Icon(icon, color: iconColor, size: 32),
               ),
               const SizedBox(height: 16),
@@ -297,16 +306,17 @@ class TrainingExecutionController extends GetxController
                       onPressed: () => Navigator.pop(sheetCtx),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        side: BorderSide(color: isDark ? Colors.white24 : Colors.black26),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        side: BorderSide(
+                            color: isDark ? Colors.white24 : Colors.black26),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
                       ),
                       child: Text('Continuar',
                           style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.7))),
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  color: Colors.white.withValues(alpha: 0.7))),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -319,11 +329,13 @@ class TrainingExecutionController extends GetxController
                       style: ElevatedButton.styleFrom(
                         backgroundColor: CbColors.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
                       ),
-                      child: Text('Avançar', style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium,),
+                      child: Text(
+                        'Avançar',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ),
                   ),
                 ],
@@ -383,7 +395,9 @@ class TrainingExecutionController extends GetxController
     final now = DateTime.now();
     final todayKey =
         "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-    return "${training.id}_$todayKey";
+    final timeKey =
+        "${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}";
+    return "${training.id}_${todayKey}_$timeKey";
   }
 
   Future<void> _createOrResumeProgress() async {
@@ -422,9 +436,34 @@ class TrainingExecutionController extends GetxController
 
   Future<void> saveProgress({bool completed = false}) async {
     final totalExercises = training.exercises.length;
-    double progress = activeIndexTraining.value == 0
-        ? (1 - (duration.value.inSeconds / (training.duration! * 60))) * 100
-        : (activeIndexTraining.value / totalExercises) * 100;
+    final built = buildExerciseProgress();
+    final trainingType = built['TrainingType'] as String;
+    final perExercise = built['PerExercise'] as Map<String, dynamic>;
+
+    double progress;
+
+    if (trainingType == 'time') {
+      progress = activeIndexTraining.value == 0
+          ? (1 - (duration.value.inSeconds / (training.duration! * 60))) * 100
+          : (activeIndexTraining.value / totalExercises) * 100;
+    } else {
+      // reps or mixed: count how many exercises are fully done
+      int doneCnt = 0;
+      for (int i = 0; i < totalExercises; i++) {
+        final ex = perExercise[i.toString()] as Map<String, dynamic>;
+        final type = ex['Type'] as String;
+        if (type == 'reps') {
+          final done = (ex['Done'] as int? ?? 0);
+          final total = (ex['Total'] as int? ?? 1);
+          if (done >= total) doneCnt++;
+        } else {
+          final remaining = (ex['Remaining'] as int? ?? 0);
+          if (remaining == 0) doneCnt++;
+        }
+      }
+      progress = (doneCnt / totalExercises) * 100;
+    }
+
     if (progress >= 100) completed = true;
 
     final data = {
@@ -433,10 +472,11 @@ class TrainingExecutionController extends GetxController
       'TrainingProgress': progress.round(),
       'Status': completed ? 'completed' : 'in_progress',
       'LastUpdatedAt': FieldValue.serverTimestamp(),
-      'TrainingStats': buildExerciseProgress(),
+      'TrainingStats': built,
     };
 
-    await repo.updateTrainingProgress(uid: uid, trainingId: training.id, data: data);
+    await repo.updateTrainingProgress(
+        uid: uid, trainingId: training.id, data: data);
     await repo.updateTrainingHistory(
       uid: uid,
       historyId: historyId,
@@ -444,7 +484,7 @@ class TrainingExecutionController extends GetxController
         'TrainingProgress': progress.round(),
         'Status': completed ? 'completed' : 'in_progress',
         'SessionEndedAt': FieldValue.serverTimestamp(),
-        'TrainingStats': buildExerciseProgress(),
+        'TrainingStats': built,
       },
     );
     if (completed) await repo.deleteTrainingProgress(uid, training.id);
@@ -458,28 +498,42 @@ class TrainingExecutionController extends GetxController
       final exercise = training.exercises[i];
 
       if (exercise.type == 'time') {
-        if (trainingType.isEmpty) trainingType = 'time';
+        if (trainingType.isEmpty) {
+          trainingType = 'time';
+        } else if (trainingType == 'reps') {
+          trainingType = 'mixed';
+        }
+
         final total = exercise.duration * 60;
         final remaining = i == activeIndexTraining.value
             ? trainingRelativeDuration.value.inSeconds
-            : (_savedTimerSeconds[i] ?? (i < activeIndexTraining.value ? 0 : total));
+            : (_savedTimerSeconds[i] ??
+                (i < activeIndexTraining.value ? 0 : total));
+
         perExercise[i.toString()] = {
           "Type": "time",
           "Total": total,
           "Remaining": remaining,
+          "Name": exercise.title,
           "Done": 0,
         };
       }
 
       if (exercise.type == 'reps') {
-        if (trainingType.isEmpty) trainingType = 'reps';
-        if (trainingType == 'time') trainingType = 'mixed';
+        if (trainingType.isEmpty) {
+          trainingType = 'reps';
+        } else if (trainingType == 'time') {
+          trainingType = 'mixed';
+        }
+
         perExercise[i.toString()] = {
+          "Name": exercise.title,
           "Type": "reps",
           "Total": exercise.repetitions,
           "Done": i == activeIndexTraining.value
               ? completedReps.value
-              : (_savedReps[i] ?? (i < activeIndexTraining.value ? exercise.repetitions : 0)),
+              : (_savedReps[i] ??
+                  (i < activeIndexTraining.value ? exercise.repetitions : 0)),
           "Remaining": 0,
         };
       }

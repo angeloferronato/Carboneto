@@ -6,46 +6,57 @@ import 'package:carboneto/utils/constants/enums.dart';
 import 'package:get/get.dart';
 
 class TrainingController extends GetxController {
-  static TrainingController get instance => Get.find();
-
   TrainingController({required this.userId});
 
   final String userId;
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final FollowRepository followRepository = Get.put(FollowRepository());
   final RxList<TrainingModel> trainingsList = <TrainingModel>[].obs;
-  final Rx<bool> isLoading = false.obs;
+  final RxBool isLoading = false.obs;
 
   late ProfileBaseController profileBaseController;
 
-  String get _currentUserId => profileBaseController.userController.user.value.id;
+  String get _currentUserId =>
+      profileBaseController.userController.user.value.id;
 
   bool get _currentUserIsFollower =>
       profileBaseController.followersId.contains(_currentUserId);
 
   @override
   Future<void> onInit() async {
-    profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
     super.onInit();
+    profileBaseController = Get.find<ProfileBaseController>(tag: userId);
+
+    // Wait for profile base to finish loading before fetching trainings
+    if (profileBaseController.isLoading.value) {
+      await Future.doWhile(() async {
+        if (!profileBaseController.isLoading.value) return false;
+        await Future.delayed(const Duration(milliseconds: 50));
+        return true;
+      });
+    }
+
+    // Fetch immediately if user is ready
+    if (profileBaseController.user.value.id.isNotEmpty) {
+      await fetchAllTrainings();
+    }
+
+    // Keep reacting to user changes (e.g. after refresh)
     ever(profileBaseController.user, (user) {
-      if (user.id.isNotEmpty && trainingsList.isEmpty && !isLoading.value) {
+      if (user.id.isNotEmpty && !isLoading.value) {
         fetchAllTrainings();
       }
     });
   }
 
   bool _canView(TrainingModel training) {
-    final isOwnProfile = profileBaseController.isAuthUser;
-
-    if (isOwnProfile) return true;
+    if (profileBaseController.isAuthUser) return true;
 
     switch (training.visibility) {
       case TrainingVisibility.public:
         return true;
-
       case TrainingVisibility.private:
         return false;
-
       case TrainingVisibility.followers:
         return _currentUserIsFollower;
     }
@@ -57,14 +68,12 @@ class TrainingController extends GetxController {
       final result = await trainingRepository.fetchUserTrainingDetails(
         profileBaseController.user.value.id,
       );
-
       trainingsList.assignAll(result.where(_canView).toList());
-
-      isLoading.value = false;
       return trainingsList;
     } catch (e) {
-      isLoading.value = false;
       rethrow;
+    } finally {
+      isLoading.value = false;
     }
   }
 }

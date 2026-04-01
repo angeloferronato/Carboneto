@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-
 class TrainingDetailsScreen extends StatefulWidget {
   const TrainingDetailsScreen({super.key, required this.training});
 
@@ -74,6 +73,7 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(training.level.name);
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
 
     return Scaffold(
@@ -147,14 +147,12 @@ class _TrainingDetailsScreenState extends State<TrainingDetailsScreen>
             left: CbSizes.lg, right: CbSizes.lg, bottom: CbSizes.lg),
         decoration: const BoxDecoration(color: Colors.transparent),
         child: SizedBox(
-          height: 60,
-          child: CbPrimaryBtn(
-            label: 'Iniciar Treino', 
-            onPressed: () => _controller.showStartTrainingOptions(training, isDarkMode))
-        ),
+            height: 60,
+            child: CbPrimaryBtn(
+                label: 'Iniciar Treino',
+                onPressed: () => _controller.showStartTrainingOptions(
+                    training, isDarkMode))),
       ),
     );
   }
 }
-
-

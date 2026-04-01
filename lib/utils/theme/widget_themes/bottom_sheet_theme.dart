@@ -8,7 +8,7 @@ class CbBottomSheetTheme {
     showDragHandle: true,
     backgroundColor: CbColors.white,
     modalBackgroundColor: CbColors.white,
-    constraints: const BoxConstraints(minWidth: double.infinity),
+    constraints: const BoxConstraints(minWidth: double.infinity,),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
   );
 

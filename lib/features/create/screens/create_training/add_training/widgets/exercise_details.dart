@@ -100,17 +100,18 @@ class ExerciseDetailsScreen extends StatelessWidget {
                                       CbSizes.md,
                                   height: 500,
                                   child: VideoPlayerView(
+                                    key: const ValueKey('exercise_video'),
                                     url: exercise.video,
                                     isOverVideo: true,
                                     dataSourceType: DataSourceType.network,
                                   ),
                                 )
-                              // horizontal video
                               : SizedBox(
                                   width: CbHelperFunctions.screenWidth() -
                                       CbSizes.md,
                                   height: 250,
                                   child: VideoPlayerView(
+                                    key: const ValueKey('exercise_video'),
                                     url: exercise.video,
                                     isOverVideo: true,
                                     dataSourceType: DataSourceType.network,
@@ -123,9 +124,16 @@ class ExerciseDetailsScreen extends StatelessWidget {
                         color: Colors.transparent,
                         child: CbStatsCard(
                           isDarkMode: isDarkMode,
-                          leftIcon: exercise.type == 'reps'? CbImages.repsIcon : CbImages.clockIcon,
-                          leftValue: exercise.type == 'reps'? exercise.repetitions.toString() : CbHelperFunctions.formatDuration(exercise.duration, fullCase: true),
-                          leftLabel: exercise.type == 'reps' ? 'Repetições':'Duração',
+                          leftIcon: exercise.type == 'reps'
+                              ? CbImages.repsIcon
+                              : CbImages.clockIcon,
+                          leftValue: exercise.type == 'reps'
+                              ? exercise.repetitions.toString()
+                              : CbHelperFunctions.formatDuration(
+                                  exercise.duration,
+                                  fullCase: true),
+                          leftLabel:
+                              exercise.type == 'reps' ? 'Repetições' : 'Duração',
                           rightIcon: CbImages.peopleIcon,
                           rightLabel: 'Pessoa(s)',
                           rightValue: exercise.peopleCount.toString(),
@@ -193,9 +201,9 @@ class ExerciseDetailsScreen extends StatelessWidget {
                             textAlign: TextAlign.justify,
                             exercise.description,
                             style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 12),
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontSize: 12),
                           ),
                         ),
                       ],
@@ -214,12 +222,21 @@ class ExerciseDetailsScreen extends StatelessWidget {
 class ExercisePreviewController extends GetxController {
   static ExercisePreviewController get instance => Get.find();
 
-  final ExerciseModel exercise = Get.arguments as ExerciseModel;
+  // Cache the exercise immediately so it survives route changes
+  late final ExerciseModel exercise;
   final Rx<double?> aspectRatio = Rx<double?>(null);
 
   @override
   void onInit() {
     super.onInit();
+    // Read arguments once and cache — avoids null crash on fullscreen pop
+    final args = Get.arguments;
+    if (args is ExerciseModel) {
+      exercise = args;
+    } else {
+      // Fallback: try to find already-cached instance
+      exercise = ExercisePreviewController.instance.exercise;
+    }
     _detectOrientation();
   }
 

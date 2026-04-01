@@ -124,13 +124,15 @@ class TrainingHistoryModel {
 
 class ExerciseProgress {
   final String index;
+  final String name; // add this
   final String type;
   final int total;
-  final int remaining; // time
-  final int done; // reps
+  final int remaining;
+  final int done;
 
   ExerciseProgress({
     required this.index,
+    required this.name, // add this
     required this.type,
     required this.total,
     required this.remaining,
@@ -140,6 +142,7 @@ class ExerciseProgress {
   factory ExerciseProgress.fromMap(String index, Map<String, dynamic> map) {
     return ExerciseProgress(
       index: index,
+      name: map['Name'] ?? 'Exercício', // add this
       type: map['Type'],
       total: (map['Total'] ?? 0).toInt(),
       remaining: (map['Remaining'] ?? 0).toInt(),
@@ -149,6 +152,7 @@ class ExerciseProgress {
 
   Map<String, dynamic> toMap() {
     return {
+      'Name': name, // add this
       'Type': type,
       'Total': total,
       'Remaining': remaining,

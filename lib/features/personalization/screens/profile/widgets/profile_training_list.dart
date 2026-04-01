@@ -3,6 +3,7 @@ import 'package:carboneto/common/widgets/result/result_widget.dart';
 import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/edit_training/edit_training.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/content_list_shimmer.dart';
+import 'package:carboneto/features/personalization/screens/profile/widgets/private_account_state.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class ProfileTrainingsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final trainingController = Get.find<TrainingController>(tag: userId);
+    final trainingController = Get.find<TrainingController>(tag: userId); // ✅ tag: userId
 
     return Obx(() {
       final isLoading = trainingController.isLoading.value ||
@@ -31,7 +32,7 @@ class ProfileTrainingsList extends StatelessWidget {
       }
 
       if (isPrivate) {
-        return SliverToBoxAdapter(child: _PrivateAccountState());
+        return SliverToBoxAdapter(child: PrivateAccountState());
       }
 
       if (list.isEmpty) {
@@ -56,8 +57,6 @@ class ProfileTrainingsList extends StatelessWidget {
                       await Get.to(
                         () => EditTrainingScreen(training: list[index]),
                       );
-                      // Refresh list after returning from edit screen so cards
-                      // show latest training data from Firestore.
                       await trainingController.fetchAllTrainings();
                     },
                   ),
@@ -72,49 +71,7 @@ class ProfileTrainingsList extends StatelessWidget {
   }
 }
 
-class _PrivateAccountState extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          const SizedBox(height: 40),
-          IconButton(
-            iconSize: 70,
-            onPressed: () {},
-            icon: Icon(Iconsax.lock_circle, color: CbColors.buttonSecondary),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              children: [
-                Text(
-                  'Essa conta é privada.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: CbColors.buttonSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Siga este usuário para poder ver os treinos e exercícios criados por ele.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: CbColors.buttonSecondary,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState({required this.isAuthUser});

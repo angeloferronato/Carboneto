@@ -7,11 +7,12 @@ class CbProgressIndicator extends StatelessWidget {
       {super.key,
       required this.progress,
       required this.status,
+      this.simple = false,
       this.hasBg = false});
 
   final int? progress;
   final String status;
-  final bool hasBg;
+  final bool hasBg, simple;
 
 
   @override
@@ -21,9 +22,10 @@ class CbProgressIndicator extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          isCompleted ? 'CONCLUÍDO':'${progress.toString()}%',
+          simple? isCompleted ? 'CONCLUÍDO':'${progress.toString()}%':
+          isCompleted ? '${progress.toString()}% • CONCLUÍDO':'NÃO FINALIZADO • ${progress.toString()}%',
           style: TextStyle(
-            color: hasBg? CbColors.white : isCompleted ? CbColors.success : const Color.fromARGB(255, 167, 0, 245),
+            color: hasBg? CbColors.white : isCompleted ? CbColors.success : CbColors.warning,
             fontWeight: isCompleted? FontWeight.w500: FontWeight.w800,
             fontSize: 9,
             letterSpacing: 2,
@@ -38,8 +40,9 @@ class CbProgressIndicator extends StatelessWidget {
               padding: const EdgeInsets.only(left: 5),
               child: Icon(
                     Iconsax.activity,
+                    fontWeight: FontWeight.w800,
                     size: 14,
-                    color: hasBg? CbColors.white : const Color.fromARGB(255, 167, 0, 245),
+                    color: hasBg? CbColors.white : CbColors.warning,
                   ),
             ),
       ],

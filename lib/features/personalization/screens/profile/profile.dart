@@ -1,5 +1,6 @@
 import 'package:carboneto/features/personalization/controllers/profile_base_controller.dart/profile_base_controller.dart';
 import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
+import 'package:carboneto/features/personalization/screens/profile/profile_panel/profile_athlete_panel.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_header.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_tab_bar.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/profile_training_list.dart';
@@ -18,12 +19,21 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileTab _selectedTab = ProfileTab.treinos;
-
-  late final ProfileBaseController controller;
+  late ProfileBaseController controller;
 
   @override
   void initState() {
     super.initState();
+    _initControllers();
+  }
+
+  void _initControllers() {
+    if (Get.isRegistered<ProfileBaseController>(tag: widget.userId)) {
+      Get.delete<ProfileBaseController>(tag: widget.userId, force: true);
+    }
+    if (Get.isRegistered<TrainingController>(tag: widget.userId)) {
+      Get.delete<TrainingController>(tag: widget.userId, force: true);
+    }
 
     controller = Get.put(
       ProfileBaseController(userId: widget.userId),
@@ -37,9 +47,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    Get.delete<TrainingController>(tag: widget.userId, force: true);
+    Get.delete<ProfileBaseController>(tag: widget.userId, force: true);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
 
     return Scaffold(
@@ -60,12 +75,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Obx(() {
-                  final isCoach = controller.user.value.position == 'Coach'; 
+                  final isCoach = controller.user.value.position == 'Coach';
                   return Column(
                     children: [
                       ProfileTabBar(
                         selectedTab: _selectedTab,
-                        onTabChanged: (tab) => setState(() => _selectedTab = tab),
+                        onTabChanged: (tab) =>
+                            setState(() => _selectedTab = tab),
                         isCoach: isCoach,
                       ),
                       Container(
@@ -77,11 +93,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }),
               ),
             ),
+
             if (_selectedTab == ProfileTab.treinos)
               ProfileTrainingsList(userId: widget.userId),
 
             if (_selectedTab == ProfileTab.painel)
-              const SliverToBoxAdapter(child: SizedBox()),
+              SliverToBoxAdapter(
+                child: ProfileAthletePanel(userId: widget.userId),
+              ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 100)),
           ],

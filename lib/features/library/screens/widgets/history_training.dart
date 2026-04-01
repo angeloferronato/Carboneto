@@ -66,6 +66,7 @@ class HistoryTraining extends StatelessWidget {
                     progress: training.trainingProgress,
                     status: training.status,
                     hasBg: true,
+                    simple: true,
                   ),
                 ),
               ),

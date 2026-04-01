@@ -2,10 +2,8 @@ import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
-import 'package:carboneto/features/training/screens/training_finished/widgets/arc_painter.dart';
-import 'package:carboneto/features/training/screens/training_finished/widgets/exercise_badge.dart';
 import 'package:carboneto/features/training/screens/training_finished/widgets/ring.dart';
-import 'package:carboneto/features/training/screens/training_finished/widgets/stat_tile.dart';
+import 'package:carboneto/features/training/screens/training_finished/widgets/training_summary_widgets.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -102,6 +100,12 @@ class _TrainingFinishedScreenState extends State<TrainingFinishedScreen>
     return CbColors.error;
   }
 
+  List<ExerciseRowData> get _exerciseRows =>
+      widget.training.exercises.asMap().entries.map((e) {
+        final data = _perExercise[e.key.toString()] as Map<String, dynamic>? ?? {};
+        return ExerciseRowData.fromStatsMap(e.value.title, data);
+      }).toList();
+
   @override
   void initState() {
     super.initState();
@@ -162,11 +166,33 @@ class _TrainingFinishedScreenState extends State<TrainingFinishedScreen>
                     const SizedBox(height: 24),
                     _buildHeader(colors),
                     const SizedBox(height: 32),
-                    _buildArcHero(colors),
+                    TrainingSummaryArc(
+                      colors: colors,
+                      arcProgress: _arcProgress,
+                      size: 200,
+                      fontSize: 52,
+                    ),
                     const SizedBox(height: 28),
-                    _buildStatStrip(colors),
+                    TrainingSummaryStatStrip(
+                      colors: colors,
+                      staggerAnimation: _staggerCtrl,
+                      items: [
+                        StatData(label: 'Duração',    value: _elapsedFormatted,  icon: Icons.timer_rounded),
+                        StatData(label: 'Exercícios', value: '$_totalExercises', icon: Icons.fitness_center_rounded),
+                        if (_hasRepsExercises)
+                          StatData(label: 'Eficiência', value: '$_efficiencyPct%', icon: Icons.percent_rounded, accent: _efficiencyColor),
+                      ],
+                    ),
                     const SizedBox(height: 22),
-                    _buildBreakdown(colors),
+                    TrainingSummaryBreakdown(
+                      colors: colors,
+                      exercises: _exerciseRows,
+                      slideAnimation: _staggerCtrl,
+                      headerTrailing: Text(
+                        '$_totalExercises concluídos',
+                        style: TextStyle(fontSize: 12, color: CbColors.primary, fontWeight: FontWeight.w600),
+                      ),
+                    ),
                     const SizedBox(height: 22),
                     _buildFeedback(colors),
                     const SizedBox(height: 28),
@@ -227,177 +253,6 @@ class _TrainingFinishedScreenState extends State<TrainingFinishedScreen>
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildArcHero(ThemeColors colors) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([_arcCtrl, _entranceCtrl]),
-      builder: (_, __) => Opacity(
-        opacity: _fadeIn.value,
-        child: SizedBox(
-          height: 200,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: 200, height: 200,
-                child: CustomPaint(
-                  painter: ArcPainter(
-                    progress: _arcProgress.value,
-                    trackColor: colors.arcTrack,
-                    progressColor: CbColors.primary,
-                    glowColor: CbColors.primary.withValues(alpha: 0.4),
-                  ),
-                ),
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${(_arcProgress.value * 100).round()}%',
-                    style: TextStyle(fontSize: 52, fontWeight: FontWeight.w900, color: colors.onSurface, letterSpacing: -2, height: 1.0),
-                  ),
-                  const SizedBox(height: 4),
-                  Text('conclusão', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.subtle, letterSpacing: 0.8)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatStrip(ThemeColors colors) {
-    final items = [
-      StatData(label: 'Duração',    value: _elapsedFormatted,  icon: Icons.timer_rounded),
-      StatData(label: 'Exercícios', value: '$_totalExercises', icon: Icons.fitness_center_rounded),
-      if (_hasRepsExercises)
-        StatData(label: 'Eficiência', value: '$_efficiencyPct%', icon: Icons.percent_rounded, accent: _efficiencyColor),
-    ];
-
-    return AnimatedBuilder(
-      animation: _staggerCtrl,
-      builder: (_, __) => Row(
-        children: items.asMap().entries.map((e) {
-          final delay = e.key * 0.15;
-          final t     = ((_staggerCtrl.value - delay) / (1.0 - delay)).clamp(0.0, 1.0);
-          final curve = Curves.easeOutBack.transform(t);
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: e.key < items.length - 1 ? 10 : 0),
-              child: Opacity(
-                opacity: t,
-                child: Transform.translate(
-                  offset: Offset(0, 30 * (1 - curve)),
-                  child: StatTile(data: e.value, colors: colors),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Widget _buildBreakdown(ThemeColors colors) {
-    return AnimatedBuilder(
-      animation: _staggerCtrl,
-      builder: (_, child) => Opacity(
-        opacity: Curves.easeOut.transform(_staggerCtrl.value.clamp(0.0, 1.0)),
-        child: Transform.translate(offset: Offset(0, 20 * (1 - _staggerCtrl.value)), child: child),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: [BoxShadow(color: colors.cardShadow, blurRadius: 24, offset: const Offset(0, 6))],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
-              child: Row(
-                children: [
-                  Text('Exercícios', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: colors.onSurface, letterSpacing: -0.3)),
-                  const Spacer(),
-                  Text('$_totalExercises concluídos', style: TextStyle(fontSize: 12, color: CbColors.primary, fontWeight: FontWeight.w600)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-            ...widget.training.exercises.asMap().entries.map((entry) {
-              final i      = entry.key;
-              final ex     = entry.value;
-              final data   = _perExercise[i.toString()] as Map<String, dynamic>?;
-              final isLast = i == widget.training.exercises.length - 1;
-
-              String detail   = '—';
-              double progress = 1.0;
-
-              if (data != null) {
-                switch (data['Type']) {
-                  case 'reps':
-                    final done  = (data['Done']  as int?) ?? 0;
-                    final total = (data['Total'] as int?) ?? 1;
-                    detail   = '$done/$total reps';
-                    progress = total > 0 ? (done / total).clamp(0.0, 1.0) : 1.0;
-                  case 'time':
-                    final total     = (data['Total']     as int?) ?? 0;
-                    final remaining = (data['Remaining'] as int?) ?? 0;
-                    final done      = total - remaining;
-                    final tm        = (total ~/ 60).toString().padLeft(2, '0');
-                    detail   = '${_fmt(done)} / ${tm}m';
-                    progress = total > 0 ? (done / total).clamp(0.0, 1.0) : 1.0;
-                  default:
-                    detail = 'Livre';
-                }
-              }
-
-              final isComplete = progress >= 1.0;
-              final rowColor   = isComplete ? CbColors.primary : Colors.orange;
-
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-                    child: Row(
-                      children: [
-                        ExerciseBadge(index: i, isComplete: isComplete, colors: colors),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(ex.title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colors.onSurface), maxLines: 1, overflow: TextOverflow.ellipsis),
-                              const SizedBox(height: 6),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: LinearProgressIndicator(
-                                  value: progress,
-                                  minHeight: 3,
-                                  backgroundColor: colors.progressTrack,
-                                  valueColor: AlwaysStoppedAnimation<Color>(rowColor),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Text(detail, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: rowColor)),
-                      ],
-                    ),
-                  ),
-                  if (!isLast) Divider(height: 1, indent: 66, endIndent: 20, color: colors.divider),
-                ],
-              );
-            }),
-            const SizedBox(height: 8),
-          ],
         ),
       ),
     );
@@ -500,37 +355,4 @@ class _TrainingFinishedScreenState extends State<TrainingFinishedScreen>
       ),
     );
   }
-
-  String _fmt(int seconds) =>
-      '${(seconds ~/ 60).toString().padLeft(2, '0')}:${(seconds % 60).toString().padLeft(2, '0')}';
 }
-
-class StatData {
-  const StatData({required this.label, required this.value, required this.icon, this.accent});
-  final String   label;
-  final String   value;
-  final IconData icon;
-  final Color?   accent;
-}
-
-class ThemeColors {
-  const ThemeColors(this.isDark);
-  final bool isDark;
-
-  Color get bg            => isDark ? const Color(0xFF0A0A0A) : const Color(0xFFF0F0F3);
-  Color get surface       => isDark ? const Color(0xFF161616) : Colors.white;
-  Color get onSurface     => isDark ? Colors.white            : const Color(0xFF0D0D0D);
-  Color get subtle        => isDark ? Colors.white38          : Colors.black38;
-  Color get chipBg        => isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05);
-  Color get arcTrack      => isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.07);
-  Color get progressTrack => isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.07);
-  Color get divider       => isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05);
-  Color get cardShadow    => Colors.black.withValues(alpha: isDark ? 0.35 : 0.06);
-}
-
-
-
-
-
-
-

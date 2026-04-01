@@ -4,6 +4,7 @@ import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class TrainingTagsRow extends StatelessWidget {
   const TrainingTagsRow({
@@ -24,7 +25,7 @@ class TrainingTagsRow extends StatelessWidget {
         children: [
           const SizedBox(width: CbSizes.defaultSpace),
           CbTipChipTraining(
-            text: training.textLevel ?? '',
+            text: TrainingModel.parseLevelToString(training.level).capitalizeFirst ?? '',
             textColor: CbHelperFunctions
                 .parseLevelStyle(context, training.level)['difficultyColorTxt'],
             color: CbHelperFunctions

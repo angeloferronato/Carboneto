@@ -1,10 +1,7 @@
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
-import 'package:carboneto/features/personalization/models/user_model.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/features/settings/controllers/follow_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/enums.dart';
-import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

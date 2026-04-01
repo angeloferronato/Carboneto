@@ -1,9 +1,9 @@
-import 'package:carboneto/features/training/screens/training_finished/training_finished.dart';
+import 'package:carboneto/features/training/screens/training_finished/widgets/training_summary_widgets.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-class StatTile extends StatelessWidget {
-  const StatTile({super.key, required this.data, required this.colors});
+class SummaryStatTile extends StatelessWidget {
+  const SummaryStatTile({super.key, required this.data, required this.colors});
   final StatData    data;
   final ThemeColors colors;
 

@@ -1,13 +1,17 @@
+import 'package:carboneto/features/library/controllers/history_controller.dart';
 import 'package:carboneto/features/library/models/history_model.dart';
 import 'package:carboneto/features/library/screens/history_screen/widgets/history_result.dart';
 import 'package:carboneto/features/library/services/history_formatter.dart';
+import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HistoryTimeline extends StatelessWidget {
   final List<TrainingHistoryModel> items;
 
   const HistoryTimeline({super.key, required this.items});
+  HistoryController get _historyController => Get.find<HistoryController>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +25,20 @@ class HistoryTimeline extends StatelessWidget {
 
       flatItems.add(_DayHeader(date: date));
       for (final t in dayItems) {
-        flatItems.add(HistoryResult(historyTraining: t));
+        flatItems.add(HistoryResult(
+          historyTraining: t,
+          onTap: () async {
+            final trainingHandle = await _historyController
+                .handleTrainingHistoryDetails(t.trainingId);
+
+            if (trainingHandle == null) {
+              Get.snackbar('Erro', 'Treino não encontrado');
+              return;
+            }
+
+            Get.to(() => TrainingDetailsScreen(training: trainingHandle));
+          },
+        ));
       }
     }
 

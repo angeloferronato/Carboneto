@@ -24,32 +24,24 @@ class HistoryResult extends StatelessWidget {
     super.key,
     required this.historyTraining,
     this.views,
+    required this.onTap,
+    this.hideOptions = false,
   });
 
   final TrainingHistoryModel historyTraining;
   final int? views;
-
-  HistoryController get _historyController => Get.find<HistoryController>();
+  final bool hideOptions;
+  final Future<void> Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        final trainingHandle = await _historyController
-            .handleTrainingHistoryDetails(historyTraining.trainingId);
-
-        if (trainingHandle == null) {
-          Get.snackbar('Erro', 'Treino não encontrado');
-          return;
-        }
-
-        Get.to(() => TrainingDetailsScreen(training: trainingHandle));
-      },
+      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Imagem do treino com views e menu
-          HistoryResultMain(historyTraining: historyTraining),
+          HistoryResultMain(historyTraining: historyTraining, hideOptions: hideOptions,),
 
           const SizedBox(height: CbSizes.xs * 2.5),
 
@@ -108,7 +100,8 @@ class HistoryResult extends StatelessWidget {
                     // Changed from Flexible to Expanded to give more space
                     Expanded(
                       child: Text(
-                        CbHelperFunctions.formatDuration(historyTraining.trainingDuration),
+                        CbHelperFunctions.formatDuration(
+                            historyTraining.trainingDuration),
                         style: const TextStyle(fontSize: 10),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -164,62 +157,63 @@ class HistoryResultMain extends StatelessWidget {
           ),
 
           // Three dots menu - top right
-          Positioned(
-            top: 8,
-            right: 8,
-            child: GestureDetector(
-              onTap: () {
-                // Default behavior - show options menu
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => Container(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: const Icon(Iconsax.trash),
-                          title: const Text('Remover do histórico'),
-                          onTap: () {
-                            Navigator.pop(context);
+          if (hideOptions == false)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: () {
+                  // Default behavior - show options menu
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) => Container(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Iconsax.trash),
+                            title: const Text('Remover do histórico'),
+                            onTap: () {
+                              Navigator.pop(context);
 
-                            controller.removeTrainingFromHistory(
-                                historyTraining.id,
-                                userController.user.value.id);
-                            CbLoaders.successSnackBar(
-                                title:
-                                    'Treino removido do seu histórico de treinos.');
-                            // Add share logic
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.share),
-                          title: const Text('Compartilhar'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            // Add share logic
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.report_outlined),
-                          title: const Text('Reportar'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            // Add report logic
-                          },
-                        ),
-                      ],
+                              controller.removeTrainingFromHistory(
+                                  historyTraining.id,
+                                  userController.user.value.id);
+                              CbLoaders.successSnackBar(
+                                  title:
+                                      'Treino removido do seu histórico de treinos.');
+                              // Add share logic
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.share),
+                            title: const Text('Compartilhar'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              // Add share logic
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.report_outlined),
+                            title: const Text('Reportar'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              // Add report logic
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: Icon(
-                Icons.more_horiz,
-                color: CbColors.white,
-                size: 30,
+                  );
+                },
+                child: Icon(
+                  Icons.more_horiz,
+                  color: CbColors.white,
+                  size: 30,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

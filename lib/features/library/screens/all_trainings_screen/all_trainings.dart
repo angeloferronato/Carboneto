@@ -35,7 +35,6 @@ class AllTrainingsScreen extends StatelessWidget {
                 vertical: 20,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
@@ -45,6 +44,7 @@ class AllTrainingsScreen extends StatelessWidget {
                     },
                     child: const Icon(Icons.arrow_back),
                   ),
+                  SizedBox(width: 20,),
                   Text(
                     'Meus Treinos',
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -52,11 +52,6 @@ class AllTrainingsScreen extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                   ),
-                  const SizedBox(width: 20),
-                  const Icon(
-                    Iconsax.search_normal_1,
-                    size: 20,
-                  )
                 ],
               ),
             ),

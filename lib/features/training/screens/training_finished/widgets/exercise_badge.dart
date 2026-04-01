@@ -1,9 +1,9 @@
-import 'package:carboneto/features/training/screens/training_finished/training_finished.dart';
+import 'package:carboneto/features/training/screens/training_finished/widgets/training_summary_widgets.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseBadge extends StatelessWidget {
-  const ExerciseBadge({required this.index, required this.isComplete, required this.colors});
+  const ExerciseBadge({super.key, required this.index, required this.isComplete, required this.colors});
   final int          index;
   final bool         isComplete;
   final ThemeColors colors;

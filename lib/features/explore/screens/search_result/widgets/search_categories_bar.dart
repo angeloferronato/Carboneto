@@ -14,8 +14,8 @@ class SearchCategoriesBar extends StatelessWidget {
 
   static final List<String> _categories = [
     'Melhores',
-    'Treinos',
     'Usuários',
+    'Treinos',
     'Exercícios',
     ...CategoryMapper.mainCategories,
   ];

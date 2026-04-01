@@ -11,9 +11,8 @@ class SearchEmptyState extends StatelessWidget {
       hasScrollBody: false,
       child: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 100),
+            SizedBox(height: 80),
             EmptyData(
               icon: Iconsax.search_normal_1,
               iconSize: 60,
