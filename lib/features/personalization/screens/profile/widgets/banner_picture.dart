@@ -14,16 +14,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-
 class BannerWithPicture extends StatelessWidget {
-  const BannerWithPicture({super.key, required this.userId,});
+  const BannerWithPicture({
+    super.key,
+    required this.userId,
+  });
   final String userId;
 
   @override
   Widget build(BuildContext context) {
-    final EditProfileController editProfileController = Get.put(EditProfileController());
+    final EditProfileController editProfileController =
+        Get.put(EditProfileController());
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
-    final profileBaseController = Get.put(ProfileBaseController(userId: userId), tag: userId);
+
+    if (!Get.isRegistered<ProfileBaseController>(tag: userId)) {
+      return const SizedBox.shrink();
+    }
+    final profileBaseController = Get.find<ProfileBaseController>(tag: userId);
     final screenWidth = MediaQuery.of(context).size.width;
     final bannerHeight = screenWidth * 0.6;
     final avatarRadius = screenWidth * 0.21;
@@ -33,26 +40,29 @@ class BannerWithPicture extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         ShaderMask(
-          shaderCallback: (rect) {
-            return LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.black, Colors.transparent],
-              stops: isDarkMode ? [0.1, 0.9] : [0.1, 1.0],
-            ).createShader(rect);
-          },
-          blendMode: BlendMode.dstIn,
-          child: Obx(
-            () => CbRoundedImage(
-              imageUrl: !(profileBaseController.profileLoading) && profileBaseController.user.value.banner.isNotEmpty ? profileBaseController.user.value.banner : CbImages.bannerDefault ,
-              isNetworkImage: profileBaseController.user.value.banner.isNotEmpty && !(profileBaseController.profileLoading),
-              width: double.infinity,
-              height: bannerHeight,
-              fit: BoxFit.cover,
-            ),
-          )
-            
-        ),
+            shaderCallback: (rect) {
+              return LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.black, Colors.transparent],
+                stops: isDarkMode ? [0.1, 0.9] : [0.1, 1.0],
+              ).createShader(rect);
+            },
+            blendMode: BlendMode.dstIn,
+            child: Obx(
+              () => CbRoundedImage(
+                imageUrl: !(profileBaseController.profileLoading) &&
+                        profileBaseController.user.value.banner.isNotEmpty
+                    ? profileBaseController.user.value.banner
+                    : CbImages.bannerDefault,
+                isNetworkImage:
+                    profileBaseController.user.value.banner.isNotEmpty &&
+                        !(profileBaseController.profileLoading),
+                width: double.infinity,
+                height: bannerHeight,
+                fit: BoxFit.cover,
+              ),
+            )),
         Positioned(
           bottom: -avatarRadius / 2,
           child: Container(
@@ -65,7 +75,8 @@ class BannerWithPicture extends StatelessWidget {
               () => !profileBaseController.profileLoading
                   ? (profileBaseController.user.value.profilePicture != ''
                       ? CbRoundedImage(
-                          imageUrl: profileBaseController.user.value.profilePicture,
+                          imageUrl:
+                              profileBaseController.user.value.profilePicture,
                           isNetworkImage: true,
                           borderRadius: avatarRadius,
                           width: 180,
@@ -85,44 +96,41 @@ class BannerWithPicture extends StatelessWidget {
             ),
           ),
         ),
-
         Obx(
-          () => profileBaseController.isAuthUser 
-          ? Positioned(
-            top: 40,
-            right: 16,
-            child: IconButton(
-              icon: Icon(
-                CupertinoIcons.settings,
-                color: Colors.white, size: screenWidth * 0.07
-              ),
-              onPressed: () => Get.to(SettingsScreen()),
-            ),
-          )
-          : SizedBox(),
+          () => profileBaseController.isAuthUser
+              ? Positioned(
+                  top: 40,
+                  right: 16,
+                  child: IconButton(
+                    icon: Icon(CupertinoIcons.settings,
+                        color: Colors.white, size: screenWidth * 0.07),
+                    onPressed: () => Get.to(SettingsScreen()),
+                  ),
+                )
+              : SizedBox(),
         ),
-
         Obx(
-          () => profileBaseController.isAuthUser 
-          ? Positioned(
-            top: 40,
-            left: 16,
-            child: IconButton(
-              icon: Icon(
-                Icons.camera_alt_rounded,
-                color: Colors.white, size: screenWidth * 0.06
-              ),
-              onPressed: () => editProfileController.sendToConfirmScreen(ConfirmBannerUploadScreen(), UploadImageFormat.banner),
-            ),
-          )
-          : Positioned(
-            top: 40,
-            left: CbSizes.sm,
-            child: IconButton(
-              onPressed: () => Get.back(), 
-              icon: Icon(Iconsax.arrow_left, color: CbColors.white,)
-            ),
-          ),
+          () => profileBaseController.isAuthUser
+              ? Positioned(
+                  top: 40,
+                  left: 16,
+                  child: IconButton(
+                    icon: Icon(Icons.camera_alt_rounded,
+                        color: Colors.white, size: screenWidth * 0.06),
+                    onPressed: () => editProfileController.sendToConfirmScreen(
+                        ConfirmBannerUploadScreen(), UploadImageFormat.banner),
+                  ),
+                )
+              : Positioned(
+                  top: 40,
+                  left: CbSizes.sm,
+                  child: IconButton(
+                      onPressed: () => Get.back(),
+                      icon: Icon(
+                        Iconsax.arrow_left,
+                        color: CbColors.white,
+                      )),
+                ),
         ),
       ],
     );

@@ -13,7 +13,6 @@ import 'package:carboneto/features/create/screens/create_training/widgets/square
 import 'package:carboneto/features/create/screens/create_training/widgets/tag_selector.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/training_visibility_sector.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
@@ -64,7 +63,7 @@ class CreateTraining extends StatelessWidget {
                 CreateForm(
                   controller: controller.title,
                   label: 'Titulo',
-                  hintText: 'Como arremessar igual ao Stephen Curry',
+                  hintText: 'Escreva aqui o titulo do seu treino.',
                   validateEmpty: 'Título do treino',
                   maxLength: 80,
                 ),
@@ -73,7 +72,7 @@ class CreateTraining extends StatelessWidget {
                 CreateForm(
                   controller: controller.description,
                   label: 'Descrição',
-                  hintText: 'Quer arremessar como um dos maiores arremessadores da história da NBA? Neste treino, detalhamos a rotina de treino característica de Steph Curry em uma sessão completa de treinamento.',
+                  hintText: 'Escreva aqui a descrição do seu treino.',
                   validateEmpty: 'Descrição do treino',
                   maxLines: 5,
                   maxLength: 200,

@@ -43,7 +43,7 @@ class CreateTrainingController extends GetxController {
   final DifficultyLevelSelectorController difficultyLevelSelectorController =
       Get.put(DifficultyLevelSelectorController());
     
-  final Rx<TrainingVisibility> visibility = TrainingVisibility.followers.obs;
+  final Rx<TrainingVisibility> visibility = TrainingVisibility.public.obs;
 
   void setVisibility(TrainingVisibility value) {
     visibility.value = value;

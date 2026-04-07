@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carboneto/common/widgets/result/empty_data.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercise_item.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ExercisesList extends StatelessWidget {
   const ExercisesList({super.key, this.tag});
@@ -24,7 +25,16 @@ class ExercisesList extends StatelessWidget {
 
       if (controller.filteredExercises.isEmpty) {
         return const SliverFillRemaining(
-          child: Center(child: EmptyData()),
+          child: Center(child: Column(
+            children: [
+              SizedBox(height: 100,),
+              EmptyData(
+                mainLabel: 'Exercício não encontrado',
+                secondaryLabel: 'Nenhum resultado. Tente outro termo',
+                icon: Iconsax.search_normal_1,
+              ),
+            ],
+          )),
         );
       }
 

@@ -27,7 +27,6 @@ class TrainingController extends GetxController {
     super.onInit();
     profileBaseController = Get.find<ProfileBaseController>(tag: userId);
 
-    // Wait for profile base to finish loading before fetching trainings
     if (profileBaseController.isLoading.value) {
       await Future.doWhile(() async {
         if (!profileBaseController.isLoading.value) return false;
@@ -36,14 +35,14 @@ class TrainingController extends GetxController {
       });
     }
 
-    // Fetch immediately if user is ready
     if (profileBaseController.user.value.id.isNotEmpty) {
       await fetchAllTrainings();
     }
 
-    // Keep reacting to user changes (e.g. after refresh)
+    String lastFetchedUserId = profileBaseController.user.value.id;
     ever(profileBaseController.user, (user) {
-      if (user.id.isNotEmpty && !isLoading.value) {
+      if (user.id.isNotEmpty && user.id != lastFetchedUserId && !isLoading.value) {
+        lastFetchedUserId = user.id;
         fetchAllTrainings();
       }
     });

@@ -1,5 +1,6 @@
 import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,12 @@ class _CbCountrySelectorState extends State<CbCountrySelector> {
           onTap: () {
             showCountryPicker(
               context: context,
+              countryListTheme: CountryListThemeData(
+                backgroundColor: CbColors.dark,
+                bottomSheetHeight: 600,
+              ),
+              showSearch: false,
+              favorite: ['BR', 'US', 'PT'],
               onSelect: (Country country) {
                 setState(() => _selectedCountry = country);
                 editProfileController.changeCode(country.countryCode);
@@ -50,7 +57,7 @@ class _CbCountrySelectorState extends State<CbCountrySelector> {
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(50),
               border: Border.all(
                 color: const Color(0xFF223142),
                 width: 1,

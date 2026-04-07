@@ -36,6 +36,7 @@ class ExploreRepository extends GetxController {
         if (subCategoryTitle.isEmpty || imageUrl.isEmpty) continue;
 
         final Map<String, String> subCategoryMap = {
+          'id': doc.id,
           'title': subCategoryTitle,
           'image': imageUrl,
         };

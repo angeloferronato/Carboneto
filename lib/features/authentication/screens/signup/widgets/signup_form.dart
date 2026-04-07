@@ -1,3 +1,4 @@
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/login/login_no_account_text.dart';
 import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
@@ -141,10 +142,11 @@ class _SignUpFormState extends State<SignUpForm> {
         SizedBox(height: CbSizes.spaceBtwSections),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
+          child: CbPrimaryBtn(
+            label: CbTexts.createAccountTitle, 
             onPressed: () => controller.signup(),
-            child: Text(CbTexts.createAccountTitle),
-          ),
+            paddingV: 20,
+          )
         ),
         SizedBox(height: CbSizes.spaceBtwSections),
         LoginNoAccountText(

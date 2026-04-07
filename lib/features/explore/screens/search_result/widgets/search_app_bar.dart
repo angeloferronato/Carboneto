@@ -34,7 +34,7 @@ class SearchAppBar extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: SearchInput(
-                placeholder: 'treino de arremesso',
+                placeholder: 'Pesquisar',
                 controller: controller.searchTextController,
                 onSubmitted: controller.search,
                 onSearchPressed: () =>

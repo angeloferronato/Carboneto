@@ -1,4 +1,5 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
 import 'package:carboneto/features/personalization/controllers/date_picker/date_picker_controller.dart';
@@ -92,16 +93,7 @@ class _AccountSettingsState extends State<AccountSettings> {
                             onTap: () => datePickerController.showDatePickerAction(controller.birthDate),
                           ),
                           SizedBox(height: 20,),
-                          ElevatedButton(
-                            onPressed: () => controller.updateUserDetails(),
-                            style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
-                            child: Text(
-                              'Salvar Alterações',
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ),
-                          ),
+                          CbPrimaryBtn(label: 'Salvar Alterações', onPressed: () => controller.updateUserDetails())
                         ],
                       )
                   ),

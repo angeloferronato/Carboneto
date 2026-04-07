@@ -1,11 +1,8 @@
 import 'package:carboneto/common/widgets/buttons/filter_button.dart';
 import 'package:carboneto/common/widgets/chips/cb_chip.dart';
-// Importe o controller atualizado
 import 'package:carboneto/features/create/controllers/categories_controller.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:carboneto/utils/constants/colors.dart';
 
 class CategoriesBar extends StatelessWidget {
   const CategoriesBar({
@@ -26,7 +23,6 @@ class CategoriesBar extends StatelessWidget {
     final controller = Get.put(
         CategoriesController(initialCategories: customCategories),
         tag: controllerTag);
-    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
 
     if (onSelect != null) {
       controller.onCategorySelected = onSelect;
@@ -42,7 +38,6 @@ class CategoriesBar extends StatelessWidget {
                   : const Row(children: [FilterButton(), SizedBox(width: 8)]),
               ...controller.categories.map((category) {
                 final isSelected = controller.isSelected(category);
-                final isSpecial = category == 'For you';
 
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),

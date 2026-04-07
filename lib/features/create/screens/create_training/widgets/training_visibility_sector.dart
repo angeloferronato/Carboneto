@@ -10,7 +10,6 @@ class TrainingVisibilitySelector extends StatelessWidget {
 
   final String? tag;
 
-  // Resolves whichever controller is active
   (Rx<TrainingVisibility>, void Function(TrainingVisibility)) _resolve() {
     if (tag != null) {
       final c = Get.find<EditTrainingController>(tag: tag);

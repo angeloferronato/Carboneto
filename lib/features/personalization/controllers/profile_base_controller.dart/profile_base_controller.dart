@@ -12,13 +12,19 @@ class ProfileBaseController extends GetxController {
   late ProfileSearchController profileSearchController;
   final Rx<UserModel> user = UserModel.empty().obs;
   final RxBool isLoading = false.obs;
-  final FollowRepository followRepository = Get.find();
+  late FollowRepository followRepository;
   final RxList<String> followersId = <String>[].obs;
   final RxList<String> followingId = <String>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+
+    if (!Get.isRegistered<FollowRepository>()) {
+      Get.put(FollowRepository());
+    }
+    followRepository = Get.find<FollowRepository>();
+
     userController = Get.put(UserController());
     profileSearchController = Get.put(
       ProfileSearchController(userId: userId),
@@ -30,37 +36,30 @@ class ProfileBaseController extends GetxController {
   Future<void> _init() async {
     isLoading.value = true;
 
-    // Wait for the relevant user data to finish loading
     if (isAuthUser) {
-      // Wait until UserController finishes fetching
       if (userController.profileLoading.value) {
         await _waitUntilFalse(userController.profileLoading);
       }
     } else {
-      // Wait until ProfileSearchController finishes fetching
       if (profileSearchController.profileLoading.value) {
         await _waitUntilFalse(profileSearchController.profileLoading);
       }
     }
 
-    // Now sync user data after fetch is complete
     syncUser();
 
-    // Fetch follow relations
     final result = await followRepository.loadRelations(userId);
     followersId.value = result[0];
     followingId.value = result[1];
 
     isLoading.value = false;
 
-    // Keep syncing reactively after initial load
     everAll(
       [userController.user, profileSearchController.user],
       (_) => syncUser(),
     );
   }
 
-  /// Waits until an RxBool becomes false (i.e. loading finishes)
   Future<void> _waitUntilFalse(RxBool flag) async {
     await Future.doWhile(() async {
       if (!flag.value) return false;
@@ -74,7 +73,6 @@ class ProfileBaseController extends GetxController {
         ? userController.user.value
         : profileSearchController.user.value;
 
-    // Only update if we actually have data
     if (resolved.id.isNotEmpty) {
       user.value = resolved;
     }

@@ -37,6 +37,7 @@ class CategoryMapper {
     "In and Out": "Controle de Bola",
     "Spin Move": "Controle de Bola",
     "Drible": "Controle de Bola",
+    "Ballhandling": "Controle de Bola",
 
     "Defesa": "Defesa",
     "Box Out": "Defesa",

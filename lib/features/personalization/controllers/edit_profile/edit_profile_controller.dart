@@ -21,11 +21,15 @@ class EditProfileController extends GetxController {
   final Rx<String> countryCode = ''.obs;
   Rx<Country>? userCountry = Country.parse('br').obs;
   final GlobalKey<FormState> editProfileFormKey = GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController(text: 'Carregando...');
-  final TextEditingController descriptionController = TextEditingController(text: 'Carregando...');
-  final PositionSelectorController positionSelectorController = Get.put(PositionSelectorController());
+  final TextEditingController nameController =
+      TextEditingController(text: 'Carregando...');
+  final TextEditingController descriptionController =
+      TextEditingController(text: 'Carregando...');
+  final PositionSelectorController positionSelectorController =
+      Get.put(PositionSelectorController());
   final UserRepository userRepository = Get.put(UserRepository());
-  final UploadImageController uploadImageController = Get.put(UploadImageController());
+  final UploadImageController uploadImageController =
+      Get.put(UploadImageController());
   final UserController userController = Get.put(UserController());
 
   void changeCode(String newCode) {
@@ -35,55 +39,60 @@ class EditProfileController extends GetxController {
 
   Future<void> updateUserDetails() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações...', CbImages.loadingAnimation);
-      
-      // Check internet connectivity
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos atualizando suas informações...', CbImages.loadingAnimation);
+
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
+        CbFullScreenLoader.stopLoading();
         return;
       }
 
-      // Form Validation
       if (!editProfileFormKey.currentState!.validate()) {
         CbFullScreenLoader.stopLoading();
         return;
       }
 
-      if (positionSelectorController.dropDownValue == positionSelectorController.dropDownList.first) {
+      if (positionSelectorController.dropDownValue ==
+          positionSelectorController.dropDownList.first) {
         CbFullScreenLoader.stopLoading();
-        CbLoaders.warningSnackBar(title: 'Erro na escolha da posição', message: 'Você deve escolher uma posição para continuar com a alteração!');
+        CbLoaders.warningSnackBar(
+            title: 'Erro na escolha da posição',
+            message:
+                'Você deve escolher uma posição para continuar com a alteração!');
         return;
       }
 
       final user = UserController.instance.user.value;
       final updatedUser = UserModel(
         userTrainings: user.userTrainings,
-        id: user.id, 
-        username: user.username, 
-        email: user.email, 
-        name: nameController.text.trim(), 
-        profilePicture: user.profilePicture, 
-        description: descriptionController.text.trim(), 
-        position: positionSelectorController.dropDownValue, 
-        countryCode: countryCode.value != '' ?  countryCode.value : user.countryCode,
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        name: nameController.text.trim(),
+        profilePicture: user.profilePicture,
+        description: descriptionController.text.trim(),
+        position: positionSelectorController.dropDownValue,
+        countryCode:
+            countryCode.value != '' ? countryCode.value : user.countryCode,
         isVerified: user.isVerified,
         birthDate: user.birthDate,
-        isPrivate: user.isPrivate, 
+        isPrivate: user.isPrivate,
         banner: user.banner,
       );
 
-      userRepository.updateUserDetails(updatedUser);
+      await userRepository.updateUserDetails(updatedUser);
+      await userController.fetchUserDetails();
 
-      // Remove Loader
       CbFullScreenLoader.stopLoading();
-
-      CbLoaders.successSnackBar(title: 'Perfil Atualizado!', message: 'Seu perfil foi atualizado com sucesso! Agora é só desfrutar o Carboneto!');
+      CbLoaders.successSnackBar(
+          title: 'Perfil Atualizado!',
+          message: 'Seu perfil foi atualizado com sucesso!');
 
       Get.offAll(() => HomeMenu());
       final homeMenuController = Get.put(HomeMenuController());
       homeMenuController.selectedIndex.value = 4;
-
-    } catch(e) {
+    } catch (e) {
       CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
     }
@@ -91,7 +100,9 @@ class EditProfileController extends GetxController {
 
   Future<void> uploadProfileImageToFirebase() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos atualizando sua foto de perfil...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos atualizando sua foto de perfil...',
+          CbImages.loadingAnimation);
 
       // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -99,24 +110,31 @@ class EditProfileController extends GetxController {
         return;
       }
 
-      final compressedImage = await uploadImageController.compressImage(uploadImageController.selectedFile.value!, reduceSize: true);
-      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(compressedImage ?? File(''));
+      final compressedImage = await uploadImageController.compressImage(
+          uploadImageController.selectedFile.value!,
+          reduceSize: true);
+      final newUrl = await TrainingRepository.instance
+          .uploadImageToFirebase(compressedImage ?? File(''));
 
-      if (userController.user.value.profilePicture.isNotEmpty && await TrainingRepository.instance.imageExists(userController.user.value.profilePicture)) {
-        await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.profilePicture);
+      if (userController.user.value.profilePicture.isNotEmpty &&
+          await TrainingRepository.instance
+              .imageExists(userController.user.value.profilePicture)) {
+        await TrainingRepository.instance
+            .deleteImageFromFirebase(userController.user.value.profilePicture);
       }
 
       await userRepository.updateSingleField({'ProfilePicture': newUrl});
-      
+
       await userController.fetchUserDetails();
 
-      CbLoaders.successSnackBar(title: 'Sucesso!', message: 'Sua foto de perfil foi atualizada com sucesso!');
+      CbLoaders.successSnackBar(
+          title: 'Sucesso!',
+          message: 'Sua foto de perfil foi atualizada com sucesso!');
       CbFullScreenLoader.stopLoading();
 
       Get.offAll(() => HomeMenu());
       final homeMenuController = Get.put(HomeMenuController());
       homeMenuController.selectedIndex.value = 4;
-
     } catch (e) {
       CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
@@ -125,7 +143,8 @@ class EditProfileController extends GetxController {
 
   Future<void> uploadBannerToFirebase() async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos atualizando seu banner...', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos atualizando seu banner...', CbImages.loadingAnimation);
 
       // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -133,33 +152,41 @@ class EditProfileController extends GetxController {
         return;
       }
 
-      final compressedImage = await uploadImageController.compressImage(uploadImageController.selectedFile.value!);
-      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(compressedImage ?? File(''), folder: 'Banners');
-      
-      if (userController.user.value.banner.isNotEmpty && await TrainingRepository.instance.imageExists(userController.user.value.banner)) {
-        await TrainingRepository.instance.deleteImageFromFirebase(userController.user.value.banner);
+      final compressedImage = await uploadImageController
+          .compressImage(uploadImageController.selectedFile.value!);
+      final newUrl = await TrainingRepository.instance.uploadImageToFirebase(
+          compressedImage ?? File(''),
+          folder: 'Banners');
+
+      if (userController.user.value.banner.isNotEmpty &&
+          await TrainingRepository.instance
+              .imageExists(userController.user.value.banner)) {
+        await TrainingRepository.instance
+            .deleteImageFromFirebase(userController.user.value.banner);
       }
 
       await userRepository.updateSingleField({'Banner': newUrl});
-      
+
       await userController.fetchUserDetails();
 
-      CbLoaders.successSnackBar(title: 'Sucesso!', message: 'Seu banner foi atualizado com sucesso!');
+      CbLoaders.successSnackBar(
+          title: 'Sucesso!', message: 'Seu banner foi atualizado com sucesso!');
       CbFullScreenLoader.stopLoading();
 
       Get.offAll(() => HomeMenu());
       final homeMenuController = Get.put(HomeMenuController());
       homeMenuController.selectedIndex.value = 4;
-
     } catch (e) {
       CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());
     }
   }
 
-  Future<void> sendToConfirmScreen(Widget screen, UploadImageFormat format) async {
+  Future<void> sendToConfirmScreen(
+      Widget screen, UploadImageFormat format) async {
     try {
-      CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações', CbImages.loadingAnimation);
+      CbFullScreenLoader.openLoadingDialog(
+          'Estamos atualizando suas informações', CbImages.loadingAnimation);
 
       // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
@@ -175,7 +202,6 @@ class EditProfileController extends GetxController {
 
       CbFullScreenLoader.stopLoading();
       Get.to(() => screen);
-
     } catch (e) {
       CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());

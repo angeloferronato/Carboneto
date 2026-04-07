@@ -27,6 +27,9 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<ProfileBaseController>(tag: userId)) {
+      return const SizedBox.shrink();
+    }
     final controller = Get.find<ProfileBaseController>(tag: userId);
 
     return Column(
@@ -113,8 +116,7 @@ class ProfileHeader extends StatelessWidget {
                       onPressedEdit: () => Get.to(() => EditProfileScreen()),
                     )
                   : ToggleFollowButton(
-                      currentUserId:
-                          controller.userController.user.value.id,
+                      currentUserId: controller.userController.user.value.id,
                       targetUserId: userId,
                       isPrivate: controller.user.value.isPrivate,
                     ),

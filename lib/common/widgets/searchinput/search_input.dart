@@ -8,7 +8,8 @@ class SearchInput extends StatelessWidget {
     required this.placeholder,
     required this.controller,
     this.onSubmitted,
-    this.onSearchPressed, // ✅ NEW
+    this.onSearchPressed,
+    this.onChanged,
     this.paddingV = 0,
     this.paddingH = 10,
     this.iconSize = 20,
@@ -16,25 +17,34 @@ class SearchInput extends StatelessWidget {
 
   final String placeholder;
   final TextEditingController controller;
-  final ValueChanged<String>? onSubmitted;
-  final VoidCallback? onSearchPressed; // ✅
+  final ValueChanged<String>? onSubmitted, onChanged;
+  final VoidCallback? onSearchPressed;
   final double paddingV, paddingH;
   final double iconSize;
 
   @override
   Widget build(BuildContext context) {
-    return FocusedTextField(
-      controller: controller,
-      hintText: placeholder,
-      paddingH: paddingH,
-      paddingV: paddingV,
-      borderRadius: 50,
-      prefixIcon: IconButton( // ✅ NOW CLICKABLE
-        onPressed: onSearchPressed,
-        icon: Icon(Iconsax.search_normal_1, size: iconSize),
-      ),
-      onSubmitted: onSubmitted,
-    );
+    return onChanged != null
+        ? FocusedTextField(
+            controller: controller,
+            hintText: placeholder,
+            paddingH: paddingH,
+            paddingV: paddingV,
+            borderRadius: 50,
+            prefixIcon: Icon(Iconsax.search_normal_1, size: iconSize),
+            onChanged: onChanged,
+          )
+        : FocusedTextField(
+            controller: controller,
+            hintText: placeholder,
+            paddingH: paddingH,
+            paddingV: paddingV,
+            borderRadius: 50,
+            prefixIcon: IconButton(
+              onPressed: onSearchPressed,
+              icon: Icon(Iconsax.search_normal_1, size: iconSize),
+            ),
+            onSubmitted: onSubmitted,
+          );
   }
 }
-

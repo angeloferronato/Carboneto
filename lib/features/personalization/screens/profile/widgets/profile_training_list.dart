@@ -10,14 +10,37 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class ProfileTrainingsList extends StatelessWidget {
+class ProfileTrainingsList extends StatefulWidget {
   const ProfileTrainingsList({super.key, required this.userId});
   final String userId;
 
   @override
-  Widget build(BuildContext context) {
-    final trainingController = Get.find<TrainingController>(tag: userId); // ✅ tag: userId
+  State<ProfileTrainingsList> createState() => _ProfileTrainingsListState();
+}
 
+class _ProfileTrainingsListState extends State<ProfileTrainingsList> {
+  late TrainingController trainingController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (!Get.isRegistered<TrainingController>(tag: widget.userId)) {
+      trainingController = Get.put(
+        TrainingController(userId: widget.userId),
+        tag: widget.userId,
+      );
+    } else {
+      trainingController = Get.find<TrainingController>(tag: widget.userId);
+      if (trainingController.trainingsList.isEmpty &&
+          !trainingController.isLoading.value) {
+        trainingController.fetchAllTrainings();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Obx(() {
       final isLoading = trainingController.isLoading.value ||
           trainingController.profileBaseController.profileLoading;
@@ -70,8 +93,6 @@ class ProfileTrainingsList extends StatelessWidget {
     });
   }
 }
-
-
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState({required this.isAuthUser});

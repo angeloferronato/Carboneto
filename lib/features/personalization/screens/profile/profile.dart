@@ -1,3 +1,4 @@
+import 'package:carboneto/data/repositories/follow/follow_repository.dart';
 import 'package:carboneto/features/personalization/controllers/profile_base_controller.dart/profile_base_controller.dart';
 import 'package:carboneto/features/personalization/controllers/training/training_controller.dart';
 import 'package:carboneto/features/personalization/screens/profile/profile_panel/profile_athlete_panel.dart';
@@ -28,28 +29,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _initControllers() {
-    if (Get.isRegistered<ProfileBaseController>(tag: widget.userId)) {
-      Get.delete<ProfileBaseController>(tag: widget.userId, force: true);
-    }
-    if (Get.isRegistered<TrainingController>(tag: widget.userId)) {
-      Get.delete<TrainingController>(tag: widget.userId, force: true);
+    if (!Get.isRegistered<FollowRepository>()) {
+      Get.put(FollowRepository());
     }
 
-    controller = Get.put(
-      ProfileBaseController(userId: widget.userId),
-      tag: widget.userId,
-    );
+    if (!Get.isRegistered<ProfileBaseController>(tag: widget.userId)) {
+      controller = Get.put(
+        ProfileBaseController(userId: widget.userId),
+        tag: widget.userId,
+      );
+    } else {
+      controller = Get.find<ProfileBaseController>(tag: widget.userId);
+    }
 
-    Get.put(
-      TrainingController(userId: widget.userId),
-      tag: widget.userId,
-    );
+    if (!Get.isRegistered<TrainingController>(tag: widget.userId)) {
+      Get.put(
+        TrainingController(userId: widget.userId),
+        tag: widget.userId,
+      );
+    }
   }
 
   @override
   void dispose() {
-    Get.delete<TrainingController>(tag: widget.userId, force: true);
-    Get.delete<ProfileBaseController>(tag: widget.userId, force: true);
     super.dispose();
   }
 
@@ -75,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Obx(() {
-                  final isCoach = controller.user.value.position == 'Coach';
+                  final isCoach = controller.user.value.position == 'Treinador';
                   return Column(
                     children: [
                       ProfileTabBar(

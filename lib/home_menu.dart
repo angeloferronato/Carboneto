@@ -39,6 +39,7 @@ class HomeMenu extends StatelessWidget {
             labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
             onDestinationSelected: (value) => controller.selectedIndex.value = value,
             selectedIndex: controller.selectedIndex.value,
+            overlayColor: WidgetStateProperty.all(Colors.transparent),
             indicatorColor: Colors.transparent,
             destinations: [
               CbCustomNavigationDestination(image: CbImages.homeIcon, showIndicator: controller.selectedIndex.value == 0, filledImage: CbImages.homeFilledIcon,),

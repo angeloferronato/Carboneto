@@ -1,3 +1,4 @@
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/features/authentication/controllers/onboarding/onboarding_controller.dart';
@@ -43,18 +44,10 @@ class OnboardingBottomButtons extends StatelessWidget {
             SizedBox(width: screenWidth * 0.03),
             Expanded(
               child: SizedBox(
-                child: ElevatedButton(
+                child: CbPrimaryBtn(
+                  label: CbTexts.next, 
                   onPressed: () => OnboardingController.instance.nextPage(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: CbColors.primary,
-                    padding: EdgeInsets.all(screenHeight * 0.025), // Era: 20
-                  ),
-                  child: const Text(
-                    CbTexts.next,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
+                  paddingV: 15,
                 ),
               ),
             ),

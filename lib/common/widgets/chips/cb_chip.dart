@@ -15,10 +15,8 @@ class CbChip extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  /// Shows a ✨ icon before the label (e.g. "Todos" / AI-powered categories).
   final bool isSpecial;
 
-  /// Pass [CbHelperFunctions.isDarkMode(context)] from the parent.
   final bool isDarkMode;
 
   @override

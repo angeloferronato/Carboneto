@@ -1,5 +1,6 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
+import 'package:carboneto/common/widgets/searchinput/search_input.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
 import 'package:carboneto/features/create/screens/create_training/create_exercise/create_exercise_screen.dart';
@@ -53,18 +54,14 @@ class AddTrainingScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 15),
-                        child: FocusedTextField(
-                          controller: controller.searchQueryController,
-                          hintText: "Pesquisar exercício",
-                          contentPadding: const EdgeInsets.all(14),
-                          prefixIcon:
-                              const Icon(Iconsax.search_normal_1, size: 20),
-                          onChanged: (value) =>
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 15),
+                          child: SearchInput(
+                            placeholder: "Pesquisar exercício",
+                            controller: controller.searchQueryController,
+                            onChanged: (value) =>
                               controller.searchQuery.value = value,
-                        ),
-                      ),
+                          )),
                       Padding(
                         padding: const EdgeInsets.only(left: CbSizes.md),
                         child: CategoriesBar(controllerTag: tag ?? ''),

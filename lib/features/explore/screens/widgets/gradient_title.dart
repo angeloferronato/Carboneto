@@ -1,4 +1,5 @@
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 
@@ -8,6 +9,7 @@ class GradientTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = CbHelperFunctions.isDarkMode(context);
     final titleWords = title?.trim().split(RegExp(r'\s+'));
     final firstTitle = titleWords?.first;
     final restTitle = (titleWords != null && titleWords.length > 1)
@@ -21,7 +23,7 @@ class GradientTitle extends StatelessWidget {
             .headlineSmall!
             .apply(color: CbColors.white, fontSizeFactor: 1.3),
         children: [
-          TextSpan(text: firstTitle),
+          TextSpan(text: firstTitle, style: TextStyle(color: isDarkMode? CbColors.light : CbColors.dark)),
           TextSpan(text: ' '),
           TextSpan(
             text: restTitle,

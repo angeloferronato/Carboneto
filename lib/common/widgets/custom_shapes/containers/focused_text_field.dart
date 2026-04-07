@@ -14,7 +14,7 @@ class FocusedTextField extends StatelessWidget {
     this.savedInitialValue,
     this.paddingH = CbSizes.lg * 1.2,
     this.paddingV = CbSizes.md, // ✅ NEW (vertical padding)
-    this.borderRadius = 16,     // ✅ NEW (radius)
+    this.borderRadius = 20,     // ✅ NEW (radius)
     this.maxLines = 1,
     this.contentPadding,
     this.onChanged,

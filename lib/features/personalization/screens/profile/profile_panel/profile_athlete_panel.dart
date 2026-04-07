@@ -35,12 +35,19 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
   void initState() {
     super.initState();
 
-    _baseCtrl = Get.find<ProfileBaseController>(tag: widget.userId);
+    _baseCtrl = Get.isRegistered<ProfileBaseController>(tag: widget.userId)
+        ? Get.find<ProfileBaseController>(tag: widget.userId)
+        : Get.put(
+            ProfileBaseController(userId: widget.userId),
+            tag: widget.userId,
+          );
 
-    _ctrl = Get.put(
-      AthletePanelController(userId: widget.userId),
-      tag: widget.userId,
-    );
+    _ctrl = Get.isRegistered<AthletePanelController>(tag: widget.userId)
+        ? Get.find<AthletePanelController>(tag: widget.userId)
+        : Get.put(
+            AthletePanelController(userId: widget.userId),
+            tag: widget.userId,
+          );
 
     final now = DateTime.now();
     _currentWeekStart = now.subtract(Duration(days: now.weekday % 7));
@@ -74,8 +81,7 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
 
     return Obx(() {
       final isAuthUser = _baseCtrl.isAuthUser;
-      final isPrivate =
-          _baseCtrl.user.value.isPrivate && !isAuthUser;
+      final isPrivate = _baseCtrl.user.value.isPrivate && !isAuthUser;
 
       // Show private state — same pattern as ProfileTrainingsList
       if (isPrivate) {
@@ -166,4 +172,3 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
     }
   }
 }
-
