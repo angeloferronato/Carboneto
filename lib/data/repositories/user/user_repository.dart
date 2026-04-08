@@ -1,7 +1,6 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
-import 'package:carboneto/features/personalization/models/user_search_model.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
 import 'package:carboneto/utils/exceptions/firebase_exceptions.dart';
 import 'package:carboneto/utils/exceptions/format_exceptions.dart';
@@ -19,7 +18,10 @@ class UserRepository extends GetxController {
 
   Future<UserModel> fetchUserDetails() async {
     try {
-      final documentSnapshot = await _db.collection("users").doc(AuthenticationRepository.instance.authUser!.uid).get();
+      final documentSnapshot = await _db
+          .collection("users")
+          .doc(AuthenticationRepository.instance.authUser!.uid)
+          .get();
 
       if (documentSnapshot.exists) {
         return UserModel.fromSnapshot(documentSnapshot);
@@ -28,35 +30,39 @@ class UserRepository extends GetxController {
       }
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 
   /// Function to save user data to Firestore
-  Future<void> saveUserRecord(UserModel userModel, UserCredential userCredential) async {
+  Future<void> saveUserRecord(
+      UserModel userModel, UserCredential userCredential) async {
     try {
       await userCredential.user!.updateDisplayName(userModel.name);
 
-      await _db.collection('users').doc(userModel.id).set(userModel.toJson(), SetOptions(merge: true));
+      await _db
+          .collection('users')
+          .doc(userModel.id)
+          .set(userModel.toJson(), SetOptions(merge: true));
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
-  } 
+  }
 
   Future<UserModel> searchUser(String id) async {
     try {
@@ -64,26 +70,23 @@ class UserRepository extends GetxController {
 
       if (docs.exists) {
         final user = UserModel.fromSnapshot(docs);
-        
+
         return user;
       } else {
         return UserModel.empty();
       }
-
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
-  } 
-
-
+  }
 
   Future<String?> findEmailByUsername(String username) async {
     try {
@@ -105,7 +108,8 @@ class UserRepository extends GetxController {
 
   Future<bool> userExists(String? email) async {
     try {
-      final querySnapshot = await _db.collection("users").where('Email', isEqualTo: email).get();
+      final querySnapshot =
+          await _db.collection("users").where('Email', isEqualTo: email).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         return true;
@@ -114,87 +118,152 @@ class UserRepository extends GetxController {
       }
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 
-    Future<bool> usernameExists(String username) async {
+  Future<bool> usernameExists(String username) async {
     try {
       final usernameDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .where("Username", isEqualTo: username)
-        .get();
+          .collection('users')
+          .where("Username", isEqualTo: username)
+          .get();
 
       if (usernameDoc.docs.isNotEmpty) {
         return true;
-      } 
+      }
       return false;
-
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente $e';
     }
   }
 
   Future<void> updateUserDetails(UserModel updatedUser) async {
     try {
-      await _db.collection('users').doc(UserController.instance.user.value.id).update(updatedUser.toJson());
+      final userId = UserController.instance.user.value.id;
+
+      final batch = _db.batch();
+
+      // update main user
+      batch.update(
+        _db.collection('users').doc(userId),
+        updatedUser.toJson(),
+      );
+
+      // update userSearch
+      batch.set(
+        _db.collection('userSearch').doc(userId),
+        {
+          'Username': updatedUser.username,
+          'UsernameLower': updatedUser.username.toLowerCase(),
+          'ProfilePicture': updatedUser.profilePicture,
+          'Name': updatedUser.name,
+          'NameLower': updatedUser.name.toLowerCase(),
+        },
+        SetOptions(merge: true),
+      );
+
+      await batch.commit();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 
   Future<void> updateSingleField(Map<String, dynamic> json) async {
     try {
-      await _db.collection('users').doc(UserController.instance.user.value.id).update(json);
+      final userId = UserController.instance.user.value.id;
+
+      final batch = _db.batch();
+
+      // update users
+      batch.update(
+        _db.collection('users').doc(userId),
+        json,
+      );
+
+      // sync to userSearch
+      final Map<String, dynamic> searchUpdate = {};
+
+      if (json.containsKey('Username')) {
+        searchUpdate['Username'] = json['Username'];
+        searchUpdate['UsernameLower'] =
+            json['Username'].toString().toLowerCase();
+      }
+
+      if (json.containsKey('ProfilePicture')) {
+        searchUpdate['ProfilePicture'] = json['ProfilePicture'];
+      }
+
+      if (json.containsKey('Name')) {
+        searchUpdate['Name'] = json['Name'];
+        searchUpdate['NameLower'] =
+            json['Username'].toString().toLowerCase();
+      }
+
+      if (searchUpdate.isNotEmpty) {
+        batch.set(
+          _db.collection('userSearch').doc(userId),
+          searchUpdate,
+          SetOptions(merge: true),
+        );
+      }
+
+      await batch.commit();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
 
   Future<void> deleteUserInfo() async {
     try {
-      await _db.collection('users').doc(UserController.instance.user.value.id).delete();
-      await _db.collection('userSearch').doc(UserController.instance.user.value.id).delete();
+      await _db
+          .collection('users')
+          .doc(UserController.instance.user.value.id)
+          .delete();
+      await _db
+          .collection('userSearch')
+          .doc(UserController.instance.user.value.id)
+          .delete();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch(_) {
+    } on FormatException catch (_) {
       throw CbFormatException();
-    } on PlatformException catch(e) {
+    } on PlatformException catch (e) {
       throw CbPlatformException(e.code).message;
-    } catch(e) {
+    } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
     }
   }
@@ -202,19 +271,15 @@ class UserRepository extends GetxController {
   Future<UserModel?> fetchAuthorModel(String authorId) async {
     try {
       if (authorId.isEmpty) {
-        return null; 
+        return null;
       }
-      
+
       final UserModel user = await UserRepository.instance.searchUser(authorId);
-      
-      return user; 
+
+      return user;
     } catch (e) {
-      
       debugPrint('Erro ao buscar UserModel do autor $authorId: $e');
       return null;
     }
   }
-
-  
 }
-

@@ -1,5 +1,4 @@
 import 'package:carboneto/common/custom_shapes/curved_edges/clip_shadow/clip_shadow.dart';
-import 'package:carboneto/common/custom_shapes/curved_edges/home/custom_curved_edges.dart';
 import 'package:flutter/material.dart';
 
 class CurvedEdgesWidget extends StatelessWidget {

@@ -3,6 +3,7 @@ import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/create/controllers/difficulty_level_selector_controller.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/features/create/controllers/number_dropdown_controller.dart';
+import 'package:carboneto/features/create/controllers/tag_controller.dart';
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/add_training_screen.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/create_form.dart';
@@ -44,8 +45,18 @@ class _EditTrainingScreenState extends State<EditTrainingScreen> {
   void initState() {
     super.initState();
     _deleteTaggedControllers();
-    _uploadImageController = Get.put(UploadImageController(), tag: EditTrainingScreen.tag);
-    _exercisesController = Get.put(ExercisesController(), tag: EditTrainingScreen.tag);
+
+    _uploadImageController =
+        Get.put(UploadImageController(), tag: EditTrainingScreen.tag);
+
+    // ADDED: register all controllers that child widgets look up by tag
+    Get.put(TagController(), tag: EditTrainingScreen.tag);
+    Get.put(NumberDropdownController(), tag: EditTrainingScreen.tag);
+    Get.put(DifficultyLevelSelectorController(), tag: EditTrainingScreen.tag);
+
+    _exercisesController =
+        Get.put(ExercisesController(), tag: EditTrainingScreen.tag);
+
     _controller = Get.put(
       EditTrainingController(training: widget.training),
       tag: EditTrainingScreen.tag,
@@ -117,7 +128,8 @@ class _EditTrainingScreenState extends State<EditTrainingScreen> {
                   uploadImageController: _uploadImageController,
                   onSelectFiles: () => _uploadImageController.pickSingleFile(),
                   label: 'Upload thumbnail',
-                  description: 'Selecione um arquivo de imagem para a capa do treino.',
+                  description:
+                      'Selecione um arquivo de imagem para a capa do treino.',
                   existingImageUrl: widget.training.thumbnail,
                 ),
                 const SizedBox(height: 20),
@@ -179,7 +191,8 @@ class _EditTrainingScreenState extends State<EditTrainingScreen> {
                     DifficultyLevelSelector(
                       width: double.infinity,
                       tag: EditTrainingScreen.tag,
-                      initialValue: TrainingModel.parseLevelToString(widget.training.level),
+                      initialValue: TrainingModel.parseLevelToString(
+                          widget.training.level),
                     ),
                   ],
                 ),
@@ -188,7 +201,8 @@ class _EditTrainingScreenState extends State<EditTrainingScreen> {
                 const SizedBox(height: 10),
                 TrainingVisibilitySelector(tag: EditTrainingScreen.tag),
                 const SizedBox(height: 48),
-                _SaveButton(controller: _controller, onSuccess: _showSaveSuccessSheet),
+                _SaveButton(
+                    controller: _controller, onSuccess: _showSaveSuccessSheet),
                 const SizedBox(height: 32),
                 Center(
                   child: HighlightBtn(
@@ -209,7 +223,6 @@ class _EditTrainingScreenState extends State<EditTrainingScreen> {
     );
   }
 }
-
 
 class _SaveButton extends StatelessWidget {
   const _SaveButton({required this.controller, required this.onSuccess});

@@ -1,15 +1,11 @@
 import 'package:carboneto/common/widgets/images/rounded_image.dart';
 import 'package:carboneto/common/widgets/level/level_widget.dart';
 import 'package:carboneto/common/widgets/result/result_creator_info.dart';
-import 'package:carboneto/common/widgets/result/result_main.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
-import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:carboneto/common/widgets/user/user_picture.dart';
 import 'package:carboneto/features/library/controllers/history_controller.dart';
 import 'package:carboneto/features/library/models/history_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
-import 'package:carboneto/features/training/screens/home/widgets/home_training.dart';
-import 'package:carboneto/features/training/screens/training_details/training_details.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';

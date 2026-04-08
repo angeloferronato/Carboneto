@@ -11,12 +11,14 @@ class CategoriesBar extends StatelessWidget {
     this.hideFilterBtn = false,
     this.customCategories,
     this.onSelect,
+    this.filterButton,
   });
 
   final String controllerTag;
   final bool hideFilterBtn;
   final List<String>? customCategories;
   final Function(String)? onSelect;
+  final Widget? filterButton;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,10 @@ class CategoriesBar extends StatelessWidget {
             children: [
               hideFilterBtn
                   ? const SizedBox()
-                  : const Row(children: [FilterButton(), SizedBox(width: 8)]),
+                  : Row(children: [
+                      filterButton ?? const FilterButton(),
+                      const SizedBox(width: 8)
+                    ]),
               ...controller.categories.map((category) {
                 final isSelected = controller.isSelected(category);
 

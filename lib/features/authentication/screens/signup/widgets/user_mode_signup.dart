@@ -1,7 +1,6 @@
 import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +23,6 @@ class UserModeSignUp extends StatefulWidget {
 class _UserModeSignUpState extends State<UserModeSignUp> {
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = CbHelperFunctions.isDarkMode(context);
     final SignupController controller = SignupController.instance;
 
     return GestureDetector(

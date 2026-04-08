@@ -71,13 +71,32 @@ class CalendarCardState extends State<CalendarCard> {
     super.dispose();
   }
 
+  double _getTrainingPct(TrainingHistoryModel t) {
+    double trainingPct = 0;
+    double exercisesCounter = 0;
+
+    if (['reps', 'mixed'].contains(t.trainingType)) {
+      for (final exercise in t.perExercise) {
+        if (exercise.type == 'reps') {
+          if (exercise.done > 0) {
+            trainingPct += exercise.total / exercise.done;
+            exercisesCounter += 1;
+          }
+        }
+      }
+      trainingPct = trainingPct / exercisesCounter;
+    }
+    return trainingPct;
+  }
+
   void _openTrainingSummary(BuildContext context, TrainingHistoryModel t) {
     showModalBottomSheet(
       context: context,
       showDragHandle: false,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => TrainingSummarySheet(training: t, isDark: widget.isDark),
+      builder: (_) => TrainingSummarySheet(
+          training: t, trainingPct: _getTrainingPct(t), isDark: widget.isDark),
     );
   }
 
@@ -106,7 +125,8 @@ class CalendarCardState extends State<CalendarCard> {
   Widget build(BuildContext context) {
     final textColor = widget.isDark ? Colors.white : Colors.black;
     final midDay = widget.weekStart.add(const Duration(days: 3));
-    final monthLabel = '${CbHelperFunctions.monthName(midDay.month)} ${midDay.year}';
+    final monthLabel =
+        '${CbHelperFunctions.monthName(midDay.month)} ${midDay.year}';
 
     return Column(
       children: [
@@ -172,8 +192,10 @@ class CalendarCardState extends State<CalendarCard> {
                         child: DayChip(
                           letter: CbHelperFunctions.kDayLetters[i],
                           number: day.day,
-                          isSelected: CbHelperFunctions.isSameDay(day, widget.selectedDay),
-                          isToday: CbHelperFunctions.isSameDay(day, DateTime.now()),
+                          isSelected: CbHelperFunctions.isSameDay(
+                              day, widget.selectedDay),
+                          isToday:
+                              CbHelperFunctions.isSameDay(day, DateTime.now()),
                           hasDot: widget.controller.hasTrainingOn(day),
                           isDark: widget.isDark,
                         ),
@@ -192,10 +214,11 @@ class CalendarCardState extends State<CalendarCard> {
             Text('Treinos realizados'),
             SeeAllBtn(
               onPressed: () => Get.to(() => DayTrainingsScreen(
-                day: widget.selectedDay,
-                trainings: widget.controller.trainingsOn(widget.selectedDay),
-                isDark: widget.isDark,
-              )),
+                    day: widget.selectedDay,
+                    trainings:
+                        widget.controller.trainingsOn(widget.selectedDay),
+                    isDark: widget.isDark,
+                  )),
               buttonTitle: 'Ver todos',
             )
           ],
@@ -230,7 +253,10 @@ class CalendarCardState extends State<CalendarCard> {
                 itemBuilder: (_, i) => GestureDetector(
                   onTap: () => _openTrainingSummary(context, visible[i]),
                   child: TrainingTile(
-                      training: visible[i], isDark: widget.isDark),
+                    training: visible[i],
+                    isDark: widget.isDark,
+                    trainingPct: _getTrainingPct(visible[i]),
+                  ),
                 ),
               ),
               if (hasMore)

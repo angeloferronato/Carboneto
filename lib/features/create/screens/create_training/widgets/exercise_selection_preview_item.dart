@@ -7,7 +7,6 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class ExerciseSelectionPreviewItem extends StatefulWidget {
   const ExerciseSelectionPreviewItem({

@@ -1,3 +1,4 @@
+import 'dart:async'; 
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
@@ -14,10 +15,12 @@ import 'package:get/get.dart';
 
 class AccountSettingsController extends GetxController {
   static AccountSettingsController get instance => Get.find();
+  
   final TextEditingController username = TextEditingController();
   final TextEditingController birthDate = TextEditingController();
-  final TextEditingController currentPassword= TextEditingController();
+  final TextEditingController currentPassword = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
+  
   final Rx<String> newPassword = ''.obs;
   final GlobalKey<FormState> accountSettingsProfileFormKey = GlobalKey<FormState>();
   final UserController userController = Get.put(UserController());
@@ -25,7 +28,15 @@ class AccountSettingsController extends GetxController {
   final AuthenticationRepository authenticationRepository = Get.put(AuthenticationRepository());
   final Rx<bool> isTextObscured = true.obs;
 
-  @override onInit() {
+  final RxBool isCheckingUsername = false.obs;
+  final RxBool isUsernameAvailable = true.obs; 
+  
+  final RxString usernameMessage = ''.obs; 
+  
+  Timer? _debounce;
+
+  @override 
+  void onInit() {
     newPasswordController.addListener(() {
       newPassword.value = newPasswordController.text;
     });
@@ -37,30 +48,82 @@ class AccountSettingsController extends GetxController {
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    _debounce?.cancel();
+    super.onClose();
+  }
+
   void addPreExistingDataToFields() {
     username.text = userController.user.value.username;
     birthDate.text = userController.user.value.birthDate ?? '';
+    
+    isUsernameAvailable.value = true; 
+    usernameMessage.value = ''; // Reset message
+  }
+
+  void onUsernameChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      checkUsername();
+    });
+  }
+
+  Future<void> checkUsername() async {
+    final value = username.text.trim();
+    final currentUsername = userController.user.value.username;
+
+    if (value == currentUsername) {
+      isUsernameAvailable.value = true;
+      isCheckingUsername.value = false;
+      usernameMessage.value = ''; // Clear message
+      return;
+    }
+
+    if (value.length < 3) {
+      isUsernameAvailable.value = false;
+      usernameMessage.value = 'O nome de usuário deve ter pelo menos 3 caracteres.';
+      return;
+    }
+
+    isCheckingUsername.value = true;
+    final exists = await userRepository.usernameExists(value);
+    
+    isUsernameAvailable.value = !exists; 
+    
+    usernameMessage.value = exists ? 'Nome de usuário já está em uso.' : '';
+    
+    isCheckingUsername.value = false;
   }
 
   Future<void> updateUserDetails() async {
     try {
       CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações...', CbImages.loadingAnimation);
       
-      // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
+        CbFullScreenLoader.stopLoading(); 
         return;
       }
 
-      // Form Validation
       if (!accountSettingsProfileFormKey.currentState!.validate()) {
         CbFullScreenLoader.stopLoading();
         return;
       }
 
-      if (await userRepository.usernameExists(username.text.trim()) && username.text.trim() != userController.user.value.username) {
+      final value = username.text.trim();
+      final currentUsername = userController.user.value.username;
+
+      if (value.length < 3) {
         CbFullScreenLoader.stopLoading();
-        CbLoaders.warningSnackBar(title: 'Nome de usuário inválido', message: 'Esse nome de usuário já está em uso.');
+        CbLoaders.warningSnackBar(title: 'Atenção', message: 'O nome de usuário deve ter pelo menos 3 caracteres.');
+        return;
+      }
+
+      if (!isUsernameAvailable.value && value != currentUsername) {
+        CbFullScreenLoader.stopLoading();
+        CbLoaders.warningSnackBar(title: 'Nome de usuário inválido', message: usernameMessage.value);
         return;
       }
 
@@ -68,7 +131,7 @@ class AccountSettingsController extends GetxController {
       final updatedUser = UserModel(
         userTrainings: user.userTrainings,
         id: user.id, 
-        username: username.text.trim(), 
+        username: value, 
         email: user.email, 
         name: userController.user.value.name, 
         profilePicture: user.profilePicture, 
@@ -81,14 +144,12 @@ class AccountSettingsController extends GetxController {
         banner: user.banner,
       );
 
-      userRepository.updateUserDetails(updatedUser);
+      await userRepository.updateUserDetails(updatedUser);
 
-      // Remove Loader
       CbFullScreenLoader.stopLoading();
-
       CbLoaders.successSnackBar(title: 'Conta Atualizada!', message: 'Sua conta foi atualizada com sucesso! Agora é só desfrutar o Carboneto!');
 
-      Get.offAll(() => HomeMenu());
+      Get.offAll(() => const HomeMenu());
       final homeMenuController = Get.put(HomeMenuController());
       homeMenuController.selectedIndex.value = 4;
     } catch(e) {

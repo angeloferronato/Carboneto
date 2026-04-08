@@ -1,7 +1,6 @@
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/models/user_model.dart';
-import 'package:carboneto/features/personalization/models/user_search_model.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';

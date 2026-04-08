@@ -1,8 +1,8 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
-import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/searchinput/search_input.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/categories_bar.dart';
+import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercise_filter_button.dart';
 import 'package:carboneto/features/create/screens/create_training/create_exercise/create_exercise_screen.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/widgets/exercises_list.dart';
 import 'package:carboneto/utils/constants/colors.dart';
@@ -11,17 +11,35 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class AddTrainingScreen extends StatelessWidget {
+class AddTrainingScreen extends StatefulWidget {
   const AddTrainingScreen({super.key, this.tag});
 
   final String? tag;
 
   @override
-  Widget build(BuildContext context) {
-    final controller = tag != null
-        ? Get.find<ExercisesController>(tag: tag)
+  State<AddTrainingScreen> createState() => _AddTrainingScreenState();
+}
+
+class _AddTrainingScreenState extends State<AddTrainingScreen> {
+  late final ExercisesController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.tag != null
+        ? Get.find<ExercisesController>(tag: widget.tag)
         : Get.find<ExercisesController>();
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.searchQueryController.clear();
+      controller.searchQuery.value = '';
+      controller.selectedIntermediateIndexes.clear();
+      controller.preAddIndexes.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -54,22 +72,30 @@ class AddTrainingScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 15),
-                          child: SearchInput(
-                            placeholder: "Pesquisar exercício",
-                            controller: controller.searchQueryController,
-                            onChanged: (value) =>
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 15),
+                        child: SearchInput(
+                          placeholder: "Pesquisar exercício",
+                          controller: controller.searchQueryController,
+                          onSubmitted: (value) =>
                               controller.searchQuery.value = value,
-                          )),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(left: CbSizes.md),
-                        child: CategoriesBar(controllerTag: tag ?? ''),
+                        child: Obx(() => CategoriesBar(
+                              controllerTag: 'exercises',
+                              filterButton: ExerciseFilterButton(
+                                currentFilters:
+                                    controller.activeFilters.value,
+                                onFilterApplied: controller.applyFilters,
+                              ),
+                            )),
                       ),
                     ],
                   ),
                 ),
-                ExercisesList(tag: tag),
+                ExercisesList(tag: widget.tag),
               ],
             ),
             Obx(() {

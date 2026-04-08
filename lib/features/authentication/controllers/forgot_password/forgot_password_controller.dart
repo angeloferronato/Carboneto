@@ -1,4 +1,3 @@
-import 'package:carboneto/common/widgets/success_screen/success_screen.dart';
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/authentication/screens/forgot_password/reset_password.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';

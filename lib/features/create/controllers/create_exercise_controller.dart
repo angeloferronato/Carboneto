@@ -10,6 +10,7 @@ import 'package:carboneto/features/create/controllers/exercises_controller.dart'
 import 'package:carboneto/features/create/controllers/tag_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
@@ -42,6 +43,9 @@ class CreateExerciseController extends GetxController {
   final Rx<double> durationValue = 5.0.obs;
   final Rx<double> repetiotionsValue = 3.0.obs;
   final GlobalKey<FormState> createExerciseFormKey = GlobalKey<FormState>();
+  final Rx<TrainingVisibility> visibility = TrainingVisibility.public.obs;
+
+  void setVisibility(TrainingVisibility value) => visibility.value = value;
 
   Future<String> generateThumbFromVideo(File video) async {
     final thumbPath = await VideoThumbnail.thumbnailFile(
@@ -122,6 +126,7 @@ class CreateExerciseController extends GetxController {
           profilePicture: userController.user.value.profilePicture,
           isVerified: userController.user.value.isVerified,
         ),
+        visibility: visibility.value,
       );
 
       exerciseRepository.saveExerciseRecord(newExercise);

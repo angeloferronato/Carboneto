@@ -5,10 +5,8 @@ import 'package:carboneto/features/authentication/controllers/onboarding/onboard
 import 'package:carboneto/features/authentication/screens/onboarding/onboarding_dot_navigation.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/onboarding_bottom_buttons.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/widgets/onboarding_page.dart';
-import 'package:carboneto/features/authentication/screens/onboarding/widgets/top_logo.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

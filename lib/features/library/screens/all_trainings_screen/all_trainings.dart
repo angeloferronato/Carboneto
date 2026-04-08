@@ -118,7 +118,7 @@ class AllTrainingsScreen extends StatelessWidget {
                           const Icon(Iconsax.folder_open, size: 50, color: Colors.grey),
                           const SizedBox(height: 10),
                           Text(
-                            "Nenhum treino encontrado nesta categoria.",
+                            "Nenhum treino encontrado.",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 15,

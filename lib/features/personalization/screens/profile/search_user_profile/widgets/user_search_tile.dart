@@ -17,7 +17,7 @@ import 'package:get/get.dart';
 class UserSearchTile extends StatelessWidget {
   UserSearchTile({
     super.key,
-    required this.user, 
+    required this.user,
     this.isUserFollow = false,
   });
 
@@ -27,33 +27,45 @@ class UserSearchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
-    final FollowController followController = Get.put(FollowController(currentUserId: currentUser.id, targetUserId: user.id), tag: '${currentUser.id}${user.id}');
-    final RemoveFollowerController removeFollowerController = Get.put(RemoveFollowerController(userId: currentUser.id), tag: currentUser.id);
+    final FollowController followController = Get.put(
+        FollowController(currentUserId: currentUser.id, targetUserId: user.id),
+        tag: '${currentUser.id}${user.id}');
+    final RemoveFollowerController removeFollowerController = Get.put(
+        RemoveFollowerController(userId: currentUser.id),
+        tag: currentUser.id);
+    print(user.username);
     return InkWell(
-      onTap: currentUser.id == user.id 
-        ? () {
-          Get.offAll(HomeMenu());
-          final homeMenuController = Get.put(HomeMenuController());
-          homeMenuController.selectedIndex.value = 4; 
-        }
-        : () => Get.to(ProfileScreen(userId: user.id,)),
-      child: Container(    
-        padding: const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace, vertical: CbSizes.sm + CbSizes.xs),
+      onTap: currentUser.id == user.id
+          ? () {
+              Get.offAll(HomeMenu());
+              final homeMenuController = Get.put(HomeMenuController());
+              homeMenuController.selectedIndex.value = 4;
+            }
+          : () => Get.to(ProfileScreen(
+                userId: user.id,
+              )),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: CbSizes.defaultSpace,
+            vertical: CbSizes.sm + CbSizes.xs),
         child: Row(
           children: [
             Flexible(
               child: Row(
                 children: [
                   CbRoundedImage(
-                    imageUrl: user.profilePicture.isEmpty ? CbImages.userDefault : user.profilePicture,
+                    imageUrl: user.profilePicture.isEmpty
+                        ? CbImages.userDefault
+                        : user.profilePicture,
                     width: 50,
                     height: 50,
                     borderRadius: 50,
-                    isNetworkImage: user.profilePicture!.isNotEmpty,
+                    isNetworkImage: user.profilePicture.isNotEmpty,
                     fit: BoxFit.cover,
                   ),
-                  const SizedBox(width: CbSizes.md,),
-                
+                  const SizedBox(
+                    width: CbSizes.md,
+                  ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,65 +74,78 @@ class UserSearchTile extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           user.username,
-                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 15),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(fontSize: 15),
                         ),
-                        const SizedBox(height: CbSizes.xs / 2,),
+                        const SizedBox(
+                          height: CbSizes.xs / 2,
+                        ),
                         Text(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          user.name,
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 13, color: CbColors.darkGrey, fontWeight: FontWeight.w600)
-                        ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            user.name,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                    fontSize: 13,
+                                    color: CbColors.darkGrey,
+                                    fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-      
             Align(
               alignment: AlignmentGeometry.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(left: CbSizes.sm),
-                child: user.id == currentUser.id ? SizedBox() : Obx(
-                    () => removeFollowerController.isLoading.value || followController.isLoading.value 
-                    ? HighlightBtn(
-                      padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
-                      textValue: '',
-                      icon: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 4.0,
-                          color: CbColors.primary,
-                        )
-                      ),
-                      onPressedEdit: () {}
-                    )
-                    : followController.isFollowing.value
-                      ? HighlightBtn(
-                        textValue: 'Seguindo',  
-                        onPressedEdit: () => followController.stopFollowingUser(),
-                      ) : followController.followRequestId.value.isNotEmpty 
+                child: user.id == currentUser.id
+                    ? SizedBox()
+                    : Obx(() => removeFollowerController.isLoading.value ||
+                            followController.isLoading.value
                         ? HighlightBtn(
-                          textValue: 'Pedido enviado', 
-                          onPressedEdit: () => followController.cancelFollowRequest()
-                        )
-                        : CbPrimaryBtn(
-                          label: 'Seguir', 
-                          paddingV: 0,
-                          paddingH: 15,
-                          onPressed: () => user.isPrivate
-                            ? followController.sendFollowRequest()
-                            : followController.startFollowingUser(),
-                        )
-                  ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 48, vertical: 12),
+                            textValue: '',
+                            icon: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 4.0,
+                                  color: CbColors.primary,
+                                )),
+                            onPressedEdit: () {})
+                        : followController.isFollowing.value
+                            ? HighlightBtn(
+                                textValue: 'Seguindo',
+                                onPressedEdit: () =>
+                                    followController.stopFollowingUser(),
+                              )
+                            : followController.followRequestId.value.isNotEmpty
+                                ? HighlightBtn(
+                                    textValue: 'Pedido enviado',
+                                    onPressedEdit: () =>
+                                        followController.cancelFollowRequest())
+                                : CbPrimaryBtn(
+                                    label: 'Seguir',
+                                    paddingV: 0,
+                                    paddingH: 15,
+                                    onPressed: () => user.isPrivate
+                                        ? followController.sendFollowRequest()
+                                        : followController.startFollowingUser(),
+                                  )),
               ),
             ),
-            if (isUserFollow) IconButton(
-              onPressed: () => removeFollowerController.showConfirmDeleteFollowerMessage(user), 
-              icon: Icon(Icons.clear_rounded, color: isDarkMode ? CbColors.grey : CbColors.darkerGrey)
-            )
+            if (isUserFollow)
+              IconButton(
+                  onPressed: () => removeFollowerController
+                      .showConfirmDeleteFollowerMessage(user),
+                  icon: Icon(Icons.clear_rounded,
+                      color: isDarkMode ? CbColors.grey : CbColors.darkerGrey))
           ],
         ),
       ),

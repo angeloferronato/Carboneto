@@ -9,11 +9,12 @@ class ProfileTabBar extends StatelessWidget {
     required this.selectedTab,
     required this.onTabChanged,
     required this.isCoach,
+    required this.isTeam,
   });
 
   final ProfileTab selectedTab;
   final ValueChanged<ProfileTab> onTabChanged;
-  final bool isCoach;
+  final bool isCoach, isTeam;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class ProfileTabBar extends StatelessWidget {
           onTap: () => onTabChanged(ProfileTab.treinos),
         ),
         _TabItem(
-          label: isCoach ? 'Painel do Treinador' : 'Painel do Atleta',
+          label: isCoach ? 'Painel do Treinador' : isTeam ? 'Painel do Time' : 'Painel do Atleta',
           isSelected: selectedTab == ProfileTab.painel,
           onTap: () => onTabChanged(ProfileTab.painel),
         ),

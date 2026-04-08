@@ -29,7 +29,6 @@ class ChartPainter extends CustomPainter {
   static const Color _fillTop = Color(0x554477FF);
   static const Color _fillBottom = Color(0x004477FF);
   static const Color _barColor = CbColors.primary;
-  static const Color _benchmarkColor = Color(0xFFFF9500);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -291,26 +290,6 @@ class ChartPainter extends CustomPainter {
         ChartMetric.duracao => '${v.toStringAsFixed(0)}m',
         ChartMetric.frequencia => v.toStringAsFixed(0),
       };
-
-  void _drawDashedLine(Canvas canvas, Offset start, Offset end, Paint paint,
-      {double dash = 6, double gap = 4}) {
-    final dist = (end - start).distance;
-    if (dist == 0) return;
-
-    final dx = (end.dx - start.dx) / dist;
-    final dy = (end.dy - start.dy) / dist;
-
-    double traveled = 0;
-    while (traveled < dist) {
-      final next = (traveled + dash).clamp(0, dist);
-      canvas.drawLine(
-        Offset(start.dx + dx * traveled, start.dy + dy * traveled),
-        Offset(start.dx + dx * next, start.dy + dy * next),
-        paint,
-      );
-      traveled += dash + gap;
-    }
-  }
 
   void _drawText(Canvas canvas, String text, Offset offset, TextStyle style,
       {TextAlign align = TextAlign.left, double width = 60}) {

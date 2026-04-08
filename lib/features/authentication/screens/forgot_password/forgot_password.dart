@@ -2,7 +2,6 @@ import 'package:carboneto/common/styles/spacing_styles.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/login/login_header.dart';
 import 'package:carboneto/features/authentication/controllers/forgot_password/forgot_password_controller.dart';
-import 'package:carboneto/features/authentication/screens/new_password/new_password.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/validators/validation.dart';

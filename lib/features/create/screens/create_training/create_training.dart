@@ -1,6 +1,9 @@
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
 import 'package:carboneto/features/create/controllers/create_training_controller.dart';
+import 'package:carboneto/features/create/controllers/difficulty_level_selector_controller.dart';
 import 'package:carboneto/features/create/controllers/exercises_controller.dart';
+import 'package:carboneto/features/create/controllers/number_dropdown_controller.dart';
+import 'package:carboneto/features/create/controllers/tag_controller.dart';
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
 import 'package:carboneto/features/create/screens/create_training/add_training/add_training_screen.dart';
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
@@ -20,15 +23,55 @@ import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CreateTraining extends StatelessWidget {
+class CreateTraining extends StatefulWidget {
   const CreateTraining({super.key});
 
   @override
+  State<CreateTraining> createState() => _CreateTrainingState();
+}
+
+class _CreateTrainingState extends State<CreateTraining> {
+  late final UploadImageController _uploadImageController;
+  late final CreateTrainingController _controller;
+  late final ExercisesController _exercisesController;
+
+  @override
+  void initState() {
+    super.initState();
+    _deleteTaggedControllers();
+
+    final tag = CbTexts.trainingControllerTag;
+
+    _uploadImageController = Get.put(UploadImageController(), tag: tag);
+    Get.put(TagController(), tag: tag);
+    Get.put(NumberDropdownController(), tag: tag);
+    Get.put(DifficultyLevelSelectorController(), tag: tag);
+
+    _exercisesController = Get.put(ExercisesController(), tag: tag);
+    _controller = Get.put(CreateTrainingController(), tag: tag);
+  }
+
+  @override
+  void dispose() {
+    _deleteTaggedControllers();
+    super.dispose();
+  }
+
+  void _deleteTaggedControllers() {
+    final tag = CbTexts.trainingControllerTag;
+    Get.delete<CreateTrainingController>(tag: tag, force: true);
+    Get.delete<ExercisesController>(tag: tag, force: true);
+    Get.delete<UploadImageController>(tag: tag, force: true);
+    Get.delete<TagController>(tag: tag, force: true);
+    Get.delete<NumberDropdownController>(tag: tag, force: true);
+    Get.delete<DifficultyLevelSelectorController>(tag: tag, force: true);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final UploadImageController uploadImageController = Get.put(UploadImageController(), tag: CbTexts.trainingControllerTag);
-    final controller = Get.put(CreateTrainingController()); 
-    final exercisesController = Get.put(ExercisesController());
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
+    final tag = CbTexts.trainingControllerTag;
+
     return Scaffold(
       appBar: CbAppBar(
         title: const Text(
@@ -46,14 +89,14 @@ class CreateTraining extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(CbSizes.defaultSpace),
           child: Form(
-            key: controller.createTrainingFormKey,
+            key: _controller.createTrainingFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Upload thumbnail
                 SquareUploadWidget(
-                  uploadImageController: uploadImageController,
-                  onSelectFiles: () => uploadImageController.pickSingleFile(),
+                  uploadImageController: _uploadImageController,
+                  onSelectFiles: () => _uploadImageController.pickSingleFile(),
                   label: 'Upload thumbnail',
                   description: 'Selecione um arquivo de imagem para a capa do treino.',
                 ),
@@ -61,16 +104,17 @@ class CreateTraining extends StatelessWidget {
             
                 // Title Form Section
                 CreateForm(
-                  controller: controller.title,
+                  controller: _controller.title,
                   label: 'Titulo',
                   hintText: 'Escreva aqui o titulo do seu treino.',
                   validateEmpty: 'Título do treino',
                   maxLength: 80,
                 ),
-                SizedBox(height: 15,),
+                const SizedBox(height: 15),
+
                 // Description Form Section
                 CreateForm(
-                  controller: controller.description,
+                  controller: _controller.description,
                   label: 'Descrição',
                   hintText: 'Escreva aqui a descrição do seu treino.',
                   validateEmpty: 'Descrição do treino',
@@ -82,7 +126,7 @@ class CreateTraining extends StatelessWidget {
                 // Tags Section
                 const FormLabel(label: 'Adicionar Tags'),
                 const SizedBox(height: 10),
-                TagSelector(controllerTag: CbTexts.trainingControllerTag,), // Tag selector widget
+                TagSelector(controllerTag: tag), 
                 const SizedBox(height: 25),
                 const FormLabel(label: 'Exercícios'),
                 Column(
@@ -90,11 +134,11 @@ class CreateTraining extends StatelessWidget {
                     const SizedBox(height: 10),
             
                     Obx(() {
-                      if (exercisesController.selectedIndexes.isEmpty) {
+                      if (_exercisesController.selectedIndexes.isEmpty) {
                         return Column(
                           children: [
                             Image(
-                              image: AssetImage(CbImages.basket),
+                              image: const AssetImage(CbImages.basket),
                               width: 70,
                               color: isDarkMode ? CbColors.grey : CbColors.darkerGrey,
                             ),
@@ -115,14 +159,16 @@ class CreateTraining extends StatelessWidget {
                         );
                       }
             
-                      return SelectedExercises();
+                      return SelectedExercises(tag: tag); 
                     }),
             
                     const SizedBox(height: 25),
             
                     CbPrimaryBtn(
                       label: 'Adicionar Exercício',
-                      onPressed: () => Get.to(() => const AddTrainingScreen()), // Navigate to Add Training Screen
+                      onPressed: () => Get.to(
+                        () => AddTrainingScreen(tag: tag),
+                      ),
                     ),
                     const SizedBox(height: 30),
                   ],
@@ -131,7 +177,7 @@ class CreateTraining extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const FormLabel(label: 'N° de pessoas necessárias'),
-                        const NumberDropdown(controllerTag: CbTexts.trainingControllerTag,), // Assuming custom widget for number selection
+                        NumberDropdown(controllerTag: tag), 
                       ],
                     ),
                     const SizedBox(height: CbSizes.md),
@@ -143,16 +189,19 @@ class CreateTraining extends StatelessWidget {
                         children: [
                           const FormLabel(label: 'Nível de Dificuldade'),
                           const SizedBox(height: CbSizes.md),
-                          const DifficultyLevelSelector(width: double.infinity,), // Assuming custom widget for number selection
+                          DifficultyLevelSelector(
+                            width: double.infinity,
+                            tag: tag, // Usa a tag oficial
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 40),
                     const FormLabel(label: 'Visibilidade'),
                     const SizedBox(height: 10),
-                    TrainingVisibilitySelector(),
+                    TrainingVisibilitySelector(externalVisibility: _controller.visibility, onChanged: _controller.setVisibility),
 
-                    SizedBox(height: 40,),
+                    const SizedBox(height: 40),
 
                     // Upload Button
                     Center(
@@ -162,7 +211,7 @@ class CreateTraining extends StatelessWidget {
                         paddingH: 45,
                         paddingV: 12,
                         borderRadius: 30,
-                        onPressed: () => controller.createTraining(),
+                        onPressed: () => _controller.createTraining(),
                       ),
                     ),
               ],

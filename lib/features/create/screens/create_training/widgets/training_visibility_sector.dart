@@ -6,11 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TrainingVisibilitySelector extends StatelessWidget {
-  const TrainingVisibilitySelector({super.key, this.tag});
+  const TrainingVisibilitySelector({
+    super.key,
+    this.tag,
+    this.externalVisibility,
+    this.onChanged,
+  });
 
   final String? tag;
+  final Rx<TrainingVisibility>? externalVisibility;
+  final void Function(TrainingVisibility)? onChanged;
 
   (Rx<TrainingVisibility>, void Function(TrainingVisibility)) _resolve() {
+    if (externalVisibility != null && onChanged != null) {
+      return (externalVisibility!, onChanged!);
+    }
     if (tag != null) {
       final c = Get.find<EditTrainingController>(tag: tag);
       return (c.visibility, c.setVisibility);

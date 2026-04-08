@@ -57,9 +57,9 @@ class EditProfileController extends GetxController {
           positionSelectorController.dropDownList.first) {
         CbFullScreenLoader.stopLoading();
         CbLoaders.warningSnackBar(
-            title: 'Erro na escolha da posição',
+            title: 'Erro na escolha da função',
             message:
-                'Você deve escolher uma posição para continuar com a alteração!');
+                'Você deve escolher uma função para continuar com a alteração!');
         return;
       }
 
@@ -120,7 +120,7 @@ class EditProfileController extends GetxController {
           await TrainingRepository.instance
               .imageExists(userController.user.value.profilePicture)) {
         await TrainingRepository.instance
-            .deleteImageFromFirebase(userController.user.value.profilePicture);
+            .deleteFileFromFirebase(userController.user.value.profilePicture);
       }
 
       await userRepository.updateSingleField({'ProfilePicture': newUrl});
@@ -162,7 +162,7 @@ class EditProfileController extends GetxController {
           await TrainingRepository.instance
               .imageExists(userController.user.value.banner)) {
         await TrainingRepository.instance
-            .deleteImageFromFirebase(userController.user.value.banner);
+            .deleteFileFromFirebase(userController.user.value.banner);
       }
 
       await userRepository.updateSingleField({'Banner': newUrl});

@@ -38,6 +38,9 @@ class TrainingExecutionController extends GetxController
 
   Timer? totalTimer;
   Timer? exerciseTimer;
+  Timer? _persistenceTimer;
+  bool _persistenceScheduled = false;
+  static const Duration _kPersistenceDelay = Duration(seconds: 15);
   final Rx<bool> isPaused = false.obs;
   final Rx<bool> isSheetVisible = false.obs;
 
@@ -66,12 +69,9 @@ class TrainingExecutionController extends GetxController
     trainingRelativeDuration =
         Duration(minutes: activeExercise.value.duration).obs;
 
-    await _createOrResumeProgress();
-    await repo.createOrUpdateTrainingHistory(
-      uid: uid,
-      historyId: historyId,
-      training: training,
-    );
+    // Check for existing saved progress and restore state if present.
+    // Documents are NOT created here yet — that happens after the threshold.
+    await _restoreProgressIfExists();
 
     executeTraining();
   }
@@ -80,13 +80,73 @@ class TrainingExecutionController extends GetxController
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
     stopAllTimers();
-    saveProgress();
+    _persistenceTimer?.cancel();
+
+    // Only persist if the documents were already created (threshold was met).
+    if (_persistenceScheduled) saveProgress();
+
     super.onClose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) saveProgress();
+    // Only save if the Firestore documents have already been created.
+    if (state == AppLifecycleState.paused && _persistenceScheduled) {
+      saveProgress();
+    }
+  }
+
+  Future<void> _restoreProgressIfExists() async {
+    final snapshot = await repo.getTrainingProgress(uid, training.id);
+
+    if (snapshot.exists) {
+      final data = snapshot.data() as Map<String, dynamic>;
+      activeIndexTraining.value = data['CurrentExerciseIndex'] ?? 0;
+      duration.value = Duration(seconds: data['TrainingRemainingTime'] ?? 0);
+
+      final stats = data['TrainingStats'];
+      if (stats != null && stats['PerExercise'] != null) {
+        final perEx = stats['PerExercise'] as Map<String, dynamic>;
+        perEx.forEach((key, value) {
+          final idx = int.tryParse(key);
+          if (idx == null) return;
+          if (value['Type'] == 'time') {
+            _savedTimerSeconds[idx] = value['Remaining'] ?? 0;
+          } else if (value['Type'] == 'reps') {
+            _savedReps[idx] = value['Done'] ?? 0;
+          }
+        });
+      }
+
+      _restoreExerciseState(activeIndexTraining.value);
+
+      // Documents already exist — mark as scheduled so saveProgress works.
+      _persistenceScheduled = true;
+    } else {
+      // No existing document: schedule creation after the 15-second threshold.
+      _schedulePersistence();
+    }
+  }
+
+  void _schedulePersistence() {
+    _persistenceTimer = Timer(_kPersistenceDelay, () async {
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) return;
+
+      await repo.createTrainingProgress(
+        uid: uid,
+        training: training,
+        remainingTime: duration.value.inSeconds,
+        trainingStats: buildExerciseProgress(),
+      );
+      await repo.createOrUpdateTrainingHistory(
+        uid: uid,
+        historyId: historyId,
+        training: training,
+      );
+
+      _persistenceScheduled = true;
+    });
   }
 
   Future<void> executeTraining() async {
@@ -400,72 +460,40 @@ class TrainingExecutionController extends GetxController
     return "${training.id}_${todayKey}_$timeKey";
   }
 
-  Future<void> _createOrResumeProgress() async {
-    final snapshot = await repo.getTrainingProgress(uid, training.id);
-
-    if (snapshot.exists) {
-      final data = snapshot.data() as Map<String, dynamic>;
-      activeIndexTraining.value = data['CurrentExerciseIndex'] ?? 0;
-      duration.value = Duration(seconds: data['TrainingRemainingTime'] ?? 0);
-
-      final stats = data['TrainingStats'];
-      if (stats != null && stats['PerExercise'] != null) {
-        final perEx = stats['PerExercise'] as Map<String, dynamic>;
-        perEx.forEach((key, value) {
-          final idx = int.tryParse(key);
-          if (idx == null) return;
-          if (value['Type'] == 'time') {
-            _savedTimerSeconds[idx] = value['Remaining'] ?? 0;
-          } else if (value['Type'] == 'reps') {
-            _savedReps[idx] = value['Done'] ?? 0;
-          }
-        });
-      }
-
-      _restoreExerciseState(activeIndexTraining.value);
-      return;
-    }
-
-    await repo.createTrainingProgress(
-      uid: uid,
-      training: training,
-      remainingTime: duration.value.inSeconds,
-      trainingStats: buildExerciseProgress(),
-    );
-  }
-
   Future<void> saveProgress({bool completed = false}) async {
+    if (!_persistenceScheduled) return;
+ 
     final totalExercises = training.exercises.length;
     final built = buildExerciseProgress();
-    final trainingType = built['TrainingType'] as String;
     final perExercise = built['PerExercise'] as Map<String, dynamic>;
-
-    double progress;
-
-    if (trainingType == 'time') {
-      progress = activeIndexTraining.value == 0
-          ? (1 - (duration.value.inSeconds / (training.duration! * 60))) * 100
-          : (activeIndexTraining.value / totalExercises) * 100;
-    } else {
-      // reps or mixed: count how many exercises are fully done
-      int doneCnt = 0;
-      for (int i = 0; i < totalExercises; i++) {
-        final ex = perExercise[i.toString()] as Map<String, dynamic>;
-        final type = ex['Type'] as String;
-        if (type == 'reps') {
-          final done = (ex['Done'] as int? ?? 0);
-          final total = (ex['Total'] as int? ?? 1);
-          if (done >= total) doneCnt++;
-        } else {
-          final remaining = (ex['Remaining'] as int? ?? 0);
-          if (remaining == 0) doneCnt++;
-        }
+ 
+    // ── Unified progress calculation ─────────────────────────────────────────
+    // Sum fractional completion across ALL exercises, then average.
+    // Works for time, reps, and mixed trainings consistently.
+    double totalFraction = 0.0;
+ 
+    for (int i = 0; i < totalExercises; i++) {
+      final ex = perExercise[i.toString()] as Map<String, dynamic>;
+      final type = ex['Type'] as String;
+ 
+      if (type == 'reps') {
+        final done = (ex['Done'] as int? ?? 0);
+        final total = (ex['Total'] as int? ?? 1);
+        totalFraction += total > 0 ? (done / total).clamp(0.0, 1.0) : 0.0;
+      } else {
+        // time
+        final totalSecs = (ex['Total'] as int? ?? 1);
+        final remaining = (ex['Remaining'] as int? ?? 0);
+        final elapsed = totalSecs - remaining;
+        totalFraction +=
+            totalSecs > 0 ? (elapsed / totalSecs).clamp(0.0, 1.0) : 0.0;
       }
-      progress = (doneCnt / totalExercises) * 100;
     }
-
+ 
+    final progress =
+        ((totalFraction / totalExercises) * 100).clamp(0.0, 100.0);
     if (progress >= 100) completed = true;
-
+ 
     final data = {
       'TrainingRemainingTime': duration.value.inSeconds,
       'CurrentExerciseIndex': activeIndexTraining.value,
@@ -474,7 +502,7 @@ class TrainingExecutionController extends GetxController
       'LastUpdatedAt': FieldValue.serverTimestamp(),
       'TrainingStats': built,
     };
-
+ 
     await repo.updateTrainingProgress(
         uid: uid, trainingId: training.id, data: data);
     await repo.updateTrainingHistory(
@@ -489,60 +517,66 @@ class TrainingExecutionController extends GetxController
     );
     if (completed) await repo.deleteTrainingProgress(uid, training.id);
   }
-
+ 
   Map<String, dynamic> buildExerciseProgress() {
     final Map<String, dynamic> perExercise = {};
     String trainingType = '';
-
+ 
     for (int i = 0; i < training.exercises.length; i++) {
       final exercise = training.exercises[i];
-
+ 
       if (exercise.type == 'time') {
         if (trainingType.isEmpty) {
           trainingType = 'time';
         } else if (trainingType == 'reps') {
           trainingType = 'mixed';
         }
-
+ 
         final total = exercise.duration * 60;
+ 
+        // Active: live timer. Past: 0 remaining (done). Future: full duration.
         final remaining = i == activeIndexTraining.value
             ? trainingRelativeDuration.value.inSeconds
             : (_savedTimerSeconds[i] ??
                 (i < activeIndexTraining.value ? 0 : total));
-
+ 
         perExercise[i.toString()] = {
-          "Type": "time",
-          "Total": total,
-          "Remaining": remaining,
-          "Name": exercise.title,
-          "Done": 0,
+          'Type': 'time',
+          'Total': total,
+          'Remaining': remaining,
+          'Name': exercise.title,
+          'Done': 0,
         };
       }
-
+ 
       if (exercise.type == 'reps') {
         if (trainingType.isEmpty) {
           trainingType = 'reps';
         } else if (trainingType == 'time') {
           trainingType = 'mixed';
         }
-
+ 
+        // Active: live reps. Past: fully done. Future: 0.
+        final done = i == activeIndexTraining.value
+            ? completedReps.value
+            : (_savedReps[i] ??
+                (i < activeIndexTraining.value ? exercise.repetitions : 0));
+ 
         perExercise[i.toString()] = {
-          "Name": exercise.title,
-          "Type": "reps",
-          "Total": exercise.repetitions,
-          "Done": i == activeIndexTraining.value
-              ? completedReps.value
-              : (_savedReps[i] ??
-                  (i < activeIndexTraining.value ? exercise.repetitions : 0)),
-          "Remaining": 0,
+          'Name': exercise.title,
+          'Type': 'reps',
+          'Total': exercise.repetitions,
+          'Done': done,
+          'Remaining': 0,
         };
       }
     }
-
+ 
     return {
-      "TrainingType": trainingType,
-      "TrainingDuration": training.duration! * 60,
-      "PerExercise": perExercise,
+      'TrainingType': trainingType,
+      'TrainingDuration': training.duration! * 60,
+      'PerExercise': perExercise,
     };
   }
+
 }

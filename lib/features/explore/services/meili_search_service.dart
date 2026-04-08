@@ -15,6 +15,7 @@ class MeiliSearchService {
     required String index,
     required String query,
     int limit = 20,
+    int offset = 0,
     List<String>? filterCategories,
   }) async {
     try {
@@ -22,6 +23,10 @@ class MeiliSearchService {
         'q': query,
         'limit': limit,
       };
+
+      if (offset > 0) {
+        body['offset'] = offset;
+      }
 
       if (filterCategories != null && filterCategories.isNotEmpty) {
         body['filter'] =
@@ -68,6 +73,13 @@ class MeiliSearchService {
           print('NORMALIZATION ERROR: $e');
         }
       }
+      print('');
+      print('');
+      print('');
+      print(result);
+      print('');
+      print('');
+      print('');
       return result;
     } catch (e, stack) {
       print('MEILI ERROR: $e');
@@ -79,12 +91,14 @@ class MeiliSearchService {
   static Future<List<Map<String, dynamic>>> searchTrainings({
     required String query,
     int limit = 20,
+    int offset = 0,
     List<String>? categories,
   }) =>
       search(
         index: 'allTrainings',
         query: query,
         limit: limit,
+        offset: offset,
         filterCategories: categories,
       );
 
@@ -97,12 +111,14 @@ class MeiliSearchService {
   static Future<List<Map<String, dynamic>>> searchExercises({
     required String query,
     int limit = 20,
+    int offset = 0,
     List<String>? categories,
   }) =>
       search(
         index: 'allExercises',
         query: query,
         limit: limit,
+        offset: offset,
         filterCategories: categories,
       );
 }

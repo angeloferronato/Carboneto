@@ -2,7 +2,6 @@ import 'package:carboneto/features/authentication/controllers/forgot_password/fo
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';

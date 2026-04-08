@@ -1,12 +1,10 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
-import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class SuccessEmailScreen extends StatelessWidget {
@@ -26,6 +24,7 @@ class SuccessEmailScreen extends StatelessWidget {
               Text(
                 'Sua conta foi criada com sucesso!',
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 21),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: CbSizes.spaceBtwSections,),
 
@@ -35,13 +34,7 @@ class SuccessEmailScreen extends StatelessWidget {
               ),
               const SizedBox(height: CbSizes.spaceBtwSections,),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => AuthenticationRepository.instance.screenRedirect(), 
-                  child: Text(CbTexts.cbContinue)
-                ),
-              )
+              CbPrimaryBtn(label: CbTexts.cbContinue, onPressed: () => AuthenticationRepository.instance.screenRedirect(), paddingV: 15, paddingH: 45,)
             ],
           ),
         ),

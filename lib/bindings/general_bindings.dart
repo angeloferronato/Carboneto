@@ -1,6 +1,3 @@
-import 'package:carboneto/features/create/controllers/create_training_controller.dart';
-import 'package:carboneto/features/create/controllers/exercises_controller.dart';
-import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:get/get.dart';
 

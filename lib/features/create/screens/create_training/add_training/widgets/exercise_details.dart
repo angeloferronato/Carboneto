@@ -17,19 +17,39 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:video_player/video_player.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:carboneto/features/personalization/screens/profile/edit_exercise/edit_exercise.dart';
 
-class ExerciseDetailsScreen extends StatelessWidget {
+class ExerciseDetailsScreen extends StatefulWidget {
   const ExerciseDetailsScreen({super.key});
 
   @override
+  State<ExerciseDetailsScreen> createState() => _ExerciseDetailsScreenState();
+}
+
+class _ExerciseDetailsScreenState extends State<ExerciseDetailsScreen> {
+  late final ExercisePreviewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // Ensure we always get fresh arguments/state when reopening the screen.
+    Get.delete<ExercisePreviewController>(force: true);
+    _controller = Get.put(ExercisePreviewController());
+  }
+
+  @override
+  void dispose() {
+    Get.delete<ExercisePreviewController>(force: true);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ExercisePreviewController());
+    final controller = _controller;
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
     final size = MediaQuery.of(context).size;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subtitleColor =
-        isDark ? CbColors.buttonDisabled : CbColors.darkerGrey;
-    final exercise = controller.exercise;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
     final double videoWidth = size.width - (CbSizes.md * 2);
 
@@ -61,11 +81,31 @@ class ExerciseDetailsScreen extends StatelessWidget {
               ),
               actions: [
                 GestureDetector(
-                  onTap: () => CbBottomSheet.showOptions(
-                    context: context,
-                    onShare: () {},
-                    onReport: () {},
-                  ),
+                  onTap: () {
+                    final exercise = controller.exercise.value;
+                    final canEdit = uid != null && uid == exercise.authorId;
+                    CbBottomSheet.showOptions(
+                      context: context,
+                      onShare: () {},
+                      onReport: () {},
+                      extraOptions: canEdit
+                          ? [
+                              CbBottomSheetOption(
+                                label: 'Editar',
+                                icon: Icons.edit_rounded,
+                                onTap: () async {
+                                  final updated = await Get.to(
+                                    () => EditExerciseScreen(exercise: exercise),
+                                  );
+                                  if (updated is ExerciseModel) {
+                                    controller.exercise.value = updated;
+                                  }
+                                },
+                              ),
+                            ]
+                          : null,
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(right: CbSizes.md),
                     child: const Icon(Icons.more_vert,
@@ -78,6 +118,7 @@ class ExerciseDetailsScreen extends StatelessWidget {
         },
         body: Obx(() {
           final ratio = controller.aspectRatio.value;
+          final exercise = controller.exercise.value;
 
           return SingleChildScrollView(
             child: Column(
@@ -100,7 +141,7 @@ class ExerciseDetailsScreen extends StatelessWidget {
                                       CbSizes.md,
                                   height: 500,
                                   child: VideoPlayerView(
-                                    key: const ValueKey('exercise_video'),
+                                    key: ValueKey(exercise.video),
                                     url: exercise.video,
                                     isOverVideo: true,
                                     dataSourceType: DataSourceType.network,
@@ -111,7 +152,7 @@ class ExerciseDetailsScreen extends StatelessWidget {
                                       CbSizes.md,
                                   height: 250,
                                   child: VideoPlayerView(
-                                    key: const ValueKey('exercise_video'),
+                                    key: ValueKey(exercise.video),
                                     url: exercise.video,
                                     isOverVideo: true,
                                     dataSourceType: DataSourceType.network,
@@ -223,7 +264,7 @@ class ExercisePreviewController extends GetxController {
   static ExercisePreviewController get instance => Get.find();
 
   // Cache the exercise immediately so it survives route changes
-  late final ExerciseModel exercise;
+  final Rx<ExerciseModel> exercise = ExerciseModel.empty().obs;
   final Rx<double?> aspectRatio = Rx<double?>(null);
 
   @override
@@ -232,10 +273,10 @@ class ExercisePreviewController extends GetxController {
     // Read arguments once and cache — avoids null crash on fullscreen pop
     final args = Get.arguments;
     if (args is ExerciseModel) {
-      exercise = args;
+      exercise.value = args;
     } else {
       // Fallback: try to find already-cached instance
-      exercise = ExercisePreviewController.instance.exercise;
+      exercise.value = ExercisePreviewController.instance.exercise.value;
     }
     _detectOrientation();
   }
@@ -245,7 +286,7 @@ class ExercisePreviewController extends GetxController {
   Future<void> _detectOrientation() async {
     try {
       final fileInfo =
-          await DefaultCacheManager().getSingleFile(exercise.video);
+          await DefaultCacheManager().getSingleFile(exercise.value.video);
       final probe = VideoPlayerController.file(File(fileInfo.path));
       await probe.initialize();
       aspectRatio.value = probe.value.aspectRatio;

@@ -1,6 +1,7 @@
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_text.dart';
 import 'package:carboneto/features/personalization/screens/profile/widgets/primary_text.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/mappers/position_mapper.dart';
 import 'package:flutter/material.dart';
@@ -69,16 +70,28 @@ class FollowersAndFollowing extends StatelessWidget {
               onTap: positionOnTap,
               child: Column(
                 children: [
+                  position == 'adm' ? Image(image: AssetImage(CbImages.cbBlueLogo), width: MediaQuery.of(context).size.width * 0.10,) :
                   position == "Treinador"
-                      ? Icon(Icons.sports, color: CbColors.primary, size: MediaQuery.of(context).size.width * 0.08,)
-                      : HighlightText(
-                          textValue: PositionMapper()
-                              .toAbreviatte(position.toLowerCase())
-                              .toUpperCase(),
-                          textSize: MediaQuery.of(context).size.width * 0.06,
-                        ),
+                      ? Icon(
+                          Icons.sports,
+                          color: CbColors.primary,
+                          size: MediaQuery.of(context).size.width * 0.10,
+                        )
+                      : position == 'Team'
+                          ? Icon(
+                              Icons.groups,
+                              color: CbColors.primary,
+                              size: MediaQuery.of(context).size.width * 0.10,
+                            )
+                          : HighlightText(
+                              textValue: PositionMapper()
+                                  .toAbreviatte(position.toLowerCase())
+                                  .toUpperCase(),
+                              textSize:
+                                  MediaQuery.of(context).size.width * 0.06,
+                            ),
                   PrimaryText(
-                    textValue: position,
+                    textValue: position.toLowerCase(),
                   ),
                 ],
               ),

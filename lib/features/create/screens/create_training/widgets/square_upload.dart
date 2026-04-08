@@ -21,6 +21,7 @@ class SquareUploadWidget extends StatelessWidget {
     required this.uploadImageController,
     this.fileType = FileType.image,
     this.existingImageUrl,
+    this.existingVideoUrl,
   });
 
   final String label, description;
@@ -31,6 +32,10 @@ class SquareUploadWidget extends StatelessWidget {
   /// When provided (edit mode), shows this network image until the user picks a new file.
   final String? existingImageUrl;
 
+  /// When provided and [fileType] is [FileType.video], shows this network video
+  /// until the user picks a new one.
+  final String? existingVideoUrl;
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
@@ -40,9 +45,37 @@ class SquareUploadWidget extends StatelessWidget {
       final hasNewVideo = uploadImageController.selectedVideo.value != null;
       final hasExisting =
           existingImageUrl != null && existingImageUrl!.isNotEmpty;
+      final hasExistingVideo =
+          existingVideoUrl != null && existingVideoUrl!.isNotEmpty;
 
       // ── No file picked yet ───────────────────────────────────────────
       if (!hasNewFile && !hasNewVideo) {
+        // Edit mode (video): show existing network video with a swap button
+        if (fileType == FileType.video && hasExistingVideo) {
+          return Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  height: 300,
+                  width: double.infinity,
+                  child: VideoPlayerView(
+                    key: ValueKey(existingVideoUrl),
+                    url: existingVideoUrl!,
+                    dataSourceType: DataSourceType.network,
+                  ),
+                ),
+              ),
+              const SizedBox(height: CbSizes.spaceBtwItems),
+              CbPrimaryBtn(
+                label: 'Trocar vídeo',
+                fontSize: 13,
+                onPressed: onSelectFiles,
+              ),
+            ],
+          );
+        }
+
         // Edit mode: show existing network thumbnail with a swap button
         if (hasExisting) {
           return Column(
@@ -171,12 +204,17 @@ class SquareUploadWidget extends StatelessWidget {
       // Video
       return Column(
         children: [
-          SizedBox(
-            height: 300,
-            width: double.infinity,
-            child: VideoPlayerView(
-              url: uploadImageController.selectedVideo.value!.path,
-              dataSourceType: DataSourceType.file,
+          // FIX: Wrapped in ClipRRect
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: SizedBox(
+              height: 300,
+              width: double.infinity,
+              child: VideoPlayerView(
+                key: ValueKey(uploadImageController.selectedVideo.value!.path),
+                url: uploadImageController.selectedVideo.value!.path,
+                dataSourceType: DataSourceType.file,
+              ),
             ),
           ),
           const SizedBox(height: CbSizes.spaceBtwItems),

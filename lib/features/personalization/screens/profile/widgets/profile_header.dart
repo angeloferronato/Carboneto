@@ -54,16 +54,21 @@ class ProfileHeader extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: CbSizes.defaultSpace * 2.5),
+          padding: EdgeInsets.only(
+              left: CbSizes.defaultSpace * 2.5,
+              right: CbSizes.defaultSpace * 2.5,
+              bottom: controller.user.value.description.isEmpty ? 0 : 20,  
+            ),
           child: Obx(
             () => !controller.profileLoading
-                ? Text(
-                    controller.user.value.description,
-                    style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w300),
-                    textAlign: TextAlign.center,
-                  )
+                ? controller.user.value.description.isEmpty
+                    ? SizedBox.shrink()
+                    : Text(
+                        controller.user.value.description,
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w300),
+                        textAlign: TextAlign.center,
+                      )
                 : Column(
                     children: [
                       CbShimmerEffects(width: 120, height: 10),
@@ -73,7 +78,6 @@ class ProfileHeader extends StatelessWidget {
                   ),
           ),
         ),
-        const SizedBox(height: 20),
         Obx(
           () => controller.profileLoading
               ? FollowersAndFollowingShimmer()

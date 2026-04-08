@@ -1,6 +1,7 @@
 import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/common/widgets/custom_shapes/containers/focused_text_field.dart';
 import 'package:carboneto/common/widgets/login/login_no_account_text.dart';
+import 'package:carboneto/common/widgets/username_input/username_input.dart';
 import 'package:carboneto/features/authentication/controllers/signup/signup_controller.dart';
 import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/signup/widgets/position_selector.dart';
@@ -16,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
 
@@ -27,7 +27,8 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
-    final DatePickerController datePickerController = Get.put(DatePickerController());
+    final DatePickerController datePickerController =
+        Get.put(DatePickerController());
     final controller = Get.put(SignupController());
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -40,22 +41,23 @@ class _SignUpFormState extends State<SignUpForm> {
                 prefixIcon: Icon(Iconsax.user),
                 hintText: CbTexts.name,
                 controller: controller.name,
-                validator: (value) => CbValidator.validateEmptyText('Nome', value),
+                validator: (value) =>
+                    CbValidator.validateEmptyText('Nome', value),
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
-              FocusedTextField(
-                hintText: CbTexts.username,
+              UsernameField(
                 controller: controller.username,
-                prefixIcon: Icon(Iconsax.user_edit),
-                validator: (value) => CbValidator.validateEmptyText('Nome de Usuário', value),
+                isChecking: controller.isCheckingUsername,
+                isAvailable: controller.isUsernameAvailable,
+                errorMessage:
+                    controller.usernameMessage, 
+                onChanged: controller.onUsernameChanged,
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
-
-
               FocusedTextField(
                 hintText: CbTexts.email,
                 prefixIcon: Icon(Iconsax.sms),
-                controller: controller.email, 
+                controller: controller.email,
                 validator: (value) => CbValidator.validateEmail(value),
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
@@ -66,37 +68,35 @@ class _SignUpFormState extends State<SignUpForm> {
                   validator: (value) => CbValidator.validatePassword(value),
                   controller: controller.password,
                   suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.hidePassword.value ?
-                        Iconsax.eye_slash : 
-                        Iconsax.eye
-                    ),
-                    onPressed: () => controller.hidePassword.value = !controller.hidePassword.value,
-                    ),
+                    icon: Icon(controller.hidePassword.value
+                        ? Iconsax.eye_slash
+                        : Iconsax.eye),
+                    onPressed: () => controller.hidePassword.value =
+                        !controller.hidePassword.value,
+                  ),
                   obscureText: controller.hidePassword.value,
                 ),
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
- 
               FocusedTextField(
                 controller: controller.description,
                 hintText: 'Descrição(opcional)',
                 maxLines: 2,
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
-
               FocusedTextField(
                 hintText: 'Data de Nascimento',
                 controller: controller.birthDate,
                 readOnly: true,
                 prefixIcon: Icon(Icons.cake_rounded),
-                onTap: () => datePickerController.showDatePickerAction(controller.birthDate),
+                onTap: () => datePickerController
+                    .showDatePickerAction(controller.birthDate),
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
-
               SettingsItem(
-                title: 'Perfil privado', 
-                subtitle: 'Quando ativado, apenas pessoas autorizadas poderão ver seu perfil.', 
+                title: 'Perfil privado',
+                subtitle:
+                    'Quando ativado, apenas pessoas autorizadas poderão ver seu perfil.',
                 onTap: null,
                 showErrorMessage: false,
                 trailing: Obx(
@@ -109,22 +109,21 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
-              
-              CbCountrySelector(showLabel: false,),
+              CbCountrySelector(
+                showLabel: false,
+              ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Posição',
+                    'Função',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
-
                   PositionSelector(),
                 ],
               ),
               SizedBox(height: CbSizes.spaceBtwInputFields),
-
             ],
           ),
         ),
@@ -132,8 +131,9 @@ class _SignUpFormState extends State<SignUpForm> {
           children: [
             Obx(
               () => Checkbox(
-                value: controller.policyPrivacy.value, 
-                onChanged: (value) => controller.policyPrivacy.value = !controller.policyPrivacy.value,
+                value: controller.policyPrivacy.value,
+                onChanged: (value) => controller.policyPrivacy.value =
+                    !controller.policyPrivacy.value,
               ),
             ),
             TermsText(),
@@ -141,13 +141,12 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         SizedBox(height: CbSizes.spaceBtwSections),
         SizedBox(
-          width: double.infinity,
-          child: CbPrimaryBtn(
-            label: CbTexts.createAccountTitle, 
-            onPressed: () => controller.signup(),
-            paddingV: 20,
-          )
-        ),
+            width: double.infinity,
+            child: CbPrimaryBtn(
+              label: CbTexts.createAccountTitle,
+              onPressed: () => controller.signup(),
+              paddingV: 20,
+            )),
         SizedBox(height: CbSizes.spaceBtwSections),
         LoginNoAccountText(
           firstText: CbTexts.alreadyHaveAccount,
@@ -158,4 +157,3 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 }
-

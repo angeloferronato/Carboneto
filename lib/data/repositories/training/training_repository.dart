@@ -446,9 +446,9 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future<void> deleteImageFromFirebase(String imageUrl) async {
+  Future<void> deleteFileFromFirebase(String fileUrl) async {
     try {
-      final ref = FirebaseStorage.instance.refFromURL(imageUrl);
+      final ref = FirebaseStorage.instance.refFromURL(fileUrl);
       await ref.delete();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;

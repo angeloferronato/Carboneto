@@ -3,57 +3,55 @@ import 'package:carboneto/features/create/screens/create_training/widgets/exerci
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SelectedExercises extends StatefulWidget {
+// COMENTARIOS PRA RPZ ENTENDER
+
+class SelectedExercises extends StatelessWidget {
   const SelectedExercises({super.key, this.tag});
 
   final String? tag;
 
   @override
-  State<SelectedExercises> createState() => _SelectedExercisesState();
-}
-
-class _SelectedExercisesState extends State<SelectedExercises> {
-  late final ExercisesController exercisesController;
-
-  @override
-  void initState() {
-    super.initState();
-    exercisesController = widget.tag != null
-        ? Get.find<ExercisesController>(tag: widget.tag)
+  Widget build(BuildContext context) {
+    final exercisesController = tag != null
+        ? Get.find<ExercisesController>(tag: tag)
         : Get.find<ExercisesController>();
+
+    return Obx(() {
+      // 1. Extraímos a lista e transformamos em lista normal ANTES de renderizar os widgets.
+      // Isso obriga o GetX a registrar que essa tela DEPENDE ativamente do selectedIndexes.
+      final indexes = exercisesController.selectedIndexes.toList();
+
+      // 2. Estado vazio de segurança: se não tiver nada, retorna um SizedBox invisível.
+      if (indexes.isEmpty) {
+        return const SizedBox.shrink(); 
+      }
+
+      return ExcludeSemantics(
+        child: ReorderableListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: true,
+          onReorder: exercisesController.onReorder,
+          proxyDecorator: _proxyDecorator,
+          // Usar .map() em vez do for clássico impede bugs de reatividade no Flutter
+          children: indexes.asMap().entries.map((entry) {
+            final loopIndex = entry.key; // 0, 1, 2...
+            final trueExerciseIndex = entry.value; // O index real lá no Controller
+            final exercise = exercisesController.exercises[trueExerciseIndex];
+
+            return ExerciseSelectionPreviewItem(
+              key: ValueKey('${exercise.id}__$loopIndex'),
+              exercise: exercise,
+              index: trueExerciseIndex, 
+              tag: tag,
+            );
+          }).toList(),
+        ),
+      );
+    });
   }
 
-  @override
-Widget build(BuildContext context) {
-  return Obx(
-    () => ExcludeSemantics(
-      child: ReorderableListView(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        buildDefaultDragHandles: true,
-        onReorder: exercisesController.onReorder,
-        proxyDecorator: _proxyDecorator,
-        children: [
-          for (int i = 0; i < exercisesController.selectedIndexes.length; i++)
-            ExerciseSelectionPreviewItem(
-              // `ReorderableListView` requires unique keys for *every* visible row.
-              // If the same exercise id appears twice (e.g. duplicated ids in a training),
-              // using only `exercise.id` will crash with "Multiple widgets used the same GlobalKey".
-              // Include the row position to guarantee uniqueness.
-              key: ValueKey(
-                '${exercisesController.exercises[exercisesController.selectedIndexes[i]].id}__$i',
-              ),
-              exercise:
-                  exercisesController.exercises[exercisesController.selectedIndexes[i]],
-              index: exercisesController.selectedIndexes[i],
-              tag: widget.tag,
-            ),
-        ],
-      ),
-    ),
-  );
-}
-
+  // O decorator pode viver perfeitamente dentro do StatelessWidget
   Widget _proxyDecorator(
     Widget child,
     int index,

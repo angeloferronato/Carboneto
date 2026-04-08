@@ -23,7 +23,7 @@ class WelcomeOrbitCircle extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isDarkMode ? Colors.blueAccent : CbColors.softGrey,
+          color: isDarkMode ? CbColors.primary : CbColors.softGrey,
           border: Border.all(width: 2, color: isDarkMode ? CbColors.primary.withValues(alpha: 1) : CbColors.darkGrey.withValues(alpha: .3))
         ),
       )

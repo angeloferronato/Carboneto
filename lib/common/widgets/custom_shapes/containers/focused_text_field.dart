@@ -14,7 +14,7 @@ class FocusedTextField extends StatelessWidget {
     this.savedInitialValue,
     this.paddingH = CbSizes.lg * 1.2,
     this.paddingV = CbSizes.md, // ✅ NEW (vertical padding)
-    this.borderRadius = 20,     // ✅ NEW (radius)
+    this.borderRadius = 20, // ✅ NEW (radius)
     this.maxLines = 1,
     this.contentPadding,
     this.onChanged,
@@ -23,6 +23,7 @@ class FocusedTextField extends StatelessWidget {
     this.maxLength,
     this.keyboardType = TextInputType.text,
     this.onTap,
+    this.isError = false,
   }) : hasErrorNotifier = ValueNotifier(false);
 
   final String hintText;
@@ -30,10 +31,11 @@ class FocusedTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
   final bool obscureText;
+  final bool isError;
 
   final double paddingH;
-  final double paddingV;       // ✅ NEW
-  final double borderRadius;   // ✅ NEW
+  final double paddingV; // ✅ NEW
+  final double borderRadius; // ✅ NEW
 
   final int? maxLines;
   final String? savedInitialValue;
@@ -51,8 +53,7 @@ class FocusedTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final EdgeInsetsGeometry finalPadding =
-        contentPadding ??
+    final EdgeInsetsGeometry finalPadding = contentPadding ??
         EdgeInsets.symmetric(
           horizontal: paddingH,
           vertical: paddingV,
@@ -70,7 +71,7 @@ class FocusedTextField extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(borderRadius), // ✅ dynamic
         border: Border.all(
-          color: const Color(0xFF223142),
+          color: isError ? CbColors.error : const Color(0xFF223142),
           width: 1,
         ),
       ),

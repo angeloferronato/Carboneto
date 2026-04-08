@@ -1,5 +1,6 @@
 import 'package:carboneto/features/training/models/creator/creator_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 
 
 class ExerciseModel {
@@ -8,6 +9,7 @@ class ExerciseModel {
   String authorId;
   List<dynamic>? categories;
   CreatorModel creator;
+  final TrainingVisibility visibility;
 
   ExerciseModel({
     required this.description,
@@ -21,6 +23,7 @@ class ExerciseModel {
     required this.thumb,
     required this.creator,
     required this.type,
+    required this.visibility,
     this.peopleCount = 1, 
   });
 
@@ -40,6 +43,10 @@ class ExerciseModel {
       creator: CreatorModel.fromMap(Map<String, dynamic>.from(data['Creator'])),
       type: data['Type'] as String? ?? '',
       peopleCount: (data['PeopleCount'] as int?) ?? 1, 
+      visibility: TrainingVisibility.values.firstWhere(
+        (e) => e.name == (data['Visibility'] ?? 'public'),
+        orElse: () => TrainingVisibility.public,
+      ),
     );
   }
 
@@ -57,6 +64,10 @@ class ExerciseModel {
       creator: CreatorModel.fromMap(Map<String, dynamic>.from(data['Creator'])),
       type: data['Type'] as String? ?? '',
       peopleCount: (data['PeopleCount'] as int?) ?? 1, 
+      visibility: TrainingVisibility.values.firstWhere(
+        (e) => e.name == (data['Visibility'] ?? 'public'),
+        orElse: () => TrainingVisibility.public,
+      ),
     );
   }
 
@@ -76,6 +87,10 @@ class ExerciseModel {
       creator: CreatorModel.fromMap(
         Map<String, dynamic>.from(data['creator'] as Map),
       ),
+      visibility: TrainingVisibility.values.firstWhere(
+        (e) => e.name == ((data['visibility'] ?? 'public') as String),
+        orElse: () => TrainingVisibility.public,
+      ),
     );
   }
 
@@ -93,6 +108,7 @@ class ExerciseModel {
       'Type': type,
       'Creator': creator.toMap(),
       'PeopleCount': peopleCount, 
+      'Visibility': visibility.name,
     };
   }
 
@@ -100,5 +116,6 @@ class ExerciseModel {
     description: '', title: '', repetitions: 0, video: '', id: '',
     duration: 0, authorId: '', categories: [], thumb: '',
     creator: CreatorModel.empty(), type: '', peopleCount: 1,
+    visibility: TrainingVisibility.public,
   );
 }

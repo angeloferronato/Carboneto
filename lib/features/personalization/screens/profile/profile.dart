@@ -78,6 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Obx(() {
                   final isCoach = controller.user.value.position == 'Treinador';
+                  final isTeam = controller.user.value.position == 'Team';
                   return Column(
                     children: [
                       ProfileTabBar(
@@ -85,6 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onTabChanged: (tab) =>
                             setState(() => _selectedTab = tab),
                         isCoach: isCoach,
+                        isTeam: isTeam,
                       ),
                       Container(
                         height: 1,
@@ -95,15 +97,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }),
               ),
             ),
-
             if (_selectedTab == ProfileTab.treinos)
               ProfileTrainingsList(userId: widget.userId),
-
             if (_selectedTab == ProfileTab.painel)
               SliverToBoxAdapter(
                 child: ProfileAthletePanel(userId: widget.userId),
               ),
-
             const SliverToBoxAdapter(child: SizedBox(height: 100)),
           ],
         ),

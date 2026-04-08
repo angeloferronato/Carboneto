@@ -9,6 +9,7 @@ import 'package:carboneto/features/create/screens/create_training/widgets/create
 import 'package:carboneto/features/create/screens/create_training/widgets/form_label.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/number_dropdown.dart';
 import 'package:carboneto/features/create/screens/create_training/widgets/tag_selector.dart';
+import 'package:carboneto/features/create/screens/create_training/widgets/training_visibility_sector.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:file_picker/file_picker.dart';
@@ -99,6 +100,13 @@ class CreateExerciseScreen extends StatelessWidget {
                 const FormLabel(label: 'Adicionar Tags'),
                 const SizedBox(height: 10),
                 TagSelector(controllerTag: CbTexts.exerciseControllerTag,),
+                const SizedBox(height: 25),
+                const FormLabel(label: 'Visibilidade'),
+                const SizedBox(height: 12),
+                TrainingVisibilitySelector(
+                  externalVisibility: createExerciseController.visibility,
+                  onChanged: createExerciseController.setVisibility,
+                ),
                 const SizedBox(height: 25),
                 Column(
                   children: [

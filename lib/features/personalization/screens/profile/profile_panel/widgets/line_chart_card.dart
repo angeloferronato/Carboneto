@@ -83,7 +83,6 @@ class _ChartCardState extends State<ChartCard> {
 
   String _tooltipText(int index) {
     final v = widget.data[index];
-    final label = index < widget.labels.length ? widget.labels[index] : '';
     final formatted = switch (widget.metric) {
       ChartMetric.acerto => '${v.toStringAsFixed(1)}%',
       ChartMetric.duracao => '${v.toStringAsFixed(0)} min',

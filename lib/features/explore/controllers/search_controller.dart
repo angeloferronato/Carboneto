@@ -46,6 +46,21 @@ class CbSearchController extends GetxController {
 
   String? get _currentUserId => FirebaseAuth.instance.currentUser?.uid;
 
+  bool _canViewExercise(ExerciseModel exercise) {
+    final uid = _currentUserId;
+    if (uid == null || uid.isEmpty) return true;
+    if (exercise.authorId == uid) return true;
+
+    switch (exercise.visibility) {
+      case TrainingVisibility.public:
+        return true;
+      case TrainingVisibility.private:
+        return false;
+      case TrainingVisibility.followers:
+        return _followingIds.contains(exercise.authorId);
+    }
+  }
+
   List<String>? get _trainingFilters {
     final tags = selectedCategories
         .where((c) => !_kTabCategories.contains(c))
@@ -256,6 +271,7 @@ class CbSearchController extends GetxController {
   }
 
   Future<void> _searchExercises(String q) async {
+    await _loadFollowingIds();
     final hits = await MeiliSearchService.searchExercises(query: q);
     final parsed = <ExerciseModel>[];
     for (final hit in hits) {
@@ -265,7 +281,7 @@ class CbSearchController extends GetxController {
         debugPrint('EXERCISE PARSE ERROR: $e\nhit: $hit');
       }
     }
-    exerciseResults.assignAll(parsed);
+    exerciseResults.assignAll(parsed.where(_canViewExercise).toList());
   }
 
   Future<void> _searchUsers(String q,

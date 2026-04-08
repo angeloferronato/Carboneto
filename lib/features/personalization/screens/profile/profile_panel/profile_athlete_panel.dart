@@ -82,6 +82,7 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
     return Obx(() {
       final isAuthUser = _baseCtrl.isAuthUser;
       final isPrivate = _baseCtrl.user.value.isPrivate && !isAuthUser;
+      final isCarbs = widget.userId == '2RZob7cJyNXJpSNn7eJpxkxHPhx2';
 
       // Show private state — same pattern as ProfileTrainingsList
       if (isPrivate) {
@@ -107,7 +108,7 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            StatsRow(stats: stats, isDark: isDark),
+            StatsRow(stats: stats, isDark: isDark, isCarbs: isCarbs),
             const SizedBox(height: 30),
             CalendarCard(
               weekStart: _currentWeekStart,

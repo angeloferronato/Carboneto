@@ -1,6 +1,8 @@
 import 'package:carboneto/common/styles/spacing_styles.dart';
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/data/repositories/authentication/authentication_repository.dart';
 import 'package:carboneto/features/authentication/controllers/verify_email/verify_email_controller.dart';
+import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/constants/text_strings.dart';
@@ -48,26 +50,19 @@ class VerifyEmailScreen extends StatelessWidget {
 
               Text(
                 'Parabéns! Sua conta foi criada com sucesso. Entre e comece treinar com uma variedade incrível de treinos e exercícios.',
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: CbSizes.spaceBtwItems,),
+              const SizedBox(height: CbSizes.spaceBtwItems ,),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => controller.checkEmailVerificationStatus(),
-                  child: Text(
-                    CbTexts.cbContinue,
-                  ),
-                ),
-              ),
+              CbPrimaryBtn(label: CbTexts.cbContinue, onPressed: () => controller.checkEmailVerificationStatus(), paddingV: 15, paddingH: 45,),
               const SizedBox(height: CbSizes.spaceBtwItems,),
 
               TextButton(
                 onPressed: () => controller.sendEmailVerification(), 
                 child: Text(
-                  'Reenviar Email'
+                  'Reenviar Email',
+                  style: TextStyle(color: CbColors.lightGrey),
                 )
               ),
             ],

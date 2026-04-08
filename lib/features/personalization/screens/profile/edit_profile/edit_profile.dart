@@ -161,7 +161,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Posição Favorita',
+                          'Função',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
                         ),
                         SizedBox(

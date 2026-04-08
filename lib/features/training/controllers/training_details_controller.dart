@@ -3,6 +3,7 @@ import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/features/create/controllers/create_training_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
+import 'package:carboneto/features/training/screens/training_details/widgets/resume_training_sheet.dart';
 import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -11,6 +12,9 @@ import 'package:carboneto/utils/helpers/network_manager.dart';
 import 'package:carboneto/utils/popups/full_screen_loader.dart';
 import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carboneto/data/repositories/follow/follow_repository.dart';
+import 'package:carboneto/utils/constants/enums.dart';
+import 'package:carboneto/features/training/models/exercise/exercise_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +25,9 @@ class TrainingDetailsController extends GetxController {
   final UserController userController = Get.put(UserController());
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
   final CreateTrainingController createTrainingController = Get.put(CreateTrainingController());
+  final FollowRepository followRepository = Get.put(FollowRepository());
+
+  final RxList<String> _followingIds = <String>[].obs;
 
   final isLoadingStats = false.obs;
   final isLoading = false.obs;
@@ -163,8 +170,33 @@ class TrainingDetailsController extends GetxController {
 
   Future<TrainingModel> fetchExercises(TrainingModel training) async {
     isLoading.value = true;
-    training.exercises = await exerciseRepository
+    final uid = userController.user.value.id;
+    if (uid.isNotEmpty) {
+      try {
+        final relations = await followRepository.loadRelations(uid);
+        final dynamic rawFollowing = relations.length > 1 ? relations[1] : null;
+        _followingIds.assignAll(List<String>.from(rawFollowing as Iterable? ?? const []));
+      } catch (_) {}
+    }
+
+    bool canView(ExerciseModel e) {
+      if (uid.isNotEmpty && e.authorId == uid) return true;
+      switch (e.visibility) {
+        case TrainingVisibility.public:
+          return true;
+        case TrainingVisibility.private:
+          return false;
+        case TrainingVisibility.followers:
+          return uid.isNotEmpty && _followingIds.contains(e.authorId);
+      }
+      // Defensive fallback (should be unreachable).
+      // ignore: dead_code
+      return true;
+    }
+
+    final fetched = await exerciseRepository
         .fetchSpecificExerciseDetails(training.exercisesId ?? []);
+    training.exercises = fetched.where(canView).toList();
     isLoading.value = false;
     return training;
   }
@@ -203,10 +235,70 @@ class TrainingDetailsController extends GetxController {
     });
   }
 
-  Future<dynamic> showStartTrainingOptions(
-      TrainingModel training, bool isDarkMode) {
+  Future<void> showStartTrainingOptions(
+      TrainingModel training, bool isDarkMode) async {
     stopViewTracking();
-    return Get.defaultDialog(
+ 
+    // ── 1. Check for existing progress ──────────────────────────────────────
+    DocumentSnapshot? progressSnapshot;
+    try {
+      final uid = userController.user.value.id;
+      if (uid.isNotEmpty) {
+        progressSnapshot =
+            await trainingRepository.getTrainingProgress(uid, training.id);
+      }
+    } catch (e) {
+      debugPrint('Progress check failed: $e');
+    }
+ 
+    final _progressData =
+        progressSnapshot?.data() as Map<String, dynamic>?;
+    final _savedProgress = (_progressData?['TrainingProgress'] as int?) ?? 0;
+ 
+    // Meaningful progress = user advanced at least one exercise
+    // OR the training timer has ticked down by at least 15 seconds.
+    final _exerciseIndex = (_progressData?['CurrentExerciseIndex'] as int?) ?? 0;
+    final _remainingTime = (_progressData?['TrainingRemainingTime'] as int?) ?? 0;
+    final _totalDuration = (_progressData?['TrainingDuration'] as int?) ?? 0;
+    final _elapsedTime = _totalDuration - _remainingTime;
+ 
+    final hasMeaningfulProgress = _exerciseIndex > 0 || _elapsedTime >= 15;
+ 
+    final hasProgress = progressSnapshot != null &&
+        progressSnapshot.exists &&
+        _progressData?['Status'] == 'in_progress' &&
+        hasMeaningfulProgress;
+ 
+    // ── 2a. Existing progress → resume sheet ────────────────────────────────
+    if (hasProgress) {
+      final savedProgress = _savedProgress;
+ 
+      await showModalBottomSheet(
+        context: Get.context!,
+        showDragHandle: false,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        useSafeArea: true,
+        builder: (_) => ResumeTrainingSheet(
+          isDark: isDarkMode,
+          progress: savedProgress,
+          onContinue: () {
+            Get.back(); // close sheet
+            startTraining(training, resumeFromSaved: true);
+          },
+          onStartOver: () {
+            Get.back(); // close sheet
+            startTraining(training, resumeFromSaved: false);
+          },
+        ),
+      );
+ 
+      if (!hasViewBeenCounted.value) startViewTracking(training);
+      return;
+    }
+ 
+    // ── 2b. No progress → original confirmation dialog ──────────────────────
+    await Get.defaultDialog(
       titlePadding: const EdgeInsets.only(top: CbSizes.lg),
       contentPadding: const EdgeInsets.all(CbSizes.lg),
       title: 'Você deseja continuar?',
@@ -232,11 +324,12 @@ class TrainingDetailsController extends GetxController {
     );
   }
 
-  Future<void> startTraining(TrainingModel training) async {
+  Future<void> startTraining(TrainingModel training,
+      {bool resumeFromSaved = true}) async {
     try {
       CbFullScreenLoader.openLoadingDialog(
           'Estamos iniciando seu treino...', CbImages.loadingAnimation);
-
+ 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         CbLoaders.errorSnackBar(
@@ -245,7 +338,16 @@ class TrainingDetailsController extends GetxController {
         CbFullScreenLoader.stopLoading();
         return;
       }
-
+ 
+      // ── Delete saved progress when the user chooses "start from zero" ──────
+      if (!resumeFromSaved) {
+        final uid = userController.user.value.id;
+        if (uid.isNotEmpty) {
+          await trainingRepository.deleteTrainingProgress(uid, training.id);
+        }
+      }
+ 
+      // ── Count view if not yet recorded ──────────────────────────────────────
       if (!hasViewBeenCounted.value) {
         final uid = userController.user.value.id;
         final canCount = await trainingRepository.canCountView(
@@ -261,7 +363,7 @@ class TrainingDetailsController extends GetxController {
           viewsCount.value++;
         }
       }
-
+ 
       CbFullScreenLoader.stopLoading();
       Get.to(() => TrainingExecution(training: training));
     } catch (e) {

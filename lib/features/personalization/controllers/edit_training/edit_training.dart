@@ -163,23 +163,21 @@ class EditTrainingController extends GetxController {
         if (newUrl != null) {
           if (training.thumbnail.isNotEmpty) {
             await _trainingRepository
-                .deleteImageFromFirebase(training.thumbnail);
+                .deleteFileFromFirebase(training.thumbnail);
           }
           thumbnailUrl = newUrl;
         }
       }
 
-      final validIndexes = _distinctPreservingOrder(
-        exercisesController.selectedIndexes.where(
-          (i) => i >= 0 && i < exercisesController.exercises.length,
-        ),
+      // Allow duplicated exercises: preserve the exact list order (including repeats).
+      final validIndexes = exercisesController.selectedIndexes.where(
+        (i) => i >= 0 && i < exercisesController.exercises.length,
       );
       final updatedExercises = <ExerciseModel>[];
-      final seenExerciseIds = <String>{};
       for (final i in validIndexes) {
         final exercise = exercisesController.exercises[i];
         if (exercise.id.isEmpty) continue;
-        if (seenExerciseIds.add(exercise.id)) updatedExercises.add(exercise);
+        updatedExercises.add(exercise);
       }
 
       final updatedLevel = TrainingModel.parseStringToLevel(
@@ -217,7 +215,7 @@ class EditTrainingController extends GetxController {
       isLoading.value = true;
 
       if (training.thumbnail.isNotEmpty) {
-        await _trainingRepository.deleteImageFromFirebase(training.thumbnail);
+        await _trainingRepository.deleteFileFromFirebase(training.thumbnail);
       }
       await _trainingRepository.deleteTrainingFromFirebase(training.id);
 

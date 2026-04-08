@@ -12,13 +12,12 @@ class TagSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void openTagSearch() {
-      Get.to(TagSearchScreen(
-        tag: controllerTag,
-      ));
+      Get.to(TagSearchScreen(tag: controllerTag));
     }
 
     final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
-    final controller = Get.put(TagController(), tag: controllerTag);
+  
+    final controller = Get.find<TagController>(tag: controllerTag);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -33,10 +32,7 @@ class TagSelector extends StatelessWidget {
                     return Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [
-                            Color(0x31467CB8),
-                            Color(0x61152E42),
-                          ],
+                          colors: [Color(0x31467CB8), Color(0x61152E42)],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         ),
@@ -55,8 +51,9 @@ class TagSelector extends StatelessWidget {
                           Text(
                             tag,
                             style: TextStyle(
-                              color:
-                                  isDarkTheme ? CbColors.white : CbColors.black,
+                              color: isDarkTheme
+                                  ? CbColors.white
+                                  : CbColors.black,
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Plus Jakarta Sans',
                             ),
