@@ -1,4 +1,4 @@
-import 'package:carboneto/features/authentication/screens/login/login.dart';
+import 'package:carboneto/features/authentication/screens/signup/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -23,7 +23,7 @@ class OnboardingController extends GetxController {
       final storage = GetStorage();
       storage.write('isFirstTime', false);
       
-      Get.offAll(() => LoginScreen());
+      Get.offAll(() => SignUpScreen());
     } else {
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),

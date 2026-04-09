@@ -16,7 +16,7 @@ class ConfirmBannerUploadScreen extends StatelessWidget {
     final UploadImageController uploadImageController = Get.put(UploadImageController());
     return Scaffold(
       appBar: CbAppBar(
-        title: Text('Pré-Vizualização', style: Theme.of(context).textTheme.headlineSmall,),
+        title: Text('Pré-Visualização', style: Theme.of(context).textTheme.headlineSmall,),
         leadingIcon: Icons.clear_rounded,
       ),
       body: SingleChildScrollView(

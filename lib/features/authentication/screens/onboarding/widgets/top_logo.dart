@@ -1,5 +1,4 @@
 import 'package:carboneto/features/training/screens/home/widgets/notifications_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';

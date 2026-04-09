@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:carboneto/common/widgets/appbar/appbar.dart';
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/create/controllers/upload_image_controller.dart';
 import 'package:carboneto/features/personalization/controllers/edit_profile/edit_profile_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
+import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,7 +21,7 @@ class ConfirmPhotoUploadScreen extends StatelessWidget {
     final isDarkMode = CbHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: CbAppBar(
-        title: Text('Pré-Vizualização', style: Theme.of(context).textTheme.headlineSmall,),
+        title: Text('Pré-Visualização', style: Theme.of(context).textTheme.headlineSmall,),
         leadingIcon: Icons.clear_rounded,
         leadingOnPressed: () => Get.back(),
       ),
@@ -44,20 +46,18 @@ class ConfirmPhotoUploadScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // child: CbRoundedImage(imageUrl: '', isFileImage: true, file: uploadImageController.selectedFile.value,),
             ),
           )
         ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(CbSizes.defaultSpace),
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () => controller.uploadProfileImageToFirebase(), 
-            child: Text('Continuar'),
-          ),
-        ),
+        child: CbPrimaryBtn(
+            label: CbTexts.cbContinue, 
+            onPressed: () => controller.uploadProfileImageToFirebase(),
+            paddingV: 15,
+            paddingH: 40,
+          )
       ),
     );
   }

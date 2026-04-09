@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
@@ -20,7 +19,8 @@ class UploadImageController extends GetxController {
   final selectedVideo = Rx<File?>(null);
   final List<String> allowedExtensions = ['mp4', 'mov', 'avi', 'mkv', 'webm'];
 
-  Future<void> pickSingleFile({UploadImageFormat format = UploadImageFormat.normal}) async {
+  Future<void> pickSingleFile(
+      {UploadImageFormat format = UploadImageFormat.normal}) async {
     XFile? result = await ImagePicker().pickImage(
       source: ImageSource.gallery,
     );
@@ -31,42 +31,47 @@ class UploadImageController extends GetxController {
     final croppedFile = await ImageCropper().cropImage(
       sourcePath: result.path,
       aspectRatio: CropAspectRatio(
-        ratioX: format == UploadImageFormat.banner ? 3 : 1, 
-        ratioY: format == UploadImageFormat.banner ? 2 : 1
+        ratioX: format == UploadImageFormat.banner ? 3 : 1,
+        ratioY: format == UploadImageFormat.banner ? 2 : 1,
       ),
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Ajustar imagem',
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-          ],
-          lockAspectRatio: [UploadImageFormat.square, UploadImageFormat.banner].contains(format),
+          statusBarLight: !isDarkMode,
+          cropStyle: format == UploadImageFormat.square 
+              ? CropStyle.circle
+              : CropStyle.rectangle,
+          aspectRatioPresets: format == UploadImageFormat.banner
+              ? [CropAspectRatioPreset.ratio3x2]
+              : [CropAspectRatioPreset.square],
+          lockAspectRatio: [UploadImageFormat.square, UploadImageFormat.banner]
+              .contains(format),
           toolbarColor: isDarkMode ? CbColors.dark : CbColors.white,
           toolbarWidgetColor: isDarkMode ? CbColors.white : CbColors.dark,
           backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
-          //dimmedLayerColor: isDarkMode ? CbColors.dark : CbColors.white,
           activeControlsWidgetColor: CbColors.primary,
         ),
         IOSUiSettings(
-          title: 'Ajustar imagem'
-        )
-      ]
+          title: 'Ajustar imagem',
+          cropStyle: format == UploadImageFormat.square 
+              ? CropStyle.circle
+              : CropStyle.rectangle,
+        ),
+      ],
     );
-  
+
     if (croppedFile != null) {
       selectedFile.value = File(croppedFile.path);
     } else {
       selectedFile.value = null;
-    } 
+    }
   }
 
-
   Future<void> pickSingleVideo(int maxVideoSizeMB) async {
-    CbFullScreenLoader.openLoadingDialog('Estamos verificando seu vídeo...', CbImages.loadingAnimation);
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: allowedExtensions
-    );
+    CbFullScreenLoader.openLoadingDialog(
+        'Estamos verificando seu vídeo...', CbImages.loadingAnimation);
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: allowedExtensions);
 
     if (result != null && result.files.single.path != null) {
       File file = File(result.files.single.path!);
@@ -77,7 +82,8 @@ class UploadImageController extends GetxController {
       if (fileSizeInMB > maxVideoSizeMB) {
         CbLoaders.warningSnackBar(
           title: "Arquivo muito grande",
-          message: "O vídeo selecionado tem ${fileSizeInMB.toStringAsFixed(1)} MB. O limite é de $maxVideoSizeMB MB.",
+          message:
+              "O vídeo selecionado tem ${fileSizeInMB.toStringAsFixed(1)} MB. O limite é de $maxVideoSizeMB MB.",
         );
         selectedVideo.value = null;
         CbFullScreenLoader.stopLoading();
@@ -100,14 +106,15 @@ class UploadImageController extends GetxController {
     return result?.file;
   }
 
-  Future<File?> compressImage(File file,{bool reduceSize = false}) async {
+  Future<File?> compressImage(File file, {bool reduceSize = false}) async {
     final directory = await getTemporaryDirectory();
 
-    final targetPath = '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.webp';
+    final targetPath =
+        '${directory.path}/${DateTime.now().millisecondsSinceEpoch}.webp';
 
     final size = reduceSize ? 512 : 1080;
     final result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path, 
+      file.absolute.path,
       targetPath,
       format: CompressFormat.webp,
       minHeight: size,
@@ -117,5 +124,4 @@ class UploadImageController extends GetxController {
 
     return File(result!.path);
   }
-
 }

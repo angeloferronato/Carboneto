@@ -8,65 +8,58 @@ class OnboardingPage extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.image,
-    this.clipper,
   });
 
   final String title;
   final String subtitle;
   final String image;
-  final CustomClipper<Path>? clipper;
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = CbHelperFunctions.screenHeight();
-    final screenWidth = CbHelperFunctions.screenWidth();
+    final isDark = CbHelperFunctions.isDarkMode(context);
 
-    return Stack(
+    return Column(
       children: [
-        ClipPath(
-          clipper: clipper,
-          child: Container(
-            color: CbColors.primary,
-            width: screenWidth,
-            height: screenHeight,
-          ),
-        ),
-        Positioned(
-          top: screenHeight * 0.10,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Image.asset(
-              image,
-              width: screenWidth*0.9,
+        Expanded(
+          flex: 6,
+          child: SafeArea(
+            bottom: false,
+            child: Center( 
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Image.asset(image, fit: BoxFit.contain),
+              ),
             ),
           ),
         ),
-        Positioned(
-          top: screenHeight * 0.63,
-          left: 0,
-          right: 0,
+
+        Expanded(
+          flex: 4,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: CbHelperFunctions.isDarkMode(context)? CbColors.white: CbColors.textPrimary,
-                    fontSize: screenWidth * 0.063,  
-                    fontWeight: FontWeight.w900,
+                    color: isDark ? CbColors.white : CbColors.textPrimary,
+                    fontSize: 28, 
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                    height: 1.2,
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.015), 
+                const SizedBox(height: 16),
                 Text(
                   subtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: CbHelperFunctions.isDarkMode(context)? CbColors.textSecondary: CbColors.darkerGrey,
-                    fontSize: screenWidth * 0.035,  
+                    color: isDark ? CbColors.textSecondary : CbColors.darkerGrey,
+                    fontSize: 15,
                     fontWeight: FontWeight.w400,
+                    height: 1.5, 
                   ),
                 ),
               ],

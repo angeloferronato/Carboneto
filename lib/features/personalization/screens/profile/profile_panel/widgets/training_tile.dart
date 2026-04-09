@@ -75,24 +75,33 @@ class TrainingTile extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .labelSmall!
-                                .copyWith(color: progressColor, fontWeight: FontWeight.w300),
+                                .copyWith(
+                                    color: progressColor,
+                                    fontWeight: FontWeight.w300),
                           ),
-                          Icon(
-                            Icons.hourglass_top_rounded,
-                            size: 12,
-                            color: progressColor,
-                            fontWeight: FontWeight.w300
-                          )
+                          Icon(done? Icons.check_rounded : Icons.hourglass_top_rounded,
+                              size: 12,
+                              color: progressColor,
+                              fontWeight: FontWeight.w300)
                         ],
                       ),
-                      Text(' • ', style: TextStyle(fontWeight: FontWeight.w300),),
                       trainingPct > 0
-                          ? Text(
-                              '${(trainingPct * 100).toStringAsFixed(0)}% eff',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelSmall!
-                                  .copyWith(color: effColor, fontWeight: FontWeight.w300),
+                          ? Row(
+                              children: [
+                                Text(
+                                  ' • ',
+                                  style: TextStyle(fontWeight: FontWeight.w300),
+                                ),
+                                Text(
+                                  '${(trainingPct * 100).toStringAsFixed(0)}% eff',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelSmall!
+                                      .copyWith(
+                                          color: effColor,
+                                          fontWeight: FontWeight.w300),
+                                )
+                              ],
                             )
                           : const SizedBox.shrink(),
                     ],

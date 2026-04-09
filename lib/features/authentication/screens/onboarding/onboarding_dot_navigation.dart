@@ -1,6 +1,5 @@
 import 'package:carboneto/features/authentication/controllers/onboarding/onboarding_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
-import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -11,21 +10,19 @@ class OnboardingDotNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = OnboardingController.instance;
 
-    return Positioned(
-        bottom: CbHelperFunctions.screenHeight() / 2.85,
-        left: CbHelperFunctions.screenWidth() * 0.39,
-        child: SmoothPageIndicator(
-          controller: controller.pageController,
-          onDotClicked: controller.dotNavigationClick,
-          count: 3,
-          effect: const ExpandingDotsEffect(
-            dotHeight: 10,
-            dotWidth: 10,
-            expansionFactor: 3.6,
-            spacing: 11,
-            strokeWidth: 14,
-            activeDotColor: CbColors.primary,
-          ),
-        ));
+    // No Positioned. We will place this naturally in the Column later.
+    return SmoothPageIndicator(
+      controller: controller.pageController,
+      onDotClicked: controller.dotNavigationClick,
+      count: 3,
+      effect: const ExpandingDotsEffect(
+        dotHeight: 8,
+        dotWidth: 8,
+        expansionFactor: 3.6,
+        spacing: 11,
+        strokeWidth: 14,
+        activeDotColor: CbColors.primary,
+      ),
+    );
   }
 }

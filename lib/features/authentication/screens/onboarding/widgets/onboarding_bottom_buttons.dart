@@ -13,46 +13,47 @@ class OnboardingBottomButtons extends StatelessWidget {
     final screenHeight = CbHelperFunctions.screenHeight();
     final screenWidth = CbHelperFunctions.screenWidth();
 
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: screenHeight * 0.035,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-        child: Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: screenHeight * 0.06,
-                child: TextButton(
-                  style: ButtonStyle(
-                    overlayColor: WidgetStateProperty.all(Colors.transparent),
-                    splashFactory: NoSplash.splashFactory,
-                  ),
-                  onPressed: () => OnboardingController.instance.skipPage(),
-                  child: const Text(
-                    CbTexts.skip,
-                    style: TextStyle(
-                      color: CbColors.primary,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
+    // Removed the Positioned widget and just returned the Padding
+    return Padding(
+      // Combined your bottom padding to match the previous visual intent
+      padding: EdgeInsets.only(
+        left: screenWidth * 0.08, 
+        right: screenWidth * 0.08, 
+        bottom: (screenHeight * 0.02),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: screenHeight * 0.06,
+              child: TextButton(
+                style: ButtonStyle(
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                  splashFactory: NoSplash.splashFactory,
+                ),
+                onPressed: () => OnboardingController.instance.skipPage(),
+                child: const Text(
+                  CbTexts.skip,
+                  style: TextStyle(
+                    color: CbColors.primary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
             ),
-            SizedBox(width: screenWidth * 0.03),
-            Expanded(
-              child: SizedBox(
-                child: CbPrimaryBtn(
-                  label: CbTexts.next, 
-                  onPressed: () => OnboardingController.instance.nextPage(),
-                  paddingV: 15,
-                ),
+          ),
+          SizedBox(width: screenWidth * 0.03),
+          Expanded(
+            child: SizedBox(
+              child: CbPrimaryBtn(
+                label: CbTexts.next, 
+                onPressed: () => OnboardingController.instance.nextPage(),
+                paddingV: 15,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
