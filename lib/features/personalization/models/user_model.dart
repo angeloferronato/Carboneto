@@ -12,7 +12,7 @@ class UserModel {
   final bool isVerified;
   final List<dynamic>? userTrainings;
   final String? birthDate;
-  final bool isPrivate;
+  bool isPrivate;
   final String banner;
   final int? followersCount;
   final int? followingCount;

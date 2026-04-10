@@ -9,9 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-const _kCatMelhores   = 'Melhores';
-const _kCatTreinos    = 'Treinos';
-const _kCatUsuarios   = 'Usuários';
+const _kCatMelhores = 'Melhores';
+const _kCatTreinos = 'Treinos';
+const _kCatUsuarios = 'Usuários';
 const _kCatExercicios = 'Exercícios';
 
 const _kTabCategories = {
@@ -26,21 +26,20 @@ class CbSearchController extends GetxController {
 
   final TextEditingController searchTextController = TextEditingController();
 
-  final RxList<TrainingModel>   results         = <TrainingModel>[].obs;
-  final RxList<UserSearchModel> userResults     = <UserSearchModel>[].obs;
-  final RxList<ExerciseModel>   exerciseResults = <ExerciseModel>[].obs;
+  final RxList<TrainingModel> results = <TrainingModel>[].obs;
+  final RxList<UserSearchModel> userResults = <UserSearchModel>[].obs;
+  final RxList<ExerciseModel> exerciseResults = <ExerciseModel>[].obs;
 
-  final RxBool   isLoading    = false.obs;
-  final RxBool   hasSearched  = false.obs;
-  final RxString query        = ''.obs;
+  final RxBool isLoading = false.obs;
+  final RxBool hasSearched = false.obs;
+  final RxString query = ''.obs;
 
   final RxString activeTab = _kCatMelhores.obs;
 
   final RxList<String> selectedCategories = <String>[_kCatMelhores].obs;
 
   /// Exposed as Rx so FilterButton can reactively read the current state.
-  final Rx<Map<String, dynamic>> activeFilters =
-      Rx<Map<String, dynamic>>({});
+  final Rx<Map<String, dynamic>> activeFilters = Rx<Map<String, dynamic>>({});
 
   final Set<String> _followingIds = {};
 
@@ -62,9 +61,8 @@ class CbSearchController extends GetxController {
   }
 
   List<String>? get _trainingFilters {
-    final tags = selectedCategories
-        .where((c) => !_kTabCategories.contains(c))
-        .toList();
+    final tags =
+        selectedCategories.where((c) => !_kTabCategories.contains(c)).toList();
     if (tags.isEmpty) return null;
 
     final expanded = <String>{};
@@ -98,45 +96,43 @@ class CbSearchController extends GetxController {
     }
 
     try {
-      query.value       = trimmed;
-      isLoading.value   = true;
+      query.value = trimmed;
+      isLoading.value = true;
       hasSearched.value = true;
 
       final tab = activeTab.value;
-      debugPrint('SEARCH tab="$tab" query="$trimmed" filters=$_trainingFilters');
+      debugPrint(
+          'SEARCH tab="$tab" query="$trimmed" filters=$_trainingFilters');
 
       if (_isSportTag) {
         await _searchTrainings(trimmed);
         userResults.clear();
         exerciseResults.clear();
-
       } else if (tab == _kCatUsuarios) {
         await _loadFollowingIds();
         await _searchUsers(trimmed, limit: 20, excludeSelf: false);
-        final verifiedOnly = activeFilters.value['verifiedOnly'] as bool? ?? false;
+        final verifiedOnly =
+            activeFilters.value['verifiedOnly'] as bool? ?? false;
         if (verifiedOnly) {
-          userResults.assignAll(userResults.where((u) => u.isVerified).toList());
+          userResults
+              .assignAll(userResults.where((u) => u.isVerified).toList());
         }
         results.clear();
         exerciseResults.clear();
-
       } else if (tab == _kCatTreinos) {
         await _searchTrainings(trimmed);
         userResults.clear();
         exerciseResults.clear();
-
       } else if (tab == _kCatExercicios) {
         await _searchExercises(trimmed);
         results.clear();
         userResults.clear();
-
       } else if (tab == _kCatMelhores) {
         exerciseResults.clear();
         await Future.wait([
           _searchTrainings(trimmed),
           _searchUsersWithFollowState(trimmed, limit: 1, excludeSelf: false),
         ]);
-
       } else {
         await Future.wait([
           _searchTrainings(trimmed),
@@ -169,10 +165,14 @@ class CbSearchController extends GetxController {
   // ─────────────────────────────────────────────
 
   Future<void> _searchTrainings(String q) async {
+    // 1. Ensure we have the latest following list for the visibility check
+    await _loadFollowingIds();
+
     final hits = await MeiliSearchService.searchTrainings(
       query: q,
       categories: _trainingFilters,
     );
+
     var parsed = <TrainingModel>[];
     for (final hit in hits) {
       try {
@@ -182,8 +182,29 @@ class CbSearchController extends GetxController {
       }
     }
 
+    parsed = parsed.where(_canViewTraining).toList();
+
     parsed = _applyClientFilters(parsed);
+
     results.assignAll(parsed);
+  }
+
+  bool _canViewTraining(TrainingModel training) {
+    final uid = _currentUserId;
+
+    if (uid != null && training.authorId == uid) return true;
+
+    switch (training.visibility) {
+      case TrainingVisibility.public:
+        return true;
+      case TrainingVisibility.private:
+        return false; 
+      case TrainingVisibility.followers:
+        return _followingIds.contains(training.authorId);
+      // ignore: unreachable_switch_default
+      default:
+        return true;
+    }
   }
 
   List<TrainingModel> _applyClientFilters(List<TrainingModel> list) {
@@ -196,7 +217,8 @@ class CbSearchController extends GetxController {
     final verifiedOnly = f['verifiedOnly'] as bool? ?? false;
     if (verifiedOnly) {
       for (final t in filtered) {
-        debugPrint('VERIFY CHECK [${t.title}] creator.isVerified=${t.creator.isVerified}');
+        debugPrint(
+            'VERIFY CHECK [${t.title}] creator.isVerified=${t.creator.isVerified}');
       }
       filtered = filtered.where((t) => t.creator.isVerified).toList();
     }
@@ -213,7 +235,8 @@ class CbSearchController extends GetxController {
     // Duration range (only apply when slider was moved from default 0–180)
     final durationMin = f['durationMin'] as int?;
     final durationMax = f['durationMax'] as int?;
-    if (durationMin != null && durationMax != null &&
+    if (durationMin != null &&
+        durationMax != null &&
         !(durationMin == 0 && durationMax == 180)) {
       filtered = filtered.where((t) {
         final d = t.duration ?? 0;
@@ -262,11 +285,16 @@ class CbSearchController extends GetxController {
 
   DifficultyLevels? _parseDifficulty(String value) {
     switch (value.toLowerCase()) {
-      case 'rookie':  return DifficultyLevels.rookie;
-      case 'pro':     return DifficultyLevels.pro;
-      case 'allstar': return DifficultyLevels.allstar;
-      case 'elite':   return DifficultyLevels.elite;
-      default:        return null;
+      case 'rookie':
+        return DifficultyLevels.rookie;
+      case 'pro':
+        return DifficultyLevels.pro;
+      case 'allstar':
+        return DifficultyLevels.allstar;
+      case 'elite':
+        return DifficultyLevels.elite;
+      default:
+        return null;
     }
   }
 
@@ -306,7 +334,8 @@ class CbSearchController extends GetxController {
           try {
             final user = UserSearchModel.fromMeili(hit);
             if (excludeSelf && user.id == _currentUserId) return null;
-            if ((activeFilters.value['verifiedOnly'] as bool? ?? false) && !user.isVerified) return null;
+            if ((activeFilters.value['verifiedOnly'] as bool? ?? false) &&
+                !user.isVerified) return null;
             return user.copyWith(isFollowing: _followingIds.contains(user.id));
           } catch (e) {
             debugPrint('USER PARSE ERROR: $e');
@@ -377,9 +406,9 @@ class CbSearchController extends GetxController {
     results.clear();
     userResults.clear();
     exerciseResults.clear();
-    hasSearched.value   = false;
-    query.value         = '';
-    activeTab.value     = _kCatMelhores;
+    hasSearched.value = false;
+    query.value = '';
+    activeTab.value = _kCatMelhores;
     activeFilters.value = {};
     selectedCategories
       ..clear()
@@ -396,7 +425,7 @@ class CbSearchController extends GetxController {
     userResults.clear();
     exerciseResults.clear();
     hasSearched.value = false;
-    query.value       = '';
+    query.value = '';
   }
 
   Future<void> _loadFollowingIds() async {

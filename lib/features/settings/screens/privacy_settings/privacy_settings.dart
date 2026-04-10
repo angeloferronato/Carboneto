@@ -20,14 +20,14 @@ class PrivacySettings extends StatelessWidget {
   }
 
   final controller = Get.put(PrivacySettingsController());
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
       appBar: CbAppBar(
         title: Text(
-          'Privacidade e social', 
+          'Privacidade e social',
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         showBackArrow: true,
@@ -35,49 +35,66 @@ class PrivacySettings extends StatelessWidget {
       body: MediaQuery.removePadding(
         context: context,
         removeBottom: true,
-        child: Obx(
-          () => !UserController.instance.profileLoading.value || !controller.isLoading.value
+        child: Obx(() => !UserController.instance.profileLoading.value ||
+                !controller.isLoading.value
             ? SingleChildScrollView(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: CbSizes.defaultSpace),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 20,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Obx(
-                      () => SettingsItem(
-                        title: 'Perfil privado', 
-                        subtitle: 'Quando ativado, apenas pessoas autorizadas poderão ver seu perfil.', 
-                        onTap: () => controller.showConfirmMessage(),
-                        trailing: Switch(
-                          value: controller.isPrivate.value,
-                          onChanged: (value) => controller.showConfirmMessage(),
-                          activeThumbColor: CbColors.white,
-                          activeTrackColor: CbColors.primary,
-                        ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: CbSizes.defaultSpace),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 20,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    SettingsItem(
-                      title: 'Política de privacidade', 
-                      subtitle: 'Saiba como seus dados são coletados, usados e protegidos.', 
-                      onTap: _openPrivacyPolicy,
-                    )
-                  ],
+                      Obx(
+                        () => SettingsItem(
+                            title: 'Perfil privado',
+                            subtitle:
+                                'Quando ativado, apenas pessoas autorizadas poderão ver seu perfil.',
+                            onTap: () => controller.showConfirmMessage(),
+                            trailing: Switch(
+                              value: controller.isPrivate.value,
+                              onChanged: (value) =>
+                                  controller.showConfirmMessage(),
+                              activeThumbColor: CbColors.white,
+                              activeTrackColor: CbColors.primary,
+                              thumbIcon: WidgetStateProperty.resolveWith<Icon?>(
+                                (Set<WidgetState> states) {
+                                  if (states.contains(WidgetState.selected)) {
+                                    return const Icon(
+                                      Icons.lock_rounded,
+                                      color: CbColors
+                                          .primary, 
+                                    );
+                                  }
+                                  return const Icon(
+                                    Icons.lock_open_rounded,
+                                    color: Colors
+                                        .grey, 
+                                  );
+                                },
+                              ),
+                            )),
+                      ),
+                      SettingsItem(
+                        title: 'Política de privacidade',
+                        subtitle:
+                            'Saiba como seus dados são coletados, usados e protegidos.',
+                        onTap: _openPrivacyPolicy,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )
+              )
             : Center(
-              child: CircularProgressIndicator(color: CbColors.primary,),
-            )
-        ),
+                child: CircularProgressIndicator(
+                  color: CbColors.primary,
+                ),
+              )),
       ),
     );
   }
 }
-
-

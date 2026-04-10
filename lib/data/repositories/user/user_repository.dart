@@ -288,18 +288,16 @@ class UserRepository extends GetxController {
   Future<void> updateSingleField(Map<String, dynamic> json) async {
     try {
       final userId = UserController.instance.user.value.id;
-
       final batch = _db.batch();
 
-      // update users
       batch.update(
         _db.collection('users').doc(userId),
         json,
       );
 
-      // sync to userSearch
       final Map<String, dynamic> searchUpdate = {};
 
+      // Sync Username
       if (json.containsKey('Username')) {
         searchUpdate['Username'] = json['Username'];
         searchUpdate['UsernameLower'] =
@@ -312,7 +310,11 @@ class UserRepository extends GetxController {
 
       if (json.containsKey('Name')) {
         searchUpdate['Name'] = json['Name'];
-        searchUpdate['NameLower'] = json['Username'].toString().toLowerCase();
+        searchUpdate['NameLower'] = json['Name'].toString().toLowerCase();
+      }
+
+      if (json.containsKey('IsPrivate')) {
+        searchUpdate['IsPrivate'] = json['IsPrivate'];
       }
 
       if (searchUpdate.isNotEmpty) {
@@ -324,16 +326,8 @@ class UserRepository extends GetxController {
       }
 
       await batch.commit();
-    } on FirebaseAuthException catch (e) {
-      throw CbFirebaseAuthException(e.code).message;
-    } on FirebaseException catch (e) {
-      throw CbFirebaseException(e.code).message;
-    } on FormatException catch (_) {
-      throw CbFormatException();
-    } on PlatformException catch (e) {
-      throw CbPlatformException(e.code).message;
     } catch (e) {
-      throw 'Algo deu errado. Por favor tente novamente';
+      throw 'Erro ao atualizar dados: $e';
     }
   }
 

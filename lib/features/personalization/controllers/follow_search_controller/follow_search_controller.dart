@@ -66,6 +66,8 @@ class FollowSearchController extends GetxController with GetSingleTickerProvider
     super.onInit();
   }
 
+  
+
   void _handleTabChanged() {
     if (!tabController.indexIsChanging) {
       tabIndex.value = tabController.index;

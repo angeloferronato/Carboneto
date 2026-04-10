@@ -18,7 +18,8 @@ class FollowController extends GetxController {
   Future<void> onInit() async {
     isLoading.value = true;
     followRequestId.value = await searchFollowRequestId();
-    isFollowing.value = await followRepository.isFollowing(currentUserId, targetUserId);
+    isFollowing.value =
+        await followRepository.isFollowing(currentUserId, targetUserId);
     isLoading.value = false;
     super.onInit();
   }
@@ -34,11 +35,11 @@ class FollowController extends GetxController {
     isLoading.value = true;
     final fromUser = UserController.instance.user.value;
     final NotificationModel notification = NotificationModel(
-      type: NotificationType.followNotice, 
-      fromUserId: fromUser.id, 
-      fromUserProfilePicture: fromUser.profilePicture, 
-      fromUserName: fromUser.name, 
-      fromUserUsername: fromUser.username, 
+      type: NotificationType.followNotice,
+      fromUserId: fromUser.id,
+      fromUserProfilePicture: fromUser.profilePicture,
+      fromUserName: fromUser.name,
+      fromUserUsername: fromUser.username,
       isRead: false,
     );
     await followRepository.startFollowingUser(currentUserId, targetUserId);
@@ -48,35 +49,34 @@ class FollowController extends GetxController {
   }
 
   Future<String> searchFollowRequestId() async {
-    isLoading.value = true;
-    final result = await followRepository.followRequestExists(currentUserId, targetUserId);
-    isLoading.value = false;
-    return result ?? '';
+    final result =
+        await followRepository.followRequestExists(currentUserId, targetUserId);
+    followRequestId.value = result ?? ''; 
+    return followRequestId.value;
   }
 
   Future<void> sendFollowRequest() async {
-    // Criar notificaçõa
-    final fromUser = UserController.instance.user.value;
-    final NotificationModel notification = NotificationModel(
-      type: NotificationType.followRequest, 
-      fromUserId: fromUser.id, 
-      fromUserProfilePicture: fromUser.profilePicture, 
-      fromUserName: fromUser.name, 
-      fromUserUsername: fromUser.username, 
-      isRead: false,
-    );
-    
-    isLoading.value = true;
-    await followRepository.sendNotification(notification, targetUserId);
-    followRequestId.value = await searchFollowRequestId();
-    isLoading.value = false;
+    try {
+      isLoading.value = true;
+      final fromUser = UserController.instance.user.value;
+      final NotificationModel notification = NotificationModel(
+        type: NotificationType.followRequest,
+        fromUserId: fromUser.id,
+        isRead: false,
+      );
+
+      await followRepository.sendNotification(notification, targetUserId);
+      followRequestId.value = await searchFollowRequestId();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> cancelFollowRequest() async {
     isLoading.value = true;
-    await followRepository.deleteNotificationById(followRequestId.value, targetUserId);
+    await followRepository.deleteNotificationById(
+        followRequestId.value, targetUserId);
     followRequestId.value = await searchFollowRequestId();
     isLoading.value = false;
   }
-  
 }

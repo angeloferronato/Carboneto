@@ -8,6 +8,8 @@ class NotificationModel {
   final Timestamp? createdAt;
   final bool isRead;
   final String? status;
+  final String? targetId; 
+  String targetImageUrl;
 
   String fromUserProfilePicture;
   String fromUserName;
@@ -17,6 +19,8 @@ class NotificationModel {
 
   NotificationModel({
     this.id,
+    this.targetId,
+    this.targetImageUrl = '',
     required this.type,
     required this.fromUserId,
     this.createdAt,
@@ -36,7 +40,7 @@ class NotificationModel {
       fromUserId: data['FromUserId'] ?? '',
       createdAt: data['CreatedAt'] as Timestamp?,
       isRead: data['IsRead'] ?? false,
-      status: data['Status'] ?? '',
+      targetId: data['TargetId'],
     );
   }
 
@@ -46,7 +50,7 @@ class NotificationModel {
       'FromUserId': fromUserId,
       'CreatedAt': FieldValue.serverTimestamp(),
       'IsRead': isRead,
-      'Status': status,
+      'TargetId': targetId,
     };
   }
 
@@ -56,7 +60,6 @@ class NotificationModel {
     fromUserId: '',
     createdAt: Timestamp(0, 0),
     isRead: false,
-    status: '',
   );
 
   static NotificationType parseStringToType(String type) {

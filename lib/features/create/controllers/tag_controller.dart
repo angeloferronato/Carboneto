@@ -82,6 +82,12 @@ class TagController extends GetxController {
     }
   }
 
+  void reset() {
+    selectedTags.assignAll(["Arremesso de 3 Pontos"]);
+    queryController.clear();
+    searchQuery.value = '';
+  }
+
   void addTag(String tag) {
     if (!selectedTags.contains(tag)) {
       selectedTags.add(tag);

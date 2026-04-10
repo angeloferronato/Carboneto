@@ -43,11 +43,17 @@ class TrainingRepository extends GetxController {
     return await trainingProgressRef(uid, trainingId).get();
   }
 
+  /// Creates the training progress document.
+  ///
+  /// [historyId] is stored inside the document so that when the user resumes
+  /// the training in a future session the controller can reuse the same
+  /// history doc instead of creating a new one with a fresh timestamp id.
   Future<void> createTrainingProgress({
     required String uid,
     required TrainingModel training,
     required int remainingTime,
     required Map<String, dynamic> trainingStats,
+    required String historyId,
   }) async {
     await trainingProgressRef(uid, training.id).set({
       'AuthorID': training.authorId,
@@ -70,6 +76,8 @@ class TrainingRepository extends GetxController {
       'TrainingProgress': 0,
       'TotalExercises': training.exercises.length,
       'TrainingStats': trainingStats,
+      // Stored so the controller can resume writing to the correct history doc.
+      'HistoryId': historyId,
     });
   }
 
@@ -102,7 +110,7 @@ class TrainingRepository extends GetxController {
     required Map<String, dynamic> data,
   }) async {
     await trainingProgressRef(uid, trainingId)
-        .set(data, SetOptions(merge: true)); 
+        .set(data, SetOptions(merge: true));
   }
 
   Future<void> updateTrainingHistory({
@@ -110,8 +118,7 @@ class TrainingRepository extends GetxController {
     required String historyId,
     required Map<String, dynamic> data,
   }) async {
-    await trainingHistoryRef(uid, historyId)
-        .set(data, SetOptions(merge: true));
+    await trainingHistoryRef(uid, historyId).set(data, SetOptions(merge: true));
   }
 
   Future<void> deleteTrainingProgress(String uid, String trainingId) async {
@@ -152,42 +159,20 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  Future<List<TrainingModel>> fetchTrainingDetails(String collection,
-      [int? limit]) async {
+  Future<TrainingModel?> fetchTrainingDetails(String trainingId) async {
     try {
-      final query = await _db
-          .collection("trainings")
-          .doc(collection)
-          .collection(collection)
-          .get();
-      debugPrint("FETCHED ${query.docs.length} TRAININGS FROM $collection");
+      final snapshot =
+          await _db.collection("allTrainings").doc(trainingId).get();
 
-      if (query.docs.isNotEmpty) {
-        final trainings = query.docs;
-        final List<TrainingModel> listTrainings = [];
-        for (var training in trainings) {
-          final singleTraining = TrainingModel.fromSnapshot(training);
-          debugPrint(singleTraining.textLevel);
+      if (!snapshot.exists) return null;
 
-          final UserModel user =
-              await userRepository.searchUser(singleTraining.authorId);
-          singleTraining.user = user;
-          listTrainings.add(singleTraining);
-        }
-        return listTrainings;
-      } else {
-        return [];
-      }
-    } on FirebaseAuthException catch (e) {
-      throw CbFirebaseAuthException(e.code).message;
+      final training = TrainingModel.fromSnapshot(snapshot);
+
+      return training;
     } on FirebaseException catch (e) {
       throw CbFirebaseException(e.code).message;
-    } on FormatException catch (_) {
-      throw CbFormatException();
-    } on PlatformException catch (e) {
-      throw CbPlatformException(e.code).message;
     } catch (e) {
-      throw 'Algo deu errado. Por favor tente novamente';
+      throw 'Erro ao carregar detalhes do treino.';
     }
   }
 
@@ -260,8 +245,6 @@ class TrainingRepository extends GetxController {
         return ExerciseModel.empty();
       }
 
-      // Exercises are saved using `doc(exerciseModel.id)` in `ExerciseRepository.saveExerciseRecord`.
-      // So the most reliable lookup is by document id, not by a field (which may vary in casing: Id/ID).
       final doc = await _db.collection('allExercises').doc(id).get();
       if (!doc.exists) {
         debugPrint("Exercício não encontrado: $id");
@@ -372,23 +355,18 @@ class TrainingRepository extends GetxController {
     File file,
   ) async {
     try {
-      // Passo 2: Nome único para o vídeo
       final fileName = 'Videos/${DateTime.now().millisecondsSinceEpoch}.mp4';
 
-      // Passo 3: Referência no Firebase Storage
       final Reference storageRef =
           FirebaseStorage.instance.ref().child(fileName);
 
-      // Passo 4: Fazer upload
       final UploadTask uploadTask = storageRef.putFile(file);
 
-      // Passo 5: Acompanhar progresso (opcional)
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
         final progress = snapshot.bytesTransferred / snapshot.totalBytes;
         debugPrint('Progresso: ${(progress * 100).toStringAsFixed(2)}%');
       });
 
-      // Passo 6: Esperar terminar e pegar a URL
       final TaskSnapshot completed = await uploadTask.whenComplete(() {});
       final String downloadURL = await completed.ref.getDownloadURL();
 
@@ -494,7 +472,6 @@ class TrainingRepository extends GetxController {
 
       final viewDoc = await viewTrackingRef.get();
 
-      // PRIMEIRA VEZ
       if (!viewDoc.exists) {
         return true;
       }
@@ -616,7 +593,6 @@ class TrainingRepository extends GetxController {
     }
   }
 
-  // 2. Alternar Like
   Future<void> toggleTrainingLike({
     required String trainingId,
     required String userId,
@@ -705,7 +681,7 @@ class TrainingRepository extends GetxController {
     return _db
         .collection('allTrainings')
         .where('AuthorID', isEqualTo: userId)
-        .snapshots() // <--- O PULO DO GATO: snapshots() ouve mudanças
+        .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
   }
 
@@ -714,11 +690,9 @@ class TrainingRepository extends GetxController {
         .collection('users')
         .doc(userId)
         .collection('savedTrainings')
-        .orderBy('SavedAt', descending: true) // Já vem ordenado
+        .orderBy('SavedAt', descending: true)
         .snapshots()
-        .map((snapshot) =>
-            // Ajuste aqui se o campo for diferente no seu banco
-            snapshot.docs.map((doc) => doc.id).toList());
+        .map((snapshot) => snapshot.docs.map((doc) => doc.id).toList());
   }
 
   Stream<List<String>> getLikedIdsStream(String userId) {
@@ -730,18 +704,10 @@ class TrainingRepository extends GetxController {
             snapshot.docs.map((doc) => doc['TrainingId'] as String).toList());
   }
 
-  // MANTENHA ESTE MÉTODO (Ele é eficiente para buscar os detalhes)
   Future<List<TrainingModel>> fetchTrainingsByIds(List<String> ids) async {
     if (ids.isEmpty) return [];
     try {
-      // O Firebase aceita no máximo 30 itens no 'whereIn' (ou 10 dependendo da versão),
-      // vamos garantir que pegamos blocos seguros se a lista for gigante,
-      // mas para performance normal, isso aqui resolve 99% dos casos.
-
-      // Dica de Performance: Se a lista for > 10, divida em chunks.
-      // Por enquanto, vamos simplificar:
-      final idsToFetch =
-          ids.take(10).toList(); // Pega os 10 primeiros para exibir rápido
+      final idsToFetch = ids.take(10).toList();
 
       final snapshot = await _db
           .collection('allTrainings')
@@ -750,7 +716,6 @@ class TrainingRepository extends GetxController {
 
       return snapshot.docs.map((d) => TrainingModel.fromSnapshot(d)).toList();
     } catch (e) {
-      print("Erro ao buscar detalhes: $e");
       return [];
     }
   }

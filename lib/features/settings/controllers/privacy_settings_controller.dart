@@ -1,7 +1,5 @@
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
-import 'package:carboneto/features/settings/settings.dart';
-import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/constants/colors.dart';
 import 'package:carboneto/utils/constants/image_strings.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
@@ -33,24 +31,29 @@ class PrivacySettingsController extends GetxController{
       isLoading.value = true;
       CbFullScreenLoader.openLoadingDialog('Estamos atualizando suas informações...', CbImages.loadingAnimation);
       
-      // Check internet connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
+        CbFullScreenLoader.stopLoading();
         isLoading.value = false;
         return;
       }
 
-      userRepository.updateSingleField({'IsPrivate': !isPrivate.value});
+      await userRepository.updateSingleField({'IsPrivate': !isPrivate.value});
+      
       isPrivate.value = !isPrivate.value;
+      
+      userController.user.value.isPrivate = isPrivate.value;
+      userController.user.refresh(); 
 
       CbFullScreenLoader.stopLoading();
-      CbLoaders.successSnackBar(title: 'Sucesso', message: 'Sua segurança de conta foi alterada com sucesso.');
 
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+
+      CbLoaders.successSnackBar(title: 'Sucesso', message: 'Sua segurança de conta foi alterada com sucesso.');
       isLoading.value = false;
-      Get.offAll(() => HomeMenu());
-      final homeMenuController = Get.put(HomeMenuController());
-      homeMenuController.selectedIndex.value = 4;
-      Get.to(() => SettingsScreen());
+
     } catch (e) {
       CbFullScreenLoader.stopLoading();
       CbLoaders.errorSnackBar(title: 'Ah não!', message: e.toString());

@@ -49,6 +49,7 @@ class _ProfileTrainingsListState extends State<ProfileTrainingsList> {
           trainingController.profileBaseController.user.value.isPrivate &&
               !isAuthUser;
       final list = trainingController.trainingsList;
+      print(list.length);
 
       if (isLoading) {
         return const SliverToBoxAdapter(child: ContentListShimmer());

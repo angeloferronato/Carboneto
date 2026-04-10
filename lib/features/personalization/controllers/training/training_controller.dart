@@ -67,7 +67,15 @@ class TrainingController extends GetxController {
       final result = await trainingRepository.fetchUserTrainingDetails(
         profileBaseController.user.value.id,
       );
-      trainingsList.assignAll(result.where(_canView).toList());
+      
+      // Filter the list based on visibility
+      var filteredList = result.where(_canView).toList();
+
+      // Sort the list by posted time (Newest to Oldest)l!
+      filteredList.sort((a, b) => b.postedAt!.compareTo(a.postedAt!));
+
+      trainingsList.assignAll(filteredList);
+      
       return trainingsList;
     } catch (e) {
       rethrow;

@@ -144,44 +144,50 @@ class _TrainingExecutionState extends State<TrainingExecution> {
                               final isActive = index == activeIndex;
                               return Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right:
-                                          index < exercises.length - 1 ? 4 : 0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Stack(
-                                      children: [
-                                        Container(
+                                    padding: EdgeInsets.only(
+                                        right: index < exercises.length - 1
+                                            ? 4
+                                            : 0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Stack(
+                                        children: [
+                                          Container(
                                             height: 5,
                                             color: CbColors.darkGrey
-                                                .withValues(alpha: 0.3)),
-                                        AnimatedContainer(
-                                          duration:
-                                              const Duration(milliseconds: 100),
-                                          height: 5,
-                                          width: double.infinity,
-                                          child: FractionallySizedBox(
-                                            alignment: Alignment.centerLeft,
-                                            widthFactor: isDone
-                                                ? 1.0
-                                                : isActive
-                                                    ? currentProgress
-                                                    : 0.0,
-                                            child: Container(
-                                              decoration: const BoxDecoration(
-                                                gradient: LinearGradient(
+                                                .withValues(alpha: 0.3),
+                                          ),
+                                          AnimatedContainer(
+                                            duration: const Duration(
+                                                milliseconds: 100),
+                                            height: 5,
+                                            width: double.infinity,
+                                            child: FractionallySizedBox(
+                                              alignment: Alignment.centerLeft,
+                                              widthFactor: isDone
+                                                  ? 1.0
+                                                  : isActive
+                                                      ? currentProgress
+                                                      : 0.0,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50), 
+                                                  gradient:
+                                                      const LinearGradient(
                                                     colors: [
                                                       CbColors.accent,
                                                       CbColors.primary
-                                                    ]),
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                        ],
+                                      ),
+                                    )),
                               );
                             }),
                           );
@@ -234,48 +240,52 @@ class _TrainingExecutionState extends State<TrainingExecution> {
           ),
         ),
         bottomNavigationBar: Obx(
-  () => controller.isExerciseCompleted.value
-      ? const SizedBox.shrink()
-      : SafeArea(
-          // SafeArea here handles the home indicator on iPhone
-          // and navigation bar on Android
-          top: false,
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(
-              CbSizes.defaultSpace,
-              CbSizes.defaultSpace,
-              CbSizes.defaultSpace,
-              CbSizes.defaultSpace,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
-              child: BackdropFilter(
-                // 1. Increased blur for a better frosted effect
-                filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0), 
-                child: Container(
-                  padding: const EdgeInsets.all(CbSizes.md),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
-                    // 2. Lowered opacity so the blur is more visible
-                    color: isDarkTheme
-                        ? Colors.black.withValues(alpha: 0.35) // Dark theme glass
-                        : Colors.white.withValues(alpha: 0.3), // Light theme glass
-                    // 3. Added a subtle border for the glass edge reflection
-                    border: Border.all(
-                      color: Colors.white.withOpacity(isDarkTheme ? 0.1 : 0.2),
-                      width: 1.0,
+          () => controller.isExerciseCompleted.value
+              ? const SizedBox.shrink()
+              : SafeArea(
+                  // SafeArea here handles the home indicator on iPhone
+                  // and navigation bar on Android
+                  top: false,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(
+                      CbSizes.defaultSpace,
+                      CbSizes.defaultSpace,
+                      CbSizes.defaultSpace,
+                      CbSizes.defaultSpace,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(CbSizes.cardRadiusLg),
+                      child: BackdropFilter(
+                        // 1. Increased blur for a better frosted effect
+                        filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(CbSizes.md),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(CbSizes.cardRadiusLg),
+                            // 2. Lowered opacity so the blur is more visible
+                            color: isDarkTheme
+                                ? Colors.black
+                                    .withValues(alpha: 0.35) // Dark theme glass
+                                : Colors.white.withValues(
+                                    alpha: 0.3), // Light theme glass
+                            // 3. Added a subtle border for the glass edge reflection
+                            border: Border.all(
+                              color: Colors.white
+                                  .withOpacity(isDarkTheme ? 0.1 : 0.2),
+                              width: 1.0,
+                            ),
+                          ),
+                          child: ExerciseBar(
+                            controller: controller,
+                            isDarkTheme: isDarkTheme,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  child: ExerciseBar(
-                    controller: controller,
-                    isDarkTheme: isDarkTheme,
-                  ),
                 ),
-              ),
-            ),
-          ),
         ),
-),
       ),
     );
   }

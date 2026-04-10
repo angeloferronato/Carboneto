@@ -61,7 +61,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: controller.refreshUserData,
+        onRefresh: () async {
+          final trainingController =
+              Get.find<TrainingController>(tag: widget.userId);
+
+          await Future.wait([
+            controller.refreshUserData(),
+            trainingController.fetchAllTrainings(),
+          ]);
+        },
         color: CbColors.primary,
         displacement: 60,
         backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,

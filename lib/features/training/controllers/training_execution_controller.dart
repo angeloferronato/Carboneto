@@ -20,57 +20,55 @@ class TrainingExecutionController extends GetxController
   final TrainingRepository repo = TrainingRepository.instance;
 
   late final String uid;
-  late final String historyId;
 
-  late final DocumentReference trainingProgressRef;
-  late final DocumentReference trainingHistoryRef;
+
+  late String historyId;
 
   TrainingExecutionController({required this.training});
 
-  // Total training countdown — ticks down independently, never manually adjusted
   late Rx<Duration> duration;
   final TrainingModel training;
   final Rx<int> activeIndexTraining = 0.obs;
   final Rx<ExerciseModel> activeExercise = ExerciseModel.empty().obs;
 
-  // Per-exercise countdown
   late Rx<Duration> trainingRelativeDuration;
 
   Timer? totalTimer;
   Timer? exerciseTimer;
   Timer? _persistenceTimer;
+
   bool _persistenceScheduled = false;
+
+  bool _completionSaved = false;
+
   static const Duration _kPersistenceDelay = Duration(seconds: 15);
+
   final Rx<bool> isPaused = false.obs;
   final Rx<bool> isSheetVisible = false.obs;
 
-  // Reps tracking — persisted per exercise index
   final Rx<int> completedReps = 0.obs;
   final Map<int, int> _savedReps = {};
   final Map<int, int> _savedTimerSeconds = {};
 
-  // Public read access for the queue UI
   Map<int, int> get savedReps => _savedReps;
   Map<int, int> get savedTimerSeconds => _savedTimerSeconds;
 
-  // Shown when exercise timer hits 0
   final Rx<bool> isExerciseCompleted = false.obs;
+
 
   @override
   Future<void> onInit() async {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
+
     final userController = Get.put(UserController());
     uid = userController.user.value.id;
-    historyId = _historyId();
 
     activeExercise.value = training.exercises[0];
     duration = Duration(minutes: training.duration ?? 0).obs;
     trainingRelativeDuration =
         Duration(minutes: activeExercise.value.duration).obs;
 
-    // Check for existing saved progress and restore state if present.
-    // Documents are NOT created here yet — that happens after the threshold.
     await _restoreProgressIfExists();
 
     executeTraining();
@@ -82,25 +80,29 @@ class TrainingExecutionController extends GetxController
     stopAllTimers();
     _persistenceTimer?.cancel();
 
-    // Only persist if the documents were already created (threshold was met).
-    if (_persistenceScheduled) saveProgress();
+    if (_persistenceScheduled && !_completionSaved) {
+      saveProgress();
+    }
 
     super.onClose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Only save if the Firestore documents have already been created.
-    if (state == AppLifecycleState.paused && _persistenceScheduled) {
+    if (state == AppLifecycleState.paused &&
+        _persistenceScheduled &&
+        !_completionSaved) {
       saveProgress();
     }
   }
+
 
   Future<void> _restoreProgressIfExists() async {
     final snapshot = await repo.getTrainingProgress(uid, training.id);
 
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
+
       activeIndexTraining.value = data['CurrentExerciseIndex'] ?? 0;
       duration.value = Duration(seconds: data['TrainingRemainingTime'] ?? 0);
 
@@ -120,12 +122,18 @@ class TrainingExecutionController extends GetxController
 
       _restoreExerciseState(activeIndexTraining.value);
 
+      final savedHistoryId = data['HistoryId'] as String?;
+      historyId = savedHistoryId?.isNotEmpty == true
+          ? savedHistoryId!
+          : _generateHistoryId();
+
       _persistenceScheduled = true;
     } else {
+
+      historyId = _generateHistoryId();
       _schedulePersistence();
     }
   }
-
   void _schedulePersistence() {
     _persistenceTimer = Timer(_kPersistenceDelay, () async {
       final isConnected = await NetworkManager.instance.isConnected();
@@ -137,6 +145,7 @@ class TrainingExecutionController extends GetxController
           training: training,
           remainingTime: duration.value.inSeconds,
           trainingStats: buildExerciseProgress(),
+          historyId: historyId,
         );
         await repo.createOrUpdateTrainingHistory(
           uid: uid,
@@ -144,12 +153,13 @@ class TrainingExecutionController extends GetxController
           training: training,
         );
 
-        _persistenceScheduled = true; 
+        _persistenceScheduled = true;
       } catch (e) {
         debugPrint('Failed to create training documents: $e');
       }
     });
   }
+
 
   Future<void> executeTraining() async {
     final isConnected = await NetworkManager.instance.isConnected();
@@ -198,11 +208,16 @@ class TrainingExecutionController extends GetxController
 
   void _advanceToNextExercise() {
     isExerciseCompleted.value = false;
+
     if (activeIndexTraining.value + 1 == training.exercises.length) {
+
       stopAllTimers();
+      _completionSaved = true;
       saveProgress(completed: true);
+
       final stats = buildExerciseProgress();
       final elapsed = (training.duration! * 60) - duration.value.inSeconds;
+
       Get.offAll(() => TrainingFinishedScreen(
             training: training,
             stats: stats,
@@ -210,6 +225,7 @@ class TrainingExecutionController extends GetxController
           ));
       return;
     }
+
     _saveCurrentExerciseState();
     activeIndexTraining.value++;
     _restoreExerciseState(activeIndexTraining.value);
@@ -230,9 +246,7 @@ class TrainingExecutionController extends GetxController
     isPaused.value = false;
   }
 
-  void completeAndAdvance() {
-    _advanceToNextExercise();
-  }
+  void completeAndAdvance() => _advanceToNextExercise();
 
   void jumpToExercise(int index) {
     _saveCurrentExerciseState();
@@ -250,6 +264,12 @@ class TrainingExecutionController extends GetxController
     }
     jumpToExercise(activeIndexTraining.value + 1);
   }
+
+  void previousExercise() {
+    if (activeIndexTraining.value == 0) return;
+    jumpToExercise(activeIndexTraining.value - 1);
+  }
+
 
   void showJumpValidation(BuildContext context, bool isDark) {
     final exercise = activeExercise.value;
@@ -409,11 +429,6 @@ class TrainingExecutionController extends GetxController
     );
   }
 
-  void previousExercise() {
-    if (activeIndexTraining.value == 0) return;
-    jumpToExercise(activeIndexTraining.value - 1);
-  }
-
   void showCancelMessage(bool isDarkMode) {
     Get.defaultDialog(
       titlePadding: const EdgeInsets.only(top: CbSizes.lg),
@@ -453,7 +468,7 @@ class TrainingExecutionController extends GetxController
     exerciseTimer?.cancel();
   }
 
-  String _historyId() {
+  String _generateHistoryId() {
     final now = DateTime.now();
     final todayKey =
         "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
@@ -466,13 +481,13 @@ class TrainingExecutionController extends GetxController
     if (!_persistenceScheduled) return;
     if (training.exercises.isEmpty) return;
 
+    if (_completionSaved && !completed) return;
+    if (completed) _completionSaved = true;
+
     final totalExercises = training.exercises.length;
     final built = buildExerciseProgress();
     final perExercise = built['PerExercise'] as Map<String, dynamic>;
 
-    // ── Unified progress calculation ─────────────────────────────────────────
-    // Sum fractional completion across ALL exercises, then average.
-    // Works for time, reps, and mixed trainings consistently.
     double totalFraction = 0.0;
 
     for (int i = 0; i < totalExercises; i++) {
@@ -484,7 +499,6 @@ class TrainingExecutionController extends GetxController
         final total = (ex['Total'] as int? ?? 1);
         totalFraction += total > 0 ? (done / total).clamp(0.0, 1.0) : 0.0;
       } else {
-        // time
         final totalSecs = (ex['Total'] as int? ?? 1);
         final remaining = (ex['Remaining'] as int? ?? 0);
         final elapsed = totalSecs - remaining;
@@ -496,27 +510,41 @@ class TrainingExecutionController extends GetxController
     final progress = ((totalFraction / totalExercises) * 100).clamp(0.0, 100.0);
     if (progress >= 100) completed = true;
 
-    final data = {
-      'TrainingRemainingTime': duration.value.inSeconds,
-      'CurrentExerciseIndex': activeIndexTraining.value,
-      'TrainingProgress': progress.round(),
-      'Status': completed ? 'completed' : 'in_progress',
-      'LastUpdatedAt': FieldValue.serverTimestamp(),
-      'TrainingStats': built,
-    };
-
     await repo.updateTrainingProgress(
-        uid: uid, trainingId: training.id, data: data);
+      uid: uid,
+      trainingId: training.id,
+      data: {
+        'TrainingRemainingTime': duration.value.inSeconds,
+        'CurrentExerciseIndex': activeIndexTraining.value,
+        'TrainingProgress': progress.round(),
+        'Status': completed ? 'completed' : 'in_progress',
+        'LastUpdatedAt': FieldValue.serverTimestamp(),
+        'TrainingStats': built,
+        'HistoryId': historyId,
+      },
+    );
+
     await repo.updateTrainingHistory(
       uid: uid,
       historyId: historyId,
       data: {
+        'AuthorID': training.authorId,
+        'TrainingId': training.id,
+        'Title': training.title,
+        'Thumbnail': training.thumbnail,
+        'Level': training.level.name,
+        'Creator': {
+          'Name': training.creator.name,
+          'ProfilePicture': training.creator.profilePicture,
+          'IsVerified': training.creator.isVerified,
+        },
         'TrainingProgress': progress.round(),
         'Status': completed ? 'completed' : 'in_progress',
         'SessionEndedAt': FieldValue.serverTimestamp(),
         'TrainingStats': built,
       },
     );
+
     if (completed) await repo.deleteTrainingProgress(uid, training.id);
   }
 
@@ -536,7 +564,6 @@ class TrainingExecutionController extends GetxController
 
         final total = exercise.duration * 60;
 
-        // Active: live timer. Past: 0 remaining (done). Future: full duration.
         final remaining = i == activeIndexTraining.value
             ? trainingRelativeDuration.value.inSeconds
             : (_savedTimerSeconds[i] ??
@@ -557,8 +584,6 @@ class TrainingExecutionController extends GetxController
         } else if (trainingType == 'time') {
           trainingType = 'mixed';
         }
-
-        // Active: live reps. Past: fully done. Future: 0.
         final done = i == activeIndexTraining.value
             ? completedReps.value
             : (_savedReps[i] ??

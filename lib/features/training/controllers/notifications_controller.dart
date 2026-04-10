@@ -1,4 +1,5 @@
 import 'package:carboneto/data/repositories/follow/follow_repository.dart';
+import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/data/repositories/user/user_repository.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/personalization/models/notification_model.dart';
@@ -12,7 +13,6 @@ class NotificationsController extends GetxController {
   final RxList<NotificationModel> notificationsList = <NotificationModel>[].obs;
   final RxInt unreadCount = 0.obs;
   final FollowRepository followRepository = Get.put(FollowRepository());
-  final UserRepository userRepository = Get.put(UserRepository());
 
   late dynamic currentUser;
 
@@ -49,16 +49,34 @@ class NotificationsController extends GetxController {
   }
 
   void bindNotifications(String userId) {
-    followRepository.loadNotifications(userId).listen((notifications) async {
-      final uniqueIds = notifications.map((n) => n.fromUserId).toSet();
-      final Map<String, dynamic> userCache = {};
+    final trainingRepository = Get.find<TrainingRepository>();
+    final userRepository = Get.find<UserRepository>();
 
-      await Future.wait(uniqueIds.map((id) async {
-        try {
-          final user = await userRepository.searchUser(id);
-          userCache[id] = user;
-        } catch (_) {}
-      }));
+    followRepository.loadNotifications(userId).listen((notifications) async {
+      final uniqueUserIds = notifications.map((n) => n.fromUserId).toSet();
+      final uniqueTrainingIds = notifications
+          .where((n) =>
+              n.type == NotificationType.likeTraining && n.targetId != null)
+          .map((n) => n.targetId!)
+          .toSet();
+
+      final Map<String, dynamic> userCache = {};
+      final Map<String, dynamic> trainingCache = {};
+
+      await Future.wait([
+        ...uniqueUserIds.map((id) async {
+          try {
+            final user = await userRepository.searchUser(id);
+            userCache[id] = user;
+          } catch (_) {}
+        }),
+        ...uniqueTrainingIds.map((id) async {
+          try {
+            final training = await trainingRepository.fetchTrainingDetails(id);
+            trainingCache[id] = training;
+          } catch (_) {}
+        }),
+      ]);
 
       for (final notification in notifications) {
         final user = userCache[notification.fromUserId];
@@ -68,16 +86,23 @@ class NotificationsController extends GetxController {
           notification.fromUserProfilePicture = user.profilePicture;
           notification.fromUserIsVerified = user.isVerified;
         }
+
+        if (notification.type == NotificationType.likeTraining &&
+            notification.targetId != null) {
+          final training = trainingCache[notification.targetId];
+          if (training != null) {
+            notification.targetImageUrl = training.thumbnail;
+          }
+        }
       }
 
-      notificationsList.value = notifications;
+      notificationsList.assignAll(notifications);
+      notificationsList.refresh();
 
-      // Update unread count
       unreadCount.value = notifications.where((n) => !n.isRead).length;
     });
   }
 
-  /// Call this when user opens the notifications screen
   Future<void> markAllAsRead() async {
     final unread = notificationsList.where((n) => !n.isRead).toList();
     if (unread.isEmpty) return;
@@ -90,18 +115,35 @@ class NotificationsController extends GetxController {
 
   Future<void> acceptFollowRequest(
       String notificationId, String targetUserId) async {
+    // This is the notification we send back to the person who requested to follow
     final followAcceptedNotification = NotificationModel(
       type: NotificationType.followAccepted,
       fromUserId: currentUser.id,
+      fromUserProfilePicture: currentUser.profilePicture,
+      fromUserName: currentUser.name,
+      fromUserUsername: currentUser.username,
       isRead: false,
     );
 
     isLoading.value = true;
-    await followRepository.acceptFollowRequest(
-        notificationId, targetUserId, currentUser.id);
-    await followRepository.sendNotification(
-        followAcceptedNotification, targetUserId);
-    isLoading.value = false;
+
+    try {
+      // 1. ✅ USE THE REPOSITORY METHOD THAT UPDATES THE TYPE
+      // This already calls startFollowingUser AND updates the 'Type' to 'followNotice'
+      await followRepository.acceptFollowRequest(
+          notificationId, targetUserId, currentUser.id);
+
+      // 2. Send the "Accepted" notice to the other user's phone
+      await followRepository.sendNotification(
+          followAcceptedNotification, targetUserId);
+
+      // 3. Refresh local list so the UI reacts to the type change
+      notificationsList.refresh();
+    } catch (e) {
+      print("Error accepting follow request: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> rejectFollowRequest(String notificationId) async {

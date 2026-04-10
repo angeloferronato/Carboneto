@@ -24,121 +24,114 @@ class NotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final NotificationsController controller =
         Get.put(NotificationsController());
+
     return InkWell(
-      onTap: () => Get.to(ProfileScreen(
-        userId: notification.fromUserId,
-      )),
+      onTap: () {
+        if (notification.type == NotificationType.likeTraining &&
+            notification.targetId != null) {
+        } else {
+          Get.to(() => ProfileScreen(userId: notification.fromUserId));
+        }
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(
             horizontal: CbSizes.md, vertical: CbSizes.sm),
         child: Row(
           children: [
-            Flexible(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CbRoundedImage(
-                    imageUrl: notification.fromUserProfilePicture.isEmpty
-                        ? CbImages.userDefault
-                        : notification.fromUserProfilePicture,
-                    width: 50,
-                    height: 50,
-                    borderRadius: 50,
-                    isNetworkImage:
-                        notification.fromUserProfilePicture.isNotEmpty,
-                    fit: BoxFit.cover,
-                  ),
-                  const SizedBox(
-                    width: CbSizes.md,
-                  ),
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: notification.fromUserUsername,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall!
-                                .copyWith(fontSize: 15),
-                          ),
-                          if (notification.fromUserIsVerified)
-                            WidgetSpan(
-                                alignment: PlaceholderAlignment.bottom,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 2),
-                                  child: Icon(
-                                      Iconsax.verify5,
-                                      color: CbColors.primary,
-                                      size: 12,
-                                    ),
-                                ))
-                          else
-                            WidgetSpan(child: SizedBox.shrink()),
-                          TextSpan(text: ' '),
-                          TextSpan(
-                              text: NotificationModel.notificationText(
-                                  notification.type),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall!
-                                  .copyWith(
-                                      fontSize: 13,
-                                      color: const Color.fromARGB(
-                                          255, 211, 211, 211),
-                                      fontWeight: FontWeight.w600)),
-                          TextSpan(text: ' '),
-                          TextSpan(
-                            text: CbHelperFunctions.formatNotificationTimestamp(
-                                notification.createdAt),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                    fontSize: 13,
-                                    color: CbColors.darkGrey,
-                                    fontWeight: FontWeight.w600),
-                          )
-                        ],
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
-                    ),
-                  ),
-                ],
-              ),
+            CbRoundedImage(
+              imageUrl: notification.fromUserProfilePicture.isEmpty
+                  ? CbImages.userDefault
+                  : notification.fromUserProfilePicture,
+              width: 44,
+              height: 44,
+              borderRadius: 44,
+              isNetworkImage: notification.fromUserProfilePicture.isNotEmpty,
+              fit: BoxFit.cover,
             ),
-            if (notification.type == NotificationType.followRequest)
-              Align(
-                alignment: AlignmentGeometry.centerRight,
-                child: Row(
+            const SizedBox(width: CbSizes.md),
+            Expanded(
+              child: Text.rich(
+                TextSpan(
                   children: [
-                    HighlightBtn(
-                      textValue: 'Recusar',
-                      onPressedEdit: () =>
-                          controller.rejectFollowRequest(notification.id ?? ''),
-                      radius: 15,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    TextSpan(
+                      text: '${notification.fromUserUsername} ',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall!
+                          .copyWith(fontSize: 14),
                     ),
-                    const SizedBox(
-                      width: CbSizes.sm,
-                    ),
-                    ElevatedButton(
-                      onPressed: () => controller.acceptFollowRequest(
-                          notification.id ?? '', notification.fromUserId),
-                      style: ElevatedButton.styleFrom(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    if (notification.fromUserIsVerified)
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: Icon(Iconsax.verify5,
+                              color: CbColors.primary, size: 14),
+                        ),
                       ),
-                      child: Text('Aceitar'),
-                    )
+                    TextSpan(
+                      text:
+                          NotificationModel.notificationText(notification.type),
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            fontSize: 13,
+                            color: const Color.fromARGB(255, 211, 211, 211),
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                    const TextSpan(text: ' '),
+                    TextSpan(
+                      text: CbHelperFunctions.formatNotificationTimestamp(
+                          notification.createdAt),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelSmall!
+                          .copyWith(color: CbColors.darkGrey),
+                    ),
                   ],
                 ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: CbSizes.sm),
+            if (notification.type == NotificationType.followRequest)
+              _buildFollowButtons(controller)
+            else if (notification.type == NotificationType.likeTraining &&
+                notification.targetImageUrl.isNotEmpty)
+              CbRoundedImage(
+                imageUrl: notification.targetImageUrl,
+                isNetworkImage: true,
+                width: 55,
+                height: 55,
+                fit: BoxFit.cover,
               )
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFollowButtons(NotificationsController controller) {
+    return Row(
+      spacing: 5,
+      children: [
+        HighlightBtn(
+          textValue: 'Recusar',
+          fontSize: 14,
+          labelWeight: FontWeight.w600,
+          onPressedEdit: () =>
+              controller.rejectFollowRequest(notification.id ?? ''),
+          radius: 15,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        ),
+        ElevatedButton(
+          onPressed: () => controller.acceptFollowRequest(
+              notification.id ?? '', notification.fromUserId),
+          style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
+          child: const Text('Aceitar', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),),
+        )
+      ],
     );
   }
 }

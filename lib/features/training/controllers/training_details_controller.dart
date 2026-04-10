@@ -116,6 +116,7 @@ class TrainingDetailsController extends GetxController {
           type: NotificationType.likeTraining,
           fromUserId: user.uid,
           isRead: false,
+          targetId: training.id,
         );
         Get.find<FollowRepository>()
             .sendNotification(notification, training.authorId)
