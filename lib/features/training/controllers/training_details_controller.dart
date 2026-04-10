@@ -2,6 +2,7 @@ import 'package:carboneto/data/repositories/exercises/exercise_repository.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
 import 'package:carboneto/features/create/controllers/create_training_controller.dart';
 import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
+import 'package:carboneto/features/personalization/models/notification_model.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/features/training/screens/training_details/widgets/resume_training_sheet.dart';
 import 'package:carboneto/features/training/screens/training_execution/training_execution.dart';
@@ -24,7 +25,8 @@ class TrainingDetailsController extends GetxController {
   final TrainingRepository trainingRepository = Get.put(TrainingRepository());
   final UserController userController = Get.put(UserController());
   final ExerciseRepository exerciseRepository = Get.put(ExerciseRepository());
-  final CreateTrainingController createTrainingController = Get.put(CreateTrainingController());
+  final CreateTrainingController createTrainingController =
+      Get.put(CreateTrainingController());
   final FollowRepository followRepository = Get.put(FollowRepository());
 
   final RxList<String> _followingIds = <String>[].obs;
@@ -87,12 +89,39 @@ class TrainingDetailsController extends GetxController {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
+    // Don't notify if the user is liking their own training
+    if (user.uid == training.authorId) {
+      isLiked.value = !isLiked.value;
+      likesCount.value += isLiked.value ? 1 : -1;
+      trainingRepository
+          .toggleTrainingLike(trainingId: training.id, userId: user.uid)
+          .catchError((e) {
+        isLiked.value = !isLiked.value;
+        likesCount.value += isLiked.value ? 1 : -1;
+        Get.snackbar('Erro', 'Falha ao sincronizar curtida');
+      });
+      return;
+    }
+
+    final wasLiked = isLiked.value;
     isLiked.value = !isLiked.value;
     likesCount.value += isLiked.value ? 1 : -1;
 
     trainingRepository
         .toggleTrainingLike(trainingId: training.id, userId: user.uid)
-        .catchError((e) {
+        .then((_) {
+      // Only send notification when liking, not unliking
+      if (!wasLiked) {
+        final notification = NotificationModel(
+          type: NotificationType.likeTraining,
+          fromUserId: user.uid,
+          isRead: false,
+        );
+        Get.find<FollowRepository>()
+            .sendNotification(notification, training.authorId)
+            .catchError((e) => debugPrint('Falha ao enviar notificação: $e'));
+      }
+    }).catchError((e) {
       isLiked.value = !isLiked.value;
       likesCount.value += isLiked.value ? 1 : -1;
       Get.snackbar('Erro', 'Falha ao sincronizar curtida');
@@ -110,9 +139,7 @@ class TrainingDetailsController extends GetxController {
 
     trainingRepository
         .toggleTrainingSave(
-            trainingId: training.id,
-            userId: user.uid,
-            trainingData: training)
+            trainingId: training.id, userId: user.uid, trainingData: training)
         .catchError((e) {
       isSaved.value = !isSaved.value;
       savesCount.value += isSaved.value ? 1 : -1;
@@ -175,7 +202,8 @@ class TrainingDetailsController extends GetxController {
       try {
         final relations = await followRepository.loadRelations(uid);
         final dynamic rawFollowing = relations.length > 1 ? relations[1] : null;
-        _followingIds.assignAll(List<String>.from(rawFollowing as Iterable? ?? const []));
+        _followingIds.assignAll(
+            List<String>.from(rawFollowing as Iterable? ?? const []));
       } catch (_) {}
     }
 
@@ -224,8 +252,8 @@ class TrainingDetailsController extends GetxController {
             ListTile(
               leading: const Icon(Icons.delete_rounded, color: Colors.red),
               title: const Text('Deletar', style: TextStyle(color: Colors.red)),
-              onTap: () =>
-                  createTrainingController.showCancelDeleteTrainingMessage(training),
+              onTap: () => createTrainingController
+                  .showCancelDeleteTrainingMessage(training),
             ),
           ],
         ),
@@ -238,7 +266,7 @@ class TrainingDetailsController extends GetxController {
   Future<void> showStartTrainingOptions(
       TrainingModel training, bool isDarkMode) async {
     stopViewTracking();
- 
+
     // ── 1. Check for existing progress ──────────────────────────────────────
     DocumentSnapshot? progressSnapshot;
     try {
@@ -250,29 +278,30 @@ class TrainingDetailsController extends GetxController {
     } catch (e) {
       debugPrint('Progress check failed: $e');
     }
- 
-    final _progressData =
-        progressSnapshot?.data() as Map<String, dynamic>?;
+
+    final _progressData = progressSnapshot?.data() as Map<String, dynamic>?;
     final _savedProgress = (_progressData?['TrainingProgress'] as int?) ?? 0;
- 
+
     // Meaningful progress = user advanced at least one exercise
     // OR the training timer has ticked down by at least 15 seconds.
-    final _exerciseIndex = (_progressData?['CurrentExerciseIndex'] as int?) ?? 0;
-    final _remainingTime = (_progressData?['TrainingRemainingTime'] as int?) ?? 0;
+    final _exerciseIndex =
+        (_progressData?['CurrentExerciseIndex'] as int?) ?? 0;
+    final _remainingTime =
+        (_progressData?['TrainingRemainingTime'] as int?) ?? 0;
     final _totalDuration = (_progressData?['TrainingDuration'] as int?) ?? 0;
     final _elapsedTime = _totalDuration - _remainingTime;
- 
+
     final hasMeaningfulProgress = _exerciseIndex > 0 || _elapsedTime >= 15;
- 
+
     final hasProgress = progressSnapshot != null &&
         progressSnapshot.exists &&
         _progressData?['Status'] == 'in_progress' &&
         hasMeaningfulProgress;
- 
+
     // ── 2a. Existing progress → resume sheet ────────────────────────────────
     if (hasProgress) {
       final savedProgress = _savedProgress;
- 
+
       await showModalBottomSheet(
         context: Get.context!,
         showDragHandle: false,
@@ -292,11 +321,11 @@ class TrainingDetailsController extends GetxController {
           },
         ),
       );
- 
+
       if (!hasViewBeenCounted.value) startViewTracking(training);
       return;
     }
- 
+
     // ── 2b. No progress → original confirmation dialog ──────────────────────
     await Get.defaultDialog(
       titlePadding: const EdgeInsets.only(top: CbSizes.lg),
@@ -318,7 +347,7 @@ class TrainingDetailsController extends GetxController {
           Navigator.of(Get.overlayContext!).pop();
           if (!hasViewBeenCounted.value) startViewTracking(training);
         },
-        child: const Text('Não'),
+        child: const Text('Não',),
       ),
       backgroundColor: isDarkMode ? CbColors.dark : CbColors.white,
     );
@@ -329,7 +358,7 @@ class TrainingDetailsController extends GetxController {
     try {
       CbFullScreenLoader.openLoadingDialog(
           'Estamos iniciando seu treino...', CbImages.loadingAnimation);
- 
+
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         CbLoaders.errorSnackBar(
@@ -338,7 +367,7 @@ class TrainingDetailsController extends GetxController {
         CbFullScreenLoader.stopLoading();
         return;
       }
- 
+
       // ── Delete saved progress when the user chooses "start from zero" ──────
       if (!resumeFromSaved) {
         final uid = userController.user.value.id;
@@ -346,7 +375,7 @@ class TrainingDetailsController extends GetxController {
           await trainingRepository.deleteTrainingProgress(uid, training.id);
         }
       }
- 
+
       // ── Count view if not yet recorded ──────────────────────────────────────
       if (!hasViewBeenCounted.value) {
         final uid = userController.user.value.id;
@@ -363,7 +392,7 @@ class TrainingDetailsController extends GetxController {
           viewsCount.value++;
         }
       }
- 
+
       CbFullScreenLoader.stopLoading();
       Get.to(() => TrainingExecution(training: training));
     } catch (e) {

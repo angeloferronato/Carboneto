@@ -10,11 +10,82 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'dart:math' show min;
 
 class UserRepository extends GetxController {
   static UserRepository get instance => Get.find();
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  /// Call this after any profile update that changes Name or ProfilePicture.
+  /// Runs in background — do NOT await in UI code.
+  Future<void> syncCreatorDataToAllDocuments({
+    required String userId,
+    required String newName,
+    required String newProfilePicture,
+    required bool isVerified,
+  }) async {
+    final creatorMap = {
+      'Creator.Name': newName,
+      'Creator.ProfilePicture': newProfilePicture,
+      'Creator.IsVerified': isVerified,
+    };
+
+    try {
+      // 1. Sync allTrainings
+      final trainings = await _db
+          .collection('allTrainings')
+          .where('AuthorID', isEqualTo: userId)
+          .get();
+
+      await _batchUpdate(trainings.docs, creatorMap);
+
+      // 2. Sync allExercises
+      final exercises = await _db
+          .collection('allExercises')
+          .where('AuthorID', isEqualTo: userId)
+          .get();
+
+      await _batchUpdate(exercises.docs, creatorMap);
+
+      // 3. Sync trainingHistory (subcollection — query via collectionGroup)
+      final history = await _db
+          .collectionGroup('trainingHistory')
+          .where('AuthorID', isEqualTo: userId)
+          .get();
+
+      await _batchUpdate(history.docs, creatorMap);
+
+      // 4. Sync trainingProgress (subcollection — query via collectionGroup)
+      final progress = await _db
+          .collectionGroup('trainingProgress')
+          .where('AuthorID', isEqualTo: userId)
+          .get();
+
+      await _batchUpdate(progress.docs, creatorMap);
+
+      debugPrint('✅ Creator sync complete for $userId');
+    } catch (e) {
+      // Don't throw — this is a background operation, it should not crash the UI
+      debugPrint('⚠️ Creator sync failed: $e');
+    }
+  }
+
+  /// Splits documents into chunks of 500 (Firestore batch limit) and updates them.
+  Future<void> _batchUpdate(
+    List<QueryDocumentSnapshot> docs,
+    Map<String, dynamic> data,
+  ) async {
+    const chunkSize = 500;
+    for (int i = 0; i < docs.length; i += chunkSize) {
+      final chunk = docs.sublist(i, min(i + chunkSize, docs.length));
+      final batch = _db.batch();
+      for (final doc in chunk) {
+        batch.update(doc.reference, data);
+      }
+      await batch.commit();
+    }
+  }
 
   Future<UserModel> fetchUserDetails() async {
     try {
@@ -47,10 +118,32 @@ class UserRepository extends GetxController {
     try {
       await userCredential.user!.updateDisplayName(userModel.name);
 
-      await _db
-          .collection('users')
-          .doc(userModel.id)
-          .set(userModel.toJson(), SetOptions(merge: true));
+      final batch = _db.batch();
+
+      // Save main user doc
+      batch.set(
+        _db.collection('users').doc(userModel.id),
+        userModel.toJson(),
+        SetOptions(merge: true),
+      );
+
+      // Save userSearch doc
+      batch.set(
+        _db.collection('userSearch').doc(userModel.id),
+        {
+          'Username': userModel.username,
+          'UsernameLower': userModel.username.toLowerCase(),
+          'Name': userModel.name,
+          'NameLower': userModel.name.toLowerCase(),
+          'ProfilePicture': userModel.profilePicture,
+          'IsVerified': userModel.isVerified,
+          'IsPrivate': userModel.isPrivate,
+          'FollowersCount': 0,
+        },
+        SetOptions(merge: true),
+      );
+
+      await batch.commit();
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
@@ -219,8 +312,7 @@ class UserRepository extends GetxController {
 
       if (json.containsKey('Name')) {
         searchUpdate['Name'] = json['Name'];
-        searchUpdate['NameLower'] =
-            json['Username'].toString().toLowerCase();
+        searchUpdate['NameLower'] = json['Username'].toString().toLowerCase();
       }
 
       if (searchUpdate.isNotEmpty) {

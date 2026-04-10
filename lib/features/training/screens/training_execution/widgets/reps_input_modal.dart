@@ -1,5 +1,7 @@
+import 'package:carboneto/common/widgets/buttons/cb_primary_btn.dart';
 import 'package:carboneto/features/training/controllers/training_execution_controller.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 
 class RepsInputModal extends StatefulWidget {
@@ -22,7 +24,7 @@ class _RepsInputModalState extends State<RepsInputModal> {
   }
 
   void _append(String digit) {
-    if (_input.length >= 4) return;
+    if (_input.length >= 6) return;
     setState(() => _input += digit);
   }
 
@@ -108,17 +110,7 @@ class _RepsInputModalState extends State<RepsInputModal> {
           Row(children: [_key('7'), _key('8'), _key('9')]),
           Row(children: [_key('', onTap: () {}), _key('0'), _key('⌫', onTap: _backspace, color: backspaceColor)]),
           const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity, height: 54,
-            child: ElevatedButton(
-              onPressed: _confirm,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CbColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
-              child: const Text('Confirmar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-            ),
-          ),
+          CbPrimaryBtn(label: CbTexts.cbContinue, onPressed: _confirm, paddingV: 15, paddingH: 45,)
         ],
       ),
     );

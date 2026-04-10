@@ -14,6 +14,7 @@ import 'package:carboneto/utils/popups/loaders.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:async' show unawaited;
 
 class EditProfileController extends GetxController {
   static EditProfileController get instance => Get.find();
@@ -84,6 +85,15 @@ class EditProfileController extends GetxController {
       await userRepository.updateUserDetails(updatedUser);
       await userController.fetchUserDetails();
 
+      // Fire-and-forget background sync
+      final updated = userController.user.value;
+      unawaited(userRepository.syncCreatorDataToAllDocuments(
+        userId: updated.id,
+        newName: updated.name,
+        newProfilePicture: updated.profilePicture,
+        isVerified: updated.isVerified,
+      ));
+
       CbFullScreenLoader.stopLoading();
       CbLoaders.successSnackBar(
           title: 'Perfil Atualizado!',
@@ -124,8 +134,15 @@ class EditProfileController extends GetxController {
       }
 
       await userRepository.updateSingleField({'ProfilePicture': newUrl});
-
       await userController.fetchUserDetails();
+
+      final updated = userController.user.value;
+      unawaited(userRepository.syncCreatorDataToAllDocuments(
+        userId: updated.id,
+        newName: updated.name,
+        newProfilePicture: updated.profilePicture,
+        isVerified: updated.isVerified,
+      ));
 
       CbLoaders.successSnackBar(
           title: 'Sucesso!',

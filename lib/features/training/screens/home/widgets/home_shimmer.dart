@@ -15,7 +15,6 @@ class HomeShimmer extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (_, index) => Column(
               children: [
-                const SizedBox(height: 16),
                 Align(
                     alignment: AlignmentGeometry.centerLeft,
                     child: CbShimmerEffects(width: 160, height: 26)),

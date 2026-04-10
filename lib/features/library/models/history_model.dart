@@ -100,17 +100,19 @@ class TrainingHistoryModel {
 
     return TrainingHistoryModel(
       id: doc.id,
-      authorId: data['AuthorID'],
-      trainingId: data['TrainingId'],
-      title: data['Title'],
-      thumbnail: data['Thumbnail'],
+      authorId: data['AuthorID'] ?? '',
+      trainingId: data['TrainingId'] ?? '',
+      title: data['Title'] ?? '',
+      thumbnail: data['Thumbnail'] ?? '',
       creator: CreatorModel.fromJson(data['Creator'] ?? {}),
-      level: data['Level'],
-      startedAt: (data['StartedAt'] as Timestamp).toDate(),
+      level: data['Level'] ?? '',
+      startedAt: data['StartedAt'] != null
+          ? (data['StartedAt'] as Timestamp).toDate()
+          : DateTime.now(),
       sessionEndedAt: data['SessionEndedAt'] != null
           ? (data['SessionEndedAt'] as Timestamp).toDate()
           : null,
-      status: data['Status'],
+      status: data['Status'] ?? 'in_progress',
       trainingProgress: (data['TrainingProgress'] ?? 0).toInt(),
       trainingDuration: (stats['TrainingDuration'] ?? 0).toInt(),
       searchKeywords: List<String>.from(data['SearchKeywords'] ?? []),

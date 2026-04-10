@@ -54,15 +54,17 @@ class SquareUploadWidget extends StatelessWidget {
         if (fileType == FileType.video && hasExistingVideo) {
           return Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: SizedBox(
-                  height: 300,
-                  width: double.infinity,
-                  child: VideoPlayerView(
-                    key: ValueKey(existingVideoUrl),
-                    url: existingVideoUrl!,
-                    dataSourceType: DataSourceType.network,
+              AspectRatio(
+                aspectRatio: 3 / 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: VideoPlayerView(
+                      key: ValueKey(existingVideoUrl),
+                      url: existingVideoUrl!,
+                      dataSourceType: DataSourceType.network,
+                    ),
                   ),
                 ),
               ),
@@ -80,35 +82,36 @@ class SquareUploadWidget extends StatelessWidget {
         if (hasExisting) {
           return Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Stack(
-                  children: [
-                    // Shimmer shown while image loads
-                    CbShimmerEffects(
-                      width: double.infinity,
-                      height: 250,
-                      radius: 20,
-                    ),
-                    // Network image overlays shimmer once loaded
-                    Image.network(
-                      existingImageUrl!,
-                      height: 250,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      frameBuilder:
-                          (context, child, frame, wasSynchronouslyLoaded) {
-                        if (wasSynchronouslyLoaded || frame != null) {
-                          return child;
-                        }
-                        // Still loading — return transparent so shimmer shows through
-                        return const SizedBox(
-                          height: 250,
-                          width: double.infinity,
-                        );
-                      },
-                    ),
-                  ],
+              AspectRatio(
+                aspectRatio: 3 / 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      // Shimmer shown while image loads
+                      CbShimmerEffects(
+                        width: double.infinity,
+                        height: double.infinity,
+                        radius: 20,
+                      ),
+                      // Network image overlays shimmer once loaded
+                      Image.network(
+                        existingImageUrl!,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                        frameBuilder:
+                            (context, child, frame, wasSynchronouslyLoaded) {
+                          if (wasSynchronouslyLoaded || frame != null) {
+                            return child;
+                          }
+                          // Still loading — return transparent so shimmer shows through
+                          return const SizedBox.expand();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: CbSizes.spaceBtwItems),
@@ -118,9 +121,10 @@ class SquareUploadWidget extends StatelessWidget {
         }
 
         // Create mode: show empty upload box
-        return Center(
+        return AspectRatio(
+          aspectRatio: 3 / 2,
           child: Container(
-            height: 250,
+            width: double.infinity,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [Color(0x31467CB8), Color(0x61152E42)],
@@ -186,13 +190,16 @@ class SquareUploadWidget extends StatelessWidget {
       if (fileType == FileType.image) {
         return Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.file(
-                uploadImageController.selectedFile.value ?? File(''),
-                height: 250,
-                width: double.infinity,
-                fit: BoxFit.fitWidth,
+            AspectRatio(
+              aspectRatio: 3 / 2,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.file(
+                  uploadImageController.selectedFile.value ?? File(''),
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover, // Ensures the image fills the 3:2 ratio beautifully
+                ),
               ),
             ),
             const SizedBox(height: CbSizes.spaceBtwItems),
@@ -204,16 +211,17 @@ class SquareUploadWidget extends StatelessWidget {
       // Video
       return Column(
         children: [
-          // FIX: Wrapped in ClipRRect
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: SizedBox(
-              height: 300,
-              width: double.infinity,
-              child: VideoPlayerView(
-                key: ValueKey(uploadImageController.selectedVideo.value!.path),
-                url: uploadImageController.selectedVideo.value!.path,
-                dataSourceType: DataSourceType.file,
+          AspectRatio(
+            aspectRatio: 3 / 2,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: SizedBox(
+                width: double.infinity,
+                child: VideoPlayerView(
+                  key: ValueKey(uploadImageController.selectedVideo.value!.path),
+                  url: uploadImageController.selectedVideo.value!.path,
+                  dataSourceType: DataSourceType.file,
+                ),
               ),
             ),
           ),

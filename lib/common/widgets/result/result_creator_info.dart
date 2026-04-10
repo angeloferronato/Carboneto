@@ -53,11 +53,14 @@ class ResultCreatorInfo extends StatelessWidget {
                     ],
                   )
                 : SizedBox(),
-            Text(
-              creator.name,
-              style: TextStyle(fontSize: textSize, fontWeight: FontWeight.w300),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+            Flexible(
+              child: Text(
+                creator.name,
+                style:
+                    TextStyle(fontSize: textSize, fontWeight: FontWeight.w300),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
             ),
             SizedBox(width: textSize > 10 ? 5 : 3),
             creator.isVerified

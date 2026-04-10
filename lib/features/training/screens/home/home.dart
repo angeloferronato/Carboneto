@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildLoading() {
     return ListView(
-      shrinkWrap: true,
+      padding: EdgeInsets.zero,
       children: [
         CategoriesBar(
           controllerTag: 'home',

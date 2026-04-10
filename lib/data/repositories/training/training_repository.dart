@@ -101,7 +101,8 @@ class TrainingRepository extends GetxController {
     required String trainingId,
     required Map<String, dynamic> data,
   }) async {
-    await trainingProgressRef(uid, trainingId).update(data);
+    await trainingProgressRef(uid, trainingId)
+        .set(data, SetOptions(merge: true)); 
   }
 
   Future<void> updateTrainingHistory({
@@ -109,7 +110,8 @@ class TrainingRepository extends GetxController {
     required String historyId,
     required Map<String, dynamic> data,
   }) async {
-    await trainingHistoryRef(uid, historyId).update(data);
+    await trainingHistoryRef(uid, historyId)
+        .set(data, SetOptions(merge: true));
   }
 
   Future<void> deleteTrainingProgress(String uid, String trainingId) async {
@@ -426,10 +428,7 @@ class TrainingRepository extends GetxController {
     bool updatePostedAt = true,
   }) async {
     try {
-      await _db
-          .collection('allTrainings')
-          .doc(trainingModel.id)
-          .set(
+      await _db.collection('allTrainings').doc(trainingModel.id).set(
             trainingModel.toJson(updatePostedAt: updatePostedAt),
             SetOptions(merge: true),
           );

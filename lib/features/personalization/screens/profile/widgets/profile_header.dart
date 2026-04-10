@@ -53,31 +53,37 @@ class ProfileHeader extends StatelessWidget {
                 ),
         ),
         const SizedBox(height: 5),
-        Padding(
-          padding: EdgeInsets.only(
+// Remove the fixed SizedBox(height: 5) above this if you want it even tighter
+        Obx(() {
+          final hasDescription = controller.user.value.description.isNotEmpty;
+
+          if (controller.profileLoading) {
+            return Column(
+              children: [
+                CbShimmerEffects(width: 120, height: 10),
+                const SizedBox(height: 5),
+                CbShimmerEffects(width: 100, height: 10),
+                const SizedBox(
+                    height: 10), 
+              ],
+            );
+          }
+
+          if (!hasDescription) return const SizedBox.shrink();
+
+          return Padding(
+            padding: const EdgeInsets.only(
               left: CbSizes.defaultSpace * 2.5,
               right: CbSizes.defaultSpace * 2.5,
-              bottom: controller.user.value.description.isEmpty ? 0 : 20,  
+              bottom: 15, // Fixed spacing only when text exists
             ),
-          child: Obx(
-            () => !controller.profileLoading
-                ? controller.user.value.description.isEmpty
-                    ? SizedBox.shrink()
-                    : Text(
-                        controller.user.value.description,
-                        style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w300),
-                        textAlign: TextAlign.center,
-                      )
-                : Column(
-                    children: [
-                      CbShimmerEffects(width: 120, height: 10),
-                      const SizedBox(height: 5),
-                      CbShimmerEffects(width: 100, height: 10),
-                    ],
-                  ),
-          ),
-        ),
+            child: Text(
+              controller.user.value.description,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }),
         Obx(
           () => controller.profileLoading
               ? FollowersAndFollowingShimmer()

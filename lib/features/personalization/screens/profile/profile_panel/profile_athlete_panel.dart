@@ -98,6 +98,7 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
         );
       }
 
+
       final stats = _ctrl.stats.value;
       final points = _ctrl.chartPoints;
       final chartData = points.map((p) => p.value).toList();

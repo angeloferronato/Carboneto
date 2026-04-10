@@ -13,6 +13,7 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class UserSearchTile extends StatelessWidget {
   UserSearchTile({
@@ -70,14 +71,29 @@ class UserSearchTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          user.username,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(fontSize: 15),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                user.username,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(fontSize: 15),
+                              ),
+                            ),
+                            if (user.isVerified)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4),
+                                child: Icon(
+                                  Iconsax.verify5,
+                                  color: CbColors.primary,
+                                  size: 12,
+                                ),
+                              ),
+                          ],
                         ),
                         const SizedBox(
                           height: CbSizes.xs / 2,

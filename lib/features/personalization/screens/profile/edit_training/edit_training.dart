@@ -21,6 +21,7 @@ import 'package:carboneto/features/personalization/screens/profile/edit_training
 import 'package:carboneto/features/personalization/screens/profile/widgets/highlight_btn.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:carboneto/utils/constants/colors.dart';
+import 'package:carboneto/utils/constants/enums.dart';
 import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,7 @@ class _EditTrainingScreenState extends State<EditTrainingScreen> {
   void _showSaveSuccessSheet() {
     showModalBottomSheet(
       context: context,
+      showDragHandle: false,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withValues(alpha: 0.4),
       builder: (_) => SaveSuccessSheet(context: context),
@@ -126,7 +128,7 @@ class _EditTrainingScreenState extends State<EditTrainingScreen> {
               children: [
                 SquareUploadWidget(
                   uploadImageController: _uploadImageController,
-                  onSelectFiles: () => _uploadImageController.pickSingleFile(),
+                  onSelectFiles: () => _uploadImageController.pickSingleFile(format: UploadImageFormat.banner),
                   label: 'Upload thumbnail',
                   description:
                       'Selecione um arquivo de imagem para a capa do treino.',

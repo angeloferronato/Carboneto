@@ -10,6 +10,7 @@ import 'package:carboneto/utils/constants/sizes.dart';
 import 'package:carboneto/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 class NotificationTile extends StatelessWidget {
   const NotificationTile({
@@ -21,11 +22,15 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NotificationsController controller = Get.put(NotificationsController());
+    final NotificationsController controller =
+        Get.put(NotificationsController());
     return InkWell(
-      onTap: () => Get.to(ProfileScreen(userId: notification.fromUserId,)),
-      child: Container(    
-        padding: const EdgeInsets.symmetric(horizontal: CbSizes.md, vertical: CbSizes.sm ),
+      onTap: () => Get.to(ProfileScreen(
+        userId: notification.fromUserId,
+      )),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: CbSizes.md, vertical: CbSizes.sm),
         child: Row(
           children: [
             Flexible(
@@ -33,32 +38,66 @@ class NotificationTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CbRoundedImage(
-                    imageUrl: notification.fromUserProfilePicture.isEmpty ? CbImages.userDefault : notification.fromUserProfilePicture,
+                    imageUrl: notification.fromUserProfilePicture.isEmpty
+                        ? CbImages.userDefault
+                        : notification.fromUserProfilePicture,
                     width: 50,
                     height: 50,
                     borderRadius: 50,
-                    isNetworkImage: notification.fromUserProfilePicture.isNotEmpty,
+                    isNetworkImage:
+                        notification.fromUserProfilePicture.isNotEmpty,
                     fit: BoxFit.cover,
                   ),
-                  const SizedBox(width: CbSizes.md,),
-                
+                  const SizedBox(
+                    width: CbSizes.md,
+                  ),
                   Expanded(
                     child: Text.rich(
-                      TextSpan( 
+                      TextSpan(
                         children: [
                           TextSpan(
                             text: notification.fromUserUsername,
-                            style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 15),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall!
+                                .copyWith(fontSize: 15),
                           ),
+                          if (notification.fromUserIsVerified)
+                            WidgetSpan(
+                                alignment: PlaceholderAlignment.bottom,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 2),
+                                  child: Icon(
+                                      Iconsax.verify5,
+                                      color: CbColors.primary,
+                                      size: 12,
+                                    ),
+                                ))
+                          else
+                            WidgetSpan(child: SizedBox.shrink()),
                           TextSpan(text: ' '),
                           TextSpan(
-                            text: NotificationModel.notificationText(notification.type),
-                            style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 13, color: const Color.fromARGB(255, 211, 211, 211), fontWeight: FontWeight.w600)
-                          ),
+                              text: NotificationModel.notificationText(
+                                  notification.type),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                      fontSize: 13,
+                                      color: const Color.fromARGB(
+                                          255, 211, 211, 211),
+                                      fontWeight: FontWeight.w600)),
                           TextSpan(text: ' '),
                           TextSpan(
-                            text: CbHelperFunctions.formatNotificationTimestamp(notification.createdAt),
-                            style: Theme.of(context).textTheme.titleSmall!.copyWith(fontSize: 13, color: CbColors.darkGrey, fontWeight: FontWeight.w600),
+                            text: CbHelperFunctions.formatNotificationTimestamp(
+                                notification.createdAt),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall!
+                                .copyWith(
+                                    fontSize: 13,
+                                    color: CbColors.darkGrey,
+                                    fontWeight: FontWeight.w600),
                           )
                         ],
                       ),
@@ -69,30 +108,34 @@ class NotificationTile extends StatelessWidget {
                 ],
               ),
             ),
-      
-
-            if (notification.type == NotificationType.followRequest) Align(
-              alignment: AlignmentGeometry.centerRight,
-              child: Row(
-                children: [
-                  HighlightBtn(
-                    textValue: 'Recusar', 
-                    onPressedEdit: () => controller.rejectFollowRequest(notification.id ?? ''),
-                    radius: 15,
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    
-                  ),
-                  const SizedBox(width: CbSizes.sm,),
-                  ElevatedButton(
-                    onPressed: () => controller.acceptFollowRequest(notification.id ?? '', notification.fromUserId),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            if (notification.type == NotificationType.followRequest)
+              Align(
+                alignment: AlignmentGeometry.centerRight,
+                child: Row(
+                  children: [
+                    HighlightBtn(
+                      textValue: 'Recusar',
+                      onPressedEdit: () =>
+                          controller.rejectFollowRequest(notification.id ?? ''),
+                      radius: 15,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     ),
-                    child: Text('Aceitar'),
-                  )
-                ],
-              ),
-            )
+                    const SizedBox(
+                      width: CbSizes.sm,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => controller.acceptFollowRequest(
+                          notification.id ?? '', notification.fromUserId),
+                      style: ElevatedButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      ),
+                      child: Text('Aceitar'),
+                    )
+                  ],
+                ),
+              )
           ],
         ),
       ),

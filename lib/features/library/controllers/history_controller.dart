@@ -1,10 +1,11 @@
 import 'package:carboneto/data/repositories/history/history_repository.dart';
 import 'package:carboneto/data/repositories/training/training_repository.dart';
+import 'package:carboneto/features/library/controllers/all_trainings_controller.dart';
 import 'package:carboneto/features/library/models/history_model.dart';
 import 'package:carboneto/features/library/screens/history_screen/history.dart';
 import 'package:carboneto/features/training/models/training/training_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart'; // Para debugPrint
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,15 +18,12 @@ class HistoryController extends GetxController {
   final ScrollController scrollController = ScrollController();
   final TextEditingController searchController = TextEditingController();
 
-
   final RxList<TrainingHistoryModel> history = <TrainingHistoryModel>[].obs;
-
   final RxList<TrainingHistoryModel> recent = <TrainingHistoryModel>[].obs;
 
-  final RxBool isLoadingRecent = true.obs; // Para o Skeleton da Home
-  final RxBool isLoadingHistory =
-      false.obs; // Para o loading inicial da tela "Ver tudo"
-  final RxBool isLoadingMore = false.obs; // Para a paginação
+  final RxBool isLoadingRecent = true.obs; 
+  final RxBool isLoadingHistory = false.obs; 
+  final RxBool isLoadingMore = false.obs; 
 
   var showTrainingBy = 'Recentes'.obs;
   final RxBool hasMore = true.obs;
@@ -43,6 +41,14 @@ class HistoryController extends GetxController {
         fetchMore();
       }
     });
+
+    // Sync with Firebase changes from the main trainings list (like picture updates)
+    if (Get.isRegistered<AllTrainingsController>()) {
+      ever(Get.find<AllTrainingsController>().trainings, (_) {
+        recent.refresh();
+        history.refresh();
+      });
+    }
   }
 
   @override
@@ -52,7 +58,6 @@ class HistoryController extends GetxController {
     super.onClose();
   }
 
-  
   void _bindRecentHistory() {
     isLoadingRecent.value = true;
 
@@ -119,10 +124,16 @@ class HistoryController extends GetxController {
   }
 
   Future<void> refreshHistory() async {
-    await fetchInitial();
+    // 1. Force the UI to show the shimmer loading for the recent section
+    isLoadingRecent.value = true; 
+    
+    // 2. Fetch the paginated 'Ver tudo' history again
+    await fetchInitial(); 
+    
+    // 3. Re-bind the stream so Firestore fetches fresh data for the 'recent' section
+    _bindRecentHistory(); 
   }
 
-  
   void setShowTrainingBy(String value) {
     showTrainingBy.value = value;
   }
@@ -131,13 +142,11 @@ class HistoryController extends GetxController {
     return _trainingRepository.fetchTrainingById(trainingId);
   }
 
- 
   Future<void> removeTrainingFromHistory(
       String historyId, String userId) async {
     try {
       history.removeWhere((item) => item.id == historyId);
 
-      
       final db = _trainingRepository.trainingHistoryRef(userId, historyId);
       await db.delete();
 

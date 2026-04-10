@@ -33,15 +33,6 @@ class EditTrainingController extends GetxController {
     return identical(Get.find<EditTrainingController>(tag: _tag), this);
   }
 
-  List<T> _distinctPreservingOrder<T>(Iterable<T> values) {
-    final seen = <T>{};
-    final result = <T>[];
-    for (final value in values) {
-      if (seen.add(value)) result.add(value);
-    }
-    return result;
-  }
-
   @override
   void onInit() {
     super.onInit();
@@ -103,8 +94,7 @@ class EditTrainingController extends GetxController {
           if (index != -1) mappedSelectedIndexes.add(index);
         }
 
-        exercisesController.selectedIndexes
-            .assignAll(_distinctPreservingOrder(mappedSelectedIndexes));
+        exercisesController.selectedIndexes.assignAll(mappedSelectedIndexes);
         exercisesController.selectedIntermediateIndexes.clear();
         exercisesController.preAddIndexes.clear();
 

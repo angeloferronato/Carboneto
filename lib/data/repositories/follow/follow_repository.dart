@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'dart:math' show min;
 
 class FollowRepository extends GetxController {
   static FollowRepository get instance => Get.find();
@@ -33,6 +34,37 @@ class FollowRepository extends GetxController {
         .doc(currentUserId);
   }
 
+  Future<void> deleteNotification({
+    required String userId,
+    required String notificationId,
+  }) async {
+    await _db
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .doc(notificationId)
+        .delete();
+  }
+
+  Future<void> clearAllNotifications({required String userId}) async {
+    final snapshot = await _db
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .get();
+
+    const chunkSize = 500;
+    final docs = snapshot.docs;
+    for (int i = 0; i < docs.length; i += chunkSize) {
+      final chunk = docs.sublist(i, min(i + chunkSize, docs.length));
+      final batch = _db.batch();
+      for (final doc in chunk) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+    }
+  }
+
   Future<void> sendNotification(
       NotificationModel notification, String targetUserId) async {
     try {
@@ -52,6 +84,29 @@ class FollowRepository extends GetxController {
       throw CbPlatformException(e.code).message;
     } catch (e) {
       throw 'Algo deu errado. Por favor tente novamente';
+    }
+  }
+
+  Future<void> markNotificationsAsRead({
+    required String userId,
+    required List<String> notificationIds,
+  }) async {
+    const chunkSize = 500;
+    for (int i = 0; i < notificationIds.length; i += chunkSize) {
+      final chunk = notificationIds.sublist(
+          i, min(i + chunkSize, notificationIds.length));
+      final batch = _db.batch();
+      for (final id in chunk) {
+        batch.update(
+          _db
+              .collection('users')
+              .doc(userId)
+              .collection('notifications')
+              .doc(id),
+          {'IsRead': true},
+        );
+      }
+      await batch.commit();
     }
   }
 

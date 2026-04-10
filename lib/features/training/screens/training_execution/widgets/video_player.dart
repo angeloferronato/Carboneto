@@ -37,22 +37,21 @@ class VideoPlayerView extends StatefulWidget {
     this.showOptions = true,
     this.showFullscreen = true,
     this.isPaused = false,
+    this.normalBottomPadding = 0.0,
   });
 
   final String url;
   final DataSourceType dataSourceType;
-  /// Reserved for callers that overlay this player on top of another video.
-  /// Currently used as a marker — extend as needed.
   final bool isOverVideo;
   final bool showOptions;
   final bool showFullscreen;
   final bool isPaused;
+  final double normalBottomPadding;
 
   @override
   VideoPlayerViewState createState() => VideoPlayerViewState();
 }
 
-// Public state class exposed so callers can use a GlobalKey if needed.
 class VideoPlayerViewState extends _VideoPlayerViewState {}
 
 // ---------------------------------------------------------------------------
@@ -70,7 +69,6 @@ abstract class _BaseVideoPlayerState<T extends StatefulWidget>
   double _dragStartDx = 0;
   Duration _dragStartPosition = Duration.zero;
 
-  // Subclasses provide the URL and source type.
   String get videoUrl;
   DataSourceType get videoDataSourceType;
   Duration get startPosition => Duration.zero;
@@ -173,51 +171,80 @@ abstract class _BaseVideoPlayerState<T extends StatefulWidget>
     required bool isFullscreen,
     required VoidCallback onFullscreen,
     bool showOptionsButton = true,
+    double bottomPadding = 0.0,
   }) {
     final vc = controller!;
+    final size = vc.value.size;
+    
+    final isVertical = size.width > 0 && size.height > size.width;
 
-    return GestureDetector(
-      onTap: toggleControls,
-      onHorizontalDragStart: (d) {
-        _dragStartDx = d.globalPosition.dx;
-        _dragStartPosition = vc.value.position;
-      },
-      onHorizontalDragUpdate: (d) {
-        if (isDisposed) return;
-        final delta = d.globalPosition.dx - _dragStartDx;
-        final target =
-            _dragStartPosition + Duration(seconds: (delta / 5).round());
-        vc.seekTo(_clamp(target, Duration.zero, vc.value.duration));
-      },
-      onHorizontalDragEnd: (_) => _startHideTimer(),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Center(
-            child: AspectRatio(
-              aspectRatio: vc.value.aspectRatio,
-              child: VideoPlayer(vc),
-            ),
+    Widget videoLayer;
+    if (isVertical) {
+      videoLayer = SizedBox.expand(
+        child: FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            width: size.width,
+            height: size.height,
+            child: VideoPlayer(vc),
           ),
-          _VideoControls(
-            controller: vc,
-            showControls: showControls,
-            isFullscreen: isFullscreen,
-            showOptionsButton: showOptionsButton,
-            onPlayPause: togglePlayPause,
-            onSeekRelative: seekRelative,
-            onSliderStart: hideTimer?.cancel,
-            onSliderChanged: onSliderChanged,
-            onSliderEnd: _startHideTimer,
-            onFullscreen: onFullscreen,
-            onOptions: () => _OptionsSheet.show(
-              context,
+        ),
+      );
+    } else {
+      videoLayer = Padding(
+        padding: EdgeInsets.only(bottom: bottomPadding),
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: vc.value.aspectRatio,
+            child: VideoPlayer(vc),
+          ),
+        ),
+      );
+    }
+
+    // Wrapped in ClipRect to ensure the video NEVER bleeds out of your 70% height box
+    return ClipRect(
+      child: GestureDetector(
+        // HitTestBehavior.opaque forces the transparent parts of the screen to catch your taps
+        behavior: HitTestBehavior.opaque,
+        onTap: toggleControls,
+        onHorizontalDragStart: (d) {
+          _dragStartDx = d.globalPosition.dx;
+          _dragStartPosition = vc.value.position;
+        },
+        onHorizontalDragUpdate: (d) {
+          if (isDisposed) return;
+          final delta = d.globalPosition.dx - _dragStartDx;
+          final target =
+              _dragStartPosition + Duration(seconds: (delta / 5).round());
+          vc.seekTo(_clamp(target, Duration.zero, vc.value.duration));
+        },
+        onHorizontalDragEnd: (_) => _startHideTimer(),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            videoLayer, 
+            _VideoControls(
               controller: vc,
-              onOpen: hideTimer?.cancel,
-              onClose: _startHideTimer,
+              showControls: showControls,
+              isFullscreen: isFullscreen,
+              showOptionsButton: showOptionsButton,
+              bottomPadding: bottomPadding,
+              onPlayPause: togglePlayPause,
+              onSeekRelative: seekRelative,
+              onSliderStart: hideTimer?.cancel,
+              onSliderChanged: onSliderChanged,
+              onSliderEnd: _startHideTimer,
+              onFullscreen: onFullscreen,
+              onOptions: () => _OptionsSheet.show(
+                context,
+                controller: vc,
+                onOpen: hideTimer?.cancel,
+                onClose: _startHideTimer,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -289,7 +316,7 @@ class _VideoPlayerViewState
   Widget build(BuildContext context) {
     if (!isInitialized || controller == null) {
       return const ColoredBox(
-        color: Colors.black,
+        color: Color.fromARGB(255, 18, 24, 27),
         child: Center(
           child: CircularProgressIndicator(color: CbColors.primary),
         ),
@@ -297,11 +324,12 @@ class _VideoPlayerViewState
     }
 
     return ColoredBox(
-      color: Colors.black,
+      color: Color.fromARGB(255, 18, 24, 27),
       child: buildVideoStack(
         isFullscreen: false,
         onFullscreen: widget.showFullscreen ? _enterFullscreen : () {},
         showOptionsButton: widget.showOptions,
+        bottomPadding: widget.normalBottomPadding,
       ),
     );
   }
@@ -355,7 +383,7 @@ class _FullscreenPageState extends _BaseVideoPlayerState<_FullscreenPage> {
   Widget build(BuildContext context) {
     if (!isInitialized || controller == null) {
       return const Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Color.fromARGB(255, 18, 24, 27),
         body: Center(
           child: CircularProgressIndicator(color: CbColors.primary),
         ),
@@ -363,10 +391,11 @@ class _FullscreenPageState extends _BaseVideoPlayerState<_FullscreenPage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color.fromARGB(255, 18, 24, 27),
       body: buildVideoStack(
         isFullscreen: true,
         onFullscreen: () => Navigator.of(context).pop(),
+        bottomPadding: 0.0,
       ),
     );
   }
@@ -389,12 +418,14 @@ class _VideoControls extends StatelessWidget {
     required this.onOptions,
     this.onSliderStart,
     this.showOptionsButton = true,
+    this.bottomPadding = 0.0,
   });
 
   final VideoPlayerController controller;
   final bool showControls;
   final bool isFullscreen;
   final bool showOptionsButton;
+  final double bottomPadding;
   final VoidCallback onPlayPause;
   final void Function(int seconds) onSeekRelative;
   final VoidCallback? onSliderStart;
@@ -411,20 +442,32 @@ class _VideoControls extends StatelessWidget {
       child: IgnorePointer(
         ignoring: !showControls,
         child: Stack(
-          children: [
-            _TopGradient(
-              showOptionsButton: showOptionsButton,
-              onOptions: onOptions,
-            ),
-            const _BottomGradient(),
+          children: [            
+            if (showOptionsButton)
+              Positioned(
+                top: 10,
+                right: 10,
+                child: _CircleButton(
+                  size: 42,
+                  onTap: onOptions,
+                  child: const Icon(
+                    Icons.more_vert_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                ),
+              ),            
             _CenterControls(
               controller: controller,
+              bottomPadding: bottomPadding,
               onPlayPause: onPlayPause,
               onSeekRelative: onSeekRelative,
             ),
+            
             _BottomBar(
               controller: controller,
               isFullscreen: isFullscreen,
+              bottomPadding: bottomPadding,
               onSliderStart: onSliderStart,
               onSliderChanged: onSliderChanged,
               onSliderEnd: onSliderEnd,
@@ -437,131 +480,119 @@ class _VideoControls extends StatelessWidget {
   }
 }
 
-class _TopGradient extends StatelessWidget {
-  const _TopGradient({
-    required this.showOptionsButton,
-    required this.onOptions,
-  });
+// class _TopGradient extends StatelessWidget {
+//   const _TopGradient();
 
-  final bool showOptionsButton;
-  final VoidCallback onOptions;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Positioned(
+//       top: 0,
+//       left: 0,
+//       right: 0,
+//       child: IgnorePointer(
+//         child: Container(
+//           height: 90,
+//           decoration: BoxDecoration(
+//             gradient: LinearGradient(
+//               begin: Alignment.topCenter,
+//               end: Alignment.bottomCenter,
+//               colors: [
+//                 Color.fromARGB(255, 18, 24, 27).withValues(alpha: 0.65),
+//                 Colors.transparent,
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        height: 90,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.black.withValues(alpha: 0.65),
-              Colors.transparent,
-            ],
-          ),
-        ),
-        child: Align(
-          alignment: Alignment.topRight,
-          child: showOptionsButton
-              ? Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: _CircleButton(
-                    size: 42,
-                    onTap: onOptions,
-                    child: const Icon(
-                      Icons.more_vert_rounded,
-                      color: Colors.white,
-                      size: 22,
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
-        ),
-      ),
-    );
-  }
-}
+// class _BottomGradient extends StatelessWidget {
+//   const _BottomGradient({this.bottomPadding = 0.0});
 
-class _BottomGradient extends StatelessWidget {
-  const _BottomGradient();
+//   final double bottomPadding;
 
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        height: 110,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              Colors.black.withValues(alpha: 0.7),
-              Colors.transparent,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Positioned(
+//       bottom: bottomPadding,
+//       left: 0,
+//       right: 0,
+//       child: IgnorePointer(
+//         child: Container(
+//           height: 110,
+//           decoration: BoxDecoration(
+//             gradient: LinearGradient(
+//               begin: Alignment.bottomCenter,
+//               end: Alignment.topCenter,
+//               colors: [
+//                 Color.fromARGB(255, 18, 24, 27).withValues(alpha: 0.7),
+//                 Colors.transparent,
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _CenterControls extends StatelessWidget {
   const _CenterControls({
     required this.controller,
     required this.onPlayPause,
     required this.onSeekRelative,
+    this.bottomPadding = 0.0,
   });
 
   final VideoPlayerController controller;
   final VoidCallback onPlayPause;
   final void Function(int seconds) onSeekRelative;
+  final double bottomPadding;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _CircleButton(
-            onTap: () => onSeekRelative(-5),
-            child: const Icon(
-              Icons.replay_5_rounded,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
-          const SizedBox(width: 28),
-          ValueListenableBuilder<VideoPlayerValue>(
-            valueListenable: controller,
-            builder: (_, value, __) => _CircleButton(
-              size: 68,
-              onTap: onPlayPause,
-              child: Icon(
-                value.isPlaying
-                    ? Icons.pause_rounded
-                    : Icons.play_arrow_rounded,
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomPadding),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _CircleButton(
+              onTap: () => onSeekRelative(-5),
+              child: const Icon(
+                Icons.replay_5_rounded,
                 color: Colors.white,
-                size: 42,
+                size: 28,
               ),
             ),
-          ),
-          const SizedBox(width: 28),
-          _CircleButton(
-            onTap: () => onSeekRelative(5),
-            child: const Icon(
-              Icons.forward_5_rounded,
-              color: Colors.white,
-              size: 28,
+            const SizedBox(width: 28),
+            ValueListenableBuilder<VideoPlayerValue>(
+              valueListenable: controller,
+              builder: (_, value, __) => _CircleButton(
+                size: 68,
+                onTap: onPlayPause,
+                child: Icon(
+                  value.isPlaying
+                      ? Icons.pause_rounded
+                      : Icons.play_arrow_rounded,
+                  color: Colors.white,
+                  size: 42,
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 28),
+            _CircleButton(
+              onTap: () => onSeekRelative(5),
+              child: const Icon(
+                Icons.forward_5_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -575,6 +606,7 @@ class _BottomBar extends StatelessWidget {
     required this.onSliderEnd,
     required this.onFullscreen,
     this.onSliderStart,
+    this.bottomPadding = 0.0,
   });
 
   final VideoPlayerController controller;
@@ -583,11 +615,12 @@ class _BottomBar extends StatelessWidget {
   final void Function(double value) onSliderChanged;
   final VoidCallback onSliderEnd;
   final VoidCallback onFullscreen;
+  final double bottomPadding;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 0,
+      bottom: bottomPadding,
       left: 0,
       right: 0,
       child: Padding(
@@ -682,7 +715,7 @@ class _CircleButton extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.45),
+          color: Color.fromARGB(255, 18, 24, 27).withValues(alpha: 0.45),
           shape: BoxShape.circle,
         ),
         child: Center(child: child),
@@ -719,8 +752,6 @@ class _OptionTile extends StatelessWidget {
 // Options bottom sheet
 // ---------------------------------------------------------------------------
 
-/// Outer shell: dark card + custom drag handle.
-/// Keeps the sheet content decoupled from its chrome.
 class _OptionsSheetShell extends StatelessWidget {
   const _OptionsSheetShell({required this.controller});
 
@@ -739,7 +770,6 @@ class _OptionsSheetShell extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Custom drag handle
             Padding(
               padding: const EdgeInsets.only(top: 14, bottom: 4),
               child: Container(
@@ -766,7 +796,6 @@ class _OptionsSheet extends StatefulWidget {
 
   final VideoPlayerController controller;
 
-  /// Convenience method to show the sheet and manage the open/close callbacks.
   static void show(
     BuildContext context, {
     required VideoPlayerController controller,
@@ -777,6 +806,7 @@ class _OptionsSheet extends StatefulWidget {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.transparent, 
       isScrollControlled: true,
       showDragHandle: false,
       useSafeArea: false,

@@ -17,9 +17,11 @@ class StatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final pct = stats.aproveitamentoPct;
     final change = isCarbs ? 1 : stats.aproveitamentoChange;
-    final changeStr = change >= 0
-        ? '+${(change * 100).toStringAsFixed(0)}%'
-        : '${(change * 100).toStringAsFixed(0)}%';
+    final changeStr = pct > 0
+        ? change >= 0
+            ? '+${(change * 100).toStringAsFixed(0)}%'
+            : '${(change * 100).toStringAsFixed(0)}%'
+        : '';
     print(change);
 
     return Column(
@@ -28,7 +30,11 @@ class StatsRow extends StatelessWidget {
         StatTile(
           label: 'Aproveitamento',
           sublabel: 'FG%  •  Global avg',
-          value: isCarbs ? '100%' : '${(pct * 100).toStringAsFixed(0)}%',
+          value: isCarbs
+              ? '100%'
+              : pct == 0
+                  ? '-'
+                  : '${(pct * 100).toStringAsFixed(0)}%',
           badge: changeStr,
           badgePositive: change >= 0,
           isDark: isDark,

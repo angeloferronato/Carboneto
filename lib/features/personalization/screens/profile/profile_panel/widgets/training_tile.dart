@@ -27,20 +27,29 @@ class TrainingTile extends StatelessWidget {
 
     return Row(
       spacing: 7,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CbRoundedImage(
-          imageUrl: training.thumbnail,
-          isNetworkImage: true,
-          width: 100,
-          fit: BoxFit.cover,
-          height: 60,
+        // Thumbnail — fixed size, never grows
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: CbRoundedImage(
+            imageUrl: training.thumbnail,
+            isNetworkImage: training.thumbnail.isNotEmpty,
+            width: 100,
+            fit: BoxFit.cover,
+            height: 60,
+          ),
         ),
+
+        // Content — takes remaining space
         Expanded(
           child: Column(
             spacing: 5,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Title + level row
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Text(
@@ -49,24 +58,34 @@ class TrainingTile extends StatelessWidget {
                       maxLines: 1,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   LevelWidget(
                     level: TrainingModel.parseStringToLevel(training.level),
                   ),
                 ],
               ),
+
+              // Creator + progress row
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ResultCreatorInfo(
-                    creator: training.creator,
-                    creatorId: training.authorId,
-                    justProfileInfo: true,
-                    showUserPicture: true,
+                  // Creator takes available space, shrinks if needed
+                  Flexible(
+                    child: ResultCreatorInfo(
+                      creator: training.creator,
+                      creatorId: training.authorId,
+                      justProfileInfo: true,
+                      showUserPicture: true,
+                    ),
                   ),
+
+                  // Progress — never wraps, fixed content
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         spacing: 3,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -76,41 +95,45 @@ class TrainingTile extends StatelessWidget {
                                 .textTheme
                                 .labelSmall!
                                 .copyWith(
-                                    color: progressColor,
-                                    fontWeight: FontWeight.w300),
+                                  color: progressColor,
+                                  fontWeight: FontWeight.w300,
+                                ),
                           ),
-                          Icon(done? Icons.check_rounded : Icons.hourglass_top_rounded,
-                              size: 12,
-                              color: progressColor,
-                              fontWeight: FontWeight.w300)
+                          Icon(
+                            done
+                                ? Icons.check_rounded
+                                : Icons.hourglass_top_rounded,
+                            size: 12,
+                            color: progressColor,
+                          ),
                         ],
                       ),
-                      trainingPct > 0
-                          ? Row(
-                              children: [
-                                Text(
-                                  ' • ',
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                                Text(
-                                  '${(trainingPct * 100).toStringAsFixed(0)}% eff',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall!
-                                      .copyWith(
-                                          color: effColor,
-                                          fontWeight: FontWeight.w300),
-                                )
-                              ],
-                            )
-                          : const SizedBox.shrink(),
+                      if (trainingPct > 0) ...[
+                        Text(
+                          ' • ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall!
+                              .copyWith(fontWeight: FontWeight.w300),
+                        ),
+                        Text(
+                          '${(trainingPct * 100).toStringAsFixed(0)}% eff',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall!
+                              .copyWith(
+                                color: effColor,
+                                fontWeight: FontWeight.w300,
+                              ),
+                        ),
+                      ],
                     ],
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
