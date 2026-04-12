@@ -98,7 +98,7 @@ class LoginController extends GetxController {
       // Remove the Loader
       CbFullScreenLoader.stopLoading();
 
-      CbLoaders.errorSnackBar(title: 'Ah Não!', message: 'Algo deu errado. Por favor tente novamente.');
+      CbLoaders.errorSnackBar(title: 'Ah Não!', message: 'Algo deu errado. Por favor tente novamente. $e');
     }
   }
 

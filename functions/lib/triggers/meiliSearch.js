@@ -6,7 +6,7 @@ const firestore_1 = require("firebase-functions/v2/firestore");
 const meilisearch_1 = require("meilisearch");
 const meiliClient = new meilisearch_1.MeiliSearch({
     host: 'http://140.238.186.227:7700',
-    apiKey: 'hGFUGI775FAI7TF976TFITUFUTFITtuf78',
+    apiKey: '', // Se quise a chave peça para os Donos do código(vulgo resenharapaze)
 });
 function createSync(collectionName, indexName) {
     return (0, firestore_1.onDocumentWritten)(`${collectionName}/{docId}`, async (event) => {

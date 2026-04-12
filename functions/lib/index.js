@@ -18,4 +18,5 @@ __exportStar(require("./triggers/exercises"), exports);
 __exportStar(require("./triggers/trainings"), exports);
 __exportStar(require("./triggers/followers"), exports);
 __exportStar(require("./triggers/meiliSearch"), exports);
+__exportStar(require("./triggers/notifications"), exports);
 //# sourceMappingURL=index.js.map

@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "379434948139-thbtu2vk0158etltej272vkaje5u6ift.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carboneto",
+            "certificate_hash": "563e8a062cd014bc2016722c45383c1d858bdbe9"
+          }
+        },
+        {
+          "client_id": "379434948139-uacbse5bbas8eqahvd42pbob3i4g6iep.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carboneto",
+            "certificate_hash": "7edcf71768fa4a70c41427c1bcd946cadae6c0e4"
+          }
+        },
+        {
           "client_id": "379434948139-2j1lhu4rtu0nmso3irve7n8tuns0r1gj.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -39,10 +55,46 @@
               "client_type": 3
             },
             {
-              "client_id": "379434948139-jq4kcrti6ogenn9os6ffkaubnl5pr7qh.apps.googleusercontent.com",
+              "client_id": "379434948139-1a0s4tj4dp0j64b3fsr1b2n50q2n92fr.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.carboneto"
+                "bundle_id": "com.example.carbonetoAdminPanel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379434948139:android:98c3623a51ee874b1afc6e",
+        "android_client_info": {
+          "package_name": "com.example.carboneto_admin_panel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379434948139-2j1lhu4rtu0nmso3irve7n8tuns0r1gj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXBfF4HiUyoiJ7aI21lzWMvwWeqLkDf7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379434948139-2j1lhu4rtu0nmso3irve7n8tuns0r1gj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "379434948139-1a0s4tj4dp0j64b3fsr1b2n50q2n92fr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.carbonetoAdminPanel"
               }
             }
           ]
