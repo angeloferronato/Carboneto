@@ -3,6 +3,7 @@ import 'package:carboneto/features/authentication/screens/login/login.dart';
 import 'package:carboneto/features/authentication/screens/onboarding/onboarding.dart';
 import 'package:carboneto/features/authentication/screens/verify_email/verify_email.dart';
 import 'package:carboneto/features/authentication/screens/welcome/welcome.dart';
+import 'package:carboneto/features/personalization/controllers/user_controller/user_controller.dart';
 import 'package:carboneto/features/training/controllers/notification_service.dart';
 import 'package:carboneto/home_menu.dart';
 import 'package:carboneto/utils/exceptions/firebase_auth_exceptions.dart';
@@ -50,6 +51,7 @@ class AuthenticationRepository extends GetxController {
           user.providerData.any((p) => p.providerId == 'google.com');
 
       if (isGoogleSignIn || user.emailVerified) {
+        Get.put(UserController());
         await notificationService.initialize();
         Get.offAll(() => WelcomeScreen());
       } else {
