@@ -7,13 +7,12 @@ import 'package:carboneto/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class TrainingSummarySheet extends StatefulWidget {
-  TrainingSummarySheet(
-    {
-      super.key,
-      required this.training,
-      required this.isDark,
-      this.trainingPct = 0,
-    });
+  TrainingSummarySheet({
+    super.key,
+    required this.training,
+    required this.isDark,
+    this.trainingPct = 0,
+  });
 
   final TrainingHistoryModel training;
   final bool isDark;
@@ -214,7 +213,9 @@ class _TrainingSummarySheetState extends State<TrainingSummarySheet>
     if (trainingPct > 0) {
       items.add(StatData(
           label: 'Eficiência',
-          value: '${(trainingPct * 100).toStringAsFixed(0)}%',
+          value: trainingPct > 1
+              ? '-'
+              : '${(trainingPct * 100).toStringAsFixed(0)}%',
           icon: Icons.percent_rounded,
           accent: trainingPct >= 0.5 ? CbColors.success : CbColors.warning));
     }
@@ -279,8 +280,8 @@ class _TrainingSummarySheetState extends State<TrainingSummarySheet>
 
             if (ex.type == 'reps') {
               final pct = ex.done > 0 ? (ex.total / ex.done) : 0.0;
-              detail =
-                  '${ex.done}/${ex.total} | ${(pct * 100).toStringAsFixed(0)}%';
+              detail = '${ex.done}/${ex.total} | ';
+              detail += pct > 1 ? '-' : '${(pct * 100).toStringAsFixed(0)}%';
               progress =
                   ex.total > 0 ? (ex.done / ex.total).clamp(0.0, 1.0) : 0.0;
             } else {

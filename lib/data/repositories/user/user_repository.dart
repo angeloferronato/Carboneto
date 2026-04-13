@@ -63,8 +63,6 @@ class UserRepository extends GetxController {
           .get();
 
       await _batchUpdate(progress.docs, creatorMap);
-
-      debugPrint('✅ Creator sync complete for $userId');
     } catch (e) {
       // Don't throw — this is a background operation, it should not crash the UI
       debugPrint('⚠️ Creator sync failed: $e');

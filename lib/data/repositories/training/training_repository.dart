@@ -144,7 +144,6 @@ class TrainingRepository extends GetxController {
       final UserModel user = await userRepository.searchUser(training.authorId);
       training.user = user;
 
-      debugPrint('Training fetched: ${training.title}');
       return training;
     } on FirebaseAuthException catch (e) {
       throw CbFirebaseAuthException(e.code).message;

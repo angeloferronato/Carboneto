@@ -108,7 +108,7 @@ class TrainingTile extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (trainingPct > 0) ...[
+                      if (trainingPct > 0 && trainingPct <= 1) ...[
                         Text(
                           ' • ',
                           style: Theme.of(context)
