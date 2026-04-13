@@ -16,11 +16,8 @@ class TrainingController extends GetxController {
 
   late ProfileBaseController profileBaseController;
 
-  String get _currentUserId =>
-      profileBaseController.userController.user.value.id;
-
   bool get _currentUserIsFollower =>
-      profileBaseController.followersId.contains(_currentUserId);
+      profileBaseController.currentUserIsFollower;
 
   @override
   Future<void> onInit() async {
@@ -41,7 +38,9 @@ class TrainingController extends GetxController {
 
     String lastFetchedUserId = profileBaseController.user.value.id;
     ever(profileBaseController.user, (user) {
-      if (user.id.isNotEmpty && user.id != lastFetchedUserId && !isLoading.value) {
+      if (user.id.isNotEmpty &&
+          user.id != lastFetchedUserId &&
+          !isLoading.value) {
         lastFetchedUserId = user.id;
         fetchAllTrainings();
       }
@@ -67,7 +66,7 @@ class TrainingController extends GetxController {
       final result = await trainingRepository.fetchUserTrainingDetails(
         profileBaseController.user.value.id,
       );
-      
+
       // Filter the list based on visibility
       var filteredList = result.where(_canView).toList();
 
@@ -75,7 +74,7 @@ class TrainingController extends GetxController {
       filteredList.sort((a, b) => b.postedAt!.compareTo(a.postedAt!));
 
       trainingsList.assignAll(filteredList);
-      
+
       return trainingsList;
     } catch (e) {
       rethrow;
@@ -84,3 +83,4 @@ class TrainingController extends GetxController {
     }
   }
 }
+

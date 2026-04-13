@@ -81,10 +81,11 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
 
     return Obx(() {
       final isAuthUser = _baseCtrl.isAuthUser;
-      final isPrivate = _baseCtrl.user.value.isPrivate && !isAuthUser;
+      final isPrivate = _baseCtrl.user.value.isPrivate &&
+          !isAuthUser &&
+          !_baseCtrl.currentUserIsFollower;
       final isCarbs = widget.userId == '2RZob7cJyNXJpSNn7eJpxkxHPhx2';
 
-      // Show private state — same pattern as ProfileTrainingsList
       if (isPrivate) {
         return PrivateAccountState();
       }
@@ -97,7 +98,6 @@ class _ProfileAthletePanelState extends State<ProfileAthletePanel> {
           ),
         );
       }
-
 
       final stats = _ctrl.stats.value;
       final points = _ctrl.chartPoints;

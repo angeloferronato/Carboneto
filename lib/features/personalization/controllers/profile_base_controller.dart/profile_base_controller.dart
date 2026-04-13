@@ -33,6 +33,12 @@ class ProfileBaseController extends GetxController {
     _init();
   }
 
+  bool get currentUserFollowsThisProfile {
+    if (isAuthUser) return true;
+    final currentId = userController.user.value.id;
+    return followersId.contains(currentId) || followingId.contains(currentId);
+  }
+
   Future<void> _init() async {
     isLoading.value = true;
 
@@ -49,8 +55,10 @@ class ProfileBaseController extends GetxController {
     syncUser();
 
     final result = await followRepository.loadRelations(userId);
-    followersId.value = result[0];
-    followingId.value = result[1];
+    final followers = result[0];
+    final following = result[1];
+    followersId.value = followers;
+    followingId.value = following;
 
     isLoading.value = false;
 
@@ -58,6 +66,12 @@ class ProfileBaseController extends GetxController {
       [userController.user, profileSearchController.user],
       (_) => syncUser(),
     );
+  }
+
+  bool get currentUserIsFollower {
+    if (isAuthUser) return true;
+    final currentId = userController.user.value.id;
+    return followersId.contains(currentId);
   }
 
   Future<void> _waitUntilFalse(RxBool flag) async {
@@ -100,3 +114,13 @@ class ProfileBaseController extends GetxController {
     isLoading.value = false;
   }
 }
+
+
+
+
+
+
+
+
+
+
